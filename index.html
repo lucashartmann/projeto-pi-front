@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Página Inicial</title>
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/index.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="icon" type="image/x-icon" href="img/logo.png">
+</head>
+
+<body>
+    <nav>
+        <ul>
+            <a href="#"><i class="fas fa-home"></i></a>
+            <li><a href="index.html">Página Inicial</a></li>
+            <li><a href="html/sobreNos.html">Sobre Nós</a></li>
+            <li><a href="html/login.html">Login</a></li>
+        </ul>
+    </nav>
+    <div id="pesquisa">
+        <div id="pesquisa-container">
+            <input placeholder="pesquise aqui" id="input_pesquisa" oninput="pesquisar()">
+        </div>
+        <div id="container_filtragem">
+            <label>Categoria</label>
+            <select prompt="Selecionar" id="select_categoria"></select>
+            <label>Status</label>
+            <select prompt="Selecionar" id="select_status"></select>
+            <label>CEP</label>
+            <input oninput="pesquisarCEP(event)">
+        </div>
+    </div>
+    <div id="imovelDestaque">
+    </div>
+    <div class="swiper">
+        <div class="swiper-wrapper">
+        </div>
+        <div class="swiper-pagination"></div>
+
+        <div class="swiper-button-prev" onclick="prevSlide()"></div>
+        <div class="swiper-button-next" onclick="nextSlide()"></div>
+
+        <div class="swiper-scrollbar"></div>
+    </div>
+
+
+    <section id="anuncios">
+    </section>
+    <section id="section-footer">
+        <div id="sobre">
+            <h2>Sobre Nós</h2>
+            <p>Somos uma imobiliária dedicada a conectar pessoas aos seus lares dos sonhos. Com uma equipe apaixonada e
+                experiente, oferecemos um serviço personalizado para ajudar nossos clientes a encontrar o imóvel
+                perfeito. Nossa missão é transformar a experiência de compra, venda e aluguel de imóveis em algo
+                simples, transparente e satisfatório. Seja para encontrar a casa ideal ou para vender seu imóvel,
+                estamos aqui para tornar esse processo fácil e agradável.</p>
+        </div>
+        <div id="contato">
+            <h2>Contato</h2>
+            <p>Email: contato@imobiliaria.com</p>
+        </div>
+        <div id="redesSociais">
+            <h2>Redes Sociais</h2>
+            <p>Siga-nos nas redes sociais para mais informações e novidades!</p>
+        </div>
+        <div>
+            <h2>Endereço</h2>
+            <p>Rua Exemplo, 123 - Bairro Exemplo, Cidade Exemplo - CEP 12345-678</p>
+        </div>
+    </section>
+    <footer>
+        <p>Copyright 2025 - By Lucas Hartmann</p>
+        <a href="https://github.com/lucashartmann" target="_blank"><i class="fab fa-github"></i></a>
+    </footer>
+</body>
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+<script src="js/base.js"></script>
+<script src="js/index.js"></script>
+
+</html>

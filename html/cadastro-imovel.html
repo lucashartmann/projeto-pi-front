@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="../css/base.css">
+    <link rel="stylesheet" href="../css/cadastro-imovel.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="icon" type="image/x-icon" href="img/logo.png">
+</head>
+
+<body>
+    <nav>
+        <ul>
+            <a href="../index.html"><i class="fas fa-home"></i></a>
+            <li><a href="../index.html">Página Inicial</a></li>
+            <li><a href="sobreNos.html">Sobre Nós</a></li>
+            <li><a href="login.html">Login</a></li>
+        </ul>
+    </nav>
+    <div id="h_buttons">
+        <button class="bt_delete" onclick="excluir()">Apagar</button>
+        <button class="bt_success" onclick="salvar()">Salvar</button>
+    </div>
+    <div class="tab">
+        <button class="tablinks" id="tab_imovel" onclick="openTab(event, 'container_cadastro')"
+            role="tab">Cadastro</button>
+        <button class="tablinks" id="tabs_anuncio" onclick="openTab(event, 'container_anuncio')"
+            role="tab">Anuncio</button>
+    </div>
+
+    <form action="" id="container_cadastro" style="display: grid;" role="tabpanel" class="tabcontent">
+        <label id="stt_ref" for="">ref:</label>
+        <textarea name="ref" id="ta_ref" disabled=True></textarea>
+        <label for="" id="stt_categoria">Categoria:</label>
+        <select name="categoria" id="select_categoria" prompt="Selecionar">
+            <option value="sala_comercial">Sala Comercial</option>
+            <option value="apartamento">Apartamento</option>
+            <option value="casa">Casa</option>
+            <option value="chacara">Chácara</option>
+            <option value="fazenda">Fazenda</option>
+            <option value="casa_condominio">Casa em Condomínio</option>
+            <option value="empreendimento">Empreendimento</option>
+            <option value="ponto_comercial">Ponto Comercial</option>
+            <option value="predio_comercial">Prédio Comercial</option>
+            <option value="galpao">Galpão</option>
+            <option value="deposito">Depósito</option>
+            <option value="apartamento">Apartamento</option>
+            <option value="loja">Loja</option>
+            <option value="cobertura">Cobertura</option>
+            <option value="loft">Loft</option>
+            <option value="terreno">Terreno</option>
+            <option value="kitnet">Kitnet</option>
+            <option value="sobrado">Sobrado</option>
+            <option value="pavilhao">Pavilhão</option>
+            <option value="deposito">Depósito</option>
+            <option value="studio">Studio</option></select>
+            <option value="sala_comercial">Sala Comercial</option>
+        </select>
+        <label for="" id="stt_situacao">Situação</label>
+        <select name="situacao" id="select_situacao">
+            <option value="construcao">Em Construção</option>
+            <option value="novo">Novo</option>
+            <option value="usado">Usado</option>
+        </select>
+        <label for="" id="stt_estado_select">Estado:</label>
+        <select name="estado_imovel" id="select_estado" prompt="Selecionar">
+            <option value="bom">Bom</option>
+            <option value="otimo">Ótimo</option>
+            <option value="regular">Regular</option>
+        </select>
+        <label for="" id="stt_ocupacao">Ocupação:</label>
+        <select name="ocupacao" id="select_ocupacao" prompt="Selecionar">
+            <option value="desocupado">Desocupado</option>
+            <option value="inquilino">Inquilino</option>
+            <option value="proprietario">Proprietário</option>
+        </select>
+        </select>
+        <label for="" id="stt_status">Status:</label>
+        <select name="status" id="select_status" prompt="Selecionar">
+            <option value="venda">Venda</option>
+            <option value="aluguel">Aluguel</option>
+            <option value="venda_aluguel">Venda_Aluguel</option>
+            <option value="alugado">Alugado</option>
+            <option value="vendido">Vendido</option>
+            <option value="pendente">Pendente</option>
+        </select>
+        <label for="" id="stt_nome_condominio">Nome do Condomínio</label>
+        <textarea name="nome_condominio" id="ta_nome_condominio"></textarea>
+        <label for="" id="stt_ano_construcao">Ano de Construção</label>
+        <input type="date" placeholder="0000" id="ta_ano_construcao" minlength="4" maxlength="4" name="ano_construcao">
+        <label for="" id="stt_cep">CEP</label>
+        <input type="number" placeholder="00000-000" id="ta_cep" required minlength="9" maxlength="9" name="cep">
+        <label for="" id="stt_rua">Rua</label>
+        <textarea id="ta_rua" disabled=True name="rua"></textarea>
+        <label for="" id="stt_numero">Número</label>
+        <input type="text" id="ta_numero" type="integer" name="numero">
+        <label for="" id="stt_complemento">Complemento</label>
+        <textarea name="complemento" id="ta_complemento"></textarea>
+        <label for="" id="stt_bloco">Bloco</label>
+        <textarea name="bloco" id="ta_bloco"></textarea>
+        <label for="" id="stt_andar">Andar</label>
+        <input type="number" placeholder="00" id="ta_andar" minlength="1" maxlength="2" name="andar">
+        <label for="" id="stt_bairro">Bairro</label>
+        <textarea id="ta_bairro" disabled=True name="bairro"></textarea>
+        <label for="" id="stt_cidade">Cidade</label>
+        <textarea id="ta_cidade" disabled=True name="cidade"></textarea>
+        <label for="" id="stt_estado">Estado</label>
+        <input type="text" disabled=True, placeholder="XX" id="ta_estado" minlength="2" maxlength="2" name="uf">
+        <label for="" id="stt_salas">Salas</label>
+        <input type="number" placeholder="00" id="ta_salas" minlength="1" maxlength="2" name="quantidade_salas">
+        <label for="" id="stt_banheiros">Banheiros</label>
+        <input type="number" placeholder="00" id="ta_banheiros" minlength="1" maxlength="2" name="quantidade_banheiros">
+        <label for="" id="stt_vagas">Vagas</label>
+        <input type="number" placeholder="00" id="ta_vagas" minlength="1" maxlength="2" name="quantidade_vagas">
+        <label for="" id="stt_varandas">Varandas</label>
+        <input type="number" placeholder="00" id="ta_varandas" minlength="1" maxlength="2" name="quantidade_varandas">
+        <label for="" id="stt_quartos">Quartos</label>
+        <input type="number" placeholder="00" id="ta_quartos" minlength="1" maxlength="2" name="quantidade_quartos">
+        <label for="" id="stt_area_total">Área Total</label>
+        <input type="number" id="ta_area_total" type="number" name="area_total">
+        <label for="" id="stt_area_privativa">Área Privativa</label>
+        <input type="number" id="ta_area_privativa" type="number" name="area_privativa">
+        <label for="" id="stt_venda">Valor Venda:</label>
+        <input type="number" id="ta_venda" type="number" name="valor_venda">
+        <label for="" id="stt_aluguel">Valor Aluguel:</label>
+        <input type="number" id="ta_aluguel" type="number" name="valor_aluguel">
+        <label for="" id="stt_condominio">Valor Condomínio:</label>
+        <input type="number" id="ta_condominio" name="valor_condominio" type="number">
+        <label for="" id="stt_iptu">Valor IPTU:</label>
+        <input type="number" name="iptu" id="ta_iptu" type="number">
+    </form>
+
+    <form id="container_anuncio" style="display: none;" role="tabpanel" class="tabcontent">
+        <label for="">Titulo</label>
+        <textarea name="titulo" id="ta_titulo_anuncio"></textarea>
+        <label for="">Descriçao</label>
+        <textarea name="descriçao" id="ta_descricao_anuncio"></textarea>
+        <label for="">Apartamento</label>
+        <div id="container_info_imovel">
+            <label for="">Condomínio</label>
+            <div id="container_info_condominio">
+            </div>
+        </div>
+    </form>
+    <div id="container_imagens" class="container">
+        <label for="">Imagens:</label>
+        <button id="bt_adicionar_imagens">Adicionar</button>
+    </div>
+    <div id="container_anexos" class="container">
+        <label for="">Anexos:</label>
+        <button id="bt_adicionar_anexos">Adicionar</button>
+    </div>
+    <div id="container_proprietario" class="container">
+        <label for="" classes="stt_container_titulo">Proprietario: </label>
+        <button classes="bt_editar_pessoa" id="br_editar_proprietario">Editar</button>
+    </div>
+    <div id="container_corretor" class="container">
+        <label for="" classes="stt_container_titulo">Corretor: </label>
+        <button id="br_editar_corretor" classes="bt_editar_pessoa">Editar</button>
+    </div>
+    <div id="container_captador" class="container">
+        <label for="" classes="stt_container_titulo">Captador: </label>
+        <button classes="bt_editar_pessoa" id="br_editar_captador">Editar</button>
+    </div>
+    <div id="container_portais" class="container">
+        <label for="" classes="stt_container_titulo">Portais: </label>
+        <button>Cadastrar Portal</button>
+    </div>
+    <!-- <div id="container_mapa" class="container">
+        <gmp-map center="41.027748173921374, -92.41852445367961" zoom="13" map-id="DEMO_MAP_ID"
+            style="height: 400px"></gmp-map>
+    </div> -->
+    <footer>
+        <p>Copyright 2025 - By Lucas Hartmann</p>
+        <a href="https://github.com/lucashartmann" target="_blank"><i class="fab fa-github"></i></a>
+    </footer>
+
+    <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=maps,marker" defer></script>
+    <script src="../js/base.js"></script>
+    <script src="../js/cadastro-imovel.js"></script>
+</body>
+<!-- <script src="../js/login.js"></script> -->
+
+</html>

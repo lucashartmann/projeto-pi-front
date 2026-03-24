@@ -1,0 +1,40 @@
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(20%, 2fr));
+    gap: 20px;
+    justify-self: center;
+    width: 80%;
+    margin: 30px;
+    justify-items: center;
+    
+}
+
+
+
+#stt_compras {
+    display: none;
+}
+
+#detalhes {
+    justify-self: center;
+    justify-items: center;
+    margin: 30px;
+}
+
+button {
+    justify-self: center;
+    width: 20%;
+    height: 35px;  
+}
+
+#ctn-botao {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    margin-bottom: 100px;
+}
+
+.detalhes-content input {
+    margin: 20px 0px 0px 40px;
+    width: 30%;
+}

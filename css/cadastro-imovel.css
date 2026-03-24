@@ -1,0 +1,135 @@
+.tabcontent {
+    display: none;
+}
+
+.active {
+    background-color: #ccc;
+}
+
+.tab {
+    justify-self: center;
+}
+
+#h_buttons {
+    display: flex;
+    margin: 10px 0 20px 20px;
+    width: 20%;
+    height: 45px;
+    justify-self: center;
+    gap: 10px;
+}
+
+#h_buttons button {
+    width: 50%;
+    height: 100%;
+}
+
+#container_anuncio {
+    justify-self: center;
+    align-self: center;
+    margin: 50px 10px 20px 10px;
+    /* width: 80%; */
+    justify-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+#container_anuncio textarea{
+    width: 100%;
+    gap: 50px;
+}
+
+#container_anuncio #ta_descricao_anuncio {
+    height: 30px;
+}
+
+#container_cadastro {
+    justify-self: center;
+    align-self: center;
+    margin: 50px 10px 20px 10px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(14%, 2fr));
+    row-gap: 30px;
+    column-gap: 20px;
+    width: 90%;
+}
+
+#container_anuncio {
+    display: none;
+}
+
+.container {
+    justify-self: center;
+    align-content: center;
+    width: 90%;
+    background: var(--background-nav);
+    margin-bottom: 20px;
+    height: 10rem;
+    color: white;
+}
+
+#container_imagens {
+    margin-top: 50px;
+}
+
+textarea {
+    height: 90%;
+    font-size: 120%;
+}
+
+input {
+    height: 140%;
+    font-size: 100%;
+}
+
+label {
+    font-size: 120%;
+    font-weight: 500;
+}
+
+.tab button {
+    /* background-color: rgba(32, 151, 24, 0.8); */
+    /* border: solid 2px rgba(17, 66, 13, 0.5); */
+    font-weight: 600;
+    font-size: 100%;
+    width: 90px;
+    height: 30px;
+}
+
+.active {
+    border: dashed green 1px;
+}
+
+#container_mapa {
+    z-index: 1;
+    margin-bottom: 100px;
+}
+
+@media screen and (max-width: 820px) {
+    #container_cadastro {
+        grid-template-columns: repeat(auto-fit, minmax(20%, 2fr));
+    }
+}
+
+@media screen and (max-width: 700px) {
+
+
+    #h_buttons {      
+        width: 45%;
+    }
+}
+
+@media screen and (max-width: 404px) {
+    #container_cadastro {
+        grid-template-columns: repeat(auto-fit, minmax(30%, 2fr));
+    }
+
+    #h_buttons {
+        display: flex;
+        margin: 10px 0 20px 0px;
+        width: 80%;
+        height: 45px;
+        justify-self: center;
+        gap: 10px;
+    }
+}

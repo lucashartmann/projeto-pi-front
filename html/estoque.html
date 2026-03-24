@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="../css/base.css">
+    <link rel="stylesheet" href="../css/estoque.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="icon" type="image/x-icon" href="img/logo.png">
+</head>
+
+<body>
+    <nav>
+        <ul>
+            <a href="../index.html"><i class="fas fa-home"></i></a>
+            <li><a href="../index.html">Página Inicial</a></li>
+            <li><a href="sobreNos.html">Sobre Nós</a></li>
+            <li><a href="login.html">Login</a></li>
+        </ul>
+    </nav>
+    <input placeholder="pesquise aqui" id="input_pesquisa">
+    <div id="container_filtragem">
+        <label>Categoria</label>
+        <select prompt="Selecionar"></select>
+        <label>Status</label>
+        <select prompt="Selecionar"></select>
+        <label>CEP</label>
+        <input suggester=SuggestFromList(self.ceps, case_sensitive=False)>
+        <label>Número</label>
+        <input>
+    </div>
+    <div id="h_filtro">
+        <select id="select_filtro" onchange="filtrar()"></select>
+        <button id="seta" flat=True onclick="mudarOrdem()">⬇️</button>
+    </div>
+    <section id="container_resultado">
+        <div class="resultado">
+            <img src="../assets/apartament.jpg" alt="">
+            <div class="dados">
+                <label>Imóvel 1</label>
+                <label for="">Avenida Bento Gonçalves</label>
+                <label for="">Casa</label>
+                <label for="">Alugado</label>
+            </div>
+        </div>
+        <div class="resultado">
+            <img src="../assets/apartament.jpg" alt="">
+            <div class="dados">
+                <label>Imóvel 1</label>
+                <label for="">Avenida Bento Gonçalves</label>
+                <label for="">Casa</label>
+                <label for="">Alugado</label>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <p>Copyright 2025 - By Lucas Hartmann</p>
+        <a href="https://github.com/lucashartmann" target="_blank"><i class="fab fa-github"></i></a>
+    </footer>
+</body>
+<script src="../js/base.js"></script>
+<script src="../js/estoque.js"></script>
+
+</html>

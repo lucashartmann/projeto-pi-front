@@ -1,0 +1,51 @@
+#input_pesquisa {
+    width: 100%;
+    padding: 10px;
+    margin: 20px;
+}
+
+#container_filtragem {
+    display: grid;
+    align-items: center;
+    gap: 20px;
+    grid-template-columns: repeat(auto-fit, minmax(20%, 2fr));
+    margin: 20px;
+}
+
+#h_filtro {
+    display: flex;
+    gap: 10px;
+    margin: 0 20px 20px 20px;
+    /* background: var(--background-nav); */
+    width: 30%;
+}
+
+#h_filtro select {
+    width: 80%;
+}
+
+#container_resultado {
+    display: block;
+}
+
+
+.resultado {
+    display: flex;
+    gap: 20px;
+    background-color: rgba(186, 174, 174, 0.5);
+    /* border: solid 2px rgba(46, 30, 30, 0.4); */
+    padding: 10px;
+    margin: 10px 20px;
+    cursor: pointer;
+}
+
+img {
+    height: 10%;
+    width: 30%;
+}
+
+.dados {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}

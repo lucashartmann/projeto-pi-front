@@ -1,0 +1,53 @@
+
+
+#dados_imovel {
+    display: flex;
+    height: 170vh;
+    overflow-y:hidden;
+}
+
+#div_titulo {
+    display: block;
+    align-items: center;
+    justify-content: center;
+    justify-items: center;
+    text-align: center;
+}
+
+#div_pai {
+    display: block;
+    height: auto;
+    height: 100%;
+    overflow-y:visible;
+}
+
+h3 {
+    text-align: center;
+    font-size: 150%;
+}
+
+img {
+    width: 80%;
+    height: 80%;
+}
+
+#ul_imagens {
+    display: flex;
+    gap: 10px;
+    overflow-x: scroll;
+}
+
+#whatsapp {
+    background-color: rgb(20, 126, 32, 0.7);
+}
+
+#entrar_contato {
+    background: rgb(241, 233, 233);
+    text-align: center;
+    align-content: center;
+}
+
+#entrar_contato button{
+    border: solid black 1px;
+    margin: 10px;
+}

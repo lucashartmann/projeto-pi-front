@@ -1,0 +1,44 @@
+#container_horizontal {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    column-gap: 0px;
+    height: auto;
+}
+
+.titulo {
+    font-weight: 600;
+    font-size: 125%;
+}
+
+#container_horizontal > div {
+    margin-top: 20px;
+    text-align: center;
+    margin: 40px;
+}
+
+.container {
+    background: var(--background-nav);
+    height: 74vh;
+    justify-items: center;
+    overflow-y: auto;
+    overflow-x: hidden;
+    margin-top: 20px;
+}
+
+#container_horizontal label {
+    text-align: center;
+    justify-self: center;
+}
+
+.card {
+    /* cursor: pointer; */
+    /* text-align: left; */
+    background: rgb(149, 122, 122);
+    width: 90%;
+    height: auto;
+    min-height: 17%;
+    margin: 10px 10px 10px 10px;
+    color: rgb(0, 0, 0);
+    font-size: 102%;
+    font-weight: 500;
+}
