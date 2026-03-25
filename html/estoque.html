@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Estoque</title>
     <link rel="stylesheet" href="../css/base.css">
     <link rel="stylesheet" href="../css/estoque.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
@@ -36,23 +36,25 @@
         <button id="seta" flat=True onclick="mudarOrdem()">⬇️</button>
     </div>
     <section id="container_resultado">
-        <div class="resultado">
-            <img src="../assets/apartament.jpg" alt="">
-            <div class="dados">
-                <label>Imóvel 1</label>
-                <label for="">Avenida Bento Gonçalves</label>
-                <label for="">Casa</label>
-                <label for="">Alugado</label>
-            </div>
+        <div class="resultado" onclick="abrirCadastro(0)">
+                <img src="../assets/apartament.jpg" alt="">
+                <div class="dados">
+                    <label for="">REF: 001</label>
+                    <label>Apartamento 2 dormitórios</label>
+                    <label for="">Avenida Bento Gonçalves</label>
+                    <label for="">Apartamento</label>
+                    <label for="">Venda</label>
+                </div>
         </div>
-        <div class="resultado">
-            <img src="../assets/apartament.jpg" alt="">
-            <div class="dados">
-                <label>Imóvel 1</label>
-                <label for="">Avenida Bento Gonçalves</label>
-                <label for="">Casa</label>
-                <label for="">Alugado</label>
-            </div>
+        <div class="resultado" onclick="abrirCadastro(1)">
+                <img src="../assets/campo.jpg" alt="">
+                <div class="dados">
+                    <label for="">REF: 002</label>
+                    <label>Casa no Campo com Jardim</label>
+                    <label for="">Rua Joaquim Nabuco</label>
+                    <label for="">Casa</label>
+                    <label for="">Venda e Aluguel</label>
+                </div>
         </div>
     </section>
 
