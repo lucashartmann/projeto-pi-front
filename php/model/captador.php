@@ -1,14 +1,10 @@
 <?php
-namespace model;
-use model\usuario\Usuario;
-use model\usuario\Tipo;
-require_once 'usuario.php';
-$usuario = new Usuario();
+require_once __DIR__ . '/usuario.php';
 
 class Captador extends Usuario{
     public $salario;
     
-    public function __construct(){
+    public function __construct($username, $senha, $email, $nome, $cpf_cnpj){
         parent::__construct($username, $senha, $email, $nome, $cpf_cnpj, Tipo::CAPTADOR);
         $this->salario = 0.0;
     }

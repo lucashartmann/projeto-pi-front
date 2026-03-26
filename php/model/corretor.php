@@ -1,17 +1,26 @@
 <?php
 
 
-from model.usuario import Usuario, Tipo
+require_once __DIR__ . '/usuario.php';
 
 
-class Corretor(Usuario){
-    public function __init__($this, username, senha, email, nome, cpf_cnpj, creci){
-        super().__init__(username, senha, email, nome, cpf_cnpj, Tipo.CORRETOR)
-        $this.creci = creci
+class Corretor extends Usuario
+{
+    public $creci;
 
-    public function get_creci($this){
-        return $this.creci
+    public function __construct($username, $senha, $email, $nome, $cpf_cnpj, $creci)
+    {
+        parent::__construct($username, $senha, $email, $nome, $cpf_cnpj, Tipo::CORRETOR);
+        $this->creci = $creci;
+    }
 
-    public function set_creci($this, value){
-        $this.creci = value
-}?>
+    public function get_creci()
+    {
+        return $this->creci;
+    }
+
+    public function set_creci($value)
+    {
+        $this->creci = $value;
+    }
+}
