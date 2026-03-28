@@ -141,4 +141,4 @@ class Venda_Aluguel
     {
         $this->comissao_corretor = $value;
     }
-} ?>
+} 

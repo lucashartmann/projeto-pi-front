@@ -17,5 +17,3 @@ class Captador extends Usuario{
         $this->salario = $value;
     }
 }
-
-?>

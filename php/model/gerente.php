@@ -18,4 +18,4 @@ class Gerente extends Usuario{
     public function set_salario($value){
         $this->salario = $value;
     }
-}?>
+}

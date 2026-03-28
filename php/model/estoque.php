@@ -4,9 +4,9 @@
 require_once __DIR__ . '/../database/banco.php';
 
 class Estoque{
-    
+    public $banco_dados;
 
-    public function construct(){
+    public function __construct(){
         $this->banco_dados = new Banco();
     }
 
@@ -26,15 +26,18 @@ class Estoque{
     public function get_lista_imoveis_disponiveis(){
         return $this->banco_dados->get_lista_imoveis_disponiveis();
     }
-    public function get_imoveis_por_categoria($categoria){
-        return $this->banco_dados->get_imoveis_por_categoria($categoria);
-    }
+    // public function get_imoveis_por_categoria($categoria){
+    //     return $this->banco_dados->get_imoveis_por_categoria($categoria);
+    // }
+
+        //     public function adicionar_anexo($anexo, $tipo, $codigo){
+    //         return $this->banco_dados->adicionar_anexo($anexo, $tipo, $codigo);
+
+    //     }        
+    // }
+
+
     public function get_imovel_por_id($id){
         return $this->banco_dados->get_imovel_por_id($id);
     }
-    public function adicionar_anexo($anexo, $tipo, $codigo){
-        return $this->banco_dados->adicionar_anexo($anexo, $tipo, $codigo);
-
-    }        
 }
-?>

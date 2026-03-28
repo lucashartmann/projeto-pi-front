@@ -51,4 +51,3 @@ class Condominio
         $this->nome = $nome;
     }
 }
-?>
