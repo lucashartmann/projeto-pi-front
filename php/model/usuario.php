@@ -1,4 +1,3 @@
-
 <?php
 
 enum Tipo: string

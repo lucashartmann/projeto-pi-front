@@ -1,6 +1,6 @@
 <?php
 
-enum Status: string
+enum Status_Atendimento: string
 {
     case EM_ANDAMENTO = 'Em Andamento';
     case PENDENTE = 'Pendente';

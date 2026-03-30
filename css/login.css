@@ -1,23 +1,23 @@
-body {
-    min-height: 100vh;
-    display: grid;
-    grid-template-rows: auto 1fr;
-    color: white;
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
 }
 
 body {
     background-image: linear-gradient(rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.8)), url("../assets/campo.jpg");
     background-size: cover;
     background-position: center;
-
+    display: flex;
+    flex-direction: column;
 }
 
 nav {
     grid-row: 1;
 }
 
-body>div {
-    grid-row: 2;
+form {
+    color: white;
     justify-self: center;
     align-self: center;
     width: min(40rem, 90%);
@@ -26,7 +26,11 @@ body>div {
     align-items: center;
     background: rgb(61, 51, 51, 0.8);
     padding: 2rem 1rem;
-    height: 50%;
+    height: 100%;
+    margin: 0 auto;
+    top: 40%;
+    bottom: 50%;
+    position: relative;
 }
 
 select {
@@ -35,11 +39,13 @@ select {
 }
 
 input {
-    width: 50%;
-    height: 7%;
+    min-width: 60%;
+    width: auto;
+    height: 9%;
     color: black;
     background: var(--background);
     font-size: 100%;
+    
 }
 
 button {
@@ -48,6 +54,7 @@ button {
     height: 10%;
     background: var(--background-nav);
     color: white;
+    box-shadow: 0px 1px 6px 0px black;
 }
 
 button:hover {

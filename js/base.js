@@ -1,17 +1,14 @@
 async function listarImoveis() {
     try {
-        const resposta = await fetch("http://127.0.0.1:8000/estoque/", {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json"
-            }
+        const resposta = await fetch('../php/api/api.php')
+        .then(res => res.json())
+        .then(data => {
+            return data;
+        })
+        .catch(erro => {
+            console.error("Falha ao conectar com o backend:", erro);
+            return null;
         });
-
-        if (!resposta.ok) {
-            throw new Error(`HTTP ${resposta.status}`);
-        }
-
-        return await resposta.json();
     } catch (erro) {
         console.error("Falha ao conectar com o backend:", erro);
         return null;
@@ -20,24 +17,21 @@ async function listarImoveis() {
 
 async function listarImoveisDisponiveis() {
     try {
-        const resposta = await fetch("http://127.0.0.1:8000/estoque/disponivel/", {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json"
-            }
+        const resposta = await fetch('../php/api/api.php')
+        .then(res => res.json())
+        .then(data => {
+        
+            return data;
+        })
+        .catch(erro => {
+            console.error("Falha ao conectar com o backend:", erro);
+            return null;
         });
-
-        if (!resposta.ok) {
-            throw new Error(`HTTP ${resposta.status}`);
-        }
-
-        return await resposta.json();
     } catch (erro) {
         console.error("Falha ao conectar com o backend:", erro);
         return null;
     }
 }
-
 
 
 async function getDadosImovel(id) {
