@@ -40,7 +40,6 @@ foreach ($imoveis as $imovel) {
         $imagens = [];
         if ($anuncioObj->get_imagens()) {
             foreach ($anuncioObj->get_imagens() as $imagem) {
-                // Supondo que $imagem já seja um blob binário
                 $imagens[] = base64_encode($imagem);
             }
         }
