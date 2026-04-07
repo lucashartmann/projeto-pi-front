@@ -61,3 +61,10 @@ button:hover {
     cursor: pointer;
     background-color: var(--background);
 }
+
+#btn_ad {
+    width: auto;
+    height: auto;
+    margin: 0;
+    padding: 0;
+}

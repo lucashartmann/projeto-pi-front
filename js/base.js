@@ -155,8 +155,9 @@ function carregarTabs(usuario) {
 }
 
 async function setup() {
-    const usuario = await carregarUser();
-    if (usuario) carregarTabs(usuario);
+    // const usuario = await carregarUser();
+    // if (usuario) carregarTabs(usuario);
+    carregarTabs("ADMIN");
 }
 
 window.addEventListener("DOMContentLoaded", () => {

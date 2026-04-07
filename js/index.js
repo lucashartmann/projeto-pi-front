@@ -199,13 +199,14 @@ let dados_imoveis = null;
 window.addEventListener("DOMContentLoaded", async () => {
     const dados = await listarImoveisDisponiveis();
     dados_imoveis = dados;
-    if (!dados) {
+    if (dados) {
+        carregarAnuncios(dados);
+        imovelPrincipal(dados);
+        bannerImoveis(dados);
+    }else {
         console.error("Não foi possível carregar os imóveis");
-        return;
     }
-    carregarAnuncios(dados);
-    imovelPrincipal(dados);
-    bannerImoveis(dados);
+    
     inicializarSwiper();
 
     setInterval(() => {
