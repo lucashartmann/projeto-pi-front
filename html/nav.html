@@ -1,0 +1,39 @@
+<nav id="side-nav">
+    <ul>
+        <li>Cadastro</li>
+        <li>Login</li>
+    </ul>
+</nav>
+<nav id="top-nav">
+    <ul>
+        <div class="left">
+            <li><i class="fas fa-bars" onclick="mostrarNavLeft()"></i></li>
+            <li><a href="../index.html">Página Inicial</a></li>
+        </div>
+
+        <div class="center">
+            <li><img src="../assets/logo.png" alt="" id="logo"></li>
+        </div>
+
+        <div class="right">
+            <li><a href="html/sobreNos.html">Sobre Nós</a></li>
+            <li><a href="html/login.html">Login</a></li>
+        </div>
+    </ul>
+</nav>
+
+<script>
+    function mostrarNavLeft() {
+    try {
+        const nav = document.getElementById("side-nav");
+        if (nav.style.display != "") {
+            nav.style.display = "";
+        } else {
+            nav.style.display = "flex";
+        }
+    }catch {
+        return;
+    }
+}
+
+</script>

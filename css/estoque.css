@@ -49,3 +49,8 @@ img {
     flex-direction: column;
     gap: 10px;
 }
+
+#dados-div {
+    display: none;
+    /* display: grid; */
+}

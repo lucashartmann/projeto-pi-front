@@ -11,22 +11,9 @@
     <link rel="icon" type="image/x-icon" href="img/logo.png">
 </head>
 
-<body>
-    <nav>
-        <ul>
-            <div class="left">
-                <li><i class="fas fa-bars"></i></li>
-                <li><a href="../index.html">Página Inicial</a></li>
-            </div>
 
-            <div class="center">
-                <li><img src="../assets/logo.png" alt="" id="logo"></li>
-            </div>
-            <div class="right">
-                <li><a href="login.html">Login</a></li>
-            </div>
-        </ul>
-    </nav>
+
+<body>
     <div id="h_buttons">
         <button id="bt_apagar_cadastro" class="bt_delete">Apagar</button>
         <button id="bt_salvar_alteracoes" class="bt_success">Salvar</button>
@@ -84,6 +71,17 @@
     </footer>
 </body>
 <!-- <script src="../js/login.js"></script> -->
-<script src="../js/base.js"></script>
+<script type="text/javascript">
+    fetch("nav.html")
+     .then(response => response.text())
+     .then(data => {
+        document.body.insertAdjacentHTML('afterbegin', data);
+        var script = document.createElement('script');
+        script.src = '../js/base.js';
+        script.type = 'text/javascript';
+        script.async = false; 
+        document.body.appendChild(script);
+     });
+ </script>
 
 </html>

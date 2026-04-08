@@ -54,7 +54,23 @@ body {
     height: 100%;
 }
 
-nav {
+.fa-bars {
+    cursor: pointer;
+}
+
+#side-nav {
+    display: none;
+    flex-direction: column;
+    position: absolute;
+    width: 10%;
+    background-color: var(--background-nav);
+    margin-top: 90px;
+    color: #fff;
+    font-size: 120%;
+    font-weight: 500;
+}
+
+#top-nav {
     /* position: absolute; */
     background-color: var(--background-nav);
     color: #fff;

@@ -73,7 +73,7 @@ section#anuncios {
     width: 90%;
     justify-items: center;
     justify-content: center;
-    height: 45rem;
+    height: 43rem;
     color: white;
     font-weight: 400;
     font-size: 120%;
@@ -101,7 +101,7 @@ section#anuncios {
 
     img {
         width: 85%;
-        height: 27rem;
+        height: 24rem;
         margin: 10px 2px 1px 2px;
         display: flex;
         border: rgb(123, 102, 102) solid 2px;

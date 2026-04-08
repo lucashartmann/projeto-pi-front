@@ -101,7 +101,8 @@ async function carregarUser() {
 }
 
 function carregarTabs(usuario) {
-    const nav = document.querySelector("nav ul");
+    const nav = document.getElementById("top-nav");
+    console.log(nav);
     if (!nav) return;
 
     let tabs = [];
@@ -215,6 +216,6 @@ async function setup() {
     carregarTabs("ADMIN"); // TODO: remover depois de implementar o login e deslogar
 }
 
-window.addEventListener("DOMContentLoaded", () => {
-    setup();
-});
+
+setup();
+   
