@@ -1,9 +1,7 @@
-
-
 #dados_imovel {
     display: flex;
     height: 170vh;
-    overflow-y:hidden;
+    overflow-y: hidden;
 }
 
 #div_titulo {
@@ -18,7 +16,7 @@
     display: block;
     height: auto;
     height: 100%;
-    overflow-y:visible;
+    overflow-y: visible;
 }
 
 h3 {
@@ -45,9 +43,9 @@ img {
     background: rgb(241, 233, 233);
     text-align: center;
     align-content: center;
-}
 
-#entrar_contato button{
-    border: solid black 1px;
-    margin: 10px;
+    button {
+        border: solid black 1px;
+        margin: 10px;
+    }
 }

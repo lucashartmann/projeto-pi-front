@@ -5,31 +5,38 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <link rel="stylesheet" href="../css/base.css">
     <link rel="stylesheet" href="../css/login.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+
     <link rel="icon" type="image/x-icon" href="img/logo.png">
 </head>
 
 <body>
     <nav>
         <ul>
-            <a href="../index.html"><i class="fas fa-home"></i></a>
-            <li><a href="../index.html">Página Inicial</a></li>
-            <li><a href="sobreNos.html">Sobre Nós</a></li>
-            <li><button onclick="carregarTabs('ADMIN')" id="btn_ad">Admin</button></li>
+            <div class="left">
+                <li><i class="fas fa-bars"></i></li>
+                <li><a href="../index.html">Página Inicial</a></li>
+            </div>
+            <div class="center">
+                <li><img src="../assets/logo.png" alt="" id="logo"></li>
+            </div>
+            <div class="right">
+                <li><a href="cadastro-imovel.html">Admin</a></li>
+            </div>
         </ul>
     </nav>
     <div>
-    <form action="../php/main.php" method="POST">
-        <input type="hidden" name="acao" value="verificar_login">
-        <h1>Login</h1>
-        <h3>Email</h3>
-        <input type="text" name="email" id="usuario">
-        <h3>Senha</h3>
-        <input type="password" name="senha" id="senha">
-        <button type="submit">Login</button>
-    </form>
+        <form action="../php/main.php" method="POST">
+            <input type="hidden" name="acao" value="verificar_login">
+            <h1>Login</h1>
+            <h3>Email</h3>
+            <input type="text" name="email" id="usuario">
+            <h3>Senha</h3>
+            <input type="password" name="senha" id="senha">
+            <button type="submit">Login</button>
+        </form>
     </div>
     <footer>
         <p>Copyright 2025 - By Lucas Hartmann</p>
@@ -37,5 +44,6 @@
     </footer>
 </body>
 <script src="../js/login.js"></script>
-<script src="../js/base.js"></script>
+<!-- <script src="../js/base.js"></script> -->
+
 </html>

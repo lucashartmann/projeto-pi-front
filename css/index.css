@@ -12,27 +12,28 @@
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center;
+
+    h2 {
+        color: white;
+        border: solid rgba(47, 45, 45, 0.9) 10px;
+        background: rgba(47, 45, 45, 0.8);
+        font-size: 2rem;
+        z-index: 1;
+        width: auto;
+        height: auto;
+        margin-right: auto;
+        text-align: left;
+        display: flex;
+        margin-top: auto;
+        -webkit-text-stroke-width: 1px;
+        -webkit-text-stroke-color: rgb(240, 230, 230);
+        -webkit-text-fill-color: rgb(248, 241, 241);
+    }
 }
 
 
-#imovelDestaque h2 {
-    color: white;
-    border: solid rgba(47, 45, 45, 0.9) 10px;
-    background: rgba(47, 45, 45, 0.8);
-    font-size: 2rem;
-    z-index: 1;
-    width: auto;
-    height: auto;
-    margin-right: auto;
-    text-align: left;
-    display: flex;
-    margin-top: auto;
-    -webkit-text-stroke-width: 1px;
-    -webkit-text-stroke-color: rgb(240, 230, 230);
-    -webkit-text-fill-color: rgb(248, 241, 241);
-}
-
-#imovelDestaque .preco, .swiper-slide .preco {
+#imovelDestaque .preco,
+.swiper-slide .preco {
     color: green;
     -webkit-text-stroke-width: 1px;
     -webkit-text-stroke-color: rgb(16, 128, 14);
@@ -44,7 +45,8 @@
     height: auto;
 }
 
-#imovelDestaque h2 span, .swiper-slide h2 span {
+#imovelDestaque h2 span,
+.swiper-slide h2 span {
     display: flex;
     text-align: center;
     width: auto;
@@ -68,61 +70,69 @@ section#anuncios {
 
 .anuncio_imovel {
     background: var(--background-nav);
-    width: 70%;
+    width: 90%;
     justify-items: center;
     justify-content: center;
     height: 45rem;
     color: white;
     font-weight: 400;
-    font-size: 100%;
-}
+    font-size: 120%;
+    border-radius: 1%;
+    box-shadow: 2px 1px 19px -13px rgb(43, 33, 33);
 
-.anuncio_imovel p:nth-child(4) {
-    text-indent: 5%;
-    margin: 0px 20px 0px 20px;
-}
+    p:nth-child(4) {
+        text-indent: 5%;
+        margin: 0px 20px 0px 20px;
+    }
 
-.anuncio_imovel p:nth-child(5) {
-    text-indent: 5%;
-    margin: 20px 20px 0px 20px;
-}
+    .descricao {
+        /* text-indent: 5%; */
+        /* margin: 20px 20px 0px 20px; */
+        width: 85%;
+        justify-self: center;
+        align-self: center;
+        text-align: center;
+    }
 
-.anuncio_imovel:hover {
-    background: rgb(119, 102, 102);
-    cursor: pointer;
-}
+    &:hover {
+        background: rgb(119, 102, 102);
+        cursor: pointer;
+    }
 
-.anuncio_imovel img {
-    width: 85%;
-    height: 55%;
-    margin: 10px 2px 1px 2px;
-    display: flex;
-    border: rgb(123, 102, 102) solid 2px;
-    border-radius: 3%;
-}
+    img {
+        width: 85%;
+        height: 27rem;
+        margin: 10px 2px 1px 2px;
+        display: flex;
+        border: rgb(123, 102, 102) solid 2px;
+        border-radius: 3%;
+        object-fit: cover;
+    }
 
+    .preco {
+        color: rgb(7, 34, 7);
+        -webkit-text-stroke-width: 1px;
+        -webkit-text-stroke-color: rgba(4, 255, 0, 0.594);
+        -webkit-text-fill-color: rgb(255, 255, 255);
+        display: flex;
+        margin: 0;
+        padding: 0;
+        width: auto;
+        height: auto;
+        font-weight: normal;
+    }
 
-.anuncio_imovel .preco {
-    color: green;
-    -webkit-text-stroke-width: 1px;
-    -webkit-text-stroke-color: rgb(16, 128, 14);
-    -webkit-text-fill-color: rgb(16, 128, 14);
-    display: flex;
-    margin: 0;
-    padding: 0;
-    width: auto;
-    height: auto;
-}
-
-.anuncio_imovel span {
-    display: flex;
-    text-align: center;
-    width: auto;
-    height: auto;
-    margin-left: 10px;
-    justify-self: center;
-    align-self: center;
-    text-align: center;
+    span {
+        display: flex;
+        text-align: center;
+        width: auto;
+        height: auto;
+        margin-left: 10px;
+        justify-self: center;
+        align-self: center;
+        text-align: center;
+        font-weight: bolder;
+    }
 }
 
 
@@ -143,11 +153,12 @@ section#anuncios {
     height: 100%;
     z-index: 0;
     object-fit: fill;
+
+    &:nth-child(1+n) {
+        display: none;
+    }
 }
 
-.imgBanner:nth-child(1+n) {
-    display: none;
-}
 
 #section-footer {
     background-color: rgba(177, 149, 149, 0.173);
@@ -161,36 +172,37 @@ section#anuncios {
     width: 100%;
     color: black;
     -webkit-text-stroke-width: 0.5px;
+
     /* -webkit-text-stroke-color: rgba(14, 11, 11, 0.9);
     -webkit-text-fill-color: rgba(14, 11, 11, 0.9); */
+    div {
+        display: block;
+        margin: 10px;
+
+        &:nth-child(1) {
+            display: block;
+            margin: 0px;
+            width: 80%;
+        }
+
+        p {
+            font-size: 0.9rem;
+            font-weight: 400;
+            text-indent: 2%;
+        }
+
+        a {
+            width: auto;
+            margin: 0px 0px 0px 20px;
+        }
+
+        h2 {
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+    }
 }
 
-#section-footer div {
-    display: block;
-    margin: 10px;
-}
-
-#section-footer div:nth-child(1) {
-    display: block;
-    margin: 0px;
-    width: 80%;
-}
-
-#section-footer p {
-    font-size: 0.9rem;
-    font-weight: 400;
-    text-indent: 2%;
-}
-
-#section-footer a {
-    width: auto;
-    margin: 0px 0px 0px 20px;
-}
-
-#section-footer h2 {
-    font-size: 1.2rem;
-    font-weight: 600;
-}
 
 #pesquisa {
     display: block;
@@ -207,32 +219,46 @@ section#anuncios {
     background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(../assets/apartament.jpg);
     background-size: cover;
     background-position: center;
+
+    input {
+        width: 50%;
+        padding: 10px;
+        border: solid rgba(47, 45, 45, 0.2) 2px;
+        border-radius: 3px;
+        box-shadow: 0.1px 0.1px 3px black;
+    }
+
+    #input_pesquisa {
+        width: 100%;
+        color: black;
+        font-weight: 600;
+        height: 100%;
+        font-size: large;
+
+        &::placeholder {
+            color: rgba(65, 73, 18, 0.9);
+        }
+    }
+
+    #pesquisa-container {
+        width: 60%;
+        height: 6%;
+        margin-bottom: 80px;
+        margin-left: 80px;
+        display: flex;
+
+        button {
+            width: 25%;
+            height: 162%;
+            background-color: rgb(65, 73, 18);
+            color: white;
+            border: rgb(109, 97, 0) solid 1px;
+        }
+    }
 }
 
-#pesquisa input {
-    width: 50%;
-    padding: 10px;
-    border: solid rgba(47, 45, 45, 0.2) 2px;
-    border-radius: 3px;
-    box-shadow: 0.1px 0.1px 3px black;
-}
 
-#pesquisa #input_pesquisa {
-    width: 100%;
-    color: black;
-    font-weight: 600;
-    height: 100%;
-    font-size: large;
-}
-
-#pesquisa #pesquisa-container {
-    width: 60%;
-    height: 6%;
-    margin-bottom: 80px;
-    margin-left: 80px;
-}
-
-#container_filtragem { 
+#container_filtragem {
     color: white;
     display: flex;
     align-items: center;
@@ -241,68 +267,146 @@ section#anuncios {
     margin-top: 30px;
     width: 50%;
     font-size: 140%;
+
+    select {
+        width: 100%;
+        padding: 10px;
+        border: solid rgba(47, 45, 45, 0.2) 2px;
+        border-radius: 3px;
+        box-shadow: 0.1px 0.1px 3px black;
+    }
 }
 
-#container_filtragem select {
-    width: 100%;
-    padding: 10px;
-    border: solid rgba(47, 45, 45, 0.2) 2px;
-    border-radius: 3px;
-    box-shadow: 0.1px 0.1px 3px black;
-}
 
 .swiper {
-  width: 90%;
-  height: 40rem;
-  margin-top: 50px;
-}
-
-
-.swiper-pagination-bullet {
-  background: #000;
-}
-
-.swiper-button-prev {
-  color: #000;
-}
-
-.swiper-button-next {
-  color: #000;
-}
-
-.swiper-slide {
-    position: relative;
-    cursor: pointer;
-    background: rgb(135, 126, 126, 0.2);
     width: 90%;
-    /* margin: 30px 6px 0px 6px; */
-    /* border: solid rgba(47, 45, 45, 0.2) 2px; */
-    border-radius: 2px;
-    box-shadow: 0.1px 0.1px 3px black;
+    height: 40rem;
+    margin-top: 50px;
+
+    .swiper-pagination-bullet {
+        background: #000;
+    }
+
+    .swiper-button-prev {
+        color: #000;
+    }
+
+    .swiper-button-next {
+        color: #000;
+    }
+
+    .swiper-slide {
+        cursor: pointer;
+        background: rgb(135, 126, 126, 0.2);
+        width: 90%;
+        /* margin: 30px 6px 0px 6px; */
+        /* border: solid rgba(47, 45, 45, 0.2) 2px; */
+        border-radius: 2px;
+        box-shadow: 0.1px 0.1px 3px black;
+        display: flex;
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-position: center;
+
+        h2 {
+            color: white;
+            font-size: 2rem;
+            border: solid rgba(47, 45, 45, 0.9) 10px;
+            background: rgba(47, 45, 45, 0.8);
+            display: flex;
+            margin-right: auto;
+            margin-top: auto;
+            height: auto;
+            width: auto;
+            text-align: left;
+            -webkit-text-stroke-width: 1px;
+            -webkit-text-stroke-color: rgb(240, 230, 230);
+            -webkit-text-fill-color: rgb(248, 241, 241);
+        }
+    }
+}
+
+
+
+#gallery {
     display: flex;
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-position: center;
+    justify-content: center;
+    width: 80%;
+    /* border-radius: 50%; */
+    margin-top: 10px;
+    align-items: center;
+    justify-self: center;
+
+    img {
+        width: 50%;
+        height: 40rem;
+        object-fit: cover;
+        border-radius: 2% 0% 0% 2%;
+
+        &:nth-child(2) {
+            width: 50%;
+            height: 40rem;
+            object-fit: cover;
+            border-radius: 0% 2% 2% 0%;
+        }
+    }
 }
 
-.swiper-slide h2 {
-    font-size: 1.5rem;
+
+#gallery2 {
+
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(40%, 10fr));
+    justify-content: center;
+    width: 80%;
+    /* border-radius: 50%; */
+    margin-top: 10px;
+    align-items: center;
+    justify-self: center;
+
+    img {
+        width: 100%;
+        height: 40rem;
+        object-fit: cover;
+
+        &:nth-child(1) {
+            border-radius: 2% 0% 0% 2%;
+        }
+
+        &:nth-child(2) {
+            border-radius: 0% 2% 2% 0%;
+        }
+
+        &:nth-child(3) {
+            border-radius: 2% 0% 0% 2%;
+        }
+
+        &:nth-child(4) {
+            border-radius: 0% 2% 2% 0%;
+        }
+    }
+
+
 }
 
-
-.swiper-slide h2 {
-    color: white;
-    font-size: 2rem;
-    border: solid rgba(47, 45, 45, 0.9) 10px;
-    background: rgba(47, 45, 45, 0.8);
+#gallery3 {
+    width: 100%;
     display: flex;
-    margin-right: auto;
-    margin-top: auto;
-    height: auto;
-    width: auto;
-    text-align: left;
-    -webkit-text-stroke-width: 1px;
-    -webkit-text-stroke-color: rgb(240, 230, 230);
-    -webkit-text-fill-color: rgb(248, 241, 241);
-}
 
+    /* border-radius: 50%; */
+    margin-top: 10px;
+
+    img {
+        width: 50%;
+        height: 40rem;
+        object-fit: cover;
+
+        &:nth-child(2) {
+            width: 50%;
+            height: 40rem;
+            object-fit: cover;
+        }
+    }
+
+
+}

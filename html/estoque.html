@@ -14,10 +14,16 @@
 <body>
     <nav>
         <ul>
-            <a href="../index.html"><i class="fas fa-home"></i></a>
-            <li><a href="../index.html">Página Inicial</a></li>
-            <li><a href="sobreNos.html">Sobre Nós</a></li>
-            <li><a href="login.html">Login</a></li>
+            <div class="left">
+                <li><i class="fas fa-bars"></i></li>
+                <li><a href="../index.html">Página Inicial</a></li>
+            </div>
+            <div class="center">
+                <li><img src="../assets/logo.png" alt="" id="logo"></li>
+            </div>
+            <div class="right">
+                <li><a href="login.html">Login</a></li>
+            </div>
         </ul>
     </nav>
     <input placeholder="pesquise aqui" id="input_pesquisa">
@@ -37,24 +43,24 @@
     </div>
     <section id="container_resultado">
         <div class="resultado" onclick="abrirCadastro(0)">
-                <img src="../assets/apartament.jpg" alt="">
-                <div class="dados">
-                    <label for="">REF: 001</label>
-                    <label>Apartamento 2 dormitórios</label>
-                    <label for="">Avenida Bento Gonçalves</label>
-                    <label for="">Apartamento</label>
-                    <label for="">Venda</label>
-                </div>
+            <img src="../assets/apartament.jpg" alt="">
+            <div class="dados">
+                <label for="">REF: 001</label>
+                <label>Apartamento 2 dormitórios</label>
+                <label for="">Avenida Bento Gonçalves</label>
+                <label for="">Apartamento</label>
+                <label for="">Venda</label>
+            </div>
         </div>
         <div class="resultado" onclick="abrirCadastro(1)">
-                <img src="../assets/campo.jpg" alt="">
-                <div class="dados">
-                    <label for="">REF: 002</label>
-                    <label>Casa no Campo com Jardim</label>
-                    <label for="">Rua Joaquim Nabuco</label>
-                    <label for="">Casa</label>
-                    <label for="">Venda e Aluguel</label>
-                </div>
+            <img src="../assets/campo.jpg" alt="">
+            <div class="dados">
+                <label for="">REF: 002</label>
+                <label>Casa no Campo com Jardim</label>
+                <label for="">Rua Joaquim Nabuco</label>
+                <label for="">Casa</label>
+                <label for="">Venda e Aluguel</label>
+            </div>
         </div>
     </section>
 

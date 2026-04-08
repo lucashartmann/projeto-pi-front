@@ -32,15 +32,16 @@
     justify-items: center;
     justify-content: center;
     text-align: center;
-}
 
-#container_anuncio textarea{
-    width: 100%;
-    gap: 50px;
-}
+    textarea {
+        width: 100%;
+        gap: 50px;
+        display: none;
+    }
 
-#container_anuncio #ta_descricao_anuncio {
-    height: 30px;
+    #ta_descricao_anuncio {
+        height: 30px;
+    }
 }
 
 #container_cadastro {
@@ -52,10 +53,6 @@
     row-gap: 30px;
     column-gap: 20px;
     width: 90%;
-}
-
-#container_anuncio {
-    display: none;
 }
 
 .container {
@@ -114,7 +111,7 @@ label {
 @media screen and (max-width: 700px) {
 
 
-    #h_buttons {      
+    #h_buttons {
         width: 45%;
     }
 }

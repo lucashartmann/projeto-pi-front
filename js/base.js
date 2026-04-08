@@ -103,61 +103,116 @@ async function carregarUser() {
 function carregarTabs(usuario) {
     const nav = document.querySelector("nav ul");
     if (!nav) return;
+
     let tabs = [];
+    let cadastros = [];
+
     switch (usuario) {
         case 'ADMIN':
             tabs = [
-                { text: "Atendimento", id: "tab_atendimento", href: "atendimento.html" },
-                { text: "Cadastro de Imoveis", id: "tab_cadastro_imovel", href: "cadastro-imovel.html" },
-                { text: "Estoque", id: "tab_estoque", href: "estoque.html" },
-                { text: "Dados Cliente", id: "tab_dados_cliente", href: "dados-cliente.html" },
-                { text: "Dados da imobiliaria", id: "tab_dados_imobiliaria", href: "dados-imobiliaria.html" },
-                { text: "Cadastro de Venda/Aluguel", id: "tab_cadastro_venda_aluguel", href: "cadastro-venda-aluguel.html" }
+                { text: "Atendimento", href: "atendimento.html" },
+                { text: "Estoque", href: "estoque.html" }
+            ];
+            cadastros = [
+                { text: "Imóveis", href: "cadastro-imovel.html" },
+                { text: "Venda/Aluguel", href: "cadastro-venda-aluguel.html" },
+                { text: "Cliente", href: "cadastro-cliente.html" },
+                
+            ];
+            dados = [
+                { text: "Imobiliária", href: "dados-imobiliaria.html" },
+                { text: "Dados Cliente", href: "dados-cliente.html" }
             ];
             break;
+
         case "CORRETOR":
             tabs = [
-                { text: "Atendimento", id: "tab_atendimento", href: "atendimento.html" },
-                { text: "Cadastro de Imoveis", id: "tab_cadastro_imovel", href: "cadastro-imovel.html" },
-                { text: "Cadastro de Venda/Aluguel", id: "tab_cadastro_venda_aluguel", href: "cadastro-venda-aluguel.html" },
-                { text: "Estoque", id: "tab_estoque", href: "estoque.html" }
+                { text: "Atendimento", href: "atendimento.html" },
+                { text: "Estoque", href: "estoque.html" }
+            ];
+            cadastros = [
+                { text: "Imóveis", href: "cadastro-imovel.html" },
+                { text: "Venda/Aluguel", href: "cadastro-venda-aluguel.html" },
+                { text: "Cliente", href: "cadastro-cliente.html" },
             ];
             break;
+
         case "GERENTE":
             tabs = [
-                { text: "Dados da imobiliaria", id: "tab_dados_imobiliaria", href: "dados-imobiliaria.html" },
-                { text: "Estoque", id: "tab_estoque", href: "estoque.html" }
+                { text: "Estoque", href: "estoque.html" }
+            ];
+            cadastros = [
+                { text: "Imobiliária", href: "dados-imobiliaria.html" }
+            ];
+            dados = [
+                { text: "Imobiliária", href: "dados-imobiliaria.html" },
             ];
             break;
+
         case "CAPTADOR":
             tabs = [
-                { text: "Cadastro de Imoveis", id: "tab_cadastro_imovel", href: "cadastro-imovel.html" },
-                { text: "Estoque", id: "tab_estoque", href: "estoque.html" }
+                { text: "Estoque", href: "estoque.html" }
+            ];
+            cadastros = [
+                { text: "Imóveis", href: "cadastro-imovel.html" },
+                { text: "Cliente", href: "cadastro-cliente.html" },
             ];
             break;
+
         case "CLIENTE":
             tabs = [
-                { text: "Dados Cliente", id: "tab_dados_cliente", href: "dados-cliente.html" }
+                { text: "Dados Cliente", href: "dados-cliente.html" }
             ];
             break;
     }
-    // tabs.push({ text: "Login", id: "tab_login", href: "login.html" });
-    // tabs.unshift({ text: "Página Inicial", id: "tab_inicio", href: "../index.html" });
-    nav.innerHTML += tabs.map(tab => `<li><a id="${tab.id}" href="${tab.href}">${tab.text}</a></li>`).join("");
-    for (const li of nav.children) {
-        const a = li.querySelector("a");
-        if (a && a.innerText === "Login") {
-            a.innerText = "Sair";
-            a.addEventListener("click", deslogar);
-            a.href = "#";
-        }
-    }
-}
 
+    
+    let html = tabs.map(tab =>
+        `<li><a href="${tab.href}">${tab.text}</a></li>`
+    ).join("");
+
+    if (dados.length > 0 && cadastros.length > 0) {
+        html += `
+        <li class="dropdown">
+            <a href="#">Cadastro ▾</a>
+            <div class="dropdown-content">
+                ${cadastros.map(c =>
+                    `<a href="${c.href}">${c.text}</a>`
+                ).join("")}
+            </div>
+        </li>
+        <li class="dropdown">
+            <a href="#">Dados ▾</a>
+            <div class="dropdown-content">
+                ${dados.map(d =>
+                    `<a href="${d.href}">${d.text}</a>`
+                ).join("")}
+            </div>
+        </li>
+        `;
+   
+    }else if (cadastros.length > 0) {
+        html += `
+        <li class="dropdown">
+            <a href="#">Cadastro ▾</a>
+            <div class="dropdown-content">
+                ${cadastros.map(c =>
+                    `<a href="${c.href}">${c.text}</a>`
+                ).join("")}
+            </div>
+        </li>
+        `;
+    }
+    div = nav.querySelector(".right");
+    if (div) {
+       div.innerHTML = html + `<li><a href="#" id="logout">Sair</a></li>`;
+    }
+    
+}
 async function setup() {
     // const usuario = await carregarUser();
     // if (usuario) carregarTabs(usuario);
-    carregarTabs("ADMIN");
+    carregarTabs("ADMIN"); // TODO: remover depois de implementar o login e deslogar
 }
 
 window.addEventListener("DOMContentLoaded", () => {

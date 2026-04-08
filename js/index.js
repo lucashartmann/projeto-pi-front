@@ -197,7 +197,8 @@ function pesquisar() {
 let dados_imoveis = null;
 
 window.addEventListener("DOMContentLoaded", async () => {
-    const dados = await listarImoveisDisponiveis();
+    // const dados = await listarImoveisDisponiveis() || [];
+    const dados = NaN; // TODO: remover depois de implementar o backend e listarImoveisDisponiveis
     dados_imoveis = dados;
     if (dados) {
         carregarAnuncios(dados);

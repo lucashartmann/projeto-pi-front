@@ -15,15 +15,27 @@
 <body>
     <nav>
         <ul>
-            <a href="#"><i class="fas fa-home"></i></a>
-            <li><a href="index.html">Página Inicial</a></li>
-            <li><a href="html/sobreNos.html">Sobre Nós</a></li>
-            <li><a href="html/login.html">Login</a></li>
+            <div class="left">
+                <li><i class="fas fa-bars"></i></li>
+                <li><a href="index.html">Página Inicial</a></li>
+            </div>
+
+            <div class="center">
+                <li><img src="assets/logo.png" alt="" id="logo"></li>
+            </div>
+
+            <div class="right">
+                <li><a href="html/sobreNos.html">Sobre Nós</a></li>
+                <li><a href="html/login.html">Login</a></li>
+            </div>
         </ul>
     </nav>
     <div id="pesquisa">
         <div id="pesquisa-container">
             <input placeholder="pesquise aqui" id="input_pesquisa" oninput="pesquisar()">
+            <button onclick="pesquisar()">
+                Encontre sua nova moradia!
+            </button>
         </div>
         <div id="container_filtragem">
             <label>Categoria</label>
@@ -34,24 +46,20 @@
             <input oninput="pesquisarCEP(event)">
         </div>
     </div>
-    <div id="imovelDestaque"
-        style="background-image: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), url(assets/campo.jpg)">
-        <h2 class="sobrepor">Casa no Campo com Jardim</h2>
-        <span>R$ <p class="preco">300.000,00</p>/ R$ <p class="preco">3000</p> / mês</span>
-    </div>
+    
     <div class="swiper">
         <div class="swiper-wrapper">
             <div class="swiper-slide"
                 style="background-image: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), url(assets/apartament.jpg)">
-                <img src="" alt="">
+                
                 <h2 class="sobrepor">Apartamento 2 dormitórios na Bento</h2>
-                <span>R$ <p class="preco">200.000,00</p>/ R$ <p class="preco">2000</p> / mês`</span>
+                <span>R$ <p class="preco">200.000,00</p> - R$ <p class="preco">2000</p></span>
             </div>
             <div class="swiper-slide"
                 style="background-image: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), url(assets/campo.jpg)">
-                <img src="" alt="">
+                
                 <h2 class="sobrepor">Apartamento 2 dormitórios na Bento</h2>
-                <span>R$ <p class="preco">200.000,00</p>/ R$ <p class="preco">2000</p> / mês`</span>
+                <span>R$ <p class="preco">200.000,00</p> - R$ <p class="preco">2000</p></span>
             </div>
         </div>
         <div class="swiper-pagination"></div>
@@ -65,22 +73,92 @@
 
     <section id="anuncios">
         <div class="anuncio_imovel" onclick="abrirAnuncio(0)">
-            <img src="assets/apartament.jpg" />
+            <img src="assets/campo.jpg" />
             <h2>Apartamento 2 dormitórios na Bento</h2>
             <p>Avenida Bento Gonçalves, 123, Azenha</p>
-            <span>Venda: R$ <p class="preco">200.000,00</p> - Aluguel: R$ <p class="preco">2000</p> / mês</span>
-            <p>Apartamento com 2 dormitórios, localizado em uma área tranquila e com fácil acesso a comércios e
+            <span>Venda: R$ <p class="preco">200.000,00</p></span>
+            <span>Aluguel: R$ <p class="preco"> 2000</p></span>
+            <p class="descricao">Apartamento com 2 dormitórios, localizado em uma área tranquila e com fácil acesso a comércios e
                 serviços.</p>
         </div>
         <div class="anuncio_imovel" onclick="abrirAnuncio(1)">
-            <img src="assets/campo.jpg" />
+            <img src="assets/patio.jpg" />
             <h2>Casa no Campo com Jardim</h2>
             <p>Rua Joaquim Nabuco, 456, Cidade Baixa</p>
-            <span>Venda: R$ <p class="preco">300.000,00</p> - Aluguel: R$ <p class="preco">3000</p> / mês</span>
-            <p>Casa com jardim, localizada em uma área residencial tranquila e com fácil acesso a comércios e serviços.
+            <span>Venda: R$ <p class="preco">300.000,00</p> - Aluguel: R$ <p class="preco">3000</p></span>
+            <p class="descricao">Casa com jardim, localizada em uma área residencial tranquila e com fácil acesso a comércios e serviços.
+            </p>
+        </div>
+        <div class="anuncio_imovel" onclick="abrirAnuncio(1)">
+            <img src="assets/dentro_apartamento.jpg" />
+            <h2>Casa no Campo com Jardim</h2>
+            <p>Rua Joaquim Nabuco, 456, Cidade Baixa</p>
+            <span>Venda: R$ <p class="preco">300.000,00</p> - Aluguel: R$ <p class="preco">3000</p></span>
+            <p class="descricao">Casa com jardim, localizada em uma área residencial tranquila e com fácil acesso a comércios e serviços.
+            </p>
+        </div>
+        <div class="anuncio_imovel" onclick="abrirAnuncio(1)">
+            <img src="assets/apartament.jpg" />
+            <h2>Casa no Campo com Jardim</h2>
+            <p>Rua Joaquim Nabuco, 456, Cidade Baixa</p>
+            <span>Venda: R$ <p class="preco">300.000,00</p> - Aluguel: R$ <p class="preco">3000</p></span>
+            <p class="descricao">Casa com jardim, localizada em uma área residencial tranquila e com fácil acesso a comércios e serviços.
+            </p>
+        </div>
+         <div class="anuncio_imovel" onclick="abrirAnuncio(0)">
+            <img src="assets/campo.jpg" />
+            <h2>Apartamento 2 dormitórios na Bento</h2>
+            <p>Avenida Bento Gonçalves, 123, Azenha</p>
+            <span>Venda: R$ <p class="preco">200.000,00</p> - Aluguel: R$ <p class="preco">2000</p></span>
+            <p class="descricao">Apartamento com 2 dormitórios, localizado em uma área tranquila e com fácil acesso a comércios e
+                serviços.</p>
+        </div>
+        <div class="anuncio_imovel" onclick="abrirAnuncio(1)">
+            <img src="assets/patio.jpg" />
+            <h2>Casa no Campo com Jardim</h2>
+            <p>Rua Joaquim Nabuco, 456, Cidade Baixa</p>
+            <span>Venda: R$ <p class="preco">300.000,00</p> - Aluguel: R$ <p class="preco">3000</p></span>
+            <p class="descricao">Casa com jardim, localizada em uma área residencial tranquila e com fácil acesso a comércios e serviços.
+            </p>
+        </div>
+        <div class="anuncio_imovel" onclick="abrirAnuncio(1)">
+            <img src="assets/dentro_apartamento.jpg" />
+            <h2>Casa no Campo com Jardim</h2>
+            <p>Rua Joaquim Nabuco, 456, Cidade Baixa</p>
+            <span>Venda: R$ <p class="preco">300.000,00</p> - Aluguel: R$ <p class="preco">3000</p></span>
+            <p class="descricao">Casa com jardim, localizada em uma área residencial tranquila e com fácil acesso a comércios e serviços.
+            </p>
+        </div>
+        <div class="anuncio_imovel" onclick="abrirAnuncio(1)">
+            <img src="assets/apartament.jpg" />
+            <h2>Casa no Campo com Jardim</h2>
+            <p>Rua Joaquim Nabuco, 456, Cidade Baixa</p>
+            <span>Venda: R$ <p class="preco">300.000,00</p> - Aluguel: R$ <p class="preco">3000</p></span>
+            <p class="descricao">Casa com jardim, localizada em uma área residencial tranquila e com fácil acesso a comércios e serviços.
             </p>
         </div>
     </section>
+    <div id="gallery">
+        <img src="assets/dentro_apartamento.jpg" alt="">
+        <img src="assets/patio.jpg" alt="">
+    </div>
+    <br><br><br>
+    <div id="gallery2">
+        <img src="assets/dentro_apartamento.jpg" alt="">
+        <img src="assets/patio.jpg" alt="">
+        <img src="assets/apartament.jpg" alt="">
+        <img src="assets/campo.jpg" alt="">
+    </div>
+    <br><br><br>
+    <div id="gallery3">
+        <img src="assets/dentro_apartamento.jpg" alt="">
+        <img src="assets/patio.jpg" alt="">
+    </div>
+    <div id="imovelDestaque"
+        style="background-image: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), url(assets/campo.jpg)">
+        <h2 class="sobrepor">Casa no Campo com Jardim</h2>
+        <span>R$ <p class="preco">300.000,00</p> - R$ <p class="preco">3000</p></span>
+    </div>
     <section id="section-footer">
         <div id="sobre">
             <h2>Sobre Nós</h2>
