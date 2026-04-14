@@ -1,0 +1,98 @@
+
+
+            CREATE TABLE IF NOT EXISTS usuario (
+                id_usuario INTEGER PRIMARY KEY AUTO_INCREMENT,
+                username VARCHAR(255) UNIQUE,
+                senha VARCHAR(255) NOT NULL,
+                email VARCHAR(255) UNIQUE,
+                nome VARCHAR(255) NOT NULL,
+                cpf_cnpj VARCHAR(255) UNIQUE NOT NULL,
+                rg VARCHAR(255),
+                id_endereco DATE,
+                data_nascimento VARCHAR(255),
+                tipo_usuario VARCHAR(255) NOT NULL
+            );
+
+            CREATE TABLE IF NOT EXISTS telefone (
+                id_telefone INTEGER PRIMARY KEY AUTO_INCREMENT,
+                numero VARCHAR(255) NOT NULL UNIQUE
+            );
+
+            CREATE TABLE IF NOT EXISTS telefone_usuario (
+                id_usuario INTEGER,
+                id_telefone INTEGER,
+                FOREIGN KEY (id_usuario) REFERENCES usuario(id_usuario) ON DELETE CASCADE,
+                FOREIGN KEY (id_telefone) REFERENCES telefone(id_telefone) ON DELETE CASCADE
+            );
+
+            CREATE TABLE IF NOT EXISTS endereco (
+                id_endereco INTEGER PRIMARY KEY AUTO_INCREMENT,
+                rua VARCHAR(255) NOT NULL,
+                numero INTEGER,
+                bairro VARCHAR(255) NOT NULL,
+                cep VARCHAR(255) NOT NULL,
+                complemento VARCHAR(255),
+                cidade VARCHAR(255) NOT NULL,
+                uf VARCHAR(255) NOT NULL
+            );
+
+            CREATE TABLE IF NOT EXISTS proprietario (
+                id_proprietario INTEGER PRIMARY KEY AUTO_INCREMENT,
+                email VARCHAR(255) UNIQUE,
+                nome VARCHAR(255) NOT NULL,
+                cpf_cnpj VARCHAR(255) UNIQUE,
+                rg VARCHAR(255),
+                id_endereco INTEGER,
+                data_nascimento VARCHAR(255)
+            );
+
+            CREATE TABLE IF NOT EXISTS anuncio (
+                id_anuncio INTEGER PRIMARY KEY AUTO_INCREMENT,
+                descricao VARCHAR(255),
+                titulo VARCHAR(255)       
+            );
+
+            CREATE TABLE IF NOT EXISTS imovel (
+                id_imovel INTEGER PRIMARY KEY AUTO_INCREMENT,
+                valor_venda REAL,
+                valor_aluguel REAL,
+                quant_quartos INTEGER(3),
+                quant_salas INTEGER(3),
+                quant_vagas INTEGER(3),
+                quant_banheiros INTEGER(3),
+                quant_varandas INTEGER(3),
+                categoria VARCHAR(255) NOT NULL,
+                id_endereco INTEGER,
+                status VARCHAR(255) NOT NULL,
+                iptu REAL,
+                valor_condominio REAL,
+                andar INTEGER,
+                estado VARCHAR(255),
+                bloco VARCHAR(255),
+                ano_construcao YEAR,
+                area_total REAL,
+                area_privativa REAL,
+                situacao VARCHAR(255),
+                ocupacao VARCHAR(255),
+                data_cadastro TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                data_modificacao DATETIME,
+                id_anuncio INTEGER,
+                FOREIGN KEY (id_anuncio) REFERENCES anuncio(id_anuncio),
+                FOREIGN KEY (id_endereco) REFERENCES endereco(id_endereco)
+            );
+
+            CREATE TABLE IF NOT EXISTS midia_anuncio (
+                id_anuncio INTEGER,
+                midia BLOB,
+                tipo VARCHAR(255),
+                FOREIGN KEY (id_anuncio) REFERENCES anuncio(id_anuncio) ON DELETE CASCADE
+            );
+
+            CREATE TABLE IF NOT EXISTS condominio (
+                id_condominio INTEGER PRIMARY KEY AUTO_INCREMENT,
+                nome VARCHAR(255),
+                id_endereco INTEGER,
+                FOREIGN KEY (id_endereco) REFERENCES endereco(id_endereco)
+            );
+
+        

@@ -7,51 +7,51 @@
     box-shadow: 0.1px 0.1px 3px black;
     display: flex;
     justify-self: center;
-    position: relative;
+    /* position: relative; */
     height: 27rem;
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center;
 
     h2 {
-        color: white;
-        border: solid rgba(47, 45, 45, 0.9) 10px;
-        background: rgba(47, 45, 45, 0.8);
-        font-size: 2rem;
-        z-index: 1;
+        color: rgb(22, 21, 21);
+        font-size: 1.5rem;
+        border: solid rgba(47, 45, 45, 0.1) 2px;
+        background: rgba(128, 118, 118, 0.8);
+        display: flex;
+        margin-right: auto;
+        margin-top: auto;
+        height: auto;
+        width: auto;
+        -webkit-text-stroke-width: 0.2px;
+        -webkit-text-stroke-color: rgb(0, 0, 0);
+        -webkit-text-fill-color: #fcf7f7;
+    }
+
+    .preco {
+        color: green;
+        -webkit-text-stroke-width: 1px;
+        -webkit-text-stroke-color: rgb(41, 84, 37, 0.3);
+        -webkit-text-fill-color: rgba(56, 112, 56, 0.607);
+        display: flex;
+        margin: 0;
+        padding: 0;
         width: auto;
         height: auto;
-        margin-right: auto;
-        text-align: left;
-        display: flex;
-        margin-top: auto;
-        -webkit-text-stroke-width: 1px;
-        -webkit-text-stroke-color: rgb(240, 230, 230);
-        -webkit-text-fill-color: rgb(248, 241, 241);
     }
-}
 
+    h2 span {
+        display: flex;
+        text-align: center;
+        width: auto;
+        height: auto;
+        margin-left: 10px;
+    }
 
-#imovelDestaque .preco,
-.swiper-slide .preco {
-    color: green;
-    -webkit-text-stroke-width: 1px;
-    -webkit-text-stroke-color: rgb(16, 128, 14);
-    -webkit-text-fill-color: rgb(16, 128, 14);
-    display: flex;
-    margin: 0;
-    padding: 0;
-    width: auto;
-    height: auto;
-}
-
-#imovelDestaque h2 span,
-.swiper-slide h2 span {
-    display: flex;
-    text-align: center;
-    width: auto;
-    height: auto;
-    margin-left: 10px;
+    .sobrepor {
+        position: absolute;
+        z-index: 1;
+    }
 }
 
 section#anuncios {
@@ -69,16 +69,17 @@ section#anuncios {
 }
 
 .anuncio_imovel {
-    background: var(--background-nav);
+    background: rgba(203, 199, 199, 0.2);
     width: 90%;
     justify-items: center;
     justify-content: center;
     height: 43rem;
-    color: white;
+    color: rgb(0, 0, 0);
     font-weight: 400;
     font-size: 120%;
-    border-radius: 1%;
+    border-radius: 2%;
     box-shadow: 2px 1px 19px -13px rgb(43, 33, 33);
+    border: solid rgba(47, 45, 45, 0.2) 2px;
 
     p:nth-child(4) {
         text-indent: 5%;
@@ -95,7 +96,7 @@ section#anuncios {
     }
 
     &:hover {
-        background: rgb(119, 102, 102);
+        box-shadow: 2px 1px 19px -13px rgb(43, 33, 33), 0px 0px 10px 2px rgb(51, 63, 70);
         cursor: pointer;
     }
 
@@ -112,8 +113,8 @@ section#anuncios {
     .preco {
         color: rgb(7, 34, 7);
         -webkit-text-stroke-width: 1px;
-        -webkit-text-stroke-color: rgba(4, 255, 0, 0.594);
-        -webkit-text-fill-color: rgb(255, 255, 255);
+        -webkit-text-stroke-color: rgb(5, 54, 4);
+        -webkit-text-fill-color: rgb(11, 85, 7);
         display: flex;
         margin: 0;
         padding: 0;
@@ -133,13 +134,11 @@ section#anuncios {
         text-align: center;
         font-weight: bolder;
     }
+
 }
 
 
-.sobrepor {
-    position: absolute;
-    z-index: 1;
-}
+
 
 #imgDestaque {
     width: 100%;
@@ -157,11 +156,14 @@ section#anuncios {
     &:nth-child(1+n) {
         display: none;
     }
+
+
 }
 
 
 #section-footer {
-    background-color: rgba(177, 149, 149, 0.173);
+    /* background-color: rgba(177, 149, 149, 0.173); */
+    background: rgba(203, 199, 199, 0.2);
     border-top: solid rgba(47, 45, 45, 0.2) 2px;
     display: flex;
     align-items: center;
@@ -171,7 +173,6 @@ section#anuncios {
     height: 11rem;
     width: 100%;
     color: black;
-    -webkit-text-stroke-width: 0.5px;
 
     /* -webkit-text-stroke-color: rgba(14, 11, 11, 0.9);
     -webkit-text-fill-color: rgba(14, 11, 11, 0.9); */
@@ -253,6 +254,11 @@ section#anuncios {
             background-color: rgb(65, 73, 18);
             color: white;
             border: rgb(109, 97, 0) solid 1px;
+
+            &:hover {
+                background-color: rgb(109, 97, 0);
+                cursor: pointer;
+            }
         }
     }
 }
@@ -309,19 +315,43 @@ section#anuncios {
         background-position: center;
 
         h2 {
-            color: white;
-            font-size: 2rem;
-            border: solid rgba(47, 45, 45, 0.9) 10px;
-            background: rgba(47, 45, 45, 0.8);
+            color: rgb(22, 21, 21);
+            font-size: 1.5rem;
+            border: solid rgba(47, 45, 45, 0.1) 2px;
+            background: rgba(128, 118, 118, 0.8);
             display: flex;
             margin-right: auto;
             margin-top: auto;
             height: auto;
             width: auto;
-            text-align: left;
+            -webkit-text-stroke-width: 0.2px;
+            -webkit-text-stroke-color: rgb(0, 0, 0);
+            -webkit-text-fill-color: #fcf7f7;
+        }
+
+        .preco {
+            color: green;
             -webkit-text-stroke-width: 1px;
-            -webkit-text-stroke-color: rgb(240, 230, 230);
-            -webkit-text-fill-color: rgb(248, 241, 241);
+            -webkit-text-stroke-color: rgb(41, 84, 37, 0.3);
+            -webkit-text-fill-color: rgba(56, 112, 56, 0.607);
+            display: flex;
+            margin: 0;
+            padding: 0;
+            width: auto;
+            height: auto;
+        }
+
+        h2 span {
+            display: flex;
+            text-align: center;
+            width: auto;
+            height: auto;
+            margin-left: 10px;
+        }
+
+        .sobrepor {
+            position: absolute;
+            z-index: 1;
         }
     }
 }
@@ -409,4 +439,77 @@ section#anuncios {
     }
 
 
+}
+
+@media screen and (max-width: 900px) {
+    section#anuncios {
+        justify-items: center;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(42%, 1fr));
+        /* row-gap: 30px; */
+        column-gap: 2px;
+    }
+
+    #pesquisa {
+        width: 100%;
+
+        #pesquisa-container {
+            width: 80%;
+            margin-left: 0px;
+
+            input {
+                width: 100%;
+            }
+
+            button {
+                width: 50%;
+            }
+        }
+
+        #container_filtragem {
+            width: 90%;
+
+            select {
+                width: 100%;
+            }
+        }
+
+    }
+
+    .anuncio_imovel {
+        height: 90%;
+
+        p {
+            font-size: 1rem;
+        }
+
+        .descricao {
+            font-size: 1rem;
+            width: 100%;
+
+            justify-self: auto;
+            align-self: auto;
+            text-align: left;
+        }
+
+        h2 {
+            font-size: 1rem;
+        }
+
+        img {
+            height: 15rem;
+        }
+
+        .preco {
+            font-size: 1rem;
+        }
+
+        span {
+            font-size: 1rem;
+        }
+    }
+
+    #section-footer {
+        height: auto;
+    }
 }

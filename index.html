@@ -10,11 +10,11 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <link rel="icon" type="image/x-icon" href="img/logo.png">
-   
+
 </head>
 
 <body>
-    
+
     <div id="pesquisa">
         <div id="pesquisa-container">
             <input placeholder="pesquise aqui" id="input_pesquisa" oninput="pesquisar()">
@@ -37,14 +37,16 @@
             <div class="swiper-slide"
                 style="background-image: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), url(assets/apartament.jpg)">
 
-                <h2 class="sobrepor">Apartamento 2 dormitórios na Bento</h2>
-                <span>R$ <p class="preco">200.000,00</p> - R$ <p class="preco">2000</p></span>
+                <h2 class="sobrepor">Apartamento 2 dormitórios na Bento <span>R$ <p class="preco">200.000,00</p> - R$ <p
+                            class="preco">2000</p></span></h2>
+
             </div>
             <div class="swiper-slide"
                 style="background-image: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), url(assets/campo.jpg)">
 
-                <h2 class="sobrepor">Apartamento 2 dormitórios na Bento</h2>
-                <span>R$ <p class="preco">200.000,00</p> - R$ <p class="preco">2000</p></span>
+                <h2 class="sobrepor">Apartamento 2 dormitórios na Bento <span>R$ <p class="preco">200.000,00</p> - R$ <p
+                            class="preco">2000</p></span></h2>
+
             </div>
         </div>
         <div class="swiper-pagination"></div>
@@ -149,8 +151,9 @@
     </div>
     <div id="imovelDestaque"
         style="background-image: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), url(assets/campo.jpg)">
-        <h2 class="sobrepor">Casa no Campo com Jardim</h2>
-        <span>R$ <p class="preco">300.000,00</p> - R$ <p class="preco">3000</p></span>
+        <h2 class="sobrepor">Casa no Campo com Jardim <span>R$ <p class="preco">300.000,00</p> - R$ <p class="preco">
+                    3000</p></span></h2>
+
     </div>
     <section id="section-footer">
         <div id="sobre">
@@ -183,10 +186,11 @@
 <script src="js/base.js"></script>
 <script src="js/index.js"></script>
 <script type="text/javascript">
-   fetch("html/nav.html")
-    .then(response => response.text())
-    .then(data => {
-        document.body.insertAdjacentHTML('afterbegin', data);
-    });
+    fetch("html/nav.html")
+        .then(response => response.text())
+        .then(data => {
+            document.body.insertAdjacentHTML('afterbegin', data);
+        });
 </script>
+
 </html>

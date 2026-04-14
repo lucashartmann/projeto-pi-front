@@ -32,21 +32,22 @@
 
 <script type="text/javascript">
     fetch("nav.html")
-     .then(response => response.text())
-     .then(data => {
-        const inicio = data.lastIndexOf("<div class=");
-        const fim = data.lastIndexOf("</div>");
-        const substring = data.substring(inicio+20, fim);
-        console.log(substring);
-        const hmtl = `
+        .then(response => response.text())
+        .then(data => {
+            const inicio = data.lastIndexOf("<div class=");
+            const fim = data.lastIndexOf("</div>");
+            const substring = data.substring(inicio + 20, fim);
+            console.log(substring);
+            const hmtl = `
             <li><a href="cadastro-imovel.html">Admin</a></li>
         `;
-        data = data.replace(substring, hmtl);
-        console.log(data.substring(inicio, fim));
-        console.log(data);
-        document.body.insertAdjacentHTML('afterbegin', data);
-     });
- </script>
+            data = data.replace(substring, hmtl);
+            console.log(data.substring(inicio, fim));
+            console.log(data);
+            document.body.insertAdjacentHTML('afterbegin', data);
+        });
+</script>
 
 <script src="../js/login.js"></script>
+
 </html>
