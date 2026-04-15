@@ -1,3 +1,16 @@
+function mostrarNavLeft() {
+   try {
+        const nav = document.getElementById("side-nav");
+        if (nav.style.display != "") {
+            nav.style.display = "";
+        } else {
+            nav.style.display = "flex";
+        }
+    }catch {
+        return;
+    }
+}
+
 async function listarImoveis() {
     try {
         const resposta = await fetch('../php/api/api.php')
