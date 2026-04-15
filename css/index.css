@@ -235,7 +235,7 @@ section#anuncios {
         width: 50%;
         padding: 10px;
         border: solid rgba(47, 45, 45, 0.2) 2px;
-        border-radius: 3px;
+        border-radius: 0;
         box-shadow: 0.1px 0.1px 3px black;
     }
 
@@ -264,7 +264,8 @@ section#anuncios {
             background-color: rgb(65, 73, 18);
             color: white;
             border: rgb(109, 97, 0) solid 1px;
-
+            border-radius: 0%;
+            margin-left: 5px;
             &:hover {
                 background-color: rgb(109, 97, 0);
                 cursor: pointer;

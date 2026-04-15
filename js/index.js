@@ -135,8 +135,16 @@ function pesquisarCEP(event) {
     const anuncios = document.querySelectorAll(".anuncio_imovel");
     if (dados_imoveis == null) return;
     console.log(termo);
-    document.querySelector(".swiper").style.display = "none";
-    document.getElementById("imovelDestaque").style.display = "none";
+    const gallery = document.getElementById("gallery");
+    gallery.style.display = "none";
+    const gallery2 = document.getElementById("gallery2");
+    gallery2.style.display = "none";
+    const gallery3 = document.getElementById("gallery3");
+    gallery3.style.display = "none";
+    const swiper = document.querySelector(".swiper");
+    swiper.style.display = "none";
+    const imovelDestaque = document.getElementById("imovelDestaque");
+    imovelDestaque.style.display = "none";
     const imovel = dados_imoveis.find(imovel => imovel.endereco.cep == termo);
     for (const anuncio of anuncios) {
         anuncio.style.display = "none";
@@ -148,13 +156,17 @@ function pesquisarCEP(event) {
             console.log(anuncio.event)
             if (imovel.id in anuncio.event) {
                 anuncio.style.display = "block";
-                document.querySelector(".swiper").style.display = "block";
-                document.getElementById("imovelDestaque").style.display = "block"
+                const swiper = document.querySelector(".swiper");
+                swiper.style.display = "block";
+                const imovelDestaque = document.getElementById("imovelDestaque");
+                imovelDestaque.style.display = "block"
             }
             else {
                 anuncio.style.display = "none";
-                document.querySelector(".swiper").style.display = "none";
-                document.getElementById("imovelDestaque").style.display = "none";
+                const swiper = document.querySelector(".swiper");
+                swiper.style.display = "none";
+                const imovelDestaque = document.getElementById("imovelDestaque");
+                imovelDestaque.style.display = "none";
             }
         });
     } 
@@ -163,8 +175,11 @@ function pesquisarCEP(event) {
         for (const anuncio of anuncios) {
                 anuncio.style.display = "block";
         }
-        document.querySelector(".swiper").style.display = "block";
-            document.getElementById("imovelDestaque").style.display = "block";
+        swiper.style.display = "block";
+        imovelDestaque.style.display = "flex";
+        gallery.style.display = "flex";
+        gallery2.style.display = "grid";
+        gallery3.style.display = "flex";   
     }
 }
 
@@ -178,11 +193,19 @@ function pesquisar() {
     const termo = document.getElementById("input_pesquisa").value.toLowerCase();
     
     const anuncios = document.querySelectorAll(".anuncio_imovel");
-    document.querySelector(".swiper").style.display = "none";
-    document.getElementById("imovelDestaque").style.display = "none";
+    const gallery = document.getElementById("gallery");
+    gallery.style.display = "none";
+    const gallery2 = document.getElementById("gallery2");
+    gallery2.style.display = "none";
+    const gallery3 = document.getElementById("gallery3");
+    gallery3.style.display = "none";
+    const swiper = document.querySelector(".swiper");
+    swiper.style.display = "none";
+    const imovelDestaque = document.getElementById("imovelDestaque");
+    imovelDestaque.style.display = "none";
     anuncios.forEach(anuncio => {
         const titulo = anuncio.querySelector("h2").textContent.toLowerCase();
-        const descricao = anuncio.querySelector("p:nth-child(5)").textContent.toLowerCase();
+        const descricao = anuncio.querySelector(".descricao").textContent.toLowerCase();
         if (titulo.includes(termo) || descricao.includes(termo)) {
             anuncio.style.display = "block";
         }
@@ -190,8 +213,13 @@ function pesquisar() {
             anuncio.style.display = "none";
         }
     });
-
-    
+    if (termo.length === 0) {
+        swiper.style.display = "block";
+        imovelDestaque.style.display = "flex";
+        gallery.style.display = "flex";
+        gallery2.style.display = "grid";
+        gallery3.style.display = "flex";   
+    }
 }
 
 let dados_imoveis = null;
