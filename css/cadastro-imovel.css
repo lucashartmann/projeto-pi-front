@@ -1,3 +1,36 @@
+textarea {
+    height: 90%;
+    font-size: 120%;
+}
+
+input {
+    height: 140%;
+    font-size: 100%;
+}
+
+label {
+    font-size: 120%;
+    font-weight: 500;
+}
+
+.tab button {
+    /* background-color: rgba(32, 151, 24, 0.8); */
+    /* border: solid 2px rgba(17, 66, 13, 0.5); */
+    font-weight: 600;
+    font-size: 100%;
+    width: 90px;
+    height: 30px;
+}
+
+.active {
+    border: dashed green 1px;
+}
+
+#container_mapa {
+    z-index: 1;
+    margin-bottom: 100px;
+}
+
 .tabcontent {
     display: none;
 }
@@ -35,12 +68,17 @@
 
     textarea {
         width: 100%;
-        gap: 50px;
-        display: none;
+        margin: 10px 0;
+        height: 2rem;
+    }
+
+    label {
+        font-size: 1.34rem;
+        font-weight: 500;
     }
 
     #ta_descricao_anuncio {
-        height: 30px;
+       height: 10rem;
     }
 }
 
@@ -56,51 +94,40 @@
 }
 
 .container {
-    justify-self: center;
-    align-content: center;
+    
     width: 90%;
     background: var(--background-nav);
     margin-bottom: 20px;
-    height: 10rem;
+    min-height: 10rem;
+    height: auto;
     color: white;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(30%, 2fr));
+    row-gap: 20px;
+    column-gap: 20px;
+    justify-self: center;
+    align-content: center;
+    justify-content: center;
+    justify-items: center;
+    button {
+        width: 100px;
+        height: 40px;
+        font-size: 100%;
+        font-weight: 500;
+        border-radius: 0%;
+    }
+    img {
+        width: 15rem;
+        height: 10rem;
+        border: solid 3px rgb(195, 174, 14);
+    }
 }
 
 #container_imagens {
     margin-top: 50px;
 }
 
-textarea {
-    height: 90%;
-    font-size: 120%;
-}
 
-input {
-    height: 140%;
-    font-size: 100%;
-}
-
-label {
-    font-size: 120%;
-    font-weight: 500;
-}
-
-.tab button {
-    /* background-color: rgba(32, 151, 24, 0.8); */
-    /* border: solid 2px rgba(17, 66, 13, 0.5); */
-    font-weight: 600;
-    font-size: 100%;
-    width: 90px;
-    height: 30px;
-}
-
-.active {
-    border: dashed green 1px;
-}
-
-#container_mapa {
-    z-index: 1;
-    margin-bottom: 100px;
-}
 
 @media screen and (max-width: 820px) {
     #container_cadastro {

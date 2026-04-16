@@ -147,6 +147,36 @@ async function abrirCadastro(imovel_id) {
     }
 }
 
+function adicionarAnexo(event) {
+                //abre seletor de arquivo e adiciona iamagem no pai
+        var input = document.createElement("input");
+        input.type = "file";
+        input.accept = "image/*,application/pdf";
+        input.multiple = true;
+        input.onchange = function () {
+            var files = input.files;
+            var container = event.target.closest(".container");
+            for (var i = 0; i < files.length; i++) {
+                var file = files[i];
+                var fileURL = URL.createObjectURL(file);
+                var fileElement;
+                if (file.type.startsWith("image/")) {
+                    fileElement = document.createElement("img");
+                    fileElement.src = fileURL;
+                } else if (file.type === "application/pdf") {
+                    fileElement = document.createElement("a");
+                    fileElement.href = fileURL;
+                    fileElement.textContent = file.name;
+                    fileElement.target = "_blank";
+                }
+                if (fileElement) {
+                    container.appendChild(fileElement);
+                }
+            }
+        }
+        input.click();
+}
+
 let imovel_id = null;
 
 window.addEventListener("DOMContentLoaded", function () {
