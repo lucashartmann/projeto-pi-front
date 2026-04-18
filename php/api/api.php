@@ -30,6 +30,45 @@ switch ($acao) {
         get_lista_imoveis_disponiveis();
         break;
 
+    case "logar":
+        verificar_login();
+        break;
+
+    case "deslogar":
+        deslogar();
+        break;
+
+    case "get_usuario":
+        carregar_usuario();
+        break;
+
+    case "cadastrar_imovel":
+        cadastrar_imovel();
+        break;
+
+    case "get_dados_imovel":
+        $id = $_GET['id'] ?? null;
+        if ($id) {
+            getImovelPorId($id);
+        } else {
+            echo json_encode(["erro" => "ID do imóvel não fornecido"]);
+        }
+        break;
+
+        case "apagar_imovel":
+            $id = $_GET['id'] ?? null;
+            if ($id) {
+                apagar_imovel($id);
+                } else {
+                echo json_encode(["erro" => "ID do imóvel não fornecido"]);
+            }
+            break;
+
+        case "listar_atendimentos":
+            listar_atendimentos();
+            break;
+
+
     // case 'buscar_imovel' :
     //     // get_imovel();
     //     break;
