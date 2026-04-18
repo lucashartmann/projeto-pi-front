@@ -3,7 +3,12 @@ async function fazerLogin() {
     const senha = document.getElementById("senha").value;
 
     try {
-        const resposta = await fetch("http://127.0.0.1:8000/login/", {
+        let caminho = window.location.pathname;
+        caminho = caminho.replace(
+            caminho.substring(caminho.lastIndexOf("/")),
+            "/php/api/api.php?acao=login"
+        );
+        const resposta = await fetch(caminho, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"

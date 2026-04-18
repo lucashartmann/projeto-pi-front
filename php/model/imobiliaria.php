@@ -190,4 +190,5 @@ class Imobiliaria
     {
         return $this->banco_dados->get_imovel_por_id($id_imovel);
     }
+
 }

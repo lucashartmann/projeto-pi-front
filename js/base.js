@@ -1,27 +1,35 @@
 function mostrarNavLeft() {
-   try {
+    try {
         const nav = document.getElementById("side-nav");
         if (nav.style.display != "") {
             nav.style.display = "";
         } else {
             nav.style.display = "flex";
         }
-    }catch {
+    } catch {
         return;
     }
 }
 
 async function listarImoveis() {
     try {
-        const resposta = await fetch('../php/api/api.php')
-        .then(res => res.json())
-        .then(data => {
-            return data;
-        })
-        .catch(erro => {
-            console.error("Falha ao conectar com o backend:", erro);
-            return null;
-        });
+        let caminho = window.location.pathname;
+        caminho = caminho.replace(
+            caminho.substring(caminho.lastIndexOf("/")),
+            "/php/api/api.php?acao=listar_imoveis"
+        );
+        const resposta = await fetch(caminho)
+            .then(res => res.json())
+            .then(data => {
+                return data;
+                console.log(data);
+            })
+            .catch(erro => {
+                console.error("Falha ao conectar com o backend:", erro);
+                return null;
+            });
+
+        return resposta;
     } catch (erro) {
         console.error("Falha ao conectar com o backend:", erro);
         return null;
@@ -30,16 +38,24 @@ async function listarImoveis() {
 
 async function listarImoveisDisponiveis() {
     try {
-        const resposta = await fetch('../php/api/api.php')
-        .then(res => res.json())
-        .then(data => {
-        
-            return data;
-        })
-        .catch(erro => {
-            console.error("Falha ao conectar com o backend:", erro);
-            return null;
-        });
+        let caminho = window.location.pathname;
+        caminho = caminho.replace(
+            caminho.substring(caminho.lastIndexOf("/")),
+            "/php/api/api.php?acao=listar_imoveis_disponiveis"
+        );
+        const resposta = await fetch(caminho)
+            // .then(res => console.log(res))
+            .then(res => res.json() ||  console.log(res.text()) )
+            .then(data => {
+                // console.log(data);
+                return data;
+            })
+            .catch(erro => {
+                console.error("Falha ao conectar com o backend:", erro);
+                return null;
+            });
+
+        return resposta;
     } catch (erro) {
         console.error("Falha ao conectar com o backend:", erro);
         return null;
@@ -50,12 +66,16 @@ async function listarImoveisDisponiveis() {
 async function getDadosImovel(id) {
     console.log("Buscando dados do imóvel com id:", id);
     try {
-        const resposta = await fetch(`http://127.0.0.1:8000/estoque/${id}/`,
-            {
-                method: "GET",
-                headers: {
-                    "Content-Type": "application/json"
-                }
+        let caminho = window.location.pathname;
+        caminho = caminho.replace(
+            caminho.substring(caminho.lastIndexOf("/")),
+            "/php/api/api.php?acao=get_dados_imovel&id=" + id
+        );
+        const resposta = await fetch(caminho, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json"
+            }
             }
         );
 
@@ -73,7 +93,12 @@ async function getDadosImovel(id) {
 
 async function deslogar() {
     try {
-        const resposta = await fetch("http://127.0.0.1:8000/deslogar/", {
+        let caminho = window.location.pathname;
+        caminho = caminho.replace(
+            caminho.substring(caminho.lastIndexOf("/")),
+            "/php/api/api.php?acao=deslogar"
+        );
+        const resposta = await fetch(caminho, {
             method: "POST"
         });
         if (!resposta.ok) throw new Error(`HTTP ${resposta.status}`);
@@ -103,7 +128,17 @@ async function deslogar() {
 
 async function carregarUser() {
     try {
-        const resposta = await fetch("http://127.0.0.1:8000/usuario/");
+        let caminho = window.location.pathname;
+        caminho = caminho.replace(
+            caminho.substring(caminho.lastIndexOf("/")),
+            "/php/api/api.php?acao=get_usuario"
+        );
+        const resposta = await fetch(caminho, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json"
+            }
+        });
         if (!resposta.ok) throw new Error(`HTTP ${resposta.status}`);
         const dados = await resposta.json();
         return dados.tipo;
@@ -115,7 +150,6 @@ async function carregarUser() {
 
 function carregarTabs(usuario) {
     const nav = document.getElementById("top-nav");
-    console.log(nav);
     if (!nav) return;
 
     let tabs = [];
@@ -131,7 +165,7 @@ function carregarTabs(usuario) {
                 { text: "Imóveis", href: "cadastro-imovel.html" },
                 { text: "Venda/Aluguel", href: "cadastro-venda-aluguel.html" },
                 { text: "Cliente", href: "cadastro-cliente.html" },
-                
+
             ];
             dados = [
                 { text: "Imobiliária", href: "dados-imobiliaria.html" },
@@ -180,7 +214,7 @@ function carregarTabs(usuario) {
             break;
     }
 
-    
+
     let html = tabs.map(tab =>
         `<li><a href="${tab.href}">${tab.text}</a></li>`
     ).join("");
@@ -191,44 +225,42 @@ function carregarTabs(usuario) {
             <a href="#">Cadastro ▾</a>
             <div class="dropdown-content">
                 ${cadastros.map(c =>
-                    `<a href="${c.href}">${c.text}</a>`
-                ).join("")}
+            `<a href="${c.href}">${c.text}</a>`
+        ).join("")}
             </div>
         </li>
         <li class="dropdown">
             <a href="#">Dados ▾</a>
             <div class="dropdown-content">
                 ${dados.map(d =>
-                    `<a href="${d.href}">${d.text}</a>`
-                ).join("")}
+            `<a href="${d.href}">${d.text}</a>`
+        ).join("")}
             </div>
         </li>
         `;
-   
-    }else if (cadastros.length > 0) {
+
+    } else if (cadastros.length > 0) {
         html += `
         <li class="dropdown">
             <a href="#">Cadastro ▾</a>
             <div class="dropdown-content">
                 ${cadastros.map(c =>
-                    `<a href="${c.href}">${c.text}</a>`
-                ).join("")}
+            `<a href="${c.href}">${c.text}</a>`
+        ).join("")}
             </div>
         </li>
         `;
     }
     div = nav.querySelector(".right");
     if (div) {
-       div.innerHTML = html + `<li><a href="#" id="logout">Sair</a></li>`;
+        div.innerHTML = html + `<li><a href="#" id="logout">Sair</a></li>`;
     }
-    
+
 }
 async function setup() {
-    // const usuario = await carregarUser();
-    // if (usuario) carregarTabs(usuario);
-    carregarTabs("ADMIN"); // TODO: remover depois de implementar o login e deslogar
+    const usuario = await carregarUser();
+    if (usuario) carregarTabs(usuario);
 }
 
 
 setup();
-   

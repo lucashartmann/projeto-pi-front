@@ -12,7 +12,7 @@ class Endereco
     public $cidade;
     public $uf;
 
-    public function __init__($rua, $bairro, $cep, $cidade, $uf)
+    public function __construct($rua, $bairro, $cep, $cidade, $uf)
     {
         $this->id = NULL;
         $this->rua = $rua;
@@ -22,6 +22,12 @@ class Endereco
         $this->complemento = NULL;
         $this->cidade = $cidade;
         $this->uf = $uf;
+    }
+
+    
+    public function __init__($rua, $bairro, $cep, $cidade, $uf)
+    {
+        $this->__construct($rua, $bairro, $cep, $cidade, $uf);
     }
 
     public function get_uf()

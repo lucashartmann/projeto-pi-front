@@ -19,19 +19,20 @@ class Banco
 
     public function __construct()
     {
-        $dir = __DIR__ . '/data';
-        $db_file = $dir . '/imobiliaria.db';
+        $servername = "127.0.0.1";
+        $username = "root";
+        $password = "";
+        $dbname = "imobiliaria";
 
-        if (!is_dir($dir)) {
-            mkdir($dir, 0777, true);
+        try {
+            $this->db = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
+            $this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            $this->init_tabelas();
+            // // echo "Connected successfully";
+        } catch (PDOException $e) {
+            // echo $e->getMessage();
+            return;
         }
-
-        if (!file_exists($db_file)) {
-            file_put_contents($db_file, '');
-        }
-        $this->db = new PDO('sqlite:' . $db_file);
-        $this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        $this->init_tabelas();
     }
 
     public function init_tabelas()
@@ -40,21 +41,43 @@ class Banco
         $queries = [
 
             "CREATE TABLE IF NOT EXISTS usuario (
-                id_usuario INTEGER PRIMARY KEY AUTOINCREMENT,
-                username TEXT UNIQUE,
-                senha TEXT NOT NULL,
-                email TEXT UNIQUE,
-                nome TEXT NOT NULL,
-                cpf_cnpj TEXT UNIQUE NOT NULL,
-                rg TEXT,
+                id_usuario INTEGER PRIMARY KEY AUTO_INCREMENT,
+                username VARCHAR(255) UNIQUE,
+                senha VARCHAR(255) NOT NULL,
+                email VARCHAR(255) UNIQUE,
+                nome VARCHAR(255) NOT NULL,
+                cpf_cnpj VARCHAR(14) UNIQUE NOT NULL,
+                rg VARCHAR(12),
                 id_endereco INTEGER,
-                data_nascimento TEXT,
-                tipo_usuario TEXT NOT NULL
+                data_nascimento DATE,
+                tipo_usuario VARCHAR(50) NOT NULL
             )",
 
             "CREATE TABLE IF NOT EXISTS telefone (
-                id_telefone INTEGER PRIMARY KEY AUTOINCREMENT,
-                numero TEXT NOT NULL UNIQUE
+                id_telefone INTEGER PRIMARY KEY AUTO_INCREMENT,
+                numero VARCHAR(11) NOT NULL UNIQUE
+            )",
+
+            "CREATE TABLE IF NOT EXISTS endereco (
+                id_endereco INTEGER PRIMARY KEY AUTO_INCREMENT,
+                rua VARCHAR(255) NOT NULL,
+                numero INTEGER(10) NULL,
+                bairro VARCHAR(255) NOT NULL,
+                cep VARCHAR(8) NOT NULL,
+                complemento VARCHAR(100) NULL,
+                cidade VARCHAR(255) NOT NULL,
+                uf VARCHAR(2) NOT NULL
+            )",
+
+            "CREATE TABLE IF NOT EXISTS proprietario (
+                id_proprietario INTEGER PRIMARY KEY AUTO_INCREMENT,
+                email VARCHAR(255) UNIQUE NULL,
+                nome VARCHAR(255) NOT NULL,
+                cpf_cnpj VARCHAR(14) UNIQUE NULL,
+                rg VARCHAR(12) NULL,
+                id_endereco INTEGER NULL,
+                data_nascimento DATE NULL,
+                FOREIGN KEY (id_endereco) REFERENCES endereco(id_endereco)
             )",
 
             "CREATE TABLE IF NOT EXISTS telefone_usuario (
@@ -64,76 +87,147 @@ class Banco
                 FOREIGN KEY (id_telefone) REFERENCES telefone(id_telefone) ON DELETE CASCADE
             )",
 
-            "CREATE TABLE IF NOT EXISTS endereco (
-                id_endereco INTEGER PRIMARY KEY AUTOINCREMENT,
-                rua TEXT NOT NULL,
-                numero INTEGER,
-                bairro TEXT NOT NULL,
-                cep TEXT NOT NULL,
-                complemento TEXT,
-                cidade TEXT NOT NULL,
-                uf TEXT NOT NULL
+            "CREATE TABLE IF NOT EXISTS telefone_proprietario (
+                id_telefone INTEGER,
+                id_proprietario INTEGER,
+                FOREIGN KEY (id_telefone) REFERENCES telefone(id_telefone) ON DELETE CASCADE,
+                FOREIGN KEY (id_proprietario) REFERENCES proprietario (id_proprietario) ON DELETE CASCADE
             )",
 
-            "CREATE TABLE IF NOT EXISTS proprietario (
-                id_proprietario INTEGER PRIMARY KEY AUTOINCREMENT,
-                email TEXT UNIQUE,
-                nome TEXT NOT NULL,
-                cpf_cnpj TEXT UNIQUE,
-                rg TEXT,
-                id_endereco INTEGER,
-                data_nascimento TEXT
+            "CREATE TABLE IF NOT EXISTS cliente (
+                    id_usuario INTEGER PRIMARY KEY,
+                    FOREIGN KEY (id_usuario) REFERENCES usuario(id_usuario) ON DELETE CASCADE
             )",
+
+            "CREATE TABLE IF NOT EXISTS captador (
+                    id_usuario INTEGER PRIMARY KEY,
+                    salario REAL NULL,
+                    FOREIGN KEY (id_usuario) REFERENCES usuario(id_usuario) ON DELETE CASCADE
+            )",
+
+            "CREATE TABLE IF NOT EXISTS corretor (
+                    id_usuario INTEGER PRIMARY KEY,
+                    creci TEXT NULL,
+                    FOREIGN KEY (id_usuario) REFERENCES usuario(id_usuario) ON DELETE CASCADE
+            )",
+
 
             "CREATE TABLE IF NOT EXISTS anuncio (
-                id_anuncio INTEGER PRIMARY KEY AUTOINCREMENT,
-                descricao TEXT,
-                titulo TEXT       
-            )",
-
-            "CREATE TABLE IF NOT EXISTS imovel (
-                id_imovel INTEGER PRIMARY KEY AUTOINCREMENT,
-                valor_venda REAL,
-                valor_aluguel REAL,
-                quant_quartos INTEGER,
-                quant_salas INTEGER,
-                quant_vagas INTEGER,
-                quant_banheiros INTEGER,
-                quant_varandas INTEGER,
-                categoria TEXT NOT NULL,
-                id_endereco INTEGER,
-                status TEXT NOT NULL,
-                iptu REAL,
-                valor_condominio REAL,
-                andar INTEGER,
-                estado TEXT,
-                bloco TEXT,
-                ano_construcao INTEGER,
-                area_total REAL,
-                area_privativa REAL,
-                situacao TEXT,
-                ocupacao TEXT,
-                data_cadastro TEXT,
-                data_modificacao TEXT,
-                id_anuncio INTEGER,
-                FOREIGN KEY (id_anuncio) REFERENCES anuncio(id_anuncio),
-                FOREIGN KEY (id_endereco) REFERENCES endereco(id_endereco)
-            )",
-
-            "CREATE TABLE IF NOT EXISTS midia_anuncio (
-                id_anuncio INTEGER,
-                midia BLOB,
-                tipo TEXT,
-                FOREIGN KEY (id_anuncio) REFERENCES anuncio(id_anuncio) ON DELETE CASCADE
+                id_anuncio INTEGER PRIMARY KEY AUTO_INCREMENT,
+                descricao VARCHAR(255) NULL,
+                titulo VARCHAR(255) NULL
             )",
 
             "CREATE TABLE IF NOT EXISTS condominio (
-                id_condominio INTEGER PRIMARY KEY AUTOINCREMENT,
-                nome TEXT,
-                id_endereco INTEGER,
+                id_condominio INTEGER PRIMARY KEY AUTO_INCREMENT,
+                nome VARCHAR(255) NULL,
+                id_endereco INTEGER NULL,
                 FOREIGN KEY (id_endereco) REFERENCES endereco(id_endereco)
-            )"
+            )",
 
+            "CREATE TABLE IF NOT EXISTS imovel (
+                id_imovel INTEGER PRIMARY KEY AUTO_INCREMENT,
+                valor_venda REAL NULL,
+                valor_aluguel REAL NULL,
+                quant_quartos INTEGER NULL,
+                quant_salas INTEGER NULL,
+                quant_vagas INTEGER NULL,
+                quant_banheiros INTEGER NULL,
+                quant_varandas INTEGER NULL,
+                categoria VARCHAR(255) NOT NULL,
+                id_endereco INTEGER NULL,
+                status VARCHAR(255) NOT NULL,
+                iptu REAL NULL,
+                valor_condominio REAL NULL,
+                andar INTEGER NULL,
+                estado VARCHAR(255) NULL,
+                bloco VARCHAR(255) NULL,
+                ano_construcao YEAR NULL,
+                area_total REAL NULL,
+                area_privativa REAL NULL,
+                situacao VARCHAR(255) NULL,
+                ocupacao VARCHAR(255) NULL,
+                id_corretor INT NULL,
+                id_captador INT NULL,
+                data_cadastro TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                data_modificacao DATETIME NULL,
+                id_anuncio INT NULL,
+                id_condominio INT NULL,
+                FOREIGN KEY (id_anuncio) REFERENCES anuncio (id_anuncio),
+                FOREIGN KEY (id_endereco) REFERENCES endereco(id_endereco),
+                FOREIGN KEY (id_corretor) REFERENCES corretor(id_usuario),
+                FOREIGN KEY (id_captador) REFERENCES captador(id_usuario),
+                FOREIGN KEY (id_condominio) REFERENCES condominio (id_condominio)
+
+            )",
+
+            "CREATE TABLE IF NOT EXISTS midia_anuncio (
+                id_anuncio INTEGER NULL,
+                midia BLOB NULL,
+                tipo VARCHAR(255) NULL,
+                FOREIGN KEY (id_anuncio) REFERENCES anuncio(id_anuncio) ON DELETE CASCADE
+            )",
+
+            "CREATE TABLE IF NOT EXISTS venda_aluguel (
+                    id_venda INTEGER PRIMARY KEY AUTO_INCREMENT,
+                    id_cliente INT NULL,
+                    cpf_cnpj_proprietario VARCHAR(14) NULL, 
+                    id_captador INT NULL,
+                    id_corretor INT NULL,
+                    data_venda DATE NULL,
+                    id_imovel INTEGER  NULL,
+                    comissao_captador REAL NULL,
+                    comissao_corretor REAL NULL,
+                    FOREIGN KEY (id_imovel) REFERENCES imovel (id_imovel),
+                    FOREIGN KEY (id_cliente) REFERENCES cliente (id_usuario),
+                    FOREIGN KEY (cpf_cnpj_proprietario) references proprietario (cpf_cnpj),
+                    FOREIGN KEY (id_corretor) references corretor (id_usuario)
+                    )",
+
+            "CREATE TABLE IF NOT EXISTS gerente (
+                    id_usuario INTEGER PRIMARY KEY AUTO_INCREMENT,
+                    salario REAL NULL,
+                    FOREIGN KEY (id_usuario) REFERENCES usuario(id_usuario) ON DELETE CASCADE
+                )",
+
+            "CREATE TABLE IF NOT EXISTS atendimento (
+                    id_atendimento INTEGER PRIMARY KEY AUTO_INCREMENT,
+                    id_imovel INTEGER  NULL,
+                    id_corretor INT  NULL,
+                    id_cliente INT NULL,
+                    status VARCHAR(255) NULL,
+                    FOREIGN KEY (id_imovel) REFERENCES imovel (id_imovel),
+                    FOREIGN KEY (id_corretor) references corretor (id_usuario),
+                    FOREIGN KEY (id_cliente) references cliente (id_usuario) ON DELETE CASCADE
+                )",
+            "CREATE TABLE IF NOT EXISTS filtros_imovel (
+                    id_filtros_imovel INTEGER PRIMARY KEY AUTO_INCREMENT,
+                    nome VARCHAR(255) NOT NULL UNIQUE                    
+                )",
+            "CREATE TABLE IF NOT EXISTS filtros_condominio
+                (
+                    id_filtros_condominio INTEGER PRIMARY KEY AUTO_INCREMENT,
+                    nome VARCHAR(255) NOT NULL UNIQUE                    
+                )",
+            "CREATE TABLE IF NOT EXISTS imovel_filtros (
+                    id_filtros_imovel INTEGER,
+                    id_imovel INTEGER, 
+                    FOREIGN KEY (id_filtros_imovel) references filtros_imovel (id_filtros_imovel) ON DELETE CASCADE,
+                    FOREIGN KEY (id_imovel) references imovel (id_imovel) ON DELETE CASCADE                
+                )",
+            "CREATE TABLE IF NOT EXISTS condominio_filtros (
+                    id_filtros_condominio INTEGER,
+                    id_condominio INTEGER, 
+                    FOREIGN KEY (id_filtros_condominio) references filtros_condominio (id_filtros_condominio) ON DELETE CASCADE,
+                    FOREIGN KEY (id_condominio) references condominio (id_condominio) ON DELETE CASCADE               
+                )",
+
+            "CREATE TABLE IF NOT EXISTS proprietario_imovel (
+                    cpf_cnpj_proprietario VARCHAR(14) NULL,
+                    id_imovel INTEGER NULL,
+                    FOREIGN KEY (cpf_cnpj_proprietario) references proprietario (cpf_cnpj) ON DELETE CASCADE,
+                    FOREIGN KEY (id_imovel) references imovel (id_imovel) ON DELETE CASCADE                
+                )",
         ];
 
         foreach ($queries as $sql) {
@@ -141,6 +235,151 @@ class Banco
         }
     }
 
+    public function get_usuario_por_id($id)
+    {
+        try {
+            $sql = "SELECT * FROM usuario WHERE id_usuario = ?";
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute([$id]);
+            $registro = $stmt->fetch(PDO::FETCH_ASSOC);
+            if (!$registro) {
+                throw new Exception("Não existe usuário com ID $id");
+            }
+            $id_usuario = $registro['id_usuario'] !== null ? (int)$registro['id_usuario'] : null;
+            $username = $registro['username'];
+            $senha = $registro['senha'];
+            $email = $registro['email'];
+            $nome = $registro['nome'];
+            $cpf_cnpj = $registro['cpf_cnpj'];
+            $rg = $registro['rg'];
+            $endereco = $registro['endereco'];
+            if ($endereco) {
+                $endereco = $this->get_endereco_por_id((int)($registro['id_endereco']));
+            }
+            $data_nascimento = $registro['data_nascimento'];
+            if ($data_nascimento) {
+
+                $data_nascimento = DateTime::createFromFormat('Y-m-d', $data_nascimento);
+            }
+            $tipo_usuario = $registro['tipo_usuario'];
+            if ($tipo_usuario) {
+                $tipo_usuario = Tipo::tryFrom($tipo_usuario);
+            }
+            $usuario_obj = new Usuario(
+                $username,
+                $senha,
+                $email,
+                $nome,
+                $cpf_cnpj,
+                $tipo_usuario
+            );
+            $sql_query = " 
+                            SELECT id_telefone FROM telefone_usuario 
+                            WHERE id_usuario = ?
+                            ";
+            $stmt = $this->db->prepare($sql_query);
+            $stmt->execute([$id_usuario]);
+            $registros = $stmt->fetch(PDO::FETCH_ASSOC);
+            $telefones = [];
+            if ($registros) {
+                foreach ($registros as $id_telefone) {
+                    $sql_query = " 
+                            SELECT numero FROM telefone 
+                            WHERE id_telefone = ?
+                                ";
+                    $stmt = $this->db->prepare($sql_query);
+                    $stmt->execute([$id_telefone]);
+                    $registro = $stmt->fetch(PDO::FETCH_ASSOC);
+                }
+            }
+            switch ($tipo_usuario) {
+                case (Tipo::CORRETOR):
+                    $stmt = $this->db->prepare("
+                                    SELECT creci FROM corretor 
+                                    WHERE id_usuario = ?
+                                ");
+                    $stmt->execute([$id_usuario]);
+                    $creci = $stmt->fetch(PDO::FETCH_ASSOC)[0];
+                    if ($creci) {
+                        $creci = (int)($creci);
+                    }
+                    $usuario_obj = new Corretor(
+                        $username,
+                        $senha,
+                        $email,
+                        $nome,
+                        $cpf_cnpj,
+                        $creci
+                    );
+                    break;
+
+                case (Tipo::CAPTADOR):
+                    $usuario_obj = new Captador(
+                        $username,
+                        $senha,
+                        $email,
+                        $nome,
+                        $cpf_cnpj
+                    );
+                    $stmt = $this->db->prepare("
+                                    SELECT salario FROM captador 
+                                    WHERE id_usuario = ?
+                                ");
+                    $stmt->execute([$id_usuario]);
+                    $salario = $stmt->fetch(PDO::FETCH_ASSOC)[0];
+                    if ($salario) {
+                        $salario = (float)($salario);
+                    }
+                    $usuario_obj->set_salario($salario);
+                    break;
+
+                case (Tipo::GERENTE):
+                    $usuario_obj = new Gerente(
+                        $username,
+                        $senha,
+                        $email,
+                        $nome,
+                        $cpf_cnpj
+                    );
+                    $stmt = $this->db->prepare("
+                                    SELECT salario FROM gerente 
+                                    WHERE id_usuario = ?
+                                ");
+                    $stmt->execute([$id_usuario]);
+                    $salario = $stmt->fetch(PDO::FETCH_ASSOC)[0];
+                    if ($salario) {
+                        $salario = (float)($salario);
+                    }
+                    $usuario_obj->set_salario($salario);
+                    break;
+
+                case (Tipo::CLIENTE):
+                    $usuario_obj = new Cliente(
+                        $username,
+                        $senha,
+                        $email,
+                        $nome,
+                        $cpf_cnpj
+                    );
+                    break;
+
+                    # $stmt = $this->db->prepare("
+                    #             SELECT * FROM cliente
+                    #             WHERE id_usuario = ?
+                    #         ", (id_usuario,))
+                    # registros = $stmt->fetch(PDO::FETCH_ASSOC)
+            }
+            $usuario_obj->set_id($id_usuario);
+            $usuario_obj->set_rg($rg);
+            $usuario_obj->set_endereco($endereco);
+            $usuario_obj->set_data_nascimento($data_nascimento);
+            $usuario_obj->set_telefones($telefones);
+            return $usuario_obj;
+        } catch (Exception $e) {
+            // echo "ERRO Banco->get_usuario_por_id: " . $e->getMessage();
+            return null;
+        }
+    }
 
     public function get_lista_enderecos()
     {
@@ -152,7 +391,7 @@ class Banco
 
             $dados = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-            if (!$dados) {
+            if (empty($dados)) {
                 throw new Exception("Não há endereços cadastrados");
             }
 
@@ -180,7 +419,7 @@ class Banco
 
             return $lista;
         } catch (Exception $e) {
-            # echo "ERRO! Banco->get_lista_enderecos: "  . $e->getMessage();
+            // echo "ERRO! Banco->get_lista_enderecos: "  . $e->getMessage();
             return [];
         }
     }
@@ -196,7 +435,7 @@ class Banco
 
             $dados = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-            if (!$dados) {
+            if (empty($dados)) {
                 throw new Exception("Não há proprietários cadastrados");
             }
 
@@ -225,7 +464,7 @@ class Banco
 
             return $lista;
         } catch (Exception $e) {
-            # echo "ERRO Banco->get_lista_proprietarios: "  . $e->getMessage();
+            // echo "ERRO Banco->get_lista_proprietarios: "  . $e->getMessage();
             return [];
         }
     }
@@ -240,7 +479,7 @@ class Banco
 
             $dados = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-            if (!$dados) {
+            if (empty($dados)) {
                 throw new Exception("Não há usuários cadastrados");
             }
 
@@ -293,7 +532,7 @@ class Banco
 
             return $lista;
         } catch (Exception $e) {
-            # echo "ERRO Banco->get_lista_clientes: "  . $e->getMessage();
+            // echo "ERRO Banco->get_lista_clientes: "  . $e->getMessage();
             return [];
         }
     }
@@ -308,7 +547,7 @@ class Banco
 
             $dados = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-            if (!$dados) {
+            if (empty($dados)) {
                 throw new Exception("Não há usuários cadastrados");
             }
 
@@ -438,7 +677,7 @@ class Banco
 
             return $lista;
         } catch (Exception $e) {
-            # echo "ERRO Banco->get_lista_usuarios: "  . $e->getMessage();
+            // echo "ERRO Banco->get_lista_usuarios: "  . $e->getMessage();
             return [];
         }
     }
@@ -448,10 +687,9 @@ class Banco
         try {
             $sql = "
                     INSERT INTO usuario (username, senha, email, nome, cpf_cnpj, rg, id_endereco, data_nascimento, tipo_usuario) 
-                    VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    VALUES(:username, :senha, :email, :nome, :cpf_cnpj, :rg, :endereco, :data_nascimento, :tipo)
                 ";
             $stmt = $this->db->prepare($sql);
-            $stmt->execute();
             if ($usuario->get_endereco()) {
                 $endereco = $usuario->get_endereco()->get_id();
             } else {
@@ -463,7 +701,7 @@ class Banco
                 $tipo = NULL;
             }
             if ($usuario->get_data_nascimento()) {
-                $data_nascimento = $usuario->get_data_nascimento()->strftime("%d-%m-%Y");
+                $data_nascimento = $usuario->get_data_nascimento()->format("Y-m-d");
             } else {
                 $data_nascimento = NULL;
             }
@@ -484,7 +722,7 @@ class Banco
                 foreach ($usuario->get_telefones() as $telefone) {
                     $sql_query = " 
                             INSERT INTO telefone (numero) 
-                            VALUES(?)
+                            VALUES(:numero)
                             ";
                     $stmt = $this->db->prepare($sql_query);
                     $stmt->execute([
@@ -493,21 +731,21 @@ class Banco
                     $id_telefone = $this->db->lastInsertId();
                     $sql_query = " 
                             INSERT INTO telefone_usuario (id_usuario, id_telefone) 
-                            VALUES(?, ?)
+                            VALUES(:id_usuario, :id_telefone)
                             ";
                     $stmt = $this->db->prepare($sql_query);
                     $stmt->execute([
-                        ':id_usuario' => $telefone,
+                        ':id_usuario' => $id,
                         ':id_telefone' => $id_telefone
                     ]);
                 }
             }
             $tipo_usuario_obj = $usuario->get_tipo();
-            $tipo_usuario_valor = $tipo_usuario_obj ? $tipo_usuario_obj->value($tipo_usuario_obj) : NULL;
+            $tipo_usuario_valor = $tipo_usuario_obj ? $tipo_usuario_obj->value : NULL;
             if ($tipo_usuario_valor == "CORRETOR") {
                 $stmt = $this->db->prepare("
                                     INSERT INTO corretor (id_usuario, creci)
-                                    VALUES(?, ?)
+                                    VALUES(:id_usuario, :creci)
                                 ");
                 $stmt->execute([
                     ':id_usuario' => $id,
@@ -516,7 +754,7 @@ class Banco
             } else if ($tipo_usuario_valor == "CAPTADOR") {
                 $stmt = $this->db->prepare("
                                     INSERT INTO captador (id_usuario, salario)
-                                    VALUES(?, ?)
+                                    VALUES(:id_usuario, :salario)
                                 ");
                 $stmt->execute([
                     ':id_usuario' => $id,
@@ -525,7 +763,7 @@ class Banco
             } else if ($tipo_usuario_valor == "GERENTE") {
                 $stmt = $this->db->prepare("
                                     INSERT INTO gerente (id_usuario, salario)
-                                    VALUES(?, ?)
+                                    VALUES(:id_usuario, :salario)
                                 ");
                 $stmt->execute([
                     ':id_usuario' => $id,
@@ -534,7 +772,7 @@ class Banco
             } else if ($tipo_usuario_valor == "CLIENTE") {
                 $stmt = $this->db->prepare("
                                     INSERT INTO cliente (id_usuario)
-                                    VALUES(?)
+                                    VALUES(:id_usuario)
                                 ");
                 $stmt->execute([
                     ':id_usuario' => $id,
@@ -544,7 +782,7 @@ class Banco
             return True;
         } catch (Exception $e) {
             $erro = "ERRO! Banco->cadastrar_usuario " . $e->getMessage();
-            # print($erro);
+            // echo $erro;
             return False;
         }
     }
@@ -558,12 +796,10 @@ class Banco
                 WHERE $campo_desejado = ?;
                 ";
             $stmt = $this->db->prepare($sql_delete_query);
-            $stmt->execute([
-                ":$campo_desejado" => $valor
-            ]);
+            $stmt->execute([$valor]);
             return True;
         } catch (Exception $e) {
-            // # print("ERRO Banco->remover {tabela} - {valor} {e}")
+            // echo "ERRO Banco->remover $tabela - $valor: " . $e->getMessage();
             return False;
         }
     }
@@ -576,13 +812,11 @@ class Banco
                 SET $campo_desejado = ?
                 ";
             $stmt = $this->db->prepare($sql_update_query);
-            $stmt->execute([
-                ":$campo_desejado" => $valor,
-            ]);
+            $stmt->execute([$valor]);
             $this->db->commit();
             return True;
         } catch (Exception $e) {
-            // # print("ERRO Banco->atualizar {tabela} - {valor} {e}")
+            // echo "ERRO Banco->atualizar $tabela - $valor: " . $e->getMessage();
             return False;
         }
     }
@@ -594,9 +828,7 @@ class Banco
             $stmt = $this->db->prepare("
                         SELECT * FROM usuario WHERE cpf_cnpj = ? 
                     ");
-            $stmt->execute([
-                ':cpf_cnpj' => $cpf
-            ]);
+            $stmt->execute([$cpf]);
             $registro = $stmt->fetch(PDO::FETCH_ASSOC);
             if (!$registro) {
                 throw new Exception("Não existe usuário com CPF/CNPJ $cpf");
@@ -634,9 +866,7 @@ class Banco
                             WHERE id_usuario = ?
                             ";
             $stmt = $this->db->prepare($sql_query);
-            $stmt->execute([
-                ':id_usuario' => $id_usuario
-            ]);
+            $stmt->execute([$id_usuario]);
             $registros = $stmt->fetch(PDO::FETCH_ASSOC);
             $telefones = [];
             if ($registros) {
@@ -646,9 +876,7 @@ class Banco
                             WHERE id_telefone = ?
                                 ";
                     $stmt = $this->db->prepare($sql_query);
-                    $stmt->execute([
-                        ':id_telefone' => $id_telefone
-                    ]);
+                    $stmt->execute([$id_telefone]);
                     $registro = $stmt->fetch(PDO::FETCH_ASSOC);
                 }
             }
@@ -658,7 +886,7 @@ class Banco
                                     SELECT creci FROM corretor 
                                     WHERE id_usuario = ?
                                 ");
-                    $stmt->execute([':id_usuario' => $id_usuario]);
+                    $stmt->execute([$id_usuario]);
                     $creci = $stmt->fetch(PDO::FETCH_ASSOC)[0];
                     if ($creci) {
                         $creci = (int)($creci);
@@ -685,7 +913,7 @@ class Banco
                                     SELECT salario FROM captador 
                                     WHERE id_usuario = ?
                                 ");
-                    $stmt->execute([':id_usuario' => $id_usuario]);
+                    $stmt->execute([$id_usuario]);
                     $salario = $stmt->fetch(PDO::FETCH_ASSOC)[0];
                     if ($salario) {
                         $salario = (float)($salario);
@@ -705,7 +933,7 @@ class Banco
                                     SELECT salario FROM gerente 
                                     WHERE id_usuario = ?
                                 ");
-                    $stmt->execute([':id_usuario' => $id_usuario]);
+                    $stmt->execute([$id_usuario]);
                     $salario = $stmt->fetch(PDO::FETCH_ASSOC)[0];
                     if ($salario) {
                         $salario = (float)($salario);
@@ -736,8 +964,8 @@ class Banco
             $usuario_obj->set_telefones($telefones);
             return $usuario_obj;
         } catch (Exception $e) {
-            $erro = "ERRO! Banco->get_usuario_por_cpf_cnpj{ {e}";
-            # print($erro);
+            $erro = "ERRO! Banco->get_usuario_por_cpf_cnpj: " . $e->getMessage();
+            // echo $erro;
             return NULL;
         }
     }
@@ -748,8 +976,8 @@ class Banco
             $stmt = $this->db->prepare("
                         SELECT * FROM filtros_imovel 
                 ");
-            $registros = $stmt->fetch(PDO::FETCH_ASSOC);
-            if (!$registros) {
+            $registros = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            if (empty($registros)) {
                 throw new Exception("Não existe filtros");
             }
 
@@ -761,7 +989,7 @@ class Banco
             }
             return $lista;
         } catch (Exception $e) {
-            # print("ERRO! Banco->get_lista_filtros_apartamento{ {e}");
+            // echo "ERRO! Banco->get_lista_filtros_apartamento: " . $e->getMessage();
             return [];
         }
     }
@@ -772,8 +1000,8 @@ class Banco
             $stmt = $this->db->prepare("
                         SELECT * FROM filtros_condominio 
                 ");
-            $registros = $stmt->fetch(PDO::FETCH_ASSOC);
-            if (!$registros) {
+            $registros = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            if (empty($registros)) {
                 throw new Exception("Não existe filtros");
             }
 
@@ -785,7 +1013,7 @@ class Banco
             }
             return $lista;
         } catch (Exception $e) {
-            # print("ERRO! Banco->get_lista_filtros_apartamento{ {e}");
+            // echo "ERRO! Banco->get_lista_filtros_condominio: " . $e->getMessage();
             return [];
         }
     }
@@ -795,16 +1023,16 @@ class Banco
         try {
             foreach ($lista_filtros as $filtro) {
                 $sql_query = " 
-                        INSERT INTO {tabela} (nome) 
-                        VALUES(?)
+                        INSERT INTO $tabela (nome) 
+                        VALUES(:nome)
                         ";
                 $stmt = $this->db->prepare($sql_query);
                 $stmt->execute([':nome' => $filtro]);
                 return True;
             }
         } catch (Exception $e) {
-            $erro = "ERRO! Banco->cadastrar_lista_filtros "  . $e->getMessage();
-            # print($erro);
+            $erro = "ERRO! Banco->cadastrar_lista_filtros: " . $e->getMessage();
+            // echo $erro;
             return False;
         }
     }
@@ -816,7 +1044,7 @@ class Banco
                         SELECT * FROM condominio 
                         WHERE id_imovel = ?
                     ");
-            $stmt->execute([':id_imovel' => $id_imovel]);
+            $stmt->execute([$id_imovel]);
             $registro = $stmt->fetch(PDO::FETCH_ASSOC);
             if (!$registro) {
                 throw new Exception(
@@ -840,7 +1068,7 @@ class Banco
                         SELECT * FROM condominio_filtros
                         WHERE id_condominio = ?
                     ");
-            $stmt->execute([':id_condominio' => $id_condominio]);
+            $stmt->execute([$id_condominio]);
             $condominio_filtros = $stmt->fetch(PDO::FETCH_ASSOC);
             $lista_condominio_filtros = [];
             if ($condominio_filtros) {
@@ -850,7 +1078,7 @@ class Banco
                                 SELECT nome FROM filtros_condominio
                                 WHERE id_filtros_condominio = ?
                             ");
-                    $stmt->execute([':id_filtros_condominio' => $id_condominio_filtros]);
+                    $stmt->execute([$id_condominio_filtros]);
                     $nome = $stmt->fetch(PDO::FETCH_ASSOC);
                     if ($nome) {
                         $lista_condominio_filtros[] = $nome;
@@ -862,8 +1090,8 @@ class Banco
             }
             return $condominio_obj;
         } catch (Exception $e) {
-            $erro = "ERRO! Banco->get_condominio_por_id_imovel " . $e->getMessage();
-            # print($erro);
+            $erro = "ERRO! Banco->get_condominio_por_id_imovel: " . $e->getMessage();
+            // echo $erro;
             return NULL;
         }
     }
@@ -874,16 +1102,16 @@ class Banco
         try {
 
             $sql_query = " 
-                    INSERT INTO atendimento (id_imovel, cpf_cnpj_corretor, cpf_cnpj_comprador, status) 
-                    VALUES(?, ?, ?, ?)
+                    INSERT INTO atendimento (id_imovel, id_corretor, id_cliente, status) 
+                    VALUES(:id_imovel, :id_corretor, :id_cliente, :status)
                     ";
             $corretor_obj = $atendimento->get_corretor();
             if ($corretor_obj) {
-                $corretor_obj = $corretor_obj->get_cpf_cnpj();
+                $corretor_obj = $corretor_obj->get_id();
             }
             $cliente_obj = $atendimento->get_cliente();
             if ($cliente_obj) {
-                $cliente_obj = $cliente_obj->get_cpf_cnpj();
+                $cliente_obj = $cliente_obj->get_id();
             }
 
             $imovel_obj = $atendimento->get_imovel();
@@ -897,14 +1125,14 @@ class Banco
             $stmt = $this->db->prepare($sql_query);
             $stmt->execute([
                 ":id_imovel" => $imovel_obj,
-                ":cpf_cnpj_corretor" => $corretor_obj,
-                ":cpf_cnpj_comprador" => $cliente_obj,
+                ":id_corretor" => $corretor_obj,
+                ":id_cliente" => $cliente_obj,
                 ":status" => $status
             ]);
             return True;
         } catch (Exception $e) {
-            $erro = "ERRO! Banco->cadastrar_atendimento" . $e->getMessage();
-            # print($erro);
+            $erro = "ERRO! Banco->cadastrar_atendimento: " . $e->getMessage();
+            // echo $erro;
             return False;
         }
     }
@@ -916,8 +1144,8 @@ class Banco
             $stmt = $this->db->prepare("
                         SELECT * FROM atendimento 
                 ");
-            $registros = $stmt->fetch(PDO::FETCH_ASSOC);
-            if (!$registros) {
+            $registros = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            if (empty($registros)) {
                 throw new Exception("Não há atendimentos cadastrados");
             }
             $lista = [];
@@ -949,8 +1177,8 @@ class Banco
             }
             return $lista;
         } catch (Exception $e) {
-            $erro = "ERRO! Banco->get_lista_atendimentos"  . $e->getMessage();
-            # print($erro);
+            $erro = "ERRO! Banco->get_lista_atendimentos: " . $e->getMessage();
+            // echo $erro;
             return [];
         }
     }
@@ -963,18 +1191,18 @@ class Banco
                         SELECT * FROM anuncio
                         WHERE id_anuncio = ?
                     ");
-            $stmt->execute([':id_anuncio' => $id_anuncio]);
+            $stmt->execute([$id_anuncio]);
             $registro = $stmt->fetch(PDO::FETCH_ASSOC);
             if (!$registro) {
                 throw new Exception("Não existe anúncio com id {id_anuncio}");
             }
             $anuncio_obj = new Anuncio();
-            $id_anuncio = $registro[0];
+            $id_anuncio = $registro['id_anuncio'];
             if ($id_anuncio) {
                 $id_anuncio = (int)($id_anuncio);
             }
-            $descricao = $registro[1];
-            $titulo = $registro[2];
+            $descricao = $registro['descricao'];
+            $titulo = $registro['titulo'];
             $anuncio_obj->set_id($id_anuncio);
             $anuncio_obj->set_descricao($descricao);
             $anuncio_obj->set_titulo($titulo);
@@ -990,8 +1218,8 @@ class Banco
             }
             return $anuncio_obj;
         } catch (Exception $e) {
-            $erro = "ERRO! Banco->get_anuncio_por_id"  . $e->getMessage();
-            # print($erro);
+            $erro = "ERRO! Banco->get_anuncio_por_id: " . $e->getMessage();
+            // echo $erro;
             return NULL;
         }
     }
@@ -1001,14 +1229,18 @@ class Banco
         try {
             $sql_query = " 
                     INSERT INTO midia_anuncio (id_anuncio, midia, tipo) 
-                    VALUES(?, ?, ?)
+                    VALUES(:id_anuncio, :midia, :tipo)
                     ";
             $stmt = $this->db->prepare($sql_query);
-            $stmt->execute([$id_anuncio, $blob, $tipo]);
+            $stmt->execute([
+                ':id_anuncio' => $id_anuncio,
+                ':midia' => $blob,
+                ':tipo' => $tipo
+            ]);
             return True;
         } catch (Exception $e) {
-            $erro = "ERRO! Banco->cadastrar_anexo"  . $e->getMessage();
-            # print($erro);
+            $erro = "ERRO! Banco->cadastrar_anexo: " . $e->getMessage();
+            // echo $erro;
             return False;
         }
     }
@@ -1020,20 +1252,20 @@ class Banco
 
             $stmt = $this->db->prepare("
                         SELECT * FROM midia_anuncio 
-                        WHERE id_anuncio = ?
+                        WHERE id_anuncio = :id_anuncio
                     ");
-            $stmt->execute([$id_anuncio]);
-            $registros = $stmt->fetch(PDO::FETCH_ASSOC);
+            $stmt->execute([':id_anuncio' => $id_anuncio]);
+            $registros = $stmt->fetchAll(PDO::FETCH_ASSOC);
             $imagens = [];
             $videos = [];
             $documentos = [];
-            if (!$registros) {
-                throw new Exception("Não há midias_imóveis cadastrados");
+            if (empty($registros)) {
+                throw new Exception("Não há midias_imóveis cadastradas");
             }
             foreach ($registros as $registro) {
-                $id = (int)($registro[0]);
-                $blob = $registro[1];
-                $tipo = $registro[2];
+                $id = (int)($registro['id_anuncio']);
+                $blob = $registro['midia'];
+                $tipo = $registro['tipo'];
                 if ($tipo == "Imagem") {
                     $imagens[] = ($blob);
                 } else if ($tipo == "Documento") {
@@ -1048,8 +1280,8 @@ class Banco
             $mapa["Documentos"] = $documentos;
             return $mapa;
         } catch (Exception $e) {
-            $erro = "ERRO! Banco->get_lista_anexos{ {e}";
-            # print($erro);
+            $erro = "ERRO! Banco->get_lista_anexos: " . $e->getMessage();
+            // echo $erro;
             return [];
         }
     }
@@ -1059,17 +1291,17 @@ class Banco
         try {
             $stmt = $this->db->prepare("
                 SELECT * FROM condominio 
-                WHERE id_endereco = ?
+                WHERE id_endereco = :id_endereco
             ");
 
-            $stmt->execute([$id]);
+            $stmt->execute([':id_endereco' => $id]);
             $registro = $stmt->fetch(PDO::FETCH_ASSOC);
 
             if (!$registro) {
                 throw new Exception("Não existe condominio com id_endereco {$id}");
             }
 
-            $id_condominio = (int)$registro['id'];
+            $id_condominio = (int)$registro['id_condominio'];
             $nome = $registro['nome'];
             $id_endereco = (int)$registro['id_endereco'];
 
@@ -1081,7 +1313,7 @@ class Banco
             return $condominio_obj;
         } catch (Exception $e) {
             $erro = "ERRO! Banco->get_condominio_por_id_endereco: "  . $e->getMessage();
-            # print($erro);
+            // echo $erro;
             return null;
         }
     }
@@ -1092,9 +1324,9 @@ class Banco
 
             $stmt = $this->db->prepare("
                 SELECT * FROM condominio 
-                WHERE id_condominio = ?
+                WHERE id_condominio = :id_condominio
             ");
-            $stmt->execute([$id]);
+            $stmt->execute([':id_condominio' => $id]);
 
             $registro = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -1114,7 +1346,7 @@ class Banco
             return $condominio_obj;
         } catch (Exception $e) {
             $erro = "ERRO! Banco->get_condominio_por_id: "  . $e->getMessage();
-            # print($erro);
+            // echo $erro;
             return null;
         }
     }
@@ -1159,7 +1391,7 @@ class Banco
             return $endereco_resultado;
         } catch (Exception $e) {
             $erro = "ERRO! Banco->verificar_endereco: "  . $e->getMessage();
-            # print($erro);
+            // echo $erro;
             return null;
         }
     }
@@ -1321,7 +1553,7 @@ class Banco
             return $usuario_obj;
         } catch (Exception $e) {
             $erro = "ERRO! Banco->verificar_usuario: "  . $e->getMessage();
-            # print($erro);
+            // echo $erro;
             return null;
         }
     }
@@ -1350,7 +1582,7 @@ class Banco
 
             return true;
         } catch (Exception $e) {
-            # print("ERRO! Banco->cadastrar_endereco: "  . $e->getMessage());
+            // echo "ERRO! Banco->cadastrar_endereco: " . $e->getMessage();
             return false;
         }
     }
@@ -1378,7 +1610,7 @@ class Banco
 
             return true;
         } catch (Exception $e) {
-            # print("ERRO! Banco->cadastrar_condominio: "  . $e->getMessage());
+            // echo "ERRO! Banco->cadastrar_condominio: " . $e->getMessage();
             return false;
         }
     }
@@ -1438,7 +1670,7 @@ class Banco
 
             return true;
         } catch (Exception $e) {
-            # print("ERRO! Banco->cadastrar_proprietario: "  . $e->getMessage());
+            // echo "ERRO! Banco->cadastrar_proprietario: " . $e->getMessage();
             return false;
         }
     }
@@ -1484,7 +1716,7 @@ class Banco
 
             return $id_anuncio;
         } catch (Exception $e) {
-            # print("ERRO! Banco->cadastrar_anuncio: "  . $e->getMessage());
+            // echo "ERRO! Banco->cadastrar_anuncio: " . $e->getMessage();
             return false;
         }
     }
@@ -1520,7 +1752,7 @@ class Banco
 
             return $endereco;
         } catch (Exception $e) {
-            # print("ERRO! Banco->get_endereco_por_id: "  . $e->getMessage());
+            // echo "ERRO! Banco->get_endereco_por_id: " . $e->getMessage();
             return null;
         }
     }
@@ -1559,7 +1791,7 @@ class Banco
 
             return $proprietario;
         } catch (Exception $e) {
-            # print("ERRO! Banco->get_proprietario_por_cpf_cnpj: "  . $e->getMessage());
+            // echo "ERRO! Banco->get_proprietario_por_cpf_cnpj: " . $e->getMessage();
             return null;
         }
     }
@@ -1578,7 +1810,7 @@ class Banco
                 quant_banheiros, quant_varandas, categoria, id_endereco, status,
                 iptu, valor_condominio, andar, estado, bloco, ano_construcao,
                 area_total, area_privativa, situacao, ocupacao,
-                cpf_cnpj_corretor, cpf_cnpj_captador,
+                id_corretor, id_captador,
                 data_cadastro, data_modificacao, id_anuncio, id_condominio
             ) 
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
@@ -1686,8 +1918,8 @@ class Banco
 
             return true;
         } catch (Exception $e) {
-            $this->db->rollBack();
-            # print("ERRO! Banco->cadastrar_imovel: "  . $e->getMessage());
+            // $this->db->rollBack();
+            echo "ERRO! Banco->cadastrar_imovel: " . $e->getMessage();
             return false;
         }
     }
@@ -1707,7 +1939,7 @@ class Banco
 
             $resultados = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-            if (!$resultados) {
+            if (empty($resultados)) {
                 throw new Exception("Não há imóveis disponíveis");
             }
 
@@ -1735,12 +1967,12 @@ class Banco
                     ? $this->get_endereco_por_id((int)$dados['id_endereco'])
                     : null;
 
-                $corretor = $dados['cpf_cnpj_corretor']
-                    ? $this->get_usuario_por_cpf_cnpj($dados['cpf_cnpj_corretor'])
+                $corretor = $dados['id_corretor']
+                    ? $this->get_usuario_por_id($dados['id_corretor'])
                     : null;
 
-                $captador = $dados['cpf_cnpj_captador']
-                    ? $this->get_usuario_por_cpf_cnpj($dados['cpf_cnpj_captador'])
+                $captador = $dados['id_captador']
+                    ? $this->get_usuario_por_id($dados['id_captador'])
                     : null;
 
                 $anuncio = $dados['id_anuncio']
@@ -1828,7 +2060,7 @@ class Banco
 
             return $lista;
         } catch (Exception $e) {
-            # echo "ERRO Banco->get_lista_imoveis: "  . $e->getMessage();
+            // echo "ERRO Banco->get_lista_imoveis: " . $e->getMessage();
             return [];
         }
     }
@@ -1848,7 +2080,7 @@ class Banco
 
             $resultados = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-            if (!$resultados) {
+            if (empty($resultados)) {
                 throw new Exception("Não há imóveis disponíveis");
             }
 
@@ -1879,12 +2111,12 @@ class Banco
                     ? $this->get_endereco_por_id((int)$dados['id_endereco'])
                     : null;
 
-                $corretor = $dados['cpf_cnpj_corretor']
-                    ? $this->get_usuario_por_cpf_cnpj($dados['cpf_cnpj_corretor'])
+                $corretor = $dados['id_corretor']
+                    ? $this->get_usuario_por_id($dados['id_corretor'])
                     : null;
 
-                $captador = $dados['cpf_cnpj_captador']
-                    ? $this->get_usuario_por_cpf_cnpj($dados['cpf_cnpj_captador'])
+                $captador = $dados['id_captador']
+                    ? $this->get_usuario_por_id($dados['id_captador'])
                     : null;
 
                 $anuncio = $dados['id_anuncio']
@@ -1973,7 +2205,7 @@ class Banco
 
             return $lista;
         } catch (Exception $e) {
-            # echo "ERRO Banco->get_lista_imoveis_disponiveis: "  . $e->getMessage();
+            // echo "ERRO Banco->get_lista_imoveis_disponiveis: " . $e->getMessage();
             return [];
         }
     }
@@ -2105,8 +2337,8 @@ class Banco
                 area_privativa = :area_privativa,
                 situacao = :situacao,
                 ocupacao = :ocupacao,
-                cpf_cnpj_corretor = :corretor,
-                cpf_cnpj_captador = :captador,
+                id_corretor = :corretor,
+                id_captador = :captador,
                 data_cadastro = :data_cadastro,
                 data_modificacao = :data_modificacao,
                 id_anuncio = :anuncio,
@@ -2149,7 +2381,7 @@ class Banco
             return true;
         } catch (Exception $e) {
             $this->db->rollBack();
-            # echo "ERRO Banco->atualizar_imovel: "  . $e->getMessage();
+            // echo "ERRO Banco->atualizar_imovel: " . $e->getMessage();
             return false;
         }
     }
@@ -2169,7 +2401,7 @@ class Banco
 
             return $row ? (int)$row['id_filtros_imovel'] : null;
         } catch (Exception $e) {
-            # echo "ERRO Banco->get_id_filtro_imovel_por_nome: "  . $e->getMessage();
+            // echo "ERRO Banco->get_id_filtro_imovel_por_nome: " . $e->getMessage();
             return null;
         }
     }
@@ -2189,7 +2421,7 @@ class Banco
 
             return true;
         } catch (Exception $e) {
-            # echo "ERRO Banco->cadastrar_filtro_imovel: "  . $e->getMessage();
+            // echo "ERRO Banco->cadastrar_filtro_imovel: " . $e->getMessage();
             return false;
         }
     }
@@ -2210,7 +2442,7 @@ class Banco
 
             return true;
         } catch (Exception $e) {
-            # echo "ERRO Banco->remover_filtro_do_imovel: "  . $e->getMessage();
+            // echo "ERRO Banco->remover_filtro_do_imovel: " . $e->getMessage();
             return false;
         }
     }
@@ -2230,7 +2462,7 @@ class Banco
 
             return $row ? (int)$row['id_filtros_condominio'] : null;
         } catch (Exception $e) {
-            # echo "ERRO Banco->get_id_filtro_condominio_por_nome: "  . $e->getMessage();
+            // echo "ERRO Banco->get_id_filtro_condominio_por_nome: " . $e->getMessage();
             return null;
         }
     }
@@ -2250,7 +2482,7 @@ class Banco
 
             return true;
         } catch (Exception $e) {
-            # echo "ERRO Banco->cadastrar_filtro_condominio: "  . $e->getMessage();
+            // echo "ERRO Banco->cadastrar_filtro_condominio: " . $e->getMessage();
             return false;
         }
     }
@@ -2271,7 +2503,7 @@ class Banco
 
             return true;
         } catch (Exception $e) {
-            # echo "ERRO Banco->remover_filtro_do_condominio: "  . $e->getMessage();
+            // echo "ERRO Banco->remover_filtro_do_condominio: " . $e->getMessage();
             return false;
         }
     }
@@ -2310,7 +2542,7 @@ class Banco
             return true;
         } catch (Exception $e) {
             $this->db->rollBack();
-            # echo "ERRO Banco->atualizar_anuncio: "  . $e->getMessage();
+            // echo "ERRO Banco->atualizar_anuncio: " . $e->getMessage();
             return false;
         }
     }
@@ -2377,7 +2609,7 @@ class Banco
             return true;
         } catch (Exception $e) {
             $this->db->rollBack();
-            # echo "ERRO Banco->atualizar_condominio: "  . $e->getMessage();
+            // echo "ERRO Banco->atualizar_condominio: " . $e->getMessage();
             return false;
         }
     }
@@ -2528,7 +2760,7 @@ class Banco
             return true;
         } catch (Exception $e) {
             $this->db->rollBack();
-            # echo "ERRO Banco->atualizar_usuario: "  . $e->getMessage();
+            // echo "ERRO Banco->atualizar_usuario: " . $e->getMessage();
             return false;
         }
     }
@@ -2629,7 +2861,7 @@ class Banco
             return true;
         } catch (Exception $e) {
             $this->db->rollBack();
-            # echo "ERRO Banco->atualizar_proprietario: "  . $e->getMessage();
+            // echo "ERRO Banco->atualizar_proprietario: " . $e->getMessage();
             return false;
         }
     }
@@ -2670,13 +2902,13 @@ class Banco
             }
 
             $corretor = null;
-            if ($dados['cpf_cnpj_corretor']) {
-                $corretor = $this->get_usuario_por_cpf_cnpj($dados['cpf_cnpj_corretor']);
+            if ($dados['id_corretor']) {
+                $corretor = $this->get_usuario_por_cpf_cnpj($dados['id_corretor']);
             }
 
             $captador = null;
-            if ($dados['cpf_cnpj_captador']) {
-                $captador = $this->get_usuario_por_cpf_cnpj($dados['cpf_cnpj_captador']);
+            if ($dados['id_captador']) {
+                $captador = $this->get_usuario_por_cpf_cnpj($dados['id_captador']);
             }
 
             $data_cadastro = $dados['data_cadastro'] ? new DateTime($dados['data_cadastro']) : null;
@@ -2749,7 +2981,7 @@ class Banco
 
             return $imovel_obj;
         } catch (Exception $e) {
-            # echo "ERRO! Banco->get_imovel_por_id: "  . $e->getMessage();
+            // echo "ERRO! Banco->get_imovel_por_id: " . $e->getMessage();
             return null;
         }
     }
@@ -2760,7 +2992,7 @@ class Banco
             $stmt = $this->db->prepare("SELECT id_imovel FROM proprietario_imovel WHERE cpf_cnpj_proprietario = ?");
             $stmt->execute([$cpf]);
             $dados = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            if (!$dados) {
+            if (empty($dados)) {
                 throw new Exception("Não há imóveis disponíveis");
             }
             $imoveis = [];

@@ -7,12 +7,18 @@ class Condominio
     public $endereco;
     public $filtros;
 
-    public function __init__($nome, $endereco)
+    public function __construct($nome = null, $endereco = null)
     {
         $this->id = NULL;
         $this->nome = $nome;
         $this->endereco = $endereco;
         $this->filtros = [];
+    }
+
+
+    public function __init__($nome, $endereco)
+    {
+        $this->__construct($nome, $endereco);
     }
 
     public function set_filtros($filtros)

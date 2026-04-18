@@ -19,7 +19,7 @@ class Init
 {
 
     public static $imobiliaria;
-    public static $usuario_atual = "";
+    public static $usuario_atual;
     public static $filtros_imovel = [
         "Aceita Pet",
         "Churrasqueira",
@@ -151,7 +151,7 @@ class Init
             creci: "654321"
         );
 
-        if (!self::$imobiliaria->get_lista_usuarios()) {
+        if (empty(self::$imobiliaria->get_lista_usuarios())) {
 
             self::$imobiliaria->cadastrar_usuario($administrador);
             self::$imobiliaria->cadastrar_usuario($gerente_um);
@@ -178,7 +178,7 @@ class Init
         );
 
 
-        if (!self::$imobiliaria->get_lista_proprietarios()) {
+        if (empty(self::$imobiliaria->get_lista_proprietarios())) {
 
             self::$imobiliaria->cadastrar_proprietario($proprietario_dois);
             self::$imobiliaria->cadastrar_proprietario($proprietario_um);
@@ -202,7 +202,7 @@ class Init
         );
         $endereco_dois->set_numero("456");
 
-        if (!self::$imobiliaria->get_lista_enderecos()) {
+        if (empty(self::$imobiliaria->get_lista_enderecos())) {
             $cadastro = self::$imobiliaria->cadastrar_endereco($endereco_um);
             $cadastro_dois = self::$imobiliaria->cadastrar_endereco($endereco_dois);
         }
@@ -219,17 +219,19 @@ class Init
         }
         $anuncio_um = new Anuncio();
 
-        // $blob = file_get_contents("assets/apartamento2/5661211031.jpg");
-        // $blob2 = file_get_contents("assets/apartamento2/5661211294.jpg");
+        $blob = file_get_contents("../../assets/apartament.jpg");
+        $blob2 = file_get_contents("../../assets/campo.jpg");
 
-        // $anuncio_um->set_imagens([$blob, $blob, $blob2, $blob2, $blob]);
+        // echo file_get_contents("../../assets/apartament.jpg");
+
+        $anuncio_um->set_imagens([$blob, $blob, $blob2, $blob2, $blob]);
         $anuncio_um->set_titulo("Apartamento de 1 quarto, venda ou aluguel");
         $anuncio_um->set_descricao("Imóvel com uma posição privilegiada, próximo a parques, shoppings e com fácil acesso ao transporte público-> O apartamento possui uma sala aconchegante, cozinha funcional, banheiro moderno e um quarto confortável-> Ideal para quem busca praticidade e qualidade de vida->");
 
         $anuncio_dois = new Anuncio();
 
-        // $blob3 = file_get_contents("assets/apartamento1/5661162882.jpg");
-        // $anuncio_dois->set_imagens([$blob3, $blob3, $blob3, $blob3, $blob3]);
+        $blob3 = file_get_contents("../../assets/patio.jpg");
+        $anuncio_dois->set_imagens([$blob3, $blob3, $blob3, $blob3, $blob3]);
         $anuncio_dois->set_titulo("Apartamento de 2 quartos, venda ou aluguel");
         $anuncio_dois->set_descricao("Imóvel localizado no centro da cidade, próximo a escolas, supermercados e com fácil acesso ao transporte público-> O apartamento possui uma sala ampla, cozinha americana, banheiro social e um quarto espaçoso-> Ideal para quem busca conforto e praticidade->");
 
@@ -252,7 +254,7 @@ class Init
             categoria: Categoria::LOFT
         );
 
-        if (!self::$imobiliaria->get_estoque()->get_lista_imoveis()) {
+        if (empty(self::$imobiliaria->get_estoque()->get_lista_imoveis())) {
             $cadastro_anuncio = self::$imobiliaria->get_estoque()->cadastrar_anuncio($anuncio_um);
             $cadastro_anuncio2 = self::$imobiliaria->get_estoque()->cadastrar_anuncio($anuncio_dois);
             if ($cadastro_anuncio !== NULL) {
@@ -285,7 +287,9 @@ class Init
 
         $consulta_dois = self::$imobiliaria->verificar_endereco($endereco_dois);
         $condominio_dois = new Condominio("Premium", $consulta_dois);
-        self::$imobiliaria->cadastrar_condominio($condominio_dois);
+        if (empty(self::$imobiliaria->get_estoque()->get_lista_imoveis())) {
+            self::$imobiliaria->cadastrar_condominio($condominio_dois);
+        }
         $condominio_dois = NULL;
         if ($consulta_dois) {
             $condominio_dois = self::$imobiliaria->get_condominio_por_id_endereco(
@@ -302,7 +306,7 @@ class Init
             status: Status::VENDA_ALUGUEL,
             categoria: Categoria::CASA
         );
-        if (!self::$imobiliaria->get_estoque()->get_lista_imoveis()) {
+        if (empty(self::$imobiliaria->get_estoque()->get_lista_imoveis())) {
             $cadastro_anuncio = self::$imobiliaria->get_estoque()->cadastrar_anuncio(
                 $anuncio_um
             );
@@ -334,7 +338,7 @@ class Init
         $atendimento_dois->set_corretor($corretor_dois);
         $atendimento_dois->set_imovel($imovel_dois);
         $atendimento_dois->set_status(Status_Atendimento::PENDENTE);
-        if (!self::$imobiliaria->get_lista_atendimentos()) {
+        if (empty(self::$imobiliaria->get_lista_atendimentos())) {
             self::$imobiliaria->cadastrar_atendimento($atendimento_um);
             self::$imobiliaria->cadastrar_atendimento($atendimento_dois);
         }
