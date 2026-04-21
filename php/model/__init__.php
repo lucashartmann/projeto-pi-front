@@ -1,18 +1,18 @@
 <?php
 
-require_once __DIR__ . '/../model/cliente.php';
-require_once __DIR__ . '/../model/imobiliaria.php';
-require_once __DIR__ . '/../model/corretor.php';
-require_once __DIR__ . '/../model/imovel.php';
-require_once __DIR__ . '/../model/captador.php';
-require_once __DIR__ . '/../model/atendimento.php';
-require_once __DIR__ . '/../model/endereco.php';
-require_once __DIR__ . '/../model/anuncio.php';
-require_once __DIR__ . '/../model/venda_aluguel.php';
-require_once __DIR__ . '/../model/condominio.php';
-require_once __DIR__ . '/../model/gerente.php';
-require_once __DIR__ . '/../model/usuario.php';
-require_once __DIR__ . '/../model/proprietario.php';
+require_once __DIR__ . '/cliente.php';
+require_once __DIR__ . '/imobiliaria.php';
+require_once __DIR__ . '/corretor.php';
+require_once __DIR__ . '/imovel.php';
+require_once __DIR__ . '/captador.php';
+require_once __DIR__ . '/atendimento.php';
+require_once __DIR__ . '/endereco.php';
+require_once __DIR__ . '/anuncio.php';
+require_once __DIR__ . '/venda_aluguel.php';
+require_once __DIR__ . '/condominio.php';
+require_once __DIR__ . '/gerente.php';
+require_once __DIR__ . '/usuario.php';
+require_once __DIR__ . '/proprietario.php';
 
 
 class Init
@@ -219,10 +219,12 @@ class Init
         }
         $anuncio_um = new Anuncio();
 
-        $blob = file_get_contents("../../assets/apartament.jpg");
-        $blob2 = file_get_contents("../../assets/campo.jpg");
+        // echo file_get_contents("../assets/apartament.jpg");
 
-        // echo file_get_contents("../../assets/apartament.jpg");
+        $blob = file_get_contents("../assets/apartament.jpg");
+        $blob2 = file_get_contents("../assets/campo.jpg");
+
+       
 
         $anuncio_um->set_imagens([$blob, $blob, $blob2, $blob2, $blob]);
         $anuncio_um->set_titulo("Apartamento de 1 quarto, venda ou aluguel");
@@ -230,7 +232,7 @@ class Init
 
         $anuncio_dois = new Anuncio();
 
-        $blob3 = file_get_contents("../../assets/patio.jpg");
+        $blob3 = file_get_contents("../assets/patio.jpg");
         $anuncio_dois->set_imagens([$blob3, $blob3, $blob3, $blob3, $blob3]);
         $anuncio_dois->set_titulo("Apartamento de 2 quartos, venda ou aluguel");
         $anuncio_dois->set_descricao("Imóvel localizado no centro da cidade, próximo a escolas, supermercados e com fácil acesso ao transporte público-> O apartamento possui uma sala ampla, cozinha americana, banheiro social e um quarto espaçoso-> Ideal para quem busca conforto e praticidade->");

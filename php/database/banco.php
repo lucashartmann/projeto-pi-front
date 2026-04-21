@@ -35,6 +35,11 @@ class Banco
         }
     }
 
+    public function getDb()
+    {
+        return $this->db;
+    }
+
     public function init_tabelas()
     {
 
@@ -162,8 +167,9 @@ class Banco
             )",
 
             "CREATE TABLE IF NOT EXISTS midia_anuncio (
+                id_midia INTEGER PRIMARY KEY AUTO_INCREMENT,
                 id_anuncio INTEGER NULL,
-                midia BLOB NULL,
+                midia LONGBLOB NULL,
                 tipo VARCHAR(255) NULL,
                 FOREIGN KEY (id_anuncio) REFERENCES anuncio(id_anuncio) ON DELETE CASCADE
             )",
@@ -1264,14 +1270,14 @@ class Banco
             }
             foreach ($registros as $registro) {
                 $id = (int)($registro['id_anuncio']);
-                $blob = $registro['midia'];
+                $id = $registro['id_midia'];
                 $tipo = $registro['tipo'];
                 if ($tipo == "Imagem") {
-                    $imagens[] = ($blob);
+                    $imagens[] = $id;
                 } else if ($tipo == "Documento") {
-                    $documentos[] = ($blob);
+                    $documentos[] = $id;
                 } else if ($tipo == "Video") {
-                    $videos[] = ($blob);
+                    $videos[] = $id;
                 }
             }
             $mapa = [];

@@ -11,7 +11,12 @@ function salvar() {
 
     if (data) {
         try {
-            fetch("http://127.0.0.1:8000/estoque/cadastrar/", {
+            let caminho = window.location.pathname;
+            caminho = caminho.replace(
+                caminho.substring(caminho.lastIndexOf("/")),
+                "/php/js_controller.php?acao=cadastrar_imovel"
+            );
+            fetch(caminho, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -38,7 +43,12 @@ function salvar() {
 async function excluir() {
     if (imovel_id) {
         try {
-            const response = await fetch("http://127.0.0.1:8000/estoque/apagar/" + imovel_id + "/", {
+            let caminho = window.location.pathname;
+            caminho = caminho.replace(
+                caminho.substring(caminho.lastIndexOf("/")),
+                "/php/js_controller.php?acao=apagar_imovel"
+            );
+            const response = await fetch(caminho, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -148,33 +158,33 @@ async function abrirCadastro(imovel_id) {
 }
 
 function adicionarAnexo(event) {
-                //abre seletor de arquivo e adiciona iamagem no pai
-        var input = document.createElement("input");
-        input.type = "file";
-        input.accept = "image/*,application/pdf";
-        input.multiple = true;
-        input.onchange = function () {
-            var files = input.files;
-            var container = event.target.closest(".container");
-            for (var i = 0; i < files.length; i++) {
-                var file = files[i];
-                var fileURL = URL.createObjectURL(file);
-                var fileElement;
-                if (file.type.startsWith("image/")) {
-                    fileElement = document.createElement("img");
-                    fileElement.src = fileURL;
-                } else if (file.type === "application/pdf") {
-                    fileElement = document.createElement("a");
-                    fileElement.href = fileURL;
-                    fileElement.textContent = file.name;
-                    fileElement.target = "_blank";
-                }
-                if (fileElement) {
-                    container.appendChild(fileElement);
-                }
+    //abre seletor de arquivo e adiciona iamagem no pai
+    var input = document.createElement("input");
+    input.type = "file";
+    input.accept = "image/*,application/pdf";
+    input.multiple = true;
+    input.onchange = function () {
+        var files = input.files;
+        var container = event.target.closest(".container");
+        for (var i = 0; i < files.length; i++) {
+            var file = files[i];
+            var fileURL = URL.createObjectURL(file);
+            var fileElement;
+            if (file.type.startsWith("image/")) {
+                fileElement = document.createElement("img");
+                fileElement.src = fileURL;
+            } else if (file.type === "application/pdf") {
+                fileElement = document.createElement("a");
+                fileElement.href = fileURL;
+                fileElement.textContent = file.name;
+                fileElement.target = "_blank";
+            }
+            if (fileElement) {
+                container.appendChild(fileElement);
             }
         }
-        input.click();
+    }
+    input.click();
 }
 
 let imovel_id = null;

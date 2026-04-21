@@ -1,12 +1,21 @@
 async function listarAtendimentos() {
     try {
-        const resposta = await fetch("http://127.0.0.1:8000/atendimentos/");
-
-        if (!resposta.ok) {
-            throw new Error(`HTTP ${resposta.status}`);
-        }
-
-        return await resposta.json();
+        let caminho = window.location.pathname;
+        caminho = caminho.replace(
+            caminho.substring(caminho.lastIndexOf("/")),
+            "/php/js_controller.php?acao=listar_atendimentos"
+        );
+        const resposta = await fetch(caminho)
+            .then((res) => {
+                if (!res.ok) {
+                    throw new Error(`HTTP ${res.status}`);
+                }
+                return res.json();
+            })
+            .catch((erro) => {
+                console.error("Erro ao processar a resposta:", erro);
+                return null;
+            });
     } catch (erro) {
         console.error("Falha ao conectar com o backend:", erro);
         return null;
@@ -22,7 +31,7 @@ async function carregarAtendimentos() {
     const div_recem_cadastrados = document.getElementById("container_cadastrados");
 
     for (child of div_recem_cadastrados.children) {
-            child.remove();
+        child.remove();
     }
 
     // const div_em_andamento = document.getElementById("container_andamento");
@@ -42,7 +51,7 @@ async function carregarAtendimentos() {
         div_card.id = "card_cadastrado";
         div_card.className = "card";
         div_card.onclick = () => abrirAtendimento(dados[i].id);
-          // <p>Idade ${dados[i].cliente.idade}</p>
+        // <p>Idade ${dados[i].cliente.idade}</p>
         div_card.innerHTML = `
             <p style="margin-top: 20px;">Nome: ${dados[i].cliente.nome}</p>
             <p>Telefone: ${dados[i].cliente.telefones}</p>

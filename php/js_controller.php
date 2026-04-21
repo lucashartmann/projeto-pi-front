@@ -1,18 +1,18 @@
 <?php
 
-require_once __DIR__ . '/../model/cliente.php';
-require_once __DIR__ . '/../model/corretor.php';
-require_once __DIR__ . '/../model/imovel.php';
-require_once __DIR__ . '/../model/captador.php';
-require_once __DIR__ . '/../model/atendimento.php';
-require_once __DIR__ . '/../model/endereco.php';
-require_once __DIR__ . '/../model/anuncio.php';
-require_once __DIR__ . '/../model/venda_aluguel.php';
-require_once __DIR__ . '/../model/condominio.php';
-require_once __DIR__ . '/../model/gerente.php';
-require_once __DIR__ . '/../model/usuario.php';
-require_once __DIR__ . '/../model/proprietario.php';
-require_once __DIR__ . '/../model/__init__.php';
+require_once __DIR__ . '/model/cliente.php';
+require_once __DIR__ . '/model/corretor.php';
+require_once __DIR__ . '/model/imovel.php';
+require_once __DIR__ . '/model/captador.php';
+require_once __DIR__ . '/model/atendimento.php';
+require_once __DIR__ . '/model/endereco.php';
+require_once __DIR__ . '/model/anuncio.php';
+require_once __DIR__ . '/model/venda_aluguel.php';
+require_once __DIR__ . '/model/condominio.php';
+require_once __DIR__ . '/model/gerente.php';
+require_once __DIR__ . '/model/usuario.php';
+require_once __DIR__ . '/model/proprietario.php';
+require_once __DIR__ . '/model/__init__.php';
 
 
 header('Content-Type => application/json');
@@ -22,6 +22,14 @@ $acao = $_GET['acao'] ?? '';
 
 switch ($acao) {
 
+    case "cadastrar_imovel":
+        cadastrar_imovel();
+        break;
+
+    case "listar_atendimentos":
+        listar_atendimentos();
+        break;
+
     case 'listar_imoveis':
         get_lista_imoveis();
         break;
@@ -30,8 +38,14 @@ switch ($acao) {
         get_lista_imoveis_disponiveis();
         break;
 
-    case "logar":
-        verificar_login();
+    case "login":
+        $usuario = $_GET['usuario'] ?? null;
+        $senha = $_GET['senha'] ?? null;
+        if (!$usuario || !$senha) {
+            echo json_encode(["erro" => "Usuário ou senha não fornecidos"]);
+            return;
+        }
+        verificar_login($usuario, $senha);
         break;
 
     case "deslogar":
@@ -40,10 +54,6 @@ switch ($acao) {
 
     case "get_usuario":
         carregar_usuario();
-        break;
-
-    case "cadastrar_imovel":
-        cadastrar_imovel();
         break;
 
     case "get_dados_imovel":
@@ -55,28 +65,21 @@ switch ($acao) {
         }
         break;
 
-        case "apagar_imovel":
-            $id = $_GET['id'] ?? null;
-            if ($id) {
-                apagar_imovel($id);
-                } else {
-                echo json_encode(["erro" => "ID do imóvel não fornecido"]);
-            }
-            break;
+    case "apagar_imovel":
+        $id = $_GET['id'] ?? null;
+        if ($id) {
+            apagar_imovel($id);
+        } else {
+            echo json_encode(["erro" => "ID do imóvel não fornecido"]);
+        }
+        break;
 
-        case "listar_atendimentos":
-            listar_atendimentos();
-            break;
-
-
-    // case 'buscar_imovel' :
-    //     // get_imovel();
-    //     break;
 
     default:
         echo json_encode(["erro" => "Ação inválida"]);
         break;
 }
+
 
 function get_lista_imoveis()
 {
@@ -103,8 +106,8 @@ function get_lista_imoveis()
             $anuncioObj = $imovel->get_anuncio();
             $imagens = [];
             if ($anuncioObj->get_imagens()) {
-                foreach ($anuncioObj->get_imagens() as $imagem) {
-                    $imagens[] = base64_encode($imagem);
+                foreach ($anuncioObj->get_imagens() as $idImagem) {
+                    $imagens[] = "/projeto-pi-front/php/imagem.php?id=" . $idImagem;
                 }
             }
             $anuncio = [
@@ -165,8 +168,8 @@ function get_lista_imoveis_disponiveis()
             $anuncioObj = $imovel->get_anuncio();
             $imagens = [];
             if ($anuncioObj->get_imagens()) {
-                foreach ($anuncioObj->get_imagens() as $imagem) {
-                    $imagens[] = base64_encode($imagem);
+                foreach ($anuncioObj->get_imagens() as $idImagem) {
+                    $imagens[] = "/projeto-pi-front/php/imagem.php?id=" . $idImagem;
                 }
             }
             $anuncio = [
@@ -213,8 +216,8 @@ function getImovelPorId($id)
 
         $imagens = [];
         if ($anuncioObj && is_array($anuncioObj->get_imagens())) {
-            $imagens = array_map(function ($imagem) {
-                return base64_encode($imagem->get_value());
+            $imagens = array_map(function ($idImagem) {
+                return "/projeto-pi-front/php/imagem.php?id=" . $idImagem;
             }, $anuncioObj->get_imagens());
         }
         $resposta = [
@@ -457,7 +460,7 @@ function apagar_imovel($id)
 }
 
 
-function verificar_login()
+function verificar_login($usuario, $senha)
 {
 
 
@@ -470,8 +473,7 @@ function verificar_login()
             echo json_encode(["erro" => "JSON inválido"]);
             return;
         }
-        $usuario = $data["usuario"];
-        $senha = $data["senha"];
+
 
         $consulta = Init::$imobiliaria->verificar_usuario($usuario, $senha);
 

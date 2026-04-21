@@ -6,7 +6,7 @@ async function fazerLogin() {
         let caminho = window.location.pathname;
         caminho = caminho.replace(
             caminho.substring(caminho.lastIndexOf("/")),
-            "/php/api/api.php?acao=login"
+            "/php/js_controller.php?acao=login"
         );
         const resposta = await fetch(caminho, {
             method: "POST",

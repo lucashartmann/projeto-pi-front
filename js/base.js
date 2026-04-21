@@ -16,7 +16,7 @@ async function listarImoveis() {
         let caminho = window.location.pathname;
         caminho = caminho.replace(
             caminho.substring(caminho.lastIndexOf("/")),
-            "/php/api/api.php?acao=listar_imoveis"
+            "/php/js_controller.php?acao=listar_imoveis"
         );
         const resposta = await fetch(caminho)
             .then(res => res.json())
@@ -41,7 +41,7 @@ async function listarImoveisDisponiveis() {
         let caminho = window.location.pathname;
         caminho = caminho.replace(
             caminho.substring(caminho.lastIndexOf("/")),
-            "/php/api/api.php?acao=listar_imoveis_disponiveis"
+            "/php/js_controller.php?acao=listar_imoveis_disponiveis"
         );
         const resposta = await fetch(caminho)
             // .then(res => console.log(res))
@@ -69,7 +69,7 @@ async function getDadosImovel(id) {
         let caminho = window.location.pathname;
         caminho = caminho.replace(
             caminho.substring(caminho.lastIndexOf("/")),
-            "/php/api/api.php?acao=get_dados_imovel&id=" + id
+            "/php/js_controller.php?acao=get_dados_imovel&id=" + id
         );
         const resposta = await fetch(caminho, {
             method: "GET",
@@ -96,7 +96,7 @@ async function deslogar() {
         let caminho = window.location.pathname;
         caminho = caminho.replace(
             caminho.substring(caminho.lastIndexOf("/")),
-            "/php/api/api.php?acao=deslogar"
+            "/php/js_controller.php?acao=deslogar"
         );
         const resposta = await fetch(caminho, {
             method: "POST"
@@ -131,7 +131,7 @@ async function carregarUser() {
         let caminho = window.location.pathname;
         caminho = caminho.replace(
             caminho.substring(caminho.lastIndexOf("/")),
-            "/php/api/api.php?acao=get_usuario"
+            "/php/js_controller.php?acao=get_usuario"
         );
         const resposta = await fetch(caminho, {
             method: "GET",

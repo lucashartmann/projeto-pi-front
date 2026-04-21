@@ -21,7 +21,7 @@ function imovelPrincipal(dados) {
         <h2 class="sobrepor">${imovel.anuncio.titulo}${preco.outerHTML}</h2>
         
     `
-    banner.style.backgroundImage = `linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), url(data:image/jpeg;base64,${b64})`
+    banner.style.backgroundImage = `linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), url(${b64})`
     banner.addEventListener("click", () => abrirAnuncio(imovel.id));
 }
 
@@ -47,7 +47,7 @@ function bannerImoveis(dados) {
         }
         let div = document.createElement("div");
         div.className = "swiper-slide";
-        div.style.backgroundImage = `linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), url(data:image/jpeg;base64,${b64})`
+        div.style.backgroundImage = `linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), url(${b64})`
         div.innerHTML = `<h2 class="sobrepor">${imovel.anuncio.titulo}${preco.outerHTML}</h2>`
         html += div.outerHTML;
     }
@@ -121,7 +121,7 @@ async function carregarAnuncios(dados) {
         }
         html += `
             <div class="anuncio_imovel" onclick="abrirAnuncio(${imovel.id})">
-                <img src="data:image/jpeg;base64,${b64}" />
+                <img src="${b64}" />
                 <h2>${imovel.anuncio.titulo}</h2>
                 <p>${imovel.endereco.rua}, ${imovel.endereco.numero}, ${imovel.endereco.bairro}</p>
                 ${preco_venda.outerHTML}
