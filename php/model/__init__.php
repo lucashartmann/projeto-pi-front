@@ -221,10 +221,12 @@ class Init
 
         // echo file_get_contents("../assets/apartament.jpg");
 
+        
+
         $blob = file_get_contents("../assets/apartament.jpg");
         $blob2 = file_get_contents("../assets/campo.jpg");
 
-       
+
 
         $anuncio_um->set_imagens([$blob, $blob, $blob2, $blob2, $blob]);
         $anuncio_um->set_titulo("Apartamento de 1 quarto, venda ou aluguel");

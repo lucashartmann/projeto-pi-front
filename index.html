@@ -15,6 +15,8 @@
 
 <body>
 
+
+
     <div id="pesquisa">
         <div id="pesquisa-container">
             <input placeholder="Pesquise aqui" id="input_pesquisa" oninput="pesquisar()">
@@ -181,10 +183,23 @@
             <p>Rua Exemplo, 123 - Bairro Exemplo, Cidade Exemplo - CEP 12345-678</p>
         </div>
     </section>
+
     <footer>
         <p>Copyright 2025 - By Lucas Hartmann</p>
         <a href="https://github.com/lucashartmann" target="_blank"><i class="fab fa-github"></i></a>
     </footer>
+
+    <div vw class="enabled">
+        <div vw-access-button class="active"></div>
+        <div vw-plugin-wrapper>
+            <div class="vw-plugin-top-wrapper"></div>
+        </div>
+    </div>
+    <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
+    <script>
+        new window.VLibras.Widget('https://vlibras.gov.br/app');
+    </script>
+
 </body>
 <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 <script src="js/base.js"></script>
@@ -196,5 +211,4 @@
             document.body.insertAdjacentHTML('afterbegin', data);
         });
 </script>
-
 </html>
