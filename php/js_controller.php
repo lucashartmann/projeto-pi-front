@@ -13,6 +13,7 @@ require_once __DIR__ . '/model/gerente.php';
 require_once __DIR__ . '/model/usuario.php';
 require_once __DIR__ . '/model/proprietario.php';
 require_once __DIR__ . '/model/__init__.php';
+require_once __DIR__ . '/controller/controller.php';
 
 
 header('Content-Type => application/json');
@@ -301,45 +302,39 @@ function cadastrar_imovel()
             return;
         }
 
-        $id =  (int)($data->get("ref")) ?: null;
-        $nome_condominio = $data->get("nome_condominio") ?: null;
-        $valor_venda = (float)($data->get("valor_venda", 0));
-        $valor_aluguel = (float)($data->get("valor_aluguel", 0));
-        $quant_quartos = (int)($data->get("quant_quartos", 0));
-        $quant_salas = (int)($data->get("quant_salas", 0));
-        $quant_vagas = (int)($data->get("quant_vagas", 0));
-        $quant_banheiros = (int)($data->get("quant_banheiros", 0));
-        $quant_varandas = (int)($data->get("quant_varandas", 0));
-        $categoria = Categoria::tryFrom(
-            $data->get("categoria")
-        ) ?: NULL;
-        $status = Status::tryFrom(
-            $data->get("status")
-        ) ?: NULL;
-        $iptu = (float)($data->get("iptu", 0));
-        $valor_condominio = (float)($data->get("valor_condominio", 0));
-        $andar = (int)($data->get("andar", 0));
-        $estado = Estado::tryFrom(
-            $data->get("estado")
-        ) ?: NULL;
-        $bloco = $data->get("bloco");
-        $ano_construcao = (int)($data->get("ano_construcao"));
-        $area_total = (float)($data->get("area_total", 0));
-        $area_privativa = (float)($data->get("area_privativa", 0));
-        $situacao = Situacao::tryFrom($data->get("situacao")) ?: NULL;
-        $ocupacao = Ocupacao::tryFrom($data->get("ocupacao")) ?: NULL;
-        # proprietarios = data->get("proprietarios", [])
-        # corretor = data->get("corretor")
-        # captador = data->get("captador")
-        $cep = (int)($data->get("cep")) ?: NULL;
-        $rua = $data->get("rua") ?: NULL;
-        $bairro = $data->get("bairro") ?: NULL;
-        $cidade = $data->get("cidade") ?: NULL;
-        $titulo = $data->get("titulo") ?: NULL;
-        $descricao = $data->get("descricao") ?: NULL;
-        $complemento = $data->get("complemento") ?: NULL;
-        $uf = $data->get("uf") ?: NULL;
-        $numero = (int)($data->get("numero")) ?: NULL;
+        $id =  in_array("ref", $data) ? $data["ref"] : null;
+        $nome_condominio = in_array("nome_condominio", $data) ? $data["nome_condominio"] : null;
+        $valor_venda = in_array("valor_venda", $data) ? (float)($data["valor_venda"] ?? 0) : null;
+        $valor_aluguel = in_array("valor_aluguel", $data) ? (float)($data["valor_aluguel"] ?? 0) : null;
+        $quant_quartos = in_array("quant_quartos", $data) ? (int)($data["quant_quartos"] ?? 0) : null;
+        $quant_salas = in_array("quant_salas", $data) ? (int)($data["quant_salas"] ?? 0) : null;
+        $quant_vagas = in_array("quant_vagas", $data) ? (int)($data["quant_vagas"] ?? 0) : null;
+        $quant_banheiros = in_array("quant_banheiros", $data) ? (int)($data["quant_banheiros"] ?? 0) : null;
+        $quant_varandas = in_array("quant_varandas", $data) ? (int)($data["quant_varandas"] ?? 0) : null;
+        $categoria = in_array("categoria", $data) ? Categoria::tryFrom($data["categoria"]) : null;
+        $status = in_array("status", $data) ? Status::tryFrom($data["status"]) : null;
+        $iptu = in_array("iptu", $data) ? (float)($data["iptu"] ?? 0) : null;
+        $valor_condominio = in_array("valor_condominio", $data) ? (float)($data["valor_condominio"] ?? 0) : null;
+        $andar = in_array("andar", $data) ? (int)($data["andar"] ?? 0) : null;
+        $estado = in_array("estado", $data) ? Estado::tryFrom($data["estado"]) : null;
+        $bloco = in_array("bloco", $data) ? $data["bloco"] : null;
+        $ano_construcao = in_array("ano_construcao", $data) ? (int)($data["ano_construcao"] ?? 0) : null;
+        $area_total = in_array("area_total", $data) ? (float)($data["area_total"] ?? 0) : null;
+        $area_privativa = in_array("area_privativa", $data) ? (float)($data["area_privativa"] ?? 0) : null;
+        $situacao = in_array("situacao", $data) ? Situacao::tryFrom($data["situacao"]) : null;
+        $ocupacao = in_array("ocupacao", $data) ? Ocupacao::tryFrom($data["ocupacao"]) : null;
+        # proprietarios = data["proprietarios"]
+        # corretor = data["corretor"]
+        # captador = data["captador"]
+        $cep = in_array("cep", $data) ? (int)($data["cep"] ?? null) : null;
+        $rua = in_array("rua", $data) ? $data["rua"] : null;
+        $bairro = in_array("bairro", $data) ? $data["bairro"] : null;
+        $cidade = in_array("cidade", $data) ? $data["cidade"] : null;
+        $titulo = in_array("titulo", $data) ? $data["titulo"] : null;
+        $descricao = in_array("descricao", $data) ? $data["descricao"] : null;
+        $complemento = in_array("complemento", $data) ? $data["complemento"] : null;
+        $uf = in_array("uf", $data) ? $data["uf"] : null;
+        $numero = in_array("numero", $data) ? (int)($data["numero"] ?? null) : null;
         $anuncio_obj = new Anuncio();
         $anuncio_obj->set_titulo($titulo);
         $anuncio_obj->set_descricao($descricao);

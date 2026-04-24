@@ -14,6 +14,9 @@ function mostrarNavLeft() {
 async function listarImoveis() {
     try {
         let caminho = window.location.pathname;
+        if (caminho.includes("/html/")) {
+            caminho = caminho.replace("/html/", "/");
+        }
         caminho = caminho.replace(
             caminho.substring(caminho.lastIndexOf("/")),
             "/php/js_controller.php?acao=listar_imoveis"
@@ -39,6 +42,9 @@ async function listarImoveis() {
 async function listarImoveisDisponiveis() {
     try {
         let caminho = window.location.pathname;
+        if (caminho.includes("/html/")) {
+            caminho = caminho.replace("/html/", "/") ;
+        }
         caminho = caminho.replace(
             caminho.substring(caminho.lastIndexOf("/")),
             "/php/js_controller.php?acao=listar_imoveis_disponiveis"
@@ -67,6 +73,9 @@ async function getDadosImovel(id) {
     console.log("Buscando dados do imóvel com id:", id);
     try {
         let caminho = window.location.pathname;
+        if (caminho.includes("/html/")) {
+            caminho = caminho.replace("/html/", "/") ;
+        }
         caminho = caminho.replace(
             caminho.substring(caminho.lastIndexOf("/")),
             "/php/js_controller.php?acao=get_dados_imovel&id=" + id
@@ -94,6 +103,9 @@ async function getDadosImovel(id) {
 async function deslogar() {
     try {
         let caminho = window.location.pathname;
+        if (caminho.includes("/html/")) {
+            caminho = caminho.replace("/html/", "/");
+        }
         caminho = caminho.replace(
             caminho.substring(caminho.lastIndexOf("/")),
             "/php/js_controller.php?acao=deslogar"
@@ -129,9 +141,14 @@ async function deslogar() {
 async function carregarUser() {
     try {
         let caminho = window.location.pathname;
-        caminho = caminho.replace(
-            caminho.substring(caminho.lastIndexOf("/")),
-            "/php/js_controller.php?acao=get_usuario"
+        substring = "";
+   
+        if (caminho.includes("/html/")) {
+            caminho = caminho.replace("/html/", "/");
+        }
+
+        caminho = caminho.replace(caminho.substring(caminho.lastIndexOf("/"))
+          , "/php/js_controller.php?acao=get_usuario"
         );
         const resposta = await fetch(caminho, {
             method: "GET",

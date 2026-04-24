@@ -12,6 +12,9 @@ function salvar() {
     if (data) {
         try {
             let caminho = window.location.pathname;
+            if (caminho.includes("/html/")) {
+                caminho = caminho.replace("/html/", "/");
+            }
             caminho = caminho.replace(
                 caminho.substring(caminho.lastIndexOf("/")),
                 "/php/js_controller.php?acao=cadastrar_imovel"
@@ -23,7 +26,7 @@ function salvar() {
                 },
                 body: JSON.stringify(data)
             })
-                .then(response => response.json())
+                .then(response => console.log(response.text()))
                 .then(data => {
                     console.log("Imóvel cadastrado com sucesso:", data);
                 })
@@ -44,6 +47,9 @@ async function excluir() {
     if (imovel_id) {
         try {
             let caminho = window.location.pathname;
+            if (caminho.includes("/html/")) {
+                caminho = caminho.replace("/html/", "/");
+            }
             caminho = caminho.replace(
                 caminho.substring(caminho.lastIndexOf("/")),
                 "/php/js_controller.php?acao=apagar_imovel"

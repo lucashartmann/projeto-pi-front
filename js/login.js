@@ -4,6 +4,9 @@ async function fazerLogin() {
 
     try {
         let caminho = window.location.pathname;
+        if (caminho.includes("/html/")) {
+            caminho = caminho.replace("/html/", "/");
+        }
         caminho = caminho.replace(
             caminho.substring(caminho.lastIndexOf("/")),
             "/php/js_controller.php?acao=login"
