@@ -26,12 +26,19 @@ function salvar() {
                 },
                 body: JSON.stringify(data)
             })
-                .then(response => console.log(response.text()))
+                .then(response => response.json())
                 .then(data => {
-                    console.log("Imóvel cadastrado com sucesso:", data);
+                    if (data["erro"] || in_array("erro", data)) {
+                        alert("Erro ao cadastrar imóvel: " + data["erro"]);
+                        return;
+                    }
+                    else if (data["mensagem"]) {
+                        alert("Imóvel cadastrado com sucesso: " + data["mensagem"]);
+                    }
+
                 })
                 .catch(error => {
-                    console.error("Erro ao cadastrar imóvel:", error);
+                    alert("Erro ao cadastrar imóvel:", error);
                 });
 
         } catch (error) {
@@ -223,3 +230,26 @@ window.addEventListener("DOMContentLoaded", function () {
         abrirCadastro(imovel_id);
     }
 });
+
+
+function preencherEndereco(event) {
+    let cep = event.target.value;
+    console.log(cep);
+    if (cep.length > 9) {
+        let input_rua = document.getElementById("ta_rua");
+        let input_bairro = document.getElementById("ta_bairro");
+        let input_cidade = document.getElementById("ta_cidade");
+        fetch(`https://viacep.com.br/ws/${cep}/json`)
+        .then(response => response.json())
+        .then(dados => dados);
+        // TODO: terminar de implementar
+        // "cep": "90650-002",
+        // "logradouro": "Avenida Bento Gonçalves",
+        // "complemento": "de 1921 a 2999 - lado ímpar",
+        // "unidade": "",
+        // "bairro": "Partenon",
+        // "localidade": "Porto Alegre",
+        // "uf": "RS",
+        // "estado": "Rio Grande do Sul",
+    }
+}

@@ -392,20 +392,28 @@ function cadastrar_imovel()
         $imovel_obj->set_condominio($condominio_obj);
 
         $controller = new controller();
+        $mensagem = "";
         if ($id) {
             $imovel_obj->set_data_modificacao(DateTime::createFromFormat('Y-m-d H:i:s', date('Y-m-d H:i:s')));
-            $controller->editar_imovel(
+            $mensagem = $controller->editar_imovel(
                 $imovel_obj
             );
         } else {
-            $controller->cadastrar_imovel(
+            $mensagem = $controller->cadastrar_imovel(
                 $imovel_obj
             );
         }
 
-        echo json_encode(["status" => "ok"]);
+        if (str_starts_with($mensagem, "ERRO") || str_starts_with($mensagem, "erro")) {
+
+            echo json_encode(["erro" => $mensagem]);
+            return;
+        } else {
+
+            echo json_encode(["mensagem" => $mensagem]);
+            return;
+        }
     } catch (Exception $e) {
-        http_response_code(500);
         echo json_encode(["erro" => "Erro interno"]);
     }
 }

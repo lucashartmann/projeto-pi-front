@@ -28,7 +28,7 @@
         <label id="stt_ref" for="">ref:</label>
         <textarea name="ref" id="ta_ref" disabled=True></textarea>
         <label for="" id="stt_categoria">Categoria:</label>
-        <select name="categoria" id="select_categoria" prompt="Selecionar">
+        <select name="categoria" id="select_categoria" prompt="Selecionar" required>
             <option value="sala_comercial">Sala Comercial</option>
             <option value="apartamento">Apartamento</option>
             <option value="casa">Casa</option>
@@ -72,7 +72,7 @@
         </select>
         </select>
         <label for="" id="stt_status">Status:</label>
-        <select name="status" id="select_status" prompt="Selecionar">
+        <select name="status" id="select_status" prompt="Selecionar" required>
             <option value="venda">Venda</option>
             <option value="aluguel">Aluguel</option>
             <option value="venda_aluguel">Venda_Aluguel</option>
@@ -85,11 +85,11 @@
         <label for="" id="stt_ano_construcao">Ano de Construção</label>
         <input type="date" placeholder="0000" id="ta_ano_construcao" minlength="4" maxlength="4" name="ano_construcao">
         <label for="" id="stt_cep">CEP</label>
-        <input type="number" placeholder="00000-000" id="ta_cep" required minlength="9" maxlength="9" name="cep">
+        <input type="number" placeholder="00000-000" id="ta_cep" required minlength="9" maxlength="9" name="cep" oninput="preencherEndereco(event)">
         <label for="" id="stt_rua">Rua</label>
-        <textarea id="ta_rua" disabled=True name="rua"></textarea>
+        <textarea id="ta_rua" disabled=True name="rua" required></textarea>
         <label for="" id="stt_numero">Número</label>
-        <input type="text" id="ta_numero" type="integer" name="numero">
+        <input type="text" id="ta_numero" type="integer" name="numero" required>
         <label for="" id="stt_complemento">Complemento</label>
         <textarea name="complemento" id="ta_complemento"></textarea>
         <label for="" id="stt_bloco">Bloco</label>
@@ -97,11 +97,11 @@
         <label for="" id="stt_andar">Andar</label>
         <input type="number" placeholder="00" id="ta_andar" minlength="1" maxlength="2" name="andar">
         <label for="" id="stt_bairro">Bairro</label>
-        <textarea id="ta_bairro" disabled=True name="bairro"></textarea>
+        <textarea id="ta_bairro" disabled=True name="bairro" required></textarea>
         <label for="" id="stt_cidade">Cidade</label>
-        <textarea id="ta_cidade" disabled=True name="cidade"></textarea>
+        <textarea id="ta_cidade" disabled=True name="cidade" required></textarea>
         <label for="" id="stt_estado">Estado</label>
-        <input type="text" disabled=True, placeholder="XX" id="ta_estado" minlength="2" maxlength="2" name="uf">
+        <input type="text" disabled=True, placeholder="XX" id="ta_estado" minlength="2" maxlength="2" name="uf" required>
         <label for="" id="stt_salas">Salas</label>
         <input type="number" placeholder="00" id="ta_salas" minlength="1" maxlength="2" name="quantidade_salas">
         <label for="" id="stt_banheiros">Banheiros</label>
