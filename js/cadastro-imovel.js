@@ -234,22 +234,22 @@ window.addEventListener("DOMContentLoaded", function () {
 
 function preencherEndereco(event) {
     let cep = event.target.value;
-    console.log(cep);
     if (cep.length > 9) {
         let input_rua = document.getElementById("ta_rua");
         let input_bairro = document.getElementById("ta_bairro");
         let input_cidade = document.getElementById("ta_cidade");
+        let input_estado = document.getElementById("ta_estado");
         fetch(`https://viacep.com.br/ws/${cep}/json`)
         .then(response => response.json())
-        .then(dados => dados);
-        // TODO: terminar de implementar
-        // "cep": "90650-002",
-        // "logradouro": "Avenida Bento Gonçalves",
-        // "complemento": "de 1921 a 2999 - lado ímpar",
-        // "unidade": "",
-        // "bairro": "Partenon",
-        // "localidade": "Porto Alegre",
-        // "uf": "RS",
-        // "estado": "Rio Grande do Sul",
+        .then(dados => {
+            if (dados.erro) {
+                alert("CEP não encontrado!");
+                return;
+            }
+            input_rua.value = dados.logradouro || "";
+            input_bairro.value = dados.bairro || "";
+            input_cidade.value = dados.localidade || "";
+            input_estado.value = dados.uf || "";
+        });
     }
 }

@@ -7,7 +7,7 @@
     <title>Cadastro de Imóvel</title>
     <link rel="stylesheet" href="../css/base.css">
     <link rel="stylesheet" href="../css/cadastro-imovel.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.minlength.css">
     <link rel="icon" type="image/x-icon" href="img/logo.png">
 </head>
 
@@ -28,7 +28,8 @@
         <label id="stt_ref" for="">ref:</label>
         <textarea name="ref" id="ta_ref" disabled=True></textarea>
         <label for="" id="stt_categoria">Categoria:</label>
-        <select name="categoria" id="select_categoria" prompt="Selecionar" required>
+        <select name="categoria" id="select_categoria" required>
+            <option value="" disabled selected hidden>Selecine uma opção...</option>
             <option value="sala_comercial">Sala Comercial</option>
             <option value="apartamento">Apartamento</option>
             <option value="casa">Casa</option>
@@ -54,25 +55,28 @@
 
         <label for="" id="stt_situacao">Situação</label>
         <select name="situacao" id="select_situacao">
+            <option value="" disabled selected hidden>Selecine uma opção...</option>
             <option value="construcao">Em Construção</option>
             <option value="novo">Novo</option>
             <option value="usado">Usado</option>
         </select>
         <label for="" id="stt_estado_select">Estado:</label>
-        <select name="estado_imovel" id="select_estado" prompt="Selecionar">
+        <select name="estado_imovel" id="select_estado">
+            <option value="" disabled selected hidden>Selecine uma opção...</option>
             <option value="bom">Bom</option>
             <option value="otimo">Ótimo</option>
             <option value="regular">Regular</option>
         </select>
         <label for="" id="stt_ocupacao">Ocupação:</label>
-        <select name="ocupacao" id="select_ocupacao" prompt="Selecionar">
+        <select name="ocupacao" id="select_ocupacao">
+            <option value="" disabled selected hidden>Selecine uma opção...</option>
             <option value="desocupado">Desocupado</option>
             <option value="inquilino">Inquilino</option>
             <option value="proprietario">Proprietário</option>
         </select>
-        </select>
         <label for="" id="stt_status">Status:</label>
-        <select name="status" id="select_status" prompt="Selecionar" required>
+        <select name="status" id="select_status" required>
+            <option value="" disabled selected hidden>Selecine uma opção...</option>
             <option value="venda">Venda</option>
             <option value="aluguel">Aluguel</option>
             <option value="venda_aluguel">Venda_Aluguel</option>
@@ -83,9 +87,11 @@
         <label for="" id="stt_nome_condominio">Nome do Condomínio</label>
         <textarea name="nome_condominio" id="ta_nome_condominio"></textarea>
         <label for="" id="stt_ano_construcao">Ano de Construção</label>
-        <input type="date" placeholder="0000" id="ta_ano_construcao" minlength="4" maxlength="4" name="ano_construcao">
+        <input type="text" placeholder="0000" id="ta_ano_construcao" inputmode="numeric" pattern="[0-9]{4}" oninput="this.value = this.value.replace(/\D/g, '').slice(0, 4);" name="ano_construcao"> <!--fazer calendario para escolher o ano-->
         <label for="" id="stt_cep">CEP</label>
-        <input type="number" placeholder="00000-000" id="ta_cep" required minlength="9" maxlength="9" name="cep" oninput="preencherEndereco(event)">
+        <input type="text" id="ta_cep" name="cep" placeholder="00000000" inputmode="numeric" pattern="[0-9]{8}"
+            maxlength="9" minlength="8" required
+            oninput="this.value = this.value.replace(/\D/g, '').slice(0, 9); preencherEndereco(event)">
         <label for="" id="stt_rua">Rua</label>
         <textarea id="ta_rua" disabled=True name="rua" required></textarea>
         <label for="" id="stt_numero">Número</label>
@@ -95,23 +101,24 @@
         <label for="" id="stt_bloco">Bloco</label>
         <textarea name="bloco" id="ta_bloco"></textarea>
         <label for="" id="stt_andar">Andar</label>
-        <input type="number" placeholder="00" id="ta_andar" minlength="1" maxlength="2" name="andar">
+        <input type="text" placeholder="00" id="ta_andar" inputmode="numeric" pattern="[0-9]{2}" oninput="this.value = this.value.replace(/\D/g, '').slice(0, 9);" name="andar">
         <label for="" id="stt_bairro">Bairro</label>
         <textarea id="ta_bairro" disabled=True name="bairro" required></textarea>
         <label for="" id="stt_cidade">Cidade</label>
         <textarea id="ta_cidade" disabled=True name="cidade" required></textarea>
         <label for="" id="stt_estado">Estado</label>
-        <input type="text" disabled=True, placeholder="XX" id="ta_estado" minlength="2" maxlength="2" name="uf" required>
+        <input type="text" disabled=True, placeholder="XX" id="ta_estado" minlength="2" maxlength="2" name="uf"
+            required>
         <label for="" id="stt_salas">Salas</label>
-        <input type="number" placeholder="00" id="ta_salas" minlength="1" maxlength="2" name="quantidade_salas">
+        <input type="text" placeholder="00" id="ta_salas" inputmode="numeric" pattern="[0-9]{2}" oninput="this.value = this.value.replace(/\D/g, '').slice(0, 9);" name="quantidade_salas">
         <label for="" id="stt_banheiros">Banheiros</label>
-        <input type="number" placeholder="00" id="ta_banheiros" minlength="1" maxlength="2" name="quantidade_banheiros">
+        <input type="text" placeholder="00" id="ta_banheiros" inputmode="numeric" pattern="[0-9]{2}" oninput="this.value = this.value.replace(/\D/g, '').slice(0, 9);" name="quantidade_banheiros">
         <label for="" id="stt_vagas">Vagas</label>
-        <input type="number" placeholder="00" id="ta_vagas" minlength="1" maxlength="2" name="quantidade_vagas">
+        <input type="text" placeholder="00" id="ta_vagas" inputmode="numeric" pattern="[0-9]{2}" oninput="this.value = this.value.replace(/\D/g, '').slice(0, 9);" name="quantidade_vagas">
         <label for="" id="stt_varandas">Varandas</label>
-        <input type="number" placeholder="00" id="ta_varandas" minlength="1" maxlength="2" name="quantidade_varandas">
+        <input type="text" placeholder="00" id="ta_varandas" name="quantidade_varandas" inputmode="numeric" pattern="[0-9]{2}" oninput="this.value = this.value.replace(/\D/g, '').slice(0, 9);">
         <label for="" id="stt_quartos">Quartos</label>
-        <input type="number" placeholder="00" id="ta_quartos" minlength="1" maxlength="2" name="quantidade_quartos">
+        <input type="text" placeholder="00" id="ta_quartos" inputmode="numeric" pattern="[0-9]{2}" oninput="this.value = this.value.replace(/\D/g, '').slice(0, 9);"  name="quantidade_quartos">
         <label for="" id="stt_area_total">Área Total</label>
         <input type="number" id="ta_area_total" type="number" name="area_total">
         <label for="" id="stt_area_privativa">Área Privativa</label>
