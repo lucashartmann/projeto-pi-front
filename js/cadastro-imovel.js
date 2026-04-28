@@ -1,5 +1,5 @@
 function salvar() {
-    var form = document.getElementsByName("form");
+    var form = document.getElementById("container_cadastro");
     var data = {};
 
     for (formulario of form) {
@@ -9,7 +9,11 @@ function salvar() {
         });
     };
 
-    if (data) {
+    console.log("Dados do imóvel a serem enviados:", JSON.stringify(data));
+
+    // TODO: arrumar, a rua esta sendo vazia
+
+    if (JSON.stringify(data).length > 0) {
         try {
             let caminho = window.location.pathname;
             if (caminho.includes("/html/")) {
@@ -38,12 +42,12 @@ function salvar() {
                     }
                 })
                 .then(data => {
-                    if (data["erro"] || in_array("erro", data)) {
-                        alert("Erro ao cadastrar imóvel: " + data["erro"]);
+                    if (data.erro) {
+                        alert("Erro ao cadastrar imóvel: " + data.erro);
                         return;
                     }
-                    else if (data["mensagem"]) {
-                        alert("Imóvel cadastrado com sucesso: " + data["mensagem"]);
+                    else if (data.mensagem) {
+                        alert("Imóvel cadastrado com sucesso: " + data.mensagem);
                     }
 
                 })
@@ -55,9 +59,11 @@ function salvar() {
             console.error("Erro ao enviar dados do imóvel:", error);
         }
 
+    } else {
+        alert("Nenhum dado para enviar!");
     }
 
-    console.log("Dados do imóvel a serem enviados:", data);
+    // console.log("Dados do imóvel a serem enviados:", data);
 }
 
 async function excluir() {

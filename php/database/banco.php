@@ -28,9 +28,9 @@ class Banco
             $this->db = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
             $this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             $this->init_tabelas();
-            // // echo "Connected successfully";
+            // error_log("Connected successfully";
         } catch (PDOException $e) {
-            // echo $e->getMessage();
+            error_log($e->getMessage());
             return;
         }
     }
@@ -44,6 +44,7 @@ class Banco
     {
 
         $queries = [
+            "CREATE DATABASE IF NOT EXISTS imobiliaria;",
 
             "CREATE TABLE IF NOT EXISTS usuario (
                 id_usuario INTEGER PRIMARY KEY AUTO_INCREMENT,
@@ -382,7 +383,7 @@ class Banco
             $usuario_obj->set_telefones($telefones);
             return $usuario_obj;
         } catch (Exception $e) {
-            // echo "ERRO Banco->get_usuario_por_id: " . $e->getMessage();
+            error_log("ERRO Banco->get_usuario_por_id: " . $e->getMessage());
             return null;
         }
     }
@@ -425,7 +426,7 @@ class Banco
 
             return $lista;
         } catch (Exception $e) {
-            // echo "ERRO! Banco->get_lista_enderecos: "  . $e->getMessage();
+            error_log("ERRO! Banco->get_lista_enderecos: "  . $e->getMessage());
             return [];
         }
     }
@@ -470,7 +471,7 @@ class Banco
 
             return $lista;
         } catch (Exception $e) {
-            // echo "ERRO Banco->get_lista_proprietarios: "  . $e->getMessage();
+            error_log("ERRO Banco->get_lista_proprietarios: "  . $e->getMessage());
             return [];
         }
     }
@@ -538,7 +539,7 @@ class Banco
 
             return $lista;
         } catch (Exception $e) {
-            // echo "ERRO Banco->get_lista_clientes: "  . $e->getMessage();
+            error_log("ERRO Banco->get_lista_clientes: "  . $e->getMessage());
             return [];
         }
     }
@@ -683,7 +684,7 @@ class Banco
 
             return $lista;
         } catch (Exception $e) {
-            // echo "ERRO Banco->get_lista_usuarios: "  . $e->getMessage();
+            error_log("ERRO Banco->get_lista_usuarios: "  . $e->getMessage());
             return [];
         }
     }
@@ -788,7 +789,7 @@ class Banco
             return True;
         } catch (Exception $e) {
             $erro = "ERRO! Banco->cadastrar_usuario " . $e->getMessage();
-            // echo $erro;
+            error_log($erro);
             return False;
         }
     }
@@ -805,7 +806,7 @@ class Banco
             $stmt->execute([$valor]);
             return True;
         } catch (Exception $e) {
-            // echo "ERRO Banco->remover $tabela - $valor: " . $e->getMessage();
+            error_log("ERRO Banco->remover $tabela - $valor: " . $e->getMessage());
             return False;
         }
     }
@@ -822,7 +823,7 @@ class Banco
             $this->db->commit();
             return True;
         } catch (Exception $e) {
-            // echo "ERRO Banco->atualizar $tabela - $valor: " . $e->getMessage();
+            error_log("ERRO Banco->atualizar $tabela - $valor: " . $e->getMessage());
             return False;
         }
     }
@@ -971,7 +972,7 @@ class Banco
             return $usuario_obj;
         } catch (Exception $e) {
             $erro = "ERRO! Banco->get_usuario_por_cpf_cnpj: " . $e->getMessage();
-            // echo $erro;
+            error_log($erro);
             return NULL;
         }
     }
@@ -995,7 +996,7 @@ class Banco
             }
             return $lista;
         } catch (Exception $e) {
-            // echo "ERRO! Banco->get_lista_filtros_apartamento: " . $e->getMessage();
+            error_log("ERRO! Banco->get_lista_filtros_apartamento: " . $e->getMessage());
             return [];
         }
     }
@@ -1019,7 +1020,7 @@ class Banco
             }
             return $lista;
         } catch (Exception $e) {
-            // echo "ERRO! Banco->get_lista_filtros_condominio: " . $e->getMessage();
+            error_log("ERRO! Banco->get_lista_filtros_condominio: " . $e->getMessage());
             return [];
         }
     }
@@ -1038,7 +1039,7 @@ class Banco
             }
         } catch (Exception $e) {
             $erro = "ERRO! Banco->cadastrar_lista_filtros: " . $e->getMessage();
-            // echo $erro;
+            error_log($erro);
             return False;
         }
     }
@@ -1097,7 +1098,7 @@ class Banco
             return $condominio_obj;
         } catch (Exception $e) {
             $erro = "ERRO! Banco->get_condominio_por_id_imovel: " . $e->getMessage();
-            // echo $erro;
+            error_log($erro);
             return NULL;
         }
     }
@@ -1138,7 +1139,7 @@ class Banco
             return True;
         } catch (Exception $e) {
             $erro = "ERRO! Banco->cadastrar_atendimento: " . $e->getMessage();
-            // echo $erro;
+            error_log($erro);
             return False;
         }
     }
@@ -1184,7 +1185,7 @@ class Banco
             return $lista;
         } catch (Exception $e) {
             $erro = "ERRO! Banco->get_lista_atendimentos: " . $e->getMessage();
-            // echo $erro;
+            error_log($erro);
             return [];
         }
     }
@@ -1225,7 +1226,7 @@ class Banco
             return $anuncio_obj;
         } catch (Exception $e) {
             $erro = "ERRO! Banco->get_anuncio_por_id: " . $e->getMessage();
-            // echo $erro;
+            error_log($erro);
             return NULL;
         }
     }
@@ -1246,7 +1247,7 @@ class Banco
             return True;
         } catch (Exception $e) {
             $erro = "ERRO! Banco->cadastrar_anexo: " . $e->getMessage();
-            // echo $erro;
+            error_log($erro);
             return False;
         }
     }
@@ -1287,7 +1288,7 @@ class Banco
             return $mapa;
         } catch (Exception $e) {
             $erro = "ERRO! Banco->get_lista_anexos: " . $e->getMessage();
-            // echo $erro;
+            error_log($erro);
             return [];
         }
     }
@@ -1319,7 +1320,7 @@ class Banco
             return $condominio_obj;
         } catch (Exception $e) {
             $erro = "ERRO! Banco->get_condominio_por_id_endereco: "  . $e->getMessage();
-            // echo $erro;
+            error_log($erro);
             return null;
         }
     }
@@ -1352,7 +1353,7 @@ class Banco
             return $condominio_obj;
         } catch (Exception $e) {
             $erro = "ERRO! Banco->get_condominio_por_id: "  . $e->getMessage();
-            // echo $erro;
+            error_log($erro);
             return null;
         }
     }
@@ -1397,7 +1398,7 @@ class Banco
             return $endereco_resultado;
         } catch (Exception $e) {
             $erro = "ERRO! Banco->verificar_endereco: "  . $e->getMessage();
-            // echo $erro;
+            error_log($erro);
             return null;
         }
     }
@@ -1569,7 +1570,7 @@ class Banco
             return $usuario_obj;
         } catch (Exception $e) {
             $erro = "ERRO! Banco->verificar_usuario: "  . $e->getMessage();
-            // echo $erro;
+            error_log($erro);
             return null;
         }
     }
@@ -1598,7 +1599,7 @@ class Banco
 
             return true;
         } catch (Exception $e) {
-            // echo "ERRO! Banco->cadastrar_endereco: " . $e->getMessage();
+            error_log("ERRO! Banco->cadastrar_endereco: " . $e->getMessage());
             return false;
         }
     }
@@ -1626,7 +1627,7 @@ class Banco
 
             return true;
         } catch (Exception $e) {
-            // echo "ERRO! Banco->cadastrar_condominio: " . $e->getMessage();
+            error_log("ERRO! Banco->cadastrar_condominio: " . $e->getMessage());
             return false;
         }
     }
@@ -1686,7 +1687,7 @@ class Banco
 
             return true;
         } catch (Exception $e) {
-            // echo "ERRO! Banco->cadastrar_proprietario: " . $e->getMessage();
+            error_log("ERRO! Banco->cadastrar_proprietario: " . $e->getMessage());
             return false;
         }
     }
@@ -1732,7 +1733,7 @@ class Banco
 
             return $id_anuncio;
         } catch (Exception $e) {
-            // echo "ERRO! Banco->cadastrar_anuncio: " . $e->getMessage();
+            error_log("ERRO! Banco->cadastrar_anuncio: " . $e->getMessage());
             return false;
         }
     }
@@ -1768,7 +1769,7 @@ class Banco
 
             return $endereco;
         } catch (Exception $e) {
-            // echo "ERRO! Banco->get_endereco_por_id: " . $e->getMessage();
+            error_log("ERRO! Banco->get_endereco_por_id: " . $e->getMessage());
             return null;
         }
     }
@@ -1807,7 +1808,7 @@ class Banco
 
             return $proprietario;
         } catch (Exception $e) {
-            // echo "ERRO! Banco->get_proprietario_por_cpf_cnpj: " . $e->getMessage();
+            error_log("ERRO! Banco->get_proprietario_por_cpf_cnpj: " . $e->getMessage());
             return null;
         }
     }
@@ -1935,7 +1936,7 @@ class Banco
             return true;
         } catch (Exception $e) {
             // $this->db->rollBack();
-            echo "ERRO! Banco->cadastrar_imovel: " . $e->getMessage();
+            error_log("ERRO! Banco->cadastrar_imovel: " . $e->getMessage());
             return false;
         }
     }
@@ -2076,7 +2077,7 @@ class Banco
 
             return $lista;
         } catch (Exception $e) {
-            // echo "ERRO Banco->get_lista_imoveis: " . $e->getMessage();
+            error_log("ERRO Banco->get_lista_imoveis: " . $e->getMessage());
             return [];
         }
     }
@@ -2221,7 +2222,7 @@ class Banco
 
             return $lista;
         } catch (Exception $e) {
-            // echo "ERRO Banco->get_lista_imoveis_disponiveis: " . $e->getMessage();
+            error_log("ERRO Banco->get_lista_imoveis_disponiveis: " . $e->getMessage());
             return [];
         }
     }
@@ -2397,7 +2398,7 @@ class Banco
             return true;
         } catch (Exception $e) {
             $this->db->rollBack();
-            // echo "ERRO Banco->atualizar_imovel: " . $e->getMessage();
+            error_log("ERRO Banco->atualizar_imovel: " . $e->getMessage());
             return false;
         }
     }
@@ -2417,7 +2418,7 @@ class Banco
 
             return $row ? (int)$row['id_filtros_imovel'] : null;
         } catch (Exception $e) {
-            // echo "ERRO Banco->get_id_filtro_imovel_por_nome: " . $e->getMessage();
+            error_log("ERRO Banco->get_id_filtro_imovel_por_nome: " . $e->getMessage());
             return null;
         }
     }
@@ -2437,7 +2438,7 @@ class Banco
 
             return true;
         } catch (Exception $e) {
-            // echo "ERRO Banco->cadastrar_filtro_imovel: " . $e->getMessage();
+            error_log("ERRO Banco->cadastrar_filtro_imovel: " . $e->getMessage());
             return false;
         }
     }
@@ -2458,7 +2459,7 @@ class Banco
 
             return true;
         } catch (Exception $e) {
-            // echo "ERRO Banco->remover_filtro_do_imovel: " . $e->getMessage();
+            error_log("ERRO Banco->remover_filtro_do_imovel: " . $e->getMessage());
             return false;
         }
     }
@@ -2478,7 +2479,7 @@ class Banco
 
             return $row ? (int)$row['id_filtros_condominio'] : null;
         } catch (Exception $e) {
-            // echo "ERRO Banco->get_id_filtro_condominio_por_nome: " . $e->getMessage();
+            error_log("ERRO Banco->get_id_filtro_condominio_por_nome: " . $e->getMessage());
             return null;
         }
     }
@@ -2498,7 +2499,7 @@ class Banco
 
             return true;
         } catch (Exception $e) {
-            // echo "ERRO Banco->cadastrar_filtro_condominio: " . $e->getMessage();
+            error_log("ERRO Banco->cadastrar_filtro_condominio: " . $e->getMessage());
             return false;
         }
     }
@@ -2519,7 +2520,7 @@ class Banco
 
             return true;
         } catch (Exception $e) {
-            // echo "ERRO Banco->remover_filtro_do_condominio: " . $e->getMessage();
+            error_log("ERRO Banco->remover_filtro_do_condominio: " . $e->getMessage());
             return false;
         }
     }
@@ -2558,7 +2559,7 @@ class Banco
             return true;
         } catch (Exception $e) {
             $this->db->rollBack();
-            // echo "ERRO Banco->atualizar_anuncio: " . $e->getMessage();
+            error_log("ERRO Banco->atualizar_anuncio: " . $e->getMessage());
             return false;
         }
     }
@@ -2625,7 +2626,7 @@ class Banco
             return true;
         } catch (Exception $e) {
             $this->db->rollBack();
-            // echo "ERRO Banco->atualizar_condominio: " . $e->getMessage();
+            error_log("ERRO Banco->atualizar_condominio: " . $e->getMessage());
             return false;
         }
     }
@@ -2776,7 +2777,7 @@ class Banco
             return true;
         } catch (Exception $e) {
             $this->db->rollBack();
-            // echo "ERRO Banco->atualizar_usuario: " . $e->getMessage();
+            error_log("ERRO Banco->atualizar_usuario: " . $e->getMessage());
             return false;
         }
     }
@@ -2877,7 +2878,7 @@ class Banco
             return true;
         } catch (Exception $e) {
             $this->db->rollBack();
-            // echo "ERRO Banco->atualizar_proprietario: " . $e->getMessage();
+            error_log("ERRO Banco->atualizar_proprietario: " . $e->getMessage());
             return false;
         }
     }
@@ -2997,7 +2998,7 @@ class Banco
 
             return $imovel_obj;
         } catch (Exception $e) {
-            // echo "ERRO! Banco->get_imovel_por_id: " . $e->getMessage();
+            error_log("ERRO! Banco->get_imovel_por_id: " . $e->getMessage());
             return null;
         }
     }

@@ -73,8 +73,12 @@ class Init
     {
         self::$imobiliaria = new Imobiliaria("GameStart", "00000000000");
 
-        self::$imobiliaria->cadastrar_lista_filtros(self::$filtros_imovel, "filtros_imovel");
-        self::$imobiliaria->cadastrar_lista_filtros(self::$filtros_condominio, "filtros_condominio");
+        if (empty(self::$imobiliaria->get_estoque()->get_lista_imoveis())) {
+
+            self::$imobiliaria->cadastrar_lista_filtros(self::$filtros_imovel, "filtros_imovel");
+            self::$imobiliaria->cadastrar_lista_filtros(self::$filtros_condominio, "filtros_condominio");
+
+        }
 
         $administrador = new Usuario(
             username: "administrador",
@@ -203,14 +207,16 @@ class Init
         $endereco_dois->set_numero("456");
 
         if (empty(self::$imobiliaria->get_lista_enderecos())) {
-            $cadastro = self::$imobiliaria->cadastrar_endereco($endereco_um);
-            $cadastro_dois = self::$imobiliaria->cadastrar_endereco($endereco_dois);
+            self::$imobiliaria->cadastrar_endereco($endereco_um);
+            self::$imobiliaria->cadastrar_endereco($endereco_dois);
         }
         $consulta_um = NULL;
         $consulta_dois = NULL;
         $consulta_um = self::$imobiliaria->verificar_endereco($endereco_um);
         $condominio_um = new Condominio("Way", $consulta_um);
-        self::$imobiliaria->cadastrar_condominio($condominio_um);
+        if (empty(self::$imobiliaria->get_estoque()->get_lista_imoveis())) {
+            self::$imobiliaria->cadastrar_condominio($condominio_um);
+        }
         $consultar_condominio = NULL;
         if ($consulta_um) {
             $consultar_condominio = self::$imobiliaria->get_condominio_por_id_endereco(
@@ -221,12 +227,9 @@ class Init
 
         // echo file_get_contents("../assets/apartament.jpg");
 
-        
 
         $blob = file_get_contents("../../assets/apartament.jpg");
         $blob2 = file_get_contents("../../assets/campo.jpg");
-
-
 
         $anuncio_um->set_imagens([$blob, $blob, $blob2, $blob2, $blob]);
         $anuncio_um->set_titulo("Apartamento de 1 quarto, venda ou aluguel");

@@ -280,6 +280,8 @@ function cadastrar_imovel()
             return;
         }
 
+        error_log("Dados recebidos: " . print_r($data, true));
+
         $id =  in_array("ref", $data) ? $data["ref"] : null;
         $nome_condominio = in_array("nome_condominio", $data) ? $data["nome_condominio"] : null;
         $valor_venda = in_array("valor_venda", $data) ? (float)($data["valor_venda"] ?? 0) : null;
@@ -383,7 +385,6 @@ function cadastrar_imovel()
         }
 
         if (str_starts_with($mensagem, "ERRO") || str_starts_with($mensagem, "erro")) {
-
             echo json_encode(["erro" => $mensagem]);
             return;
         } else {
