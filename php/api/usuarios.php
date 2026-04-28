@@ -32,3 +32,5 @@ switch ($acao) {
         echo json_encode(["erro" => "Ação inválida"]);
         break;
 }
+
+// remover '-' do cep e converter para inteiro

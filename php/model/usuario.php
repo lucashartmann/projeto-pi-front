@@ -8,6 +8,8 @@ enum Tipo: string
     case CAPTADOR = "CAPTADOR";
     case CLIENTE = "CLIENTE";
     case PROPRIETARIO = "PROPRIETARIO";
+    case FINANCEIRO = "FINANCEIRO";
+    case VISTORIADOR = "VISTORIADOR";
 }
 
 

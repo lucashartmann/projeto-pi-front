@@ -1,3 +1,4 @@
+
 function mostrarNavLeft() {
     try {
         const nav = document.getElementById("side-nav");
@@ -219,7 +220,8 @@ function carregarTabs(usuario) {
         case 'ADMIN':
             tabs = [
                 { text: "Atendimento", href: "atendimento.html" },
-                { text: "Estoque", href: "estoque.html" }
+                { text: "Estoque", href: "estoque.html" },
+                { text: "Agendar Visita", href: "agendar-visita.html" }
             ];
             cadastros = [
                 { text: "Imóveis", href: "cadastro-imovel.html" },
@@ -233,10 +235,17 @@ function carregarTabs(usuario) {
             ];
             break;
 
+        case "FINANCEIRO":
+            break;
+
+        case "VISTORIADOR":
+            break;
+
         case "CORRETOR":
             tabs = [
                 { text: "Atendimento", href: "atendimento.html" },
-                { text: "Estoque", href: "estoque.html" }
+                { text: "Estoque", href: "estoque.html" },
+                { text: "Agendar Visita", href: "agendar-visita.html" }
             ];
             cadastros = [
                 { text: "Imóveis", href: "cadastro-imovel.html" },

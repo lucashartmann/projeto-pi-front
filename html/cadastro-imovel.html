@@ -8,13 +8,14 @@
     <link rel="stylesheet" href="../css/base.css">
     <link rel="stylesheet" href="../css/cadastro-imovel.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.minlength.css">
+    <script src="https://cdn.jsdelivr.net/npm/inputmask/dist/inputmask.min.js"></script>
     <link rel="icon" type="image/x-icon" href="img/logo.png">
 </head>
 
 <body>
     <div id="h_buttons">
         <button class="bt_delete" onclick="excluir()">Apagar</button>
-        <button class="bt_success" onclick="salvar()">Salvar</button>
+        <button class="bt_success" type="submit" onclick="salvarMultiplosForms()">Salvar</button>
     </div>
     <div class="tab">
         <button class="tablinks" id="tab_imovel" onclick="openTab(event, 'container_cadastro')"
@@ -23,8 +24,8 @@
             role="tab">Anuncio</button>
     </div>
 
-    <form action="../php/form_controller.php" id="container_cadastro" style="display: grid;" role="tabpanel"
-        class="tabcontent" name="acao" value="cadastro_imovel">
+    <form id="container_cadastro" style="display: grid;" role="tabpanel"
+        class="tabcontent" value="cadastro_imovel" >
         <label id="stt_ref" for="">ref:</label>
         <textarea name="ref" id="ta_ref" readonly=True></textarea>
         <label for="" id="stt_categoria">Categoria:</label>
@@ -87,22 +88,20 @@
         <label for="" id="stt_nome_condominio">Nome do Condomínio</label>
         <textarea name="nome_condominio" id="ta_nome_condominio"></textarea>
         <label for="" id="stt_ano_construcao">Ano de Construção</label>
-        <input type="date" placeholder="0000" id="ta_ano_construcao" inputmode="numeric" pattern="[0-9]{4}" oninput="this.value = this.value.replace(/\D/g, '').slice(0, 4);" name="ano_construcao">
-         <!-- <input type="number" name="ano" min="1900" max="2026" step="1" required id="ta_ano_construcao"> -->
+        <input type="number" placeholder="0000" id="ta_ano_construcao" min="1800"
+        max="2026" name="ano_construcao">
         <label for="" id="stt_cep">CEP</label>
-        <input type="text" id="ta_cep" name="cep" placeholder="00000000" inputmode="numeric" pattern="[0-9]{8}"
-            maxlength="9" minlength="8" required
-            oninput="this.value = this.value.replace(/\D/g, '').slice(0, 9); preencherEndereco(event)">
+        <input type="text" id="ta_cep" name="cep" placeholder="00000-000"  required oninput="preencherEndereco(event)" minlength="9" maxlength="9">
         <label for="" id="stt_rua">Rua</label>
         <textarea id="ta_rua" readonly=True name="rua" required></textarea>
         <label for="" id="stt_numero">Número</label>
-        <input type="text" id="ta_numero" type="integer" name="numero" required>
+        <input type="number" id="ta_numero" name="numero" required>
         <label for="" id="stt_complemento">Complemento</label>
         <textarea name="complemento" id="ta_complemento"></textarea>
         <label for="" id="stt_bloco">Bloco</label>
         <textarea name="bloco" id="ta_bloco"></textarea>
         <label for="" id="stt_andar">Andar</label>
-        <input type="text" placeholder="00" id="ta_andar" inputmode="numeric" pattern="[0-9]{2}" oninput="this.value = this.value.replace(/\D/g, '').slice(0, 9);" name="andar">
+        <input type="number" placeholder="00" id="ta_andar" min="0" max="99" name="andar">
         <label for="" id="stt_bairro">Bairro</label>
         <textarea id="ta_bairro" readonly=True name="bairro" required></textarea>
         <label for="" id="stt_cidade">Cidade</label>
@@ -111,15 +110,15 @@
         <input type="text" readonly=True, placeholder="XX" id="ta_estado" minlength="2" maxlength="2" name="uf"
             required>
         <label for="" id="stt_salas">Salas</label>
-        <input type="text" placeholder="00" id="ta_salas" inputmode="numeric" pattern="[0-9]{2}" oninput="this.value = this.value.replace(/\D/g, '').slice(0, 9);" name="quantidade_salas">
+        <input type="number" placeholder="00" id="ta_salas" name="quantidade_salas" min="0" max="99">
         <label for="" id="stt_banheiros">Banheiros</label>
-        <input type="text" placeholder="00" id="ta_banheiros" inputmode="numeric" pattern="[0-9]{2}" oninput="this.value = this.value.replace(/\D/g, '').slice(0, 9);" name="quantidade_banheiros">
+        <input type="number" placeholder="00" id="ta_banheiros" name="quantidade_banheiros" min="0" max="99">
         <label for="" id="stt_vagas">Vagas</label>
-        <input type="text" placeholder="00" id="ta_vagas" inputmode="numeric" pattern="[0-9]{2}" oninput="this.value = this.value.replace(/\D/g, '').slice(0, 9);" name="quantidade_vagas">
+        <input type="number" placeholder="00" id="ta_vagas" name="quantidade_vagas" min="0" max="99">
         <label for="" id="stt_varandas">Varandas</label>
-        <input type="text" placeholder="00" id="ta_varandas" name="quantidade_varandas" inputmode="numeric" pattern="[0-9]{2}" oninput="this.value = this.value.replace(/\D/g, '').slice(0, 9);">
+        <input type="number" placeholder="00" id="ta_varandas" name="quantidade_varandas" min="0" max="99">
         <label for="" id="stt_quartos">Quartos</label>
-        <input type="text" placeholder="00" id="ta_quartos" inputmode="numeric" pattern="[0-9]{2}" oninput="this.value = this.value.replace(/\D/g, '').slice(0, 9);"  name="quantidade_quartos">
+        <input type="number" placeholder="00" id="ta_quartos" name="quantidade_quartos" min="0" max="99">
         <label for="" id="stt_area_total">Área Total</label>
         <input type="number" id="ta_area_total" type="number" name="area_total" placeholder="0.00">
         <label for="" id="stt_area_privativa">Área Privativa</label>

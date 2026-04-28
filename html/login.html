@@ -48,13 +48,7 @@
             const inicio = data.lastIndexOf("<div class=");
             const fim = data.lastIndexOf("</div>");
             const substring = data.substring(inicio + 20, fim);
-            // console.log(substring);
-            const hmtl = `
-            <li><a href="cadastro-imovel.html">Admin</a></li>
-        `;
-            data = data.replace(substring, hmtl);
-            // console.log(data.substring(inicio, fim));
-            // console.log(data);
+            data = data.replace(substring, "");
             document.body.insertAdjacentHTML('afterbegin', data);
         });
 

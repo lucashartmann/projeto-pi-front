@@ -1,5 +1,21 @@
+Inputmask("99999-999").mask("#ta_cep");
+
+function salvarMultiplosForms() {
+    const form1 = document.getElementById("container_cadastro");
+    const form2 = document.getElementById("container_anuncio");
+
+    if (!form1.checkValidity() || !form2.checkValidity()) {
+        form1.reportValidity();
+        form2.reportValidity();
+        return;
+    }
+
+    salvar();
+}
+
 function salvar() {
     var form = document.getElementById("container_cadastro");
+    var form_anuncio = document.getElementById("container_anuncio");
     var data = {};
 
     for (formulario of form) {
@@ -9,9 +25,12 @@ function salvar() {
         });
     };
 
-    console.log("Dados do imóvel a serem enviados:", JSON.stringify(data));
-
-    // TODO: arrumar, a rua esta sendo vazia
+    for (formulario of form_anuncio) {
+        var formData = new FormData(formulario);
+        formData.forEach(function (value, key) {
+            data[key] = value;
+        });
+    };
 
     if (JSON.stringify(data).length > 0) {
         try {

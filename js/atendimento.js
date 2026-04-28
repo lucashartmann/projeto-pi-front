@@ -1,33 +1,33 @@
 async function listarAtendimentos() {
     try {
         let caminho = window.location.pathname;
+
         if (caminho.includes("/html/")) {
             caminho = caminho.replace("/html/", "/");
         }
+
         caminho = caminho.replace(
             caminho.substring(caminho.lastIndexOf("/")),
             "/php/api/atendimentos.php?acao=listar_atendimentos"
         );
-        const resposta = await fetch(caminho)
-            .then((res) => {
-                if (!res.ok) {
-                    throw new Error(`HTTP ${res.status}`);
-                }
-                const contentType = res.headers.get("content-type");
-                if (contentType && contentType.includes("application/json")) {
-                    return res.json();
-                } else {
-                    const texto = res.text();
-                    alert("Resposta inesperada do servidor");
-                    console.error("Resposta não é JSON:", texto);
-                    return null;
-                }
 
-            })
-            .catch((erro) => {
-                console.error("Erro ao processar a resposta:", erro);
-                return null;
-            });
+        const res = await fetch(caminho);
+
+        if (!res.ok) {
+            throw new Error(`HTTP ${res.status}`);
+        }
+
+        const contentType = res.headers.get("content-type");
+
+        if (contentType && contentType.includes("application/json")) {
+            return await res.json();
+        } else {
+            const texto = await res.text();
+            alert("Resposta inesperada do servidor");
+            console.error("Resposta não é JSON:", texto);
+            return null;
+        }
+
     } catch (erro) {
         console.error("Falha ao conectar com o backend:", erro);
         return null;
@@ -36,8 +36,9 @@ async function listarAtendimentos() {
 
 async function carregarAtendimentos() {
     const dados = await listarAtendimentos();
+    console.log(dados);
     const section = document.getElementById("container_horizontal");
-
+   
     if (!section || !dados) return;
 
     const div_recem_cadastrados = document.getElementById("container_cadastrados");
@@ -46,19 +47,21 @@ async function carregarAtendimentos() {
         child.remove();
     }
 
-    // const div_em_andamento = document.getElementById("container_andamento");
+    const div_em_andamento = document.getElementById("container_andamento");
 
-    // for (child of div_em_andamento.children) {
-    //         child.remove();
-    // }   
+    for (child of div_em_andamento.children) {
+            child.remove();
+    }   
 
-    // const div_pendente = document.getElementById("container_esperando");
+    const div_pendente = document.getElementById("container_esperando");
 
-    // for (child of div_pendente.children) {
-    //         child.remove();
-    // }   
+    for (child of div_pendente.children) {
+            child.remove();
+    }   
 
-    for (let i = 0; i < 5; i++) {
+    const tamanho = dados.length < 5 ? dados.length : 5;
+
+    for (let i = 0; i < tamanho; i++) {
         const div_card = document.createElement("div");
         div_card.id = "card_cadastrado";
         div_card.className = "card";

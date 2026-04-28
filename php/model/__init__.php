@@ -216,13 +216,14 @@ class Init
         $condominio_um = new Condominio("Way", $consulta_um);
         if (empty(self::$imobiliaria->get_estoque()->get_lista_imoveis())) {
             self::$imobiliaria->cadastrar_condominio($condominio_um);
+            $consultar_condominio = NULL;
+            if ($consulta_um) {
+                $consultar_condominio = self::$imobiliaria->get_condominio_por_id_endereco(
+                    $consulta_um->get_id()
+                );
+            }
         }
-        $consultar_condominio = NULL;
-        if ($consulta_um) {
-            $consultar_condominio = self::$imobiliaria->get_condominio_por_id_endereco(
-                $consulta_um->get_id()
-            );
-        }
+        
         $anuncio_um = new Anuncio();
 
         // echo file_get_contents("../assets/apartament.jpg");
@@ -296,13 +297,14 @@ class Init
         $condominio_dois = new Condominio("Premium", $consulta_dois);
         if (empty(self::$imobiliaria->get_estoque()->get_lista_imoveis())) {
             self::$imobiliaria->cadastrar_condominio($condominio_dois);
+            $condominio_dois = NULL;
+            if ($consulta_dois) {
+                $condominio_dois = self::$imobiliaria->get_condominio_por_id_endereco(
+                    $consulta_dois->get_id()
+                );
+            }
         }
-        $condominio_dois = NULL;
-        if ($consulta_dois) {
-            $condominio_dois = self::$imobiliaria->get_condominio_por_id_endereco(
-                $consulta_dois->get_id()
-            );
-        }
+        
         $imovel_quatro = new Imovel(
             endereco: $consulta_dois,
             status: Status::PENDENTE,
@@ -336,16 +338,22 @@ class Init
             }
         }
         $atendimento_um = new Atendimento();
-        $atendimento_um->set_cliente($comprador);
-        $atendimento_um->set_corretor($corretor_um);
-        $atendimento_um->set_imovel($imovel_um);
-        $atendimento_um->set_status(Status_Atendimento::EM_ANDAMENTO);
         $atendimento_dois = new Atendimento();
-        $atendimento_dois->set_cliente($comprador_dois);
-        $atendimento_dois->set_corretor($corretor_dois);
-        $atendimento_dois->set_imovel($imovel_dois);
+        $atendimento_um->set_status(Status_Atendimento::EM_ANDAMENTO);
         $atendimento_dois->set_status(Status_Atendimento::PENDENTE);
         if (empty(self::$imobiliaria->get_lista_atendimentos())) {
+            $comprador_atendimento = self::$imobiliaria->get_usuario_por_id(5);
+            $corretor_atendimento = self::$imobiliaria->get_usuario_por_id(9);
+            $imovel_atendimento = self::$imobiliaria->get_estoque()->get_lista_imoveis()[0];
+            $comprador_atendimento_dois = self::$imobiliaria->get_usuario_por_id(15);
+            $corretor_atendimento_dois = self::$imobiliaria->get_usuario_por_id(19);
+            $imovel_atendimento_dois = self::$imobiliaria->get_estoque()->get_lista_imoveis()[1];
+            $atendimento_um->set_cliente($comprador_atendimento);
+            $atendimento_um->set_corretor($corretor_atendimento);
+            $atendimento_um->set_imovel($imovel_atendimento);
+            $atendimento_dois->set_cliente($comprador_atendimento_dois);
+            $atendimento_dois->set_corretor($corretor_atendimento_dois);
+            $atendimento_dois->set_imovel($imovel_atendimento_dois);
             self::$imobiliaria->cadastrar_atendimento($atendimento_um);
             self::$imobiliaria->cadastrar_atendimento($atendimento_dois);
         }

@@ -71,6 +71,11 @@ class Imobiliaria
         );
     }
 
+    public function get_usuario_por_id($id)
+    {
+        return $this->banco_dados->get_usuario_por_id($id);
+    }
+
     public function cadastrar_endereco($endereco)
     {
         return $this->banco_dados->cadastrar_endereco($endereco);

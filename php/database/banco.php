@@ -259,7 +259,7 @@ class Banco
             $nome = $registro['nome'];
             $cpf_cnpj = $registro['cpf_cnpj'];
             $rg = $registro['rg'];
-            $endereco = $registro['endereco'];
+            $endereco = $registro['id_endereco'];
             if ($endereco) {
                 $endereco = $this->get_endereco_por_id((int)($registro['id_endereco']));
             }
@@ -282,20 +282,20 @@ class Banco
             );
             $sql_query = " 
                             SELECT id_telefone FROM telefone_usuario 
-                            WHERE id_usuario = ?
+                            WHERE id_usuario = :id_usuario
                             ";
             $stmt = $this->db->prepare($sql_query);
-            $stmt->execute([$id_usuario]);
+            $stmt->execute([':id_usuario' => $id_usuario]);
             $registros = $stmt->fetch(PDO::FETCH_ASSOC);
             $telefones = [];
             if ($registros) {
                 foreach ($registros as $id_telefone) {
                     $sql_query = " 
                             SELECT numero FROM telefone 
-                            WHERE id_telefone = ?
+                            WHERE id_telefone = :id_telefone
                                 ";
                     $stmt = $this->db->prepare($sql_query);
-                    $stmt->execute([$id_telefone]);
+                    $stmt->execute([':id_telefone' => $id_telefone]);
                     $registro = $stmt->fetch(PDO::FETCH_ASSOC);
                 }
             }
@@ -303,10 +303,10 @@ class Banco
                 case (Tipo::CORRETOR):
                     $stmt = $this->db->prepare("
                                     SELECT creci FROM corretor 
-                                    WHERE id_usuario = ?
+                                    WHERE id_usuario = :id_usuario
                                 ");
-                    $stmt->execute([$id_usuario]);
-                    $creci = $stmt->fetch(PDO::FETCH_ASSOC)[0];
+                    $stmt->execute([':id_usuario' => $id_usuario]);
+                    $creci = $stmt->fetch(PDO::FETCH_ASSOC);
                     if ($creci) {
                         $creci = (int)($creci);
                     }
@@ -330,10 +330,10 @@ class Banco
                     );
                     $stmt = $this->db->prepare("
                                     SELECT salario FROM captador 
-                                    WHERE id_usuario = ?
+                                    WHERE id_usuario = :id_usuario
                                 ");
-                    $stmt->execute([$id_usuario]);
-                    $salario = $stmt->fetch(PDO::FETCH_ASSOC)[0];
+                    $stmt->execute([':id_usuario' => $id_usuario]);
+                    $salario = $stmt->fetch(PDO::FETCH_ASSOC);
                     if ($salario) {
                         $salario = (float)($salario);
                     }
@@ -350,14 +350,25 @@ class Banco
                     );
                     $stmt = $this->db->prepare("
                                     SELECT salario FROM gerente 
-                                    WHERE id_usuario = ?
+                                    WHERE id_usuario = :id_usuario
                                 ");
-                    $stmt->execute([$id_usuario]);
-                    $salario = $stmt->fetch(PDO::FETCH_ASSOC)[0];
+                    $stmt->execute([':id_usuario' => $id_usuario]);
+                    $salario = $stmt->fetch(PDO::FETCH_ASSOC);
                     if ($salario) {
                         $salario = (float)($salario);
                     }
                     $usuario_obj->set_salario($salario);
+                    break;
+
+                case (Tipo::ADMINISTRADOR):
+                    $usuario_obj = new Usuario(
+                        $username,
+                        $senha,
+                        $email,
+                        $nome,
+                        $cpf_cnpj,
+                        $tipo_usuario
+                    );
                     break;
 
                 case (Tipo::CLIENTE):
@@ -519,11 +530,11 @@ class Banco
                 $cliente->set_data_nascimento($data);
 
                 $stmtTel = $this->db->prepare("
-                SELECT t->numero
+                SELECT t.numero
                 FROM telefone_usuario tu
-                JOIN telefone t ON t->id_telefone = tu->id_telefone
-                WHERE tu->id_usuario = :id
-            ");
+                JOIN telefone t ON t.id_telefone = tu.id_telefone
+                WHERE tu.id_usuario = :id
+                ");
                 $stmtTel->execute([':id' => $id]);
 
                 $telefones = [];
@@ -562,7 +573,7 @@ class Banco
 
             foreach ($dados as $registro) {
 
-                $id = (int)$registro['id_usuario'];
+                $id = $registro['id_usuario'];
                 $username = $registro['username'];
                 $senha = $registro['senha'];
                 $email = $registro['email'];
@@ -581,11 +592,11 @@ class Banco
                     : null;
 
                 $stmtTel = $this->db->prepare("
-                SELECT t->numero
+                SELECT t.numero
                 FROM telefone_usuario tu
-                JOIN telefone t ON t->id_telefone = tu->id_telefone
-                WHERE tu->id_usuario = :id
-            ");
+                JOIN telefone t ON t.id_telefone = tu.id_telefone
+                WHERE tu.id_usuario = :id
+                ");
                 $stmtTel->execute([':id' => $id]);
 
                 $telefones = [];
@@ -1148,31 +1159,33 @@ class Banco
     {
         try {
 
-            $stmt = $this->db->prepare("
-                        SELECT * FROM atendimento 
-                ");
+            $sql = "
+            SELECT * FROM atendimento
+            ";
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute();
             $registros = $stmt->fetchAll(PDO::FETCH_ASSOC);
             if (empty($registros)) {
                 throw new Exception("Não há atendimentos cadastrados");
             }
             $lista = [];
             foreach ($registros as $registro) {
-                $id_atendimento = (int)($registro[0]);
-                $imovel = $registro[1];
-                $corretor = $registro[2];
-                $comprador = $registro[3];
-                $status = $registro[4];
+                $id_atendimento = $registro['id_atendimento'];
+                $imovel = $registro['id_imovel'];
+                $corretor = $registro['id_corretor'];
+                $comprador = $registro['id_cliente'];
+                $status = $registro['status'];
                 if ($imovel) {
-                    $imovel = $this->get_imovel_por_id((int)($imovel));
+                    $imovel = $this->get_imovel_por_id($imovel);
                 }
                 if ($corretor) {
-                    $corretor = $this->get_usuario_por_cpf_cnpj($corretor);
+                    $corretor = $this->get_usuario_por_id($corretor);
                 }
                 if ($comprador) {
-                    $comprador = $this->get_usuario_por_cpf_cnpj($comprador);
+                    $comprador = $this->get_usuario_por_id($comprador);
                 }
                 if ($status) {
-                    $status =  Status::tryFrom($status);
+                    $status =  Status_Atendimento::tryFrom($status);
                 }
                 $atendimento_obj = new Atendimento();
                 $atendimento_obj->set_status($status);
@@ -1270,7 +1283,7 @@ class Banco
                 throw new Exception("Não há midias_imóveis cadastradas");
             }
             foreach ($registros as $registro) {
-                $id = (int)($registro['id_anuncio']);
+                $id = $registro['id_anuncio'];
                 $id = $registro['id_midia'];
                 $tipo = $registro['tipo'];
                 if ($tipo == "Imagem") {
@@ -1948,8 +1961,7 @@ class Banco
 
             $sql = "
             SELECT * FROM imovel
-            
-        ";
+            ";
 
             $stmt = $this->db->prepare($sql);
             $stmt->execute();

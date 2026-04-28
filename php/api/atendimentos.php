@@ -42,7 +42,7 @@ function listar_atendimentos()
         foreach ($atendimentos as $atendimento) {
             $lista[] = [
                 "id" => $atendimento->get_id(),
-                "corretor" => $atendimento->get_corretor()->get_nome() ?: NULL,
+                "corretor" => $atendimento->get_corretor() ? $atendimento->get_corretor()->get_nome() : NULL,
                 "cliente" =>  $atendimento->get_cliente() ? [
                     "id" => $atendimento->get_cliente()->get_id(),
                     "nome" => $atendimento->get_cliente()->get_nome(),
@@ -54,7 +54,7 @@ function listar_atendimentos()
                     "id" => $atendimento->get_imovel()->get_id(),
                     "titulo" => $atendimento->get_imovel()->get_anuncio()->get_titulo() ?: NULL,
                 ] : NULL,
-                "status" => $atendimento->get_status()->value ?: NULL,
+                "status" =>  $atendimento->get_status() ? $atendimento->get_status()->value : NULL,
             ];
         }
     }

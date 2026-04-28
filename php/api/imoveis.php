@@ -280,41 +280,50 @@ function cadastrar_imovel()
             return;
         }
 
-        error_log("Dados recebidos: " . print_r($data, true));
-
-        $id =  in_array("ref", $data) ? $data["ref"] : null;
-        $nome_condominio = in_array("nome_condominio", $data) ? $data["nome_condominio"] : null;
-        $valor_venda = in_array("valor_venda", $data) ? (float)($data["valor_venda"] ?? 0) : null;
-        $valor_aluguel = in_array("valor_aluguel", $data) ? (float)($data["valor_aluguel"] ?? 0) : null;
-        $quant_quartos = in_array("quant_quartos", $data) ? (int)($data["quant_quartos"] ?? 0) : null;
-        $quant_salas = in_array("quant_salas", $data) ? (int)($data["quant_salas"] ?? 0) : null;
-        $quant_vagas = in_array("quant_vagas", $data) ? (int)($data["quant_vagas"] ?? 0) : null;
-        $quant_banheiros = in_array("quant_banheiros", $data) ? (int)($data["quant_banheiros"] ?? 0) : null;
-        $quant_varandas = in_array("quant_varandas", $data) ? (int)($data["quant_varandas"] ?? 0) : null;
-        $categoria = in_array("categoria", $data) ? Categoria::tryFrom($data["categoria"]) : null;
-        $status = in_array("status", $data) ? Status::tryFrom($data["status"]) : null;
-        $iptu = in_array("iptu", $data) ? (float)($data["iptu"] ?? 0) : null;
-        $valor_condominio = in_array("valor_condominio", $data) ? (float)($data["valor_condominio"] ?? 0) : null;
-        $andar = in_array("andar", $data) ? (int)($data["andar"] ?? 0) : null;
-        $estado = in_array("estado", $data) ? Estado::tryFrom($data["estado"]) : null;
-        $bloco = in_array("bloco", $data) ? $data["bloco"] : null;
-        $ano_construcao = in_array("ano_construcao", $data) ? (int)($data["ano_construcao"] ?? 0) : null;
-        $area_total = in_array("area_total", $data) ? (float)($data["area_total"] ?? 0) : null;
-        $area_privativa = in_array("area_privativa", $data) ? (float)($data["area_privativa"] ?? 0) : null;
-        $situacao = in_array("situacao", $data) ? Situacao::tryFrom($data["situacao"]) : null;
-        $ocupacao = in_array("ocupacao", $data) ? Ocupacao::tryFrom($data["ocupacao"]) : null;
+        $id =  array_key_exists("ref", $data) ? $data["ref"] : null;
+        $nome_condominio = array_key_exists("nome_condominio", $data) ? $data["nome_condominio"] : null;
+        $valor_venda = array_key_exists("valor_venda", $data) ? (float)($data["valor_venda"] ?? 0) : null;
+        $valor_aluguel = array_key_exists("valor_aluguel", $data) ? (float)($data["valor_aluguel"] ?? 0) : null;
+        $quant_quartos = array_key_exists("quant_quartos", $data) ? (int)($data["quant_quartos"] ?? 0) : null;
+        $quant_salas = array_key_exists("quant_salas", $data) ? (int)($data["quant_salas"] ?? 0) : null;
+        $quant_vagas = array_key_exists("quant_vagas", $data) ? (int)($data["quant_vagas"] ?? 0) : null;
+        $quant_banheiros = array_key_exists("quant_banheiros", $data) ? (int)($data["quant_banheiros"] ?? 0) : null;
+        $quant_varandas = array_key_exists("quant_varandas", $data) ? (int)($data["quant_varandas"] ?? 0) : null;
+        $categoria = null;
+        if (isset($data["categoria"])) {
+            $valor = ucfirst(strtolower($data["categoria"]));
+            $categoria = Categoria::tryFrom($valor);
+        }
+        $status = null;
+        isset($data["status"]) ? $status = Status::tryFrom(ucfirst(strtolower($data["status"]))) : null;
+        $iptu = array_key_exists("iptu", $data) ? (float)($data["iptu"] ?? 0) : null;
+        $valor_condominio = array_key_exists("valor_condominio", $data) ? (float)($data["valor_condominio"] ?? 0) : null;
+        $andar = array_key_exists("andar", $data) ? (int)($data["andar"] ?? 0) : null;
+        $estado = null;
+        isset($data["estado"]) ? $estado = Estado::tryFrom(ucfirst(strtolower($data["estado"]))) : null;
+        $bloco = array_key_exists("bloco", $data) ? $data["bloco"] : null;
+        $ano_construcao = array_key_exists("ano_construcao", $data) ? (int)($data["ano_construcao"] ?? 0) : null;
+        $area_total = array_key_exists("area_total", $data) ? (float)($data["area_total"] ?? 0) : null;
+        $area_privativa = array_key_exists("area_privativa", $data) ? (float)($data["area_privativa"] ?? 0) : null;
+        $situacao = null;
+        isset($data["situacao"]) ? $situacao = Situacao::tryFrom(ucfirst(strtolower($data["situacao"]))) : null;
+        $ocupacao = null;
+        isset($data["ocupacao"]) ? $ocupacao = Ocupacao::tryFrom(ucfirst(strtolower($data["ocupacao"]))) : null;
         # proprietarios = data["proprietarios"]
         # corretor = data["corretor"]
         # captador = data["captador"]
-        $cep = in_array("cep", $data) ? (int)($data["cep"] ?? null) : null;
-        $rua = in_array("rua", $data) ? $data["rua"] : null;
-        $bairro = in_array("bairro", $data) ? $data["bairro"] : null;
-        $cidade = in_array("cidade", $data) ? $data["cidade"] : null;
-        $titulo = in_array("titulo", $data) ? $data["titulo"] : null;
-        $descricao = in_array("descricao", $data) ? $data["descricao"] : null;
-        $complemento = in_array("complemento", $data) ? $data["complemento"] : null;
-        $uf = in_array("uf", $data) ? $data["uf"] : null;
-        $numero = in_array("numero", $data) ? (int)($data["numero"] ?? null) : null;
+        $cep = array_key_exists("cep", $data) ? (int)($data["cep"] ?? null) : null;
+        if ($cep) {
+            $cep = str_replace("-", "", $cep);
+        }
+        $rua = array_key_exists("rua", $data) ? $data["rua"] : null;
+        $bairro = array_key_exists("bairro", $data) ? $data["bairro"] : null;
+        $cidade = array_key_exists("cidade", $data) ? $data["cidade"] : null;
+        $titulo = array_key_exists("titulo", $data) ? $data["titulo"] : null;
+        $descricao = array_key_exists("descricao", $data) ? $data["descricao"] : null;
+        $complemento = array_key_exists("complemento", $data) ? $data["complemento"] : null;
+        $uf = array_key_exists("uf", $data) ? $data["uf"] : null;
+        $numero = array_key_exists("numero", $data) ? (int)($data["numero"] ?? null) : null;
         $anuncio_obj = new Anuncio();
         $anuncio_obj->set_titulo($titulo);
         $anuncio_obj->set_descricao($descricao);
