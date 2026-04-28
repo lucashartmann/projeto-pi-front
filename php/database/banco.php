@@ -1364,14 +1364,14 @@ class Banco
             $sql = "
                 SELECT * 
                 FROM endereco 
-                WHERE cep = ?
-                AND numero = ?
+                WHERE cep = :cep
+                AND numero = :numero
             ";
 
             $stmt = $this->db->prepare($sql);
             $stmt->execute([
-                $endereco_obj->get_cep(),
-                $endereco_obj->get_numero()
+                ':cep' => $endereco_obj->get_cep(),
+                ':numero' => $endereco_obj->get_numero()
             ]);
 
             $registro = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -1407,9 +1407,9 @@ class Banco
         try {
 
             $stmt = $this->db->prepare("
-            SELECT * FROM usuario WHERE username = ?
+            SELECT * FROM usuario WHERE username = :username
         ");
-            $stmt->execute([$username]);
+            $stmt->execute([':username' => $username]);
 
             $registro = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -1433,9 +1433,9 @@ class Banco
             $nome = $registro['nome'];
             $cpf_cnpj = $registro['cpf_cnpj'];
             $rg = $registro['rg'];
-            $id_endereco = $registro['endereco'];
+            $id_endereco = $registro['id_endereco'];
             $data_nascimento = $registro['data_nascimento'];
-            $tipo = $registro['tipo'];
+            $tipo = $registro['tipo_usuario'];
 
 
             $endereco = null;
@@ -1539,7 +1539,6 @@ class Banco
                     break;
 
                 case 'CLIENTE':
-                default:
                     $usuario_obj = new Cliente(
                         $username,
                         $senha_hash_banco,
@@ -1548,6 +1547,17 @@ class Banco
                         $cpf_cnpj
                     );
                     break;
+
+                case "ADMIN":
+                    $usuario_obj = new Usuario(
+                       $username, $senha_hash_banco, $email, $nome, $cpf_cnpj, $tipo
+                    );
+                    break;
+                   
+                default:
+                    throw new Exception("Tipo de usuário desconhecido: $tipo");
+                    break;
+                    
             }
 
             $usuario_obj->set_endereco($endereco);

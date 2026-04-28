@@ -1,22 +1,22 @@
 <?php
 
-require_once __DIR__ . '/model/cliente.php';
-require_once __DIR__ . '/model/corretor.php';
-require_once __DIR__ . '/model/imovel.php';
-require_once __DIR__ . '/model/captador.php';
-require_once __DIR__ . '/model/atendimento.php';
-require_once __DIR__ . '/model/endereco.php';
-require_once __DIR__ . '/model/anuncio.php';
-require_once __DIR__ . '/model/venda_aluguel.php';
-require_once __DIR__ . '/model/condominio.php';
-require_once __DIR__ . '/model/gerente.php';
-require_once __DIR__ . '/model/usuario.php';
-require_once __DIR__ . '/model/proprietario.php';
-require_once __DIR__ . '/model/__init__.php';
-require_once __DIR__ . '/controller/controller.php';
+require_once __DIR__ . '/../model/cliente.php';
+require_once __DIR__ . '/../model/corretor.php';
+require_once __DIR__ . '/../model/imovel.php';
+require_once __DIR__ . '/../model/captador.php';
+require_once __DIR__ . '/../model/atendimento.php';
+require_once __DIR__ . '/../model/endereco.php';
+require_once __DIR__ . '/../model/anuncio.php';
+require_once __DIR__ . '/../model/venda_aluguel.php';
+require_once __DIR__ . '/../model/condominio.php';
+require_once __DIR__ . '/../model/gerente.php';
+require_once __DIR__ . '/../model/usuario.php';
+require_once __DIR__ . '/../model/proprietario.php';
+require_once __DIR__ . '/../model/__init__.php';
+require_once __DIR__ . '/../controller/controller.php';
 
-
-header('Content-Type => application/json');
+ob_start();
+header('Content-Type: application/json');
 Init::initialize();
 
 $acao = $_GET['acao'] ?? '';
@@ -27,34 +27,12 @@ switch ($acao) {
         cadastrar_imovel();
         break;
 
-    case "listar_atendimentos":
-        listar_atendimentos();
-        break;
-
     case 'listar_imoveis':
         get_lista_imoveis();
         break;
 
     case 'listar_imoveis_disponiveis':
         get_lista_imoveis_disponiveis();
-        break;
-
-    case "login":
-        $usuario = $_GET['usuario'] ?? null;
-        $senha = $_GET['senha'] ?? null;
-        if (!$usuario || !$senha) {
-            echo json_encode(["erro" => "Usuário ou senha não fornecidos"]);
-            return;
-        }
-        verificar_login($usuario, $senha);
-        break;
-
-    case "deslogar":
-        deslogar();
-        break;
-
-    case "get_usuario":
-        carregar_usuario();
         break;
 
     case "get_dados_imovel":
@@ -418,31 +396,6 @@ function cadastrar_imovel()
     }
 }
 
-function deslogar()
-{
-    Init::$usuario_atual = NULL;
-    echo json_encode(["status" => "ok"]);
-}
-
-
-
-
-function carregar_usuario()
-{
-
-
-    if (Init::$usuario_atual) {
-        echo (json_encode([
-            "tipo" => Init::$usuario_atual->get_tipo()->value ? Init::$usuario_atual->get_tipo()->value : NULL,
-        ]));
-    }
-
-    echo json_encode(["erro" => "Usuario nao encontrado"]);
-}
-
-
-
-
 function apagar_imovel($id)
 {
     try {
@@ -460,64 +413,4 @@ function apagar_imovel($id)
     } catch (Exception $e) {
         echo (json_encode(["erro" => $e->getMessage()]));
     }
-}
-
-
-function verificar_login($usuario, $senha)
-{
-
-
-    try {
-        $body = file_get_contents("php://input");
-        $data = json_decode($body, true);
-
-        if (json_last_error() !== JSON_ERROR_NONE) {
-            http_response_code(400);
-            echo json_encode(["erro" => "JSON inválido"]);
-            return;
-        }
-
-
-        $consulta = Init::$imobiliaria->verificar_usuario($usuario, $senha);
-
-        if ($consulta) {
-            Init::$usuario_atual = $consulta;
-            echo (json_encode(["status" => "ok"]));
-        } else {
-            echo (json_encode(["status" => "erro"]));
-        }
-    } catch (Exception $e) {
-        http_response_code(500);
-        echo json_encode(["erro" => "Erro interno"]);
-    }
-}
-
-
-
-function listar_atendimentos()
-{
-
-    $atendimentos = Init::$imobiliaria->get_lista_atendimentos();
-    $lista = [];
-    if ($atendimentos) {
-        foreach ($atendimentos as $atendimento) {
-            $lista[] = [
-                "id" => $atendimento->get_id(),
-                "corretor" => $atendimento->get_corretor()->get_nome() ?: NULL,
-                "cliente" =>  $atendimento->get_cliente() ? [
-                    "id" => $atendimento->get_cliente()->get_id(),
-                    "nome" => $atendimento->get_cliente()->get_nome(),
-                    # "idade" => $atendimento->get_cliente()->get_idade(),
-                    "telefones" => [$atendimento->get_cliente()->get_telefones()],
-                    "email" => $atendimento->get_cliente()->get_email(),
-                ] : NULL,
-                "imovel" => $atendimento->get_imovel() ? [
-                    "id" => $atendimento->get_imovel()->get_id(),
-                    "titulo" => $atendimento->get_imovel()->get_anuncio()->get_titulo() ?: NULL,
-                ] : NULL,
-                "status" => $atendimento->get_status()->value ?: NULL,
-            ];
-        }
-    }
-    echo (json_encode($lista));
 }

@@ -6,14 +6,23 @@ async function listarAtendimentos() {
         }
         caminho = caminho.replace(
             caminho.substring(caminho.lastIndexOf("/")),
-            "/php/js_controller.php?acao=listar_atendimentos"
+            "/php/api/atendimentos.php?acao=listar_atendimentos"
         );
         const resposta = await fetch(caminho)
             .then((res) => {
                 if (!res.ok) {
                     throw new Error(`HTTP ${res.status}`);
                 }
-                return res.json();
+                const contentType = res.headers.get("content-type");
+                if (contentType && contentType.includes("application/json")) {
+                    return res.json();
+                } else {
+                    const texto = res.text();
+                    alert("Resposta inesperada do servidor");
+                    console.error("Resposta não é JSON:", texto);
+                    return null;
+                }
+
             })
             .catch((erro) => {
                 console.error("Erro ao processar a resposta:", erro);

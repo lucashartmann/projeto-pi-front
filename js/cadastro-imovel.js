@@ -17,7 +17,7 @@ function salvar() {
             }
             caminho = caminho.replace(
                 caminho.substring(caminho.lastIndexOf("/")),
-                "/php/js_controller.php?acao=cadastrar_imovel"
+                "/php/api/imoveis.php?acao=cadastrar_imovel"
             );
             fetch(caminho, {
                 method: "POST",
@@ -26,7 +26,17 @@ function salvar() {
                 },
                 body: JSON.stringify(data)
             })
-                .then(response => response.json())
+                .then(response => {
+                    const contentType = response.headers.get("content-type");
+                    if (contentType && contentType.includes("application/json")) {
+                        return response.json();
+                    } else {
+                        const texto = response.text();
+                        alert("Resposta inesperada do servidor");
+                        console.error("Resposta não é JSON:", texto);
+                        return null;
+                    }
+                })
                 .then(data => {
                     if (data["erro"] || in_array("erro", data)) {
                         alert("Erro ao cadastrar imóvel: " + data["erro"]);
@@ -59,7 +69,7 @@ async function excluir() {
             }
             caminho = caminho.replace(
                 caminho.substring(caminho.lastIndexOf("/")),
-                "/php/js_controller.php?acao=apagar_imovel"
+                "/php/api/imoveis.php?acao=apagar_imovel"
             );
             const response = await fetch(caminho, {
                 method: "POST",
@@ -68,7 +78,17 @@ async function excluir() {
                 },
                 body: JSON.stringify({ ref: imovel_id })
             })
-                .then(response => response.json())
+                .then(response => {
+                    const contentType = response.headers.get("content-type");
+                    if (contentType && contentType.includes("application/json")) {
+                        return response.json();
+                    } else {
+                        const texto = response.text();
+                        alert("Resposta inesperada do servidor");
+                        console.error("Resposta não é JSON:", texto);
+                        return null;
+                    }
+                })
                 .then(data => {
                     console.log("Imóvel excluído com sucesso:", data);
                     window.location.href = "estoque.html";
@@ -234,22 +254,22 @@ window.addEventListener("DOMContentLoaded", function () {
 
 function preencherEndereco(event) {
     let cep = event.target.value;
-    if (cep.length > 9) {
+    if (cep.length > 7) {
         let input_rua = document.getElementById("ta_rua");
         let input_bairro = document.getElementById("ta_bairro");
         let input_cidade = document.getElementById("ta_cidade");
         let input_estado = document.getElementById("ta_estado");
         fetch(`https://viacep.com.br/ws/${cep}/json`)
-        .then(response => response.json())
-        .then(dados => {
-            if (dados.erro) {
-                alert("CEP não encontrado!");
-                return;
-            }
-            input_rua.value = dados.logradouro || "";
-            input_bairro.value = dados.bairro || "";
-            input_cidade.value = dados.localidade || "";
-            input_estado.value = dados.uf || "";
-        });
+            .then(response => response.json())
+            .then(dados => {
+                if (dados.erro) {
+                    alert("CEP não encontrado!");
+                    return;
+                }
+                input_rua.value = dados.logradouro || "";
+                input_bairro.value = dados.bairro || "";
+                input_cidade.value = dados.localidade || "";
+                input_estado.value = dados.uf || "";
+            });
     }
 }

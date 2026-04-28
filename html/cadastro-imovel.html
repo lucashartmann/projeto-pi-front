@@ -87,7 +87,8 @@
         <label for="" id="stt_nome_condominio">Nome do Condomínio</label>
         <textarea name="nome_condominio" id="ta_nome_condominio"></textarea>
         <label for="" id="stt_ano_construcao">Ano de Construção</label>
-        <input type="text" placeholder="0000" id="ta_ano_construcao" inputmode="numeric" pattern="[0-9]{4}" oninput="this.value = this.value.replace(/\D/g, '').slice(0, 4);" name="ano_construcao"> <!--fazer calendario para escolher o ano-->
+        <input type="date" placeholder="0000" id="ta_ano_construcao" inputmode="numeric" pattern="[0-9]{4}" oninput="this.value = this.value.replace(/\D/g, '').slice(0, 4);" name="ano_construcao">
+         <!-- <input type="number" name="ano" min="1900" max="2026" step="1" required id="ta_ano_construcao"> -->
         <label for="" id="stt_cep">CEP</label>
         <input type="text" id="ta_cep" name="cep" placeholder="00000000" inputmode="numeric" pattern="[0-9]{8}"
             maxlength="9" minlength="8" required
@@ -120,17 +121,17 @@
         <label for="" id="stt_quartos">Quartos</label>
         <input type="text" placeholder="00" id="ta_quartos" inputmode="numeric" pattern="[0-9]{2}" oninput="this.value = this.value.replace(/\D/g, '').slice(0, 9);"  name="quantidade_quartos">
         <label for="" id="stt_area_total">Área Total</label>
-        <input type="number" id="ta_area_total" type="number" name="area_total">
+        <input type="number" id="ta_area_total" type="number" name="area_total" placeholder="0.00">
         <label for="" id="stt_area_privativa">Área Privativa</label>
-        <input type="number" id="ta_area_privativa" type="number" name="area_privativa">
+        <input type="number" id="ta_area_privativa" type="number" name="area_privativa" placeholder="0.00">
         <label for="" id="stt_venda">Valor Venda:</label>
-        <input type="number" id="ta_venda" type="number" name="valor_venda">
+        <input type="number" id="ta_venda" type="number" name="valor_venda" placeholder="0.00">
         <label for="" id="stt_aluguel">Valor Aluguel:</label>
-        <input type="number" id="ta_aluguel" type="number" name="valor_aluguel">
+        <input type="number" id="ta_aluguel" type="number" name="valor_aluguel" placeholder="0.00">
         <label for="" id="stt_condominio">Valor Condomínio:</label>
-        <input type="number" id="ta_condominio" name="valor_condominio" type="number">
+        <input type="number" id="ta_condominio" name="valor_condominio" type="number" placeholder="0.00">
         <label for="" id="stt_iptu">Valor IPTU:</label>
-        <input type="number" name="iptu" id="ta_iptu" type="number">
+        <input type="number" placeholder="0.00" name="iptu" id="ta_iptu" type="number">
     </form>
 
     <form id="container_anuncio" style="display: none;" role="tabpanel" class="tabcontent">

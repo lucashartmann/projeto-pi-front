@@ -1,0 +1,34 @@
+<?php
+
+require_once __DIR__ . '/../model/cliente.php';
+require_once __DIR__ . '/../model/corretor.php';
+require_once __DIR__ . '/../model/imovel.php';
+require_once __DIR__ . '/../model/captador.php';
+require_once __DIR__ . '/../model/atendimento.php';
+require_once __DIR__ . '/../model/endereco.php';
+require_once __DIR__ . '/../model/anuncio.php';
+require_once __DIR__ . '/../model/venda_aluguel.php';
+require_once __DIR__ . '/../model/condominio.php';
+require_once __DIR__ . '/../model/gerente.php';
+require_once __DIR__ . '/../model/usuario.php';
+require_once __DIR__ . '/../model/proprietario.php';
+require_once __DIR__ . '/../model/__init__.php';
+require_once __DIR__ . '/../controller/controller.php';
+
+ob_start();
+header('Content-Type: application/json');
+Init::initialize();
+
+$acao = $_GET['acao'] ?? '';
+
+switch ($acao) {
+
+
+    case "get_usuario":
+        carregar_usuario();
+        break;
+
+    default:
+        echo json_encode(["erro" => "Ação inválida"]);
+        break;
+}

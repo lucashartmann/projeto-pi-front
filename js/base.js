@@ -19,10 +19,20 @@ async function listarImoveis() {
         }
         caminho = caminho.replace(
             caminho.substring(caminho.lastIndexOf("/")),
-            "/php/js_controller.php?acao=listar_imoveis"
+            "/php/api/imoveis.php?acao=listar_imoveis"
         );
         const resposta = await fetch(caminho)
-            .then(res => res.json())
+            .then(res => {
+                const contentType = res.headers.get("content-type");
+                if (contentType && contentType.includes("application/json")) {
+                    return res.json();
+                } else {
+                    const texto = res.text();
+                    alert("Resposta inesperada do servidor");
+                    console.error("Resposta não é JSON:", texto);
+                    return;
+                }
+            })
             .then(data => {
                 return data;
                 console.log(data);
@@ -43,15 +53,25 @@ async function listarImoveisDisponiveis() {
     try {
         let caminho = window.location.pathname;
         if (caminho.includes("/html/")) {
-            caminho = caminho.replace("/html/", "/") ;
+            caminho = caminho.replace("/html/", "/");
         }
         caminho = caminho.replace(
             caminho.substring(caminho.lastIndexOf("/")),
-            "/php/js_controller.php?acao=listar_imoveis_disponiveis"
+            "/php/api/imoveis.php?acao=listar_imoveis_disponiveis"
         );
         const resposta = await fetch(caminho)
             // .then(res => console.log(res))
-            .then(res => res.json() ||  console.log(res.text()) )
+            .then(res => {
+                const contentType = res.headers.get("content-type");
+                if (contentType && contentType.includes("application/json")) {
+                    return res.json();
+                } else {
+                    const texto = res.text();
+                    alert("Resposta inesperada do servidor");
+                    console.error("Resposta não é JSON:", texto);
+                    return;
+                }
+            })
             .then(data => {
                 // console.log(data);
                 return data;
@@ -74,25 +94,35 @@ async function getDadosImovel(id) {
     try {
         let caminho = window.location.pathname;
         if (caminho.includes("/html/")) {
-            caminho = caminho.replace("/html/", "/") ;
+            caminho = caminho.replace("/html/", "/");
         }
         caminho = caminho.replace(
             caminho.substring(caminho.lastIndexOf("/")),
-            "/php/js_controller.php?acao=get_dados_imovel&id=" + id
+            "/php/api/imoveis.php?acao=get_dados_imovel&id=" + id
         );
         const resposta = await fetch(caminho, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json"
             }
-            }
+        }
         );
+
+        const contentType = resposta.headers.get("content-type");
+        if (contentType && contentType.includes("application/json")) {
+            return await resposta.json();
+        } else {
+            const texto = await resposta.text();
+            alert("Resposta inesperada do servidor");
+            console.error("Resposta não é JSON:", texto);
+            return;
+        }
 
         if (!resposta.ok) {
             throw new Error(`HTTP ${resposta.status}`);
         }
 
-        return await resposta.json();
+
     } catch (erro) {
         console.error("Falha ao conectar com o backend:", erro);
         return null;
@@ -108,7 +138,7 @@ async function deslogar() {
         }
         caminho = caminho.replace(
             caminho.substring(caminho.lastIndexOf("/")),
-            "/php/js_controller.php?acao=deslogar"
+            "/php/api/login.php?acao=deslogar"
         );
         const resposta = await fetch(caminho, {
             method: "POST"
@@ -142,13 +172,13 @@ async function carregarUser() {
     try {
         let caminho = window.location.pathname;
         substring = "";
-   
+
         if (caminho.includes("/html/")) {
             caminho = caminho.replace("/html/", "/");
         }
 
         caminho = caminho.replace(caminho.substring(caminho.lastIndexOf("/"))
-          , "/php/js_controller.php?acao=get_usuario"
+            , "/php/api/login.php?acao=get_usuario"
         );
         const resposta = await fetch(caminho, {
             method: "GET",
@@ -157,7 +187,20 @@ async function carregarUser() {
             }
         });
         if (!resposta.ok) throw new Error(`HTTP ${resposta.status}`);
-        const dados = await resposta.json();
+        const contentType = resposta.headers.get("content-type");
+        if (contentType && contentType.includes("application/json")) {
+            dados = await resposta.json();
+        } else {
+            const texto = await resposta.text();
+            alert("Resposta inesperada do servidor");
+            console.error("Resposta não é JSON:", texto);
+            return;
+        }
+
+        if (dados.status == "erro") {
+            console.log("Erro ao carregar usuário: " + dados.mensagem);
+            return null;
+        }
         return dados.tipo;
     } catch (erro) {
         console.error("Falha ao conectar com o backend:", erro);
@@ -263,6 +306,17 @@ function carregarTabs(usuario) {
             <div class="dropdown-content">
                 ${cadastros.map(c =>
             `<a href="${c.href}">${c.text}</a>`
+        ).join("")}
+            </div>
+        </li>
+        `;
+    } else if (dados.length > 0) {
+        html += `
+        <li class="dropdown">
+            <a href="#">Dados ▾</a>
+            <div class="dropdown-content">
+                ${dados.map(d =>
+            `<a href="${d.href}">${d.text}</a>`
         ).join("")}
             </div>
         </li>

@@ -14,14 +14,13 @@
 
 <body>
     <div>
-        <form action="../php/form_controller.php" method="POST">
-            <input type="hidden" name="acao" value="verificar_login">
+        <form onsubmit="fazerLogin()">
             <h1>Login</h1>
             <h3>Email</h3>
-            <input type="text" name="email" id="usuario">
+            <input type="text" name="email" id="usuario" autocomplete="username">
             <h3>Senha</h3>
-            <input type="password" name="senha" id="senha">
-            <button type="submit">Login</button>
+            <input type="password" name="senha" id="senha" autocomplete="current-password" minlength="3">
+            <button type="submit" onsubmit="fazerLogin()">Login</button>
         </form>
     </div>
     <footer>
@@ -49,13 +48,13 @@
             const inicio = data.lastIndexOf("<div class=");
             const fim = data.lastIndexOf("</div>");
             const substring = data.substring(inicio + 20, fim);
-            console.log(substring);
+            // console.log(substring);
             const hmtl = `
             <li><a href="cadastro-imovel.html">Admin</a></li>
         `;
             data = data.replace(substring, hmtl);
-            console.log(data.substring(inicio, fim));
-            console.log(data);
+            // console.log(data.substring(inicio, fim));
+            // console.log(data);
             document.body.insertAdjacentHTML('afterbegin', data);
         });
 

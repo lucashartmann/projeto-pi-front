@@ -223,8 +223,8 @@ class Init
 
         
 
-        $blob = file_get_contents("../assets/apartament.jpg");
-        $blob2 = file_get_contents("../assets/campo.jpg");
+        $blob = file_get_contents("../../assets/apartament.jpg");
+        $blob2 = file_get_contents("../../assets/campo.jpg");
 
 
 
@@ -234,7 +234,7 @@ class Init
 
         $anuncio_dois = new Anuncio();
 
-        $blob3 = file_get_contents("../assets/patio.jpg");
+        $blob3 = file_get_contents("../../assets/patio.jpg");
         $anuncio_dois->set_imagens([$blob3, $blob3, $blob3, $blob3, $blob3]);
         $anuncio_dois->set_titulo("Apartamento de 2 quartos, venda ou aluguel");
         $anuncio_dois->set_descricao("Imóvel localizado no centro da cidade, próximo a escolas, supermercados e com fácil acesso ao transporte público-> O apartamento possui uma sala ampla, cozinha americana, banheiro social e um quarto espaçoso-> Ideal para quem busca conforto e praticidade->");
