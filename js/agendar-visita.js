@@ -5,64 +5,64 @@ $(document).ready(function() {
         center: 'title',
         right: 'month,basicWeek,basicDay'
       },
-      defaultDate: '2016-12-12',
+      defaultDate: '2026-04-12',
       navLinks: true,
       editable: true,
       eventLimit: true,
       events: [
         {
           title: 'All Day Event',
-          start: '2016-12-01'
+          start: '2026-04-01'
         },
         {
           title: 'Long Event',
-          start: '2016-12-07',
-          end: '2016-12-10'
+          start: '2026-04-07',
+          end: '2026-04-10'
         },
         {
           id: 999,
           title: 'Repeating Event',
-          start: '2016-12-09T16:00:00'
+          start: '2026-04-09T16:00:00'
         },
         {
           id: 999,
           title: 'Repeating Event',
-          start: '2016-12-16T16:00:00'
+          start: '2026-04-16T16:00:00'
         },
         {
           title: 'Conference',
-          start: '2016-12-11',
-          end: '2016-12-13'
+          start: '2026-04-11',
+          end: '2026-04-13'
         },
         {
           title: 'Meeting',
-          start: '2016-12-12T10:30:00',
-          end: '2016-12-12T12:30:00'
+          start: '2026-04-12T10:30:00',
+          end: '2026-04-12T12:30:00'
         },
         {
           title: 'Lunch',
-          start: '2016-12-12T12:00:00'
+          start: '2026-04-12T12:00:00'
         },
         {
           title: 'Meeting',
-          start: '2016-12-12T14:30:00'
+          start: '2026-04-12T14:30:00'
         },
         {
           title: 'Happy Hour',
-          start: '2016-12-12T17:30:00'
+          start: '2026-04-12T17:30:00'
         },
         {
           title: 'Dinner',
-          start: '2016-12-12T20:00:00'
+          start: '2026-04-12T20:00:00'
         },
         {
           title: 'Birthday Party',
-          start: '2016-12-13T07:00:00'
+          start: '2026-04-13T07:00:00'
         },
         {
           title: 'Click for Google',
           url: 'https://google.com/',
-          start: '2016-12-28'
+          start: '2026-04-28'
         }
       ]
     });

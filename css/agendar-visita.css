@@ -1,18 +1,52 @@
 .ui.calendar {
-    margin: 0 auto; 
-    width: 80%;
+    margin: 0 auto !important; 
+    width: 80% !important;
 }
 
 .ui.calendar .header {
-    text-align: center;
-    font-size: 1.5em;
-    padding: 1em 0;
+    text-align: center !important;
+    font-size: 1.5em !important;
+    padding: 1em 0 !important;
+    .item {
+        color: white !important;
+    }
 }
 
 .menu {
-    margin-bottom: 0;
+    margin-bottom: 0 !important;
+    .item {
+        padding: 0.5em 1em !important;
+    }
 }
 
-.menu .item {
-    padding: 0.5em 1em;
+.ui {
+    background: rgb(37, 39, 39) !important;  
+    color: white !important;
+    width: 100% !important;
+    a {
+        color: white !important;
+    }
+}
+
+#calendar {
+    color: white !important;
+    a {
+        color: white !important;
+    }
+}
+
+body {
+    overflow-x: hidden;
+    overflow-y: auto;
+    background: rgb(37, 39, 39);
+}
+
+
+button {
+    background: rgb(37, 39, 39) !important;
+    color: white !important;
+}
+
+.fc-today {
+    background: rgb(76, 80, 80) !important;
 }
