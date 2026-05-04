@@ -196,4 +196,19 @@ class Imobiliaria
         return $this->banco_dados->get_imovel_por_id($id_imovel);
     }
 
+    // public function cadastrar_visita($visita)
+    // {
+    //     return $this->banco_dados->cadastrar_visita($visita);
+    // }
+
+    // public function get_lista_visitas()
+    // {
+    //     return $this->banco_dados->get_lista_visitas();
+    // }
+
+    // public function cadastrar_vistoria($vistoria)
+    // {
+    //     return $this->banco_dados->cadastrar_vistoria($vistoria);
+    // }
+
 }

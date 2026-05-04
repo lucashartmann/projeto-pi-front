@@ -235,6 +235,32 @@ class Banco
                     FOREIGN KEY (cpf_cnpj_proprietario) references proprietario (cpf_cnpj) ON DELETE CASCADE,
                     FOREIGN KEY (id_imovel) references imovel (id_imovel) ON DELETE CASCADE                
                 )",
+
+            "CREATE TABLE IF NOT EXISTS visita (
+                    id_visita INTEGER PRIMARY KEY AUTO_INCREMENT,
+                    id_cliente INTEGER NULL,
+                    id_imovel INTEGER NULL,
+                    id_corretor INTEGER NULL,
+                    data_visita DATETIME NULL,
+                    status VARCHAR(255) NULL,
+                    FOREIGN KEY (id_cliente) references cliente (id_usuario) ON DELETE CASCADE,
+                    FOREIGN KEY (id_imovel) references imovel (id_imovel) ON DELETE CASCADE.
+                    FOREIGN KEY (id_corretor) references corretor (id_usuario) ON DELETE CASCADE
+                )",
+
+            "CREATE TABLE IF NOT EXISTS vistoria (
+                    id_vistoria INTEGER PRIMARY KEY AUTO_INCREMENT,
+                    id_imovel INTEGER NULL,
+                    data_vistoria DATETIME NULL,
+                    status VARCHAR(255) NULL,
+                    FOREIGN KEY (id_imovel) references imovel (id_imovel) ON DELETE CASCADE
+                )",
+            "CREATE TABLE IF NOT EXISTS relatorio_vistoria (
+                    id_relatorio INTEGER PRIMARY KEY AUTO_INCREMENT,
+                    id_vistoria INTEGER NULL,
+                    descricao TEXT NULL,
+                    FOREIGN KEY (id_vistoria) references vistoria (id_vistoria) ON DELETE CASCADE
+                )"
         ];
 
         foreach ($queries as $sql) {

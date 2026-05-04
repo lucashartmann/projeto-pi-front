@@ -236,9 +236,16 @@ function carregarTabs(usuario) {
             break;
 
         case "FINANCEIRO":
+            tabs = [
+                { text: "Contratos", href: "contratos.html" }
+            ];
             break;
 
         case "VISTORIADOR":
+            tabs = [
+                { text: "Agendar Visita", href: "agendar-visita.html" },
+                { text: "Relatório", href: "relatorio.html" }
+            ];
             break;
 
         case "CORRETOR":
