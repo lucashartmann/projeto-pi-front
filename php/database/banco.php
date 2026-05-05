@@ -244,7 +244,7 @@ class Banco
                     data_visita DATETIME NULL,
                     status VARCHAR(255) NULL,
                     FOREIGN KEY (id_cliente) references cliente (id_usuario) ON DELETE CASCADE,
-                    FOREIGN KEY (id_imovel) references imovel (id_imovel) ON DELETE CASCADE.
+                    FOREIGN KEY (id_imovel) references imovel (id_imovel) ON DELETE CASCADE,
                     FOREIGN KEY (id_corretor) references corretor (id_usuario) ON DELETE CASCADE
                 )",
 

@@ -182,10 +182,7 @@ async function carregarUser() {
             , "/php/api/login.php?acao=get_usuario"
         );
         const resposta = await fetch(caminho, {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json"
-            }
+            method: "GET"
         });
         if (!resposta.ok) throw new Error(`HTTP ${resposta.status}`);
         const contentType = resposta.headers.get("content-type");
