@@ -1,0 +1,52 @@
+
+html,
+body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    /* height: 100%; */
+    overflow-y: scroll;
+}
+
+
+#header {
+    display: flex;
+}
+
+#botoes {
+    display: none; /* grid */
+    grid-template-columns: repeat(2, 1fr);
+}
+
+#dados {
+    display: grid;
+    grid-template-columns: repeat(6, 9vw);
+    /* gap: 10px; */
+    row-gap: 10px;
+    column-gap: 0;
+    width: 80vw;
+    justify-self: center;
+    align-self: center;
+    align-items: center;
+    top: 50%;
+    bottom: 50%;
+    height: 60vh;
+    border: 10px solid var(--background-nav);
+    justify-content: center;
+    margin-top: auto;
+}
+
+#proprietario {
+    display: none; /* grid */
+    z-index: 10000;
+    position: fixed;
+    top: 50%;
+    #endereco, #outras-informacoes {
+        background-color: var(--background-nav);
+    }
+}

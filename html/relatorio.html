@@ -1,17 +1,52 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Relatório</title>
     <link rel="stylesheet" href="../css/relatorio.css">
 </head>
+
 <body>
-    <label for="imovel">Imóvel:</label>
-    <select id="imovel">
-        <option value="">Selecione um imóvel</option>
-        <option value="1">Imóvel 1</option>
-        <option value="2">Imóvel 2</option>
-    </select>
+    <form action="">
+        <label for="imovel">Imóvel:</label>
+        <select id="imovel">
+            <option value="">Selecione um imóvel</option>
+            <option value="1">Imóvel 1</option>
+            <option value="2">Imóvel 2</option>
+        </select>
+        <label for="observacoes">Observações:</label>
+        <textarea id="observacoes"></textarea>
+        <input type="submit" value="Gerar Relatório ">
+    </form>
+    <footer>
+        <p>Copyright 2025 - By Lucas Hartmann</p>
+        <a href="https://github.com/lucashartmann" target="_blank"><i class="fab fa-github"></i></a>
+    </footer>
+
+    <div vw class="enabled">
+        <div vw-access-button class="active"></div>
+        <div vw-plugin-wrapper>
+            <div class="vw-plugin-top-wrapper"></div>
+        </div>
+    </div>
+    <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
+    <script>
+        new window.VLibras.Widget('https://vlibras.gov.br/app');
+    </script>
 </body>
+<script type="text/javascript">
+    fetch("nav.html")
+        .then(response => response.text())
+        .then(data => {
+            const inicio = data.lastIndexOf("<div class=");
+            const fim = data.lastIndexOf("</div>");
+            const substring = data.substring(inicio + 20, fim);
+            data = data.replace(substring, "");
+            document.body.insertAdjacentHTML('afterbegin', data);
+        });
+
+</script>
+
 </html>
