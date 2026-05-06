@@ -131,6 +131,7 @@ async function getDadosImovel(id) {
 
 }
 
+
 async function deslogar() {
     try {
         let caminho = window.location.pathname;
@@ -208,6 +209,7 @@ async function carregarUser() {
 
 function carregarTabs(usuario) {
     const nav = document.getElementById("top-nav");
+
     if (!nav) return;
 
     let tabs = [];
@@ -344,6 +346,13 @@ function carregarTabs(usuario) {
 async function setup() {
     const usuario = await carregarUser();
     if (usuario) carregarTabs(usuario);
+    const topNav = document.querySelector("#top-nav .fa-bars");
+
+    topNav.addEventListener("mouseover", mostrarNavLeft);
+    const nav = document.getElementById("side-nav");
+    nav.addEventListener("mouseleave", () => {
+        nav.style.display = "none";
+    });
 }
 
 
