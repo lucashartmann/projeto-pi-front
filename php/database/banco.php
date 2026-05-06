@@ -884,7 +884,7 @@ class Banco
             $nome = $registro['nome'];
             $cpf_cnpj = $registro['cpf_cnpj'];
             $rg = $registro['rg'];
-            $endereco = $registro['endereco'];
+            $endereco = $registro['id_endereco'];
             if ($endereco) {
                 $endereco = $this->get_endereco_por_id((int)($registro['id_endereco']));
             }
@@ -931,7 +931,7 @@ class Banco
                                     WHERE id_usuario = ?
                                 ");
                     $stmt->execute([$id_usuario]);
-                    $creci = $stmt->fetch(PDO::FETCH_ASSOC)[0];
+                    $creci = $stmt->fetch(PDO::FETCH_ASSOC);
                     if ($creci) {
                         $creci = (int)($creci);
                     }
@@ -958,7 +958,7 @@ class Banco
                                     WHERE id_usuario = ?
                                 ");
                     $stmt->execute([$id_usuario]);
-                    $salario = $stmt->fetch(PDO::FETCH_ASSOC)[0];
+                    $salario = $stmt->fetch(PDO::FETCH_ASSOC);
                     if ($salario) {
                         $salario = (float)($salario);
                     }
@@ -978,7 +978,7 @@ class Banco
                                     WHERE id_usuario = ?
                                 ");
                     $stmt->execute([$id_usuario]);
-                    $salario = $stmt->fetch(PDO::FETCH_ASSOC)[0];
+                    $salario = $stmt->fetch(PDO::FETCH_ASSOC);
                     if ($salario) {
                         $salario = (float)($salario);
                     }
@@ -1064,21 +1064,21 @@ class Banco
 
     public function cadastrar_lista_filtros($lista_filtros, $tabela)
     {
-        try {
             foreach ($lista_filtros as $filtro) {
-                $sql_query = " 
-                        INSERT INTO $tabela (nome) 
-                        VALUES(:nome)
-                        ";
-                $stmt = $this->db->prepare($sql_query);
-                $stmt->execute([':nome' => $filtro]);
-                return True;
+                try {
+                    $sql_query = " 
+                            INSERT INTO $tabela (nome) 
+                            VALUES(:nome)
+                            ";
+                    $stmt = $this->db->prepare($sql_query);
+                    $stmt->execute([':nome' => $filtro]);
+                    } catch (Exception $e) {
+                        $erro = "ERRO! Banco->cadastrar_lista_filtros: " . $e->getMessage();
+                        // error_log($erro);
+                        continue;
+                    }
             }
-        } catch (Exception $e) {
-            $erro = "ERRO! Banco->cadastrar_lista_filtros: " . $e->getMessage();
-            error_log($erro);
-            return False;
-        }
+        
     }
 
     public function get_condominio_por_id_imovel($id_imovel)
@@ -1095,7 +1095,7 @@ class Banco
                     "Não existe condomínio para o imóvel com id $id_imovel"
                 );
             }
-            $id_condominio = (int)($registro[0]);
+            $id_condominio = (int)($registro);
             $nome = $registro[1];
             $id_endereco = $registro[2];
             $endereco_obj = $this->get_endereco_por_id($id_endereco);
@@ -1117,7 +1117,7 @@ class Banco
             $lista_condominio_filtros = [];
             if ($condominio_filtros) {
                 foreach ($condominio_filtros as $registro) {
-                    $id_condominio_filtros = (int)($registro[0]);
+                    $id_condominio_filtros = (int)($registro);
                     $stmt = $this->db->prepare("
                                 SELECT nome FROM filtros_condominio
                                 WHERE id_filtros_condominio = ?
@@ -1596,7 +1596,7 @@ class Banco
                    
                 default:
                     throw new Exception("Tipo de usuário desconhecido: $tipo");
-                    break;
+                  
                     
             }
 

@@ -19,7 +19,7 @@ class controller
 
     public function cadastrar_atendimento($atendimento)
     {
-        $cadastro = Init::$imobiliaria->cadastrar_atendimento($atendimento);
+        $cadastro = Init::getInstance()->cadastrar_atendimento($atendimento);
 
         if ($cadastro == True) {
             return "Atendimento pedido com sucesso";
@@ -31,7 +31,7 @@ class controller
 
     public function remover($campo_desejado, $valor, $tabela)
     {
-        $remocao = Init::$imobiliaria->remover($campo_desejado, $valor, $tabela);
+        $remocao = Init::getInstance()->remover($campo_desejado, $valor, $tabela);
 
         if ($remocao == True) {
             return "$valor removido com sucesso";
@@ -43,7 +43,7 @@ class controller
 
     public function editar_proprietario($proprietario)
     {
-        $cadastrado = Init::$imobiliaria->atualizar_proprietario($proprietario);
+        $cadastrado = Init::getInstance()->atualizar_proprietario($proprietario);
 
         if ($cadastrado == True) {
             return "Proprietário editado!\n";
@@ -55,7 +55,7 @@ class controller
     public function cadastrar_proprietario($proprietario)
     {
 
-        $cadastrado = Init::$imobiliaria->cadastrar_proprietario($proprietario);
+        $cadastrado = Init::getInstance()->cadastrar_proprietario($proprietario);
 
         if ($cadastrado == True) {
             return "Proprietário cadastrado!\n $proprietario->get_nome()";
@@ -67,7 +67,7 @@ class controller
 
     public function editar_usuario($usuario)
     {
-        $cadastrado = Init::$imobiliaria->atualizar_usuario($usuario);
+        $cadastrado = Init::getInstance()->atualizar_usuario($usuario);
 
         if ($cadastrado == True) {
             return "Usuário editado!\n";
@@ -78,7 +78,7 @@ class controller
 
     public function cadastrar_usuario($usuario)
     {
-        $cadastrado = Init::$imobiliaria->cadastrar_usuario($usuario);
+        $cadastrado = Init::getInstance()->cadastrar_usuario($usuario);
 
         if ($cadastrado == True) {
             return "Usuário cadastrado!\n";
@@ -91,21 +91,21 @@ class controller
     public function editar_imovel($imovel)
     {
 
-        $imovel_encontrado = Init::$imobiliaria->get_estoque()->get_imovel_por_id($imovel->get_id());
+        $imovel_encontrado = Init::getInstance()->get_estoque()->get_imovel_por_id($imovel->get_id());
         if ($imovel_encontrado) {
             if ($imovel->get_endereco() != $imovel_encontrado->get_endereco()) {
-                $consultar_endereco = Init::$imobiliaria->verificar_endereco(
+                $consultar_endereco = Init::getInstance()->verificar_endereco(
                     $imovel->get_endereco()
                 );
                 $endereco = NULL;
                 if ($consultar_endereco) {
                     $endereco = $consultar_endereco;
                 } else {
-                    $cadastro_endereco = Init::$imobiliaria->cadastrar_endereco(
+                    $cadastro_endereco = Init::getInstance()->cadastrar_endereco(
                         $imovel->get_endereco()
                     );
                     if ($cadastro_endereco) {
-                        $endereco = Init::$imobiliaria->verificar_endereco(
+                        $endereco = Init::getInstance()->verificar_endereco(
                             $imovel->get_endereco()
                         );
                     }
@@ -115,16 +115,16 @@ class controller
                 } else {
                     $imovel->get_endereco()->set_id($endereco->get_id());
 
-                    $consultar_condominio = Init::$imobiliaria->get_condominio_por_id_endereco(
+                    $consultar_condominio = Init::getInstance()->get_condominio_por_id_endereco(
                         $endereco->get_id()
                     );
 
                     if (! $consultar_condominio) {
-                        $cadastrar = Init::$imobiliaria->cadastrar_condominio(
+                        $cadastrar = Init::getInstance()->cadastrar_condominio(
                             $imovel->get_condominio()
                         );
                         if ($cadastrar) {
-                            $consultar_condominio = Init::$imobiliaria->get_condominio_por_id_endereco(
+                            $consultar_condominio = Init::getInstance()->get_condominio_por_id_endereco(
                                 $endereco->get_id()
                             );
                             if ($consultar_condominio) {
@@ -139,10 +139,10 @@ class controller
                 }
             }
 
-            $edicao = Init::$imobiliaria->get_estoque()->atualizar_imovel($imovel);
-            Init::$imobiliaria->atualizar_anuncio($imovel->get_anuncio());
+            $edicao = Init::getInstance()->get_estoque()->atualizar_imovel($imovel);
+            Init::getInstance()->atualizar_anuncio($imovel->get_anuncio());
             if ($imovel->get_condominio()->get_nome() != $imovel_encontrado->get_condominio()->get_nome() || $imovel->get_condominio()->get_filtros() != $imovel_encontrado->get_condominio()->get_filtros()) {
-                Init::$imobiliaria->atualizar_condominio($imovel->get_condominio());
+                Init::getInstance()->atualizar_condominio($imovel->get_condominio());
             }
             if ($edicao) {
                 return "Imóvel editado com sucesso!";
@@ -157,7 +157,7 @@ class controller
     public function cadastrar_imovel($imovel)
     {
 
-        $consultar_endereco = Init::$imobiliaria->verificar_endereco(
+        $consultar_endereco = Init::getInstance()->verificar_endereco(
             $imovel->get_endereco()
         );
 
@@ -166,11 +166,11 @@ class controller
         if ($consultar_endereco) {
             $endereco = $consultar_endereco;
         } else {
-            $cadastro_endereco = Init::$imobiliaria->cadastrar_endereco(
+            $cadastro_endereco = Init::getInstance()->cadastrar_endereco(
                 $imovel->get_endereco()
             );
             if ($cadastro_endereco) {
-                $endereco = Init::$imobiliaria->verificar_endereco(
+                $endereco = Init::getInstance()->verificar_endereco(
                     $imovel->get_endereco()
                 );
             }
@@ -180,16 +180,16 @@ class controller
             return "ERRO ao cadastrar imóvel! Problema com o endereço";
         } else {
             $imovel->get_endereco()->set_id($endereco->get_id());
-            $consultar_condominio = Init::$imobiliaria->get_condominio_por_id_endereco(
+            $consultar_condominio = Init::getInstance()->get_condominio_por_id_endereco(
                 $endereco->get_id()
             );
 
             if (! $consultar_condominio) {
-                $cadastrar = Init::$imobiliaria->cadastrar_condominio(
+                $cadastrar = Init::getInstance()->cadastrar_condominio(
                     $imovel->get_condominio()
                 );
                 if ($cadastrar) {
-                    $consultar_condominio = Init::$imobiliaria->get_condominio_por_id_endereco(
+                    $consultar_condominio = Init::getInstance()->get_condominio_por_id_endereco(
                         $endereco->get_id()
                     );
                     if ($consultar_condominio) {
@@ -202,14 +202,14 @@ class controller
                 $imovel->set_condominio($consultar_condominio);
             }
 
-            $cadastro_anuncio = Init::$imobiliaria->get_estoque()->cadastrar_anuncio(
+            $cadastro_anuncio = Init::getInstance()->get_estoque()->cadastrar_anuncio(
                 $imovel->get_anuncio()
             );
             if ($cadastro_anuncio != False) {
                 $imovel->get_anuncio()->set_id($cadastro_anuncio);
             }
             $imovel->set_data_cadastro(new DateTime());
-            $cadastrado = Init::$imobiliaria->get_estoque()->cadastrar_imovel($imovel);
+            $cadastrado = Init::getInstance()->get_estoque()->cadastrar_imovel($imovel);
             if ($cadastrado == True) {
                 return "imovel cadastrado!\n";
             } else {
@@ -224,7 +224,7 @@ class controller
         $username = $username;
         $senha = $senha;
 
-        $consulta = Init::$imobiliaria->verificar_usuario(
+        $consulta = Init::getInstance()->verificar_usuario(
             $username,
             $senha
         );
@@ -251,7 +251,7 @@ class controller
         $um_usuario->set_senha($senha);
         $um_usuario->set_email($email);
 
-        $consulta = Init::$imobiliaria->cadastrar_usuario($um_usuario);
+        $consulta = Init::getInstance()->cadastrar_usuario($um_usuario);
 
         if ($consulta) {
             Init::$usuario_atual = $um_usuario;

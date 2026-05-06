@@ -17,7 +17,6 @@ require_once __DIR__ . '/../controller/controller.php';
 
 ob_start();
 header('Content-Type: application/json');
-Init::initialize();
 
 $acao = $_GET['acao'] ?? '';
 

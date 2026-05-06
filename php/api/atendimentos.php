@@ -18,7 +18,6 @@ require_once __DIR__ . '/../controller/controller.php';
 
 ob_start();
 header('Content-Type: application/json');
-Init::initialize();
 
 $acao = $_GET['acao'] ?? '';
 
@@ -36,7 +35,7 @@ switch ($acao) {
 function listar_atendimentos()
 {
 
-    $atendimentos = Init::$imobiliaria->get_lista_atendimentos();
+    $atendimentos = Init::getInstance()->get_lista_atendimentos();
     $lista = [];
     if ($atendimentos) {
         foreach ($atendimentos as $atendimento) {

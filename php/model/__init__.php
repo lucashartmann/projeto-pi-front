@@ -18,10 +18,11 @@ require_once __DIR__ . '/proprietario.php';
 class Init
 {
 
+    
 
     public static $imobiliaria;
     public static $usuario_atual;
-    public static $filtros_imovel = [
+    private static $filtros_imovel = [
         "Aceita Pet",
         "Churrasqueira",
         "Armarios Embutidos",
@@ -39,7 +40,7 @@ class Init
         "Depósito"
     ];
 
-    public static $filtros_condominio = [
+    private static $filtros_condominio = [
         "Churrasqueira Coletiva",
         "Piscina",
         "Piscina Infantil",
@@ -69,6 +70,13 @@ class Init
         "Heliponto",
         "Elevador de Serviço"
     ];
+    
+    public static function getInstance() {
+        if (self::$imobiliaria === null) {
+            self::initialize();
+        }
+        return self::$imobiliaria;
+    }
 
     public static function initialize()
     {
@@ -298,9 +306,11 @@ class Init
 
         if (!$consulta_um) {
             self::$imobiliaria->cadastrar_endereco($endereco_um);
+            $consulta_um = self::$imobiliaria->verificar_endereco($endereco_um);
         }
         if (!$consulta_dois) {
             self::$imobiliaria->cadastrar_endereco($endereco_dois);
+            $consulta_dois = self::$imobiliaria->verificar_endereco($endereco_dois);
         }
 
 
@@ -471,11 +481,11 @@ class Init
         $atendimento_dois->set_status(Status_Atendimento::PENDENTE);
 
         if (empty(self::$imobiliaria->get_lista_atendimentos())) {
-            $comprador_atendimento = self::$imobiliaria->get_usuario_por_id(5);
-            $corretor_atendimento = self::$imobiliaria->get_usuario_por_id(9);
+            $comprador_atendimento = self::$imobiliaria->get_usuario_por_id(6);
+            $corretor_atendimento = self::$imobiliaria->get_usuario_por_id(3);
             $imovel_atendimento = self::$imobiliaria->get_estoque()->get_lista_imoveis()[0];
-            $comprador_atendimento_dois = self::$imobiliaria->get_usuario_por_id(15);
-            $corretor_atendimento_dois = self::$imobiliaria->get_usuario_por_id(19);
+            $comprador_atendimento_dois = self::$imobiliaria->get_usuario_por_id(11);
+            $corretor_atendimento_dois = self::$imobiliaria->get_usuario_por_id(2);
             $imovel_atendimento_dois = self::$imobiliaria->get_estoque()->get_lista_imoveis()[1];
             $atendimento_um->set_cliente($comprador_atendimento);
             $atendimento_um->set_corretor($corretor_atendimento);

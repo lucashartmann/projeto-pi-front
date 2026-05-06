@@ -17,7 +17,6 @@ require_once __DIR__ . '/../controller/controller.php';
 
 ob_start();
 header('Content-Type: application/json');
-Init::initialize();
 
 $acao = $_GET['acao'] ?? '';
 
@@ -62,7 +61,7 @@ switch ($acao) {
 
 function get_lista_imoveis()
 {
-    $imoveis = Init::$imobiliaria->get_estoque()->get_lista_imoveis();
+    $imoveis = Init::getInstance()->get_estoque()->get_lista_imoveis();
 
     $lista = [];
     foreach ($imoveis as $imovel) {
@@ -124,7 +123,7 @@ function get_lista_imoveis()
 
 function get_lista_imoveis_disponiveis()
 {
-    $imoveis = Init::$imobiliaria->get_estoque()->get_lista_imoveis_disponiveis();
+    $imoveis = Init::getInstance()->get_estoque()->get_lista_imoveis_disponiveis();
     // echo $imoveis;
     $lista = [];
     foreach ($imoveis as $imovel) {
@@ -188,7 +187,7 @@ function getImovelPorId($id)
 {
     echo $id;
     // logging->info(f"Requisição para obter imóvel com ID => {id}")
-    $imovel_obj = Init::$imobiliaria->get_imovel_por_id((int)$id);
+    $imovel_obj = Init::getInstance()->get_imovel_por_id((int)$id);
 
     if ($imovel_obj) {
         $anuncioObj = $imovel_obj->get_anuncio();
@@ -349,7 +348,7 @@ function cadastrar_imovel()
 
         $imovel_obj = NULL;
         if ($id) {
-            $imovel_obj = Init::$imobiliaria->get_imovel_por_id($id);
+            $imovel_obj = Init::getInstance()->get_imovel_por_id($id);
         } else {
             $imovel_obj = new Imovel($endereco_obj, $status, $categoria);
         }
@@ -409,9 +408,9 @@ function cadastrar_imovel()
 function apagar_imovel($id)
 {
     try {
-        $imovel = Init::$imobiliaria->get_imovel_por_id($id);
+        $imovel = Init::getInstance()->get_imovel_por_id($id);
         if ($imovel) {
-            $remocao = Init::$imobiliaria->remover("id_imovel", $id, "imovel");
+            $remocao = Init::getInstance()->remover("id_imovel", $id, "imovel");
             if ($remocao) {
                 echo json_encode(["status" => "ok"]);
             } else {

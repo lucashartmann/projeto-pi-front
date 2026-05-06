@@ -17,7 +17,7 @@ require_once __DIR__ . '/../controller/controller.php';
 
 ob_start();
 header('Content-Type: application/json');
-Init::initialize();
+// Init::initialize();
 
 $acao = $_GET['acao'] ?? '';
 
@@ -80,7 +80,7 @@ function verificar_login()
             return;
         }
 
-        $consulta = Init::$imobiliaria->verificar_usuario($usuario, $senha);
+        $consulta = Init::getInstance()->verificar_usuario($usuario, $senha);
 
         if ($consulta) {
             $_SESSION['usuario_id'] = $consulta->get_id();
