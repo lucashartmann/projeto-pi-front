@@ -1,12 +1,155 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Contratos</title>
+    <link rel="stylesheet" href="../css/base.css">
     <link rel="stylesheet" href="../css/contratos.css">
 </head>
+
 <body>
-    
+
+    <div id="botoes">
+        <button>Alterar</button>
+        <button>Extratos</button>
+        <button>Aluguéis</button>
+        <button>Desc/Acr</button>
+        <button>Reajustes</button>
+        <button>Follow-Up</button>
+        <button>Anexos</button>
+        <button>Lançamento</button>
+        <button>Controles</button>
+        <button>Ocorrências</button>
+    </div>
+
+    <div id="dados">
+        <!-- <div id="header">
+            <h3>Contrato</h3>
+            <p>23</p>
+
+            <h3>Imóvel</h3>
+            <p>15</p>
+
+            <p>Rua Conde de Porto Alegre, 545, 502 - Floresta, Porto Alegre/RS</p>
+        </div> -->
+
+        <label for="">Empresa:</label>
+        <p>Summit Imóveis LTDA</p>
+
+        <label for="">Situação:</label>
+        <p>Ativo - Regular</p>
+
+        <label for="">Locador:</label>
+        <p>João da Silva</p>
+
+        <label for="">Locatário:</label>
+        <p>Maria Souza</p>
+
+        <label for="">Data do contrato:</label>
+        <p>15/03/2023</p>
+
+        <label for="">Valor do aluguel:</label>
+        <p>R$ 1.500,00</p>
+
+        <label for="">Dia do Vencimento:</label>
+        <p>5</p>
+
+        <label for="">Tipos de Garantias:</label>
+        <!-- <p>Depósito em conta</p> -->
+
+        <label for="">Categoria:</label>
+        <!-- <p>Sem</p> -->
+
+        <label for="">Tempo:</label>
+        <p>12 meses</p>
+
+        <label for="">Reajuste:</label>
+        <p>31/03/2027</p>
+
+        <label for="">Dia fechamento:</label>
+        <p>30</p>
+
+        <label for="">Tipos de Renovação:</label>
+        <p>Tempo Inderteminado</p>
+
+        <label for="">Taxa de Contrato:</label>
+        <p>0,00%</p>
+
+        <label for="">Término:</label>
+        <p>31/03/2027</p>
+
+        <label for="">Cláusula de saída:</label>
+        <p>12 meses</p>
+
+        <label for="">Forma de recebimento:</label>
+        <p>Repasse Automático</p>
+
+        <label for="">Taxa de Administração:</label>
+        <p>10,00%</p>
+
+        <label for="">Indexador Reajuste:</label>
+        <p>IGPM</p>
+    </div>
+
+    <div id="proprietario">
+
+        <!-- <label for="" class="header">Dados da pessoa: João da Silva</label> -->
+
+        <label for="">CPF/CNPJ:</label>
+        <p>123.456.789-00</p>
+
+        <label for="">Telefone</label>
+        <p>(51) 99999-9999</p>
+
+        <label for=""><span class="obrigatorio">*</span> Nome Completo</label>
+        <p>João da Silva</p>
+
+        <label for="">Telefone adicional:</label>
+        <!-- <p>(51) 98888-8888</p> -->
+
+        <label for=""><span class="obrigatorio">*</span> E-mail:</label>
+        <p>joao.silva@email.com</p>
+
+        <label for="">Celular:</label>
+        <!-- <p>(51) 97777-7777</p> -->
+
+        <div id="endereco">
+            <label for="">Endereço:</label>
+        </div>
+
+        <div id="outras-informacoes">
+            <label for="">Outras Informações:</label>
+        </div>
+    </div>
+    <footer>
+        <p>Copyright 2025 - By Lucas Hartmann</p>
+        <a href="https://github.com/lucashartmann" target="_blank"><i class="fab fa-github"></i></a>
+    </footer>
+
+    <div vw class="enabled">
+        <div vw-access-button class="active"></div>
+        <div vw-plugin-wrapper>
+            <div class="vw-plugin-top-wrapper"></div>
+        </div>
+    </div>
+    <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
+    <script>
+        new window.VLibras.Widget('https://vlibras.gov.br/app');
+    </script>
 </body>
+<script type="text/javascript">
+    fetch("nav.html")
+        .then(response => response.text())
+        .then(data => {
+            const inicio = data.lastIndexOf("<div class=");
+            const fim = data.lastIndexOf("</div>");
+            const substring = data.substring(inicio + 20, fim);
+            data = data.replace(substring, "");
+            document.body.insertAdjacentHTML('afterbegin', data);
+        });
+
+</script>
+
 </html>

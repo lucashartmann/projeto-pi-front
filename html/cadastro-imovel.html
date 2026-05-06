@@ -24,8 +24,7 @@
             role="tab">Anuncio</button>
     </div>
 
-    <form id="container_cadastro" style="display: grid;" role="tabpanel"
-        class="tabcontent" value="cadastro_imovel" >
+    <form id="container_cadastro" style="display: grid;" role="tabpanel" class="tabcontent" value="cadastro_imovel">
         <label id="stt_ref" for="">ref:</label>
         <textarea name="ref" id="ta_ref" readonly=True></textarea>
         <label for="" id="stt_categoria">Categoria:</label>
@@ -88,10 +87,10 @@
         <label for="" id="stt_nome_condominio">Nome do Condomínio</label>
         <textarea name="nome_condominio" id="ta_nome_condominio"></textarea>
         <label for="" id="stt_ano_construcao">Ano de Construção</label>
-        <input type="number" placeholder="0000" id="ta_ano_construcao" min="1800"
-        max="2026" name="ano_construcao">
+        <input type="number" placeholder="0000" id="ta_ano_construcao" min="1800" max="2026" name="ano_construcao">
         <label for="" id="stt_cep">CEP</label>
-        <input type="text" id="ta_cep" name="cep" placeholder="00000-000"  required oninput="preencherEndereco(event)" minlength="9" maxlength="9">
+        <input type="text" id="ta_cep" name="cep" placeholder="00000-000" required oninput="preencherEndereco(event)"
+            minlength="9" maxlength="9">
         <label for="" id="stt_rua">Rua</label>
         <textarea id="ta_rua" readonly=True name="rua" required></textarea>
         <label for="" id="stt_numero">Número</label>

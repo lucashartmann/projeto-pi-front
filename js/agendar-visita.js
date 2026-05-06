@@ -68,7 +68,7 @@ function calendar() {
   });
 };
 
-function salvarEvento(data) {
+async function salvarEvento(data) {
   const usuario = await carregarUser();
 
   if (!usuario) {
@@ -76,12 +76,14 @@ function salvarEvento(data) {
     return;
   }
 
+  let caminho_php = NULL;
+
   switch (usuario) {
     case "CORRETOR:":
-      const caminho_php = "/php/api/visitas.php?acao=cadastrar_visita";
+      caminho_php = "/php/api/visitas.php?acao=cadastrar_visita";
       break;
     case "VISTORIADOR:":
-      const caminho_php = "/php/api/visitas.php?acao=cadastrar_vistoria";
+      caminho_php = "/php/api/visitas.php?acao=cadastrar_vistoria";
       break;
     default:
       return;
@@ -131,24 +133,31 @@ function salvarEvento(data) {
   }
 }
 
-onformdata = function (e) {
+function adicionarEventoAoCalendario(evento) {
+  $('#calendar').fullCalendar('renderEvent', {
+    title: evento.nome,
+    start: evento.data + 'T' + evento.hora
+  });
+  this.event.preventDefault();
+}
+
+document.addEventListener("submit", function (e) {
+  if (!e.target.matches(".form-container form")) return;
+
   e.preventDefault();
 
-  $('#calendar').fullCalendar('renderEvent', {
-    title: e.formData.get('nome'),
-    start: e.formData.get('data') + 'T' + e.formData.get('hora')
-  });
-
+  const formData = new FormData(e.target);
   const data = {
-    nome: e.formData.get('nome'),
-    data: e.formData.get('data'),
-    hora: e.formData.get('hora'),
-    imovel: e.formData.get('imovel')
+    nome: formData.get("nome"),
+    data: formData.get("data"),
+    hora: formData.get("hora"),
+    imovel: formData.get("imovel")
   };
 
-  salvarEvento(data);
-
-};
+  adicionarEventoAoCalendario(data);
+  // salvarEvento(data); // quando quiser salvar no backend
+  e.target.closest(".form-container")?.remove();
+});
 
 document.addEventListener('DOMContentLoaded', function () {
   calendar();
@@ -169,6 +178,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
       div.classList.add('form-container');
 
+      //TODO:         <select id="imovel" name="imovel" required> </select> depois
+      //TODO: adicionar hora que acaba (talvez)
 
       div.innerHTML = `
             <div class="form-header"><h2>Agendar visita para ${dataSelecionada}</h2>
@@ -179,8 +190,7 @@ document.addEventListener('DOMContentLoaded', function () {
               <input type="text" id="nome" name="nome" required>
               <label for="hora">Hora do evento:</label>
               <input type="time" id="hora" name="hora" required>
-              <label for="imovel">Imóvel:</label>
-              <select id="imovel" name="imovel" required>
+              
               <button type="submit">Agendar</button>
             </form>
           `;

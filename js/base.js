@@ -224,7 +224,7 @@ function carregarTabs(usuario) {
                 { text: "Imóveis", href: "cadastro-imovel.html" },
                 { text: "Venda/Aluguel", href: "cadastro-venda-aluguel.html" },
                 { text: "Cliente", href: "cadastro-cliente.html" },
-
+                { text: "Contratos", href: "contratos.html" }
             ];
             dados = [
                 { text: "Imobiliária", href: "dados-imobiliaria.html" },
@@ -240,7 +240,7 @@ function carregarTabs(usuario) {
 
         case "VISTORIADOR":
             tabs = [
-                { text: "Agendar Visita", href: "agendar-visita.html" },
+                { text: "Agendar Vistoria", href: "agendar-visita.html" },
                 { text: "Relatório", href: "relatorio.html" }
             ];
             break;

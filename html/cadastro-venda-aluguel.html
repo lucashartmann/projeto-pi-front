@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cadastro de Venda/Aluguel</title>
     <link rel="stylesheet" href="../css/cadastro-venda-aluguel.css">
 </head>
+
 <body>
     <label for="">Id Imóvel</label>
     <input type="text">
@@ -15,5 +17,33 @@
     <input type="text">
     <label for="">Cliente</label>
     <input type="text">
+    <footer>
+        <p>Copyright 2025 - By Lucas Hartmann</p>
+        <a href="https://github.com/lucashartmann" target="_blank"><i class="fab fa-github"></i></a>
+    </footer>
+
+    <div vw class="enabled">
+        <div vw-access-button class="active"></div>
+        <div vw-plugin-wrapper>
+            <div class="vw-plugin-top-wrapper"></div>
+        </div>
+    </div>
+    <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
+    <script>
+        new window.VLibras.Widget('https://vlibras.gov.br/app');
+    </script>
 </body>
+<script type="text/javascript">
+    fetch("nav.html")
+        .then(response => response.text())
+        .then(data => {
+            const inicio = data.lastIndexOf("<div class=");
+            const fim = data.lastIndexOf("</div>");
+            const substring = data.substring(inicio + 20, fim);
+            data = data.replace(substring, "");
+            document.body.insertAdjacentHTML('afterbegin', data);
+        });
+
+</script>
+
 </html>
