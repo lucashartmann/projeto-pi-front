@@ -185,18 +185,26 @@ function get_lista_imoveis_disponiveis()
 
 function getImovelPorId($id)
 {
-    echo $id;
+    // echo $id;
     // logging->info(f"Requisição para obter imóvel com ID => {id}")
     $imovel_obj = Init::getInstance()->get_imovel_por_id((int)$id);
 
     if ($imovel_obj) {
-        $anuncioObj = $imovel_obj->get_anuncio();
-
-        $imagens = [];
-        if ($anuncioObj && is_array($anuncioObj->get_imagens())) {
-            $imagens = array_map(function ($idImagem) {
-                return "/projeto-pi-front/php/imagem.php?id=" . $idImagem;
-            }, $anuncioObj->get_imagens());
+        $anuncio = null;
+        if ($imovel_obj->get_anuncio()) {
+            $anuncioObj = $imovel_obj->get_anuncio();
+            $imagens = [];
+            if ($anuncioObj->get_imagens()) {
+                foreach ($anuncioObj->get_imagens() as $idImagem) {
+                    $imagens[] = "/projeto-pi-front/php/imagem.php?id=" . $idImagem;
+                }
+            }
+            $anuncio = [
+                "id" => $anuncioObj->get_id(),
+                "descricao" => $anuncioObj->get_descricao(),
+                "titulo" => $anuncioObj->get_titulo(),
+                "imagens" => $imagens
+            ];
         }
         $resposta = [
             "id" => $imovel_obj->get_id(),
@@ -215,12 +223,7 @@ function getImovelPorId($id)
                 "cep" => $imovel_obj->get_endereco()->cep ?? null,
                 "complemento" => $imovel_obj->get_endereco()->complemento ?? null
             ] : null,
-            "anuncio" => $anuncioObj ? [
-                "id" => $anuncioObj->get_id(),
-                "descricao" => $anuncioObj->get_descricao(),
-                "titulo" => $anuncioObj->get_titulo(),
-                "imagens" => $imagens
-            ] : null,
+            "anuncio" => $anuncio,
             "quantidade_quartos" => $imovel_obj->get_quant_quartos(),
             "quant_salas" => $imovel_obj->get_quant_salas(),
             "quant_vagas" => $imovel_obj->get_quant_vagas(),
