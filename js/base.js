@@ -146,23 +146,41 @@ async function deslogar() {
             method: "POST"
         });
         if (!resposta.ok) throw new Error(`HTTP ${resposta.status}`);
-        const nav = document.querySelector("nav ul");
-        if (nav) {
-            for (const li of nav.children) {
-                const a = li.querySelector("a");
-                if (a && a.innerText === "Sair") {
-                    a.innerText = "Logar";
-                    a.removeEventListener("click", deslogar);
-                    a.href = "login.html";
+        const contentType = resposta.headers.get("content-type");
+        if (contentType && contentType.includes("application/json")) {
+            dados = await resposta.json();
+        } else {
+            const texto = await resposta.text();
+            alert("Resposta inesperada do servidor");
+            console.error("Resposta não é JSON:", texto);
+            return;
+        }
+        if (dados.status == "ok") {
+            const nav = document.querySelector("nav ul");
+            if (nav) {
+                for (const li of nav.children) {
+                    const a = li.querySelector("a");
+                    if (a && a.innerText === "Sair") {
+                        a.innerText = "Logar";
+                        a.removeEventListener("click", deslogar);
+                        a.href = "login.html";
+                    }
                 }
+            }else {
+                console.warn("Elemento de navegação não encontrado para atualizar estado de login");
+                return;
+            }
+
+            console.log("Deslogado com sucesso!");
+            if (window.location.pathname.endsWith("index.html") || window.location.pathname.endsWith("/")) {
+                window.location.reload();
+                return;
+            } else {
+                window.location.href = "../index.html";
             }
         }
-        console.log("Deslogado com sucesso!");
-        if (window.location.pathname.endsWith("index.html") || window.location.pathname.endsWith("/")) {
-            window.location.reload();
-            return;
-        } else {
-            window.location.href = "../index.html";
+        else{
+            console.warn("Erro ao deslogar: " + dados.mensagem);
         }
     } catch (erro) {
         console.error("Falha ao conectar com o backend:", erro);
@@ -339,7 +357,7 @@ function carregarTabs(usuario) {
     }
     div = nav.querySelector(".right");
     if (div) {
-        div.innerHTML = html + `<li><a href="#" id="logout">Sair</a></li>`;
+        div.innerHTML = html + `<li><a href="#" onclick="deslogar()" id="logout">Sair</a></li>`;
     }
 
 }
