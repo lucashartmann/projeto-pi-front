@@ -17,7 +17,21 @@
     height: auto;
     height: 100%;
     overflow-y: visible;
+    margin-left: 30px;
+    width: 88vw;
 }
+
+#entrar_contato {
+    background: rgb(241, 233, 233);
+    text-align: center;
+    align-content: center;
+    width: 10vw;
+    button {
+        border: solid black 1px;
+        margin: 10px;
+    }
+}
+
 
 h3 {
     text-align: center;
@@ -31,21 +45,58 @@ img {
 
 #ul_imagens {
     display: flex;
-    gap: 10px;
-    overflow-x: scroll;
+    gap: 0px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    list-style-type: none;
+    margin: 20px 0px 0px 0px;
+    width: 100%;
+    align-content: center;
+    justify-content: center;
+    /* background-color: rgb(241, 233, 233); */
+    li{
+        margin: 0px 0px;
+        list-style-type: none;
+        img {
+            height: 19vh;
+        }
+    }
 }
 
 #whatsapp {
     background-color: rgb(20, 126, 32, 0.7);
 }
 
-#entrar_contato {
-    background: rgb(241, 233, 233);
-    text-align: center;
-    align-content: center;
 
-    button {
-        border: solid black 1px;
-        margin: 10px;
+
+.swiper {
+    width: 90%;
+    height: 40rem;
+    margin-top: 50px;
+
+    .swiper-pagination-bullet {
+        background: #000;
+    }
+
+    .swiper-button-prev {
+        color: #000;
+    }
+
+    .swiper-button-next {
+        color: #000;
+    }
+
+    .swiper-slide {
+        cursor: pointer;
+        background: rgb(135, 126, 126, 0.2);
+        width: 90%;
+        /* margin: 30px 6px 0px 6px; */
+        /* border: solid rgba(47, 45, 45, 0.2) 2px; */
+        border-radius: 2px;
+        box-shadow: 0.1px 0.1px 3px black;
+        display: flex;
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-position: center;
     }
 }

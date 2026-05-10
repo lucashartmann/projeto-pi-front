@@ -224,7 +224,6 @@ async function abrirCadastro(imovel_id) {
 }
 
 function adicionarAnexo(event) {
-    //abre seletor de arquivo e adiciona iamagem no pai
     var input = document.createElement("input");
     input.type = "file";
     input.accept = "image/*,application/pdf";

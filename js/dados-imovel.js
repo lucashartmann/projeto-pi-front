@@ -3,39 +3,33 @@ function setupDados(dados) {
     let imagensHtml = "";
     console.log(dados);
     if (dados.anuncio.imagens && dados.anuncio.imagens.length > 0) {
-        imagensHtml += `<img src="data:image/jpeg;base64,${dados.anuncio.imagens[0]}" alt="Imagem do imóvel" />`;
-        imagensHtml += `<ul id="ul_imagens">`;
+        swiperhtml = "";
         for (const imagem of dados.anuncio.imagens) {
-            imagensHtml += `<li><img src="data:image/jpeg;base64,${imagem}" alt="Imagem do imóvel" onclick="abrirImagem(this.src)" /></li>`;
+            swiperhtml += `<div class="swiper-slide" style="background-image: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), url(${imagem})"></div>`;
+            imagensHtml += `<li><img src="${imagem}" alt="Imagem do imóvel" onclick="abrirImagem(this.src)" /></li>`;
         }
-        imagensHtml += `</ul>`;
+        
     }
 
-    let html = `
-        <div id="div_pai">
-            <div id="div_titulo">
-                <h3>${dados.anuncio.titulo}</h3>
-                <p>${dados.endereco.rua}, ${dados.endereco.numero}, ${dados.endereco.bairro}</p>
-                ${imagensHtml}
-            </div>
-            <h3>Descrição</h3>
-            <p>${dados.anuncio.descricao}</p>
-        </div>
-        <div id="entrar_contato">
-            <div>
-                <button>Agendar Visita</button>
-                <button id="whatsapp">Whatsapp</button>
-            </div>
-            <div>
-                <label id="condominio">Condominio: <p style='color:green;'>${dados.valor_condominio}</p></label>
-                <div>
-                    <label id="iptu">IPTU: <p style='color:green;'>${dados.valor_iptu}</p></label>
-                    <button id="bt_contato">Entrar em contato</button>
-                    <label>Um especialista irá entrar em contato por email ou whatsapp</label>
-                </div>
-            </div>
-    `;
-    div.innerHTML = html;
+    const div_pai = document.getElementById("div_pai");
+    const swiper_wrapper = document.querySelector(".swiper-wrapper");
+    const swiper = document.querySelector(".swiper");
+    const div_titulo = document.getElementById("div_titulo");
+    const div_galeria = document.getElementById("ul_imagens");
+    const p_descricao = document.getElementById("p_descricao");
+    const div_contato = document.getElementById("entrar_contato");
+
+    div_titulo.querySelector("h3").innerText = dados.anuncio.titulo;
+    div_titulo.querySelector("p").innerText = `${dados.endereco.rua}, ${dados.endereco.numero}, ${dados.endereco.bairro}`;
+    swiper_wrapper.innerHTML = swiperhtml;
+    div_galeria.innerHTML = imagensHtml;
+    p_descricao.innerText = dados.anuncio.descricao;
+    try {
+        div_contato.getElementById("condominio").querySelector("p").innerText = dados.valor_condominio;
+        div_contato.getElementById("iptu").querySelector("p").innerText = dados.valor_iptu;
+    } catch (e) {
+        console.warn("Valores de condomínio e IPTU não encontrados");
+    }
 
     //TODO: adicionar filtros, localizacao, valores, etc
 }
@@ -51,7 +45,18 @@ window.addEventListener("DOMContentLoaded", async () => {
     dados = await getDadosImovel(id);
     sessionStorage.removeItem("imovel_id");
     if (dados) {
-        setupDados(dados);
+        await setupDados(dados);
+        await inicializarSwiper();
+        
+        setInterval(() => {
+            const swiper = document.querySelector('.swiper').swiper;
+            if (swiper) {
+                swiper.slideNext();
+            }
+        }, 3500);
+    } else {
+        alert("Erro ao carregar dados do imóvel!");
+        window.location.href = "../html/index.html";
     }
 });
 
@@ -80,4 +85,38 @@ function abrirImagem(src) {
         event.stopPropagation();
         document.body.removeChild(modal);
     });
+}
+
+function inicializarSwiper() {
+    if (!document.querySelector('.swiper')) {
+        console.warn("Elemento .swiper não encontrado");
+        return;
+    }
+    if (window.Swiper) {
+        if (window.swiperInstance) window.swiperInstance.destroy(true, true);
+        window.swiperInstance = new Swiper('.swiper', {
+            loop: true,
+            pagination: { el: '.swiper-pagination', clickable: true },
+            navigation: { nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev' },
+            scrollbar: { el: '.swiper-scrollbar' },
+        });
+        console.log("Swiper inicializado");
+    } else {
+        console.warn("Swiper não encontrado");
+    }
+}
+
+function nextSlide() {
+    if (window.swiperInstance && typeof window.swiperInstance.slideNext === "function") {
+        window.swiperInstance.slideNext();
+        console.log("Próximo slide");
+    } else {
+        console.warn("Swiper ainda não inicializado");
+    }
+}
+
+function prevSlide() {
+    if (window.swiperInstance) {
+        window.swiperInstance.slidePrev();
+    }
 }

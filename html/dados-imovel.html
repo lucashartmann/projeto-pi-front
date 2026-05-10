@@ -18,17 +18,31 @@
             <div id="div_titulo">
                 <h3>Casa no Campo com Jardim</h3>
                 <p>Rua Joaquim Nabuco, 123, Cidade Baixa</p>
-                <img src="../assets/campo.jpg" alt="Imagem do imóvel" />
-                <ul id="ul_imagens">
-                    <li><img src="../assets/campo.jpg" alt="Imagem do imóvel" onclick="abrirImagem(this.src)" /></li>
-                    <li><img src="../assets/campo.jpg" alt="Imagem do imóvel" onclick="abrirImagem(this.src)" /></li>
-                    <li><img src="../assets/campo.jpg" alt="Imagem do imóvel" onclick="abrirImagem(this.src)" /></li>
-                    <li><img src="../assets/campo.jpg" alt="Imagem do imóvel" onclick="abrirImagem(this.src)" /></li>
-                    <li><img src="../assets/campo.jpg" alt="Imagem do imóvel" onclick="abrirImagem(this.src)" /></li>
-                </ul>
+
             </div>
+            <div class="swiper">
+                <div class="swiper-wrapper">
+                    <div class="swiper-slide"></div>
+                    <div class="swiper-slide"></div>
+                </div>
+                <div class="swiper-pagination"></div>
+
+                <div class="swiper-button-prev" onclick="prevSlide()"></div>
+                <div class="swiper-button-next" onclick="nextSlide()"></div>
+
+                <div class="swiper-scrollbar"></div>
+            </div>
+            <ul id="ul_imagens">
+                <li><img src="../assets/campo.jpg" alt="Imagem do imóvel" onclick="abrirImagem(this.src)" /></li>
+                <li><img src="../assets/campo.jpg" alt="Imagem do imóvel" onclick="abrirImagem(this.src)" /></li>
+                <li><img src="../assets/campo.jpg" alt="Imagem do imóvel" onclick="abrirImagem(this.src)" /></li>
+                <li><img src="../assets/campo.jpg" alt="Imagem do imóvel" onclick="abrirImagem(this.src)" /></li>
+                <li><img src="../assets/campo.jpg" alt="Imagem do imóvel" onclick="abrirImagem(this.src)" /></li>
+            </ul>
+
             <h3>Descrição</h3>
-            <p>Casa no Campo com Jardim, localizada em uma área tranquila e com ótima infraestrutura.</p>
+            <p id="p_descricao">Casa no Campo com Jardim, localizada em uma área tranquila e com ótima infraestrutura.
+            </p>
         </div>
         <div id="entrar_contato">
             <div>
@@ -78,6 +92,8 @@
         });
 
 </script>
+<script src="../js/base.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 <script src="../js/dados-imovel.js"></script>
 
 </html>
