@@ -14,6 +14,8 @@ require_once __DIR__ . '/gerente.php';
 require_once __DIR__ . '/usuario.php';
 require_once __DIR__ . '/proprietario.php';
 
+ini_set('display_errors', 0);
+error_reporting(E_ALL);
 
 class Init
 {

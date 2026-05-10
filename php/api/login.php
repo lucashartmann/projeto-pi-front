@@ -18,7 +18,8 @@ require_once __DIR__ . '/../controller/controller.php';
 ob_start();
 header('Content-Type: application/json');
 // Init::initialize();
-
+ini_set('display_errors', 0);
+error_reporting(E_ALL);
 $acao = $_GET['acao'] ?? '';
 
 switch ($acao) {
@@ -42,14 +43,19 @@ switch ($acao) {
 
 function deslogar()
 {
+    try {
     session_start();
     session_destroy();
 
     echo json_encode(["status" => "ok"]);
+    } catch (Exception $e) {
+        echo json_encode(["erro" => "Erro ao deslogar: " . $e->getMessage()]);
+    }
 }
 
 function carregar_usuario()
 {
+    try {
     session_start();
     if (isset($_SESSION['usuario_id'])) {
         echo json_encode([
@@ -62,14 +68,18 @@ function carregar_usuario()
             "mensagem" => "Usuário não logado"
         ]);
     }
+    } catch (Exception $e) {
+        echo json_encode(["erro" => "Erro ao carregar usuário: " . $e->getMessage()]);
+    }
 }
 
 
 function verificar_login()
 {
-    session_start();
+    
 
     try {
+        session_start();
         $data = json_decode(file_get_contents('php://input'), true);
 
         $usuario = $data['usuario'] ?? '';
@@ -95,6 +105,6 @@ function verificar_login()
         }
     } catch (Exception $e) {
         http_response_code(500);
-        echo json_encode(["status" => "erro", "mensagem" => "Erro interno"]);
+        echo json_encode(["erro" => "Erro ao verificar login: " . $e->getMessage()]);
     }
 }

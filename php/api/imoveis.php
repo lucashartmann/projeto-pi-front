@@ -17,7 +17,8 @@ require_once __DIR__ . '/../controller/controller.php';
 
 ob_start();
 header('Content-Type: application/json');
-
+ini_set('display_errors', 0);
+error_reporting(E_ALL);
 $acao = $_GET['acao'] ?? '';
 
 switch ($acao) {
@@ -61,68 +62,73 @@ switch ($acao) {
 
 function get_lista_imoveis()
 {
-    $imoveis = Init::getInstance()->get_estoque()->get_lista_imoveis();
+    try {
+        $imoveis = Init::getInstance()->get_estoque()->get_lista_imoveis();
 
-    $lista = [];
-    foreach ($imoveis as $imovel) {
-        $endereco = null;
-        if ($imovel->get_endereco()) {
-            $enderecoObj = $imovel->get_endereco();
-            $endereco = [
-                "rua" => $enderecoObj->rua ?? null,
-                "numero" => $enderecoObj->numero ?? null,
-                "bairro" => $enderecoObj->bairro ?? null,
-                "cidade" => $enderecoObj->cidade ?? null,
-                "uf" => $enderecoObj->uf ?? null,
-                "cep" => $enderecoObj->cep ?? null,
-                "complemento" => $enderecoObj->complemento ?? null,
-            ];
-        }
-
-        $anuncio = null;
-        if ($imovel->get_anuncio()) {
-            $anuncioObj = $imovel->get_anuncio();
-            $imagens = [];
-            if ($anuncioObj->get_imagens()) {
-                foreach ($anuncioObj->get_imagens() as $idImagem) {
-                    $imagens[] = "/projeto-pi-front/php/imagem.php?id=" . $idImagem;
-                }
+        $lista = [];
+        foreach ($imoveis as $imovel) {
+            $endereco = null;
+            if ($imovel->get_endereco()) {
+                $enderecoObj = $imovel->get_endereco();
+                $endereco = [
+                    "rua" => $enderecoObj->rua ?? null,
+                    "numero" => $enderecoObj->numero ?? null,
+                    "bairro" => $enderecoObj->bairro ?? null,
+                    "cidade" => $enderecoObj->cidade ?? null,
+                    "uf" => $enderecoObj->uf ?? null,
+                    "cep" => $enderecoObj->cep ?? null,
+                    "complemento" => $enderecoObj->complemento ?? null,
+                ];
             }
-            $anuncio = [
-                "id" => $anuncioObj->get_id(),
-                "descricao" => $anuncioObj->get_descricao(),
-                "titulo" => $anuncioObj->get_titulo(),
-                "imagens" => $imagens
+
+            $anuncio = null;
+            if ($imovel->get_anuncio()) {
+                $anuncioObj = $imovel->get_anuncio();
+                $imagens = [];
+                if ($anuncioObj->get_imagens()) {
+                    foreach ($anuncioObj->get_imagens() as $idImagem) {
+                        $imagens[] = "/projeto-pi-front/php/imagem.php?id=" . $idImagem;
+                    }
+                }
+                $anuncio = [
+                    "id" => $anuncioObj->get_id(),
+                    "descricao" => $anuncioObj->get_descricao(),
+                    "titulo" => $anuncioObj->get_titulo(),
+                    "imagens" => $imagens
+                ];
+            }
+
+            $categoria = $imovel->get_categoria();
+            if (is_object($categoria) && isset($categoria->value)) {
+                $categoria = $categoria->value;
+            }
+
+            $status = $imovel->get_status();
+            if (is_object($status) && isset($status->value)) {
+                $status = $status->value;
+            }
+
+            $lista[] = [
+                "id" => $imovel->get_id(),
+                "valor_venda" => $imovel->get_valor_venda(),
+                "valor_aluguel" => $imovel->get_valor_aluguel(),
+                "categoria" => $categoria,
+                "status" => $status,
+                "endereco" => $endereco,
+                "anuncio" => $anuncio
             ];
         }
 
-        $categoria = $imovel->get_categoria();
-        if (is_object($categoria) && isset($categoria->value)) {
-            $categoria = $categoria->value;
-        }
-
-        $status = $imovel->get_status();
-        if (is_object($status) && isset($status->value)) {
-            $status = $status->value;
-        }
-
-        $lista[] = [
-            "id" => $imovel->get_id(),
-            "valor_venda" => $imovel->get_valor_venda(),
-            "valor_aluguel" => $imovel->get_valor_aluguel(),
-            "categoria" => $categoria,
-            "status" => $status,
-            "endereco" => $endereco,
-            "anuncio" => $anuncio
-        ];
+        echo json_encode($lista);
+    } catch (Exception $e) {
+        echo json_encode(["erro" => "Erro ao listar imóveis: " . $e->getMessage()]);
     }
-
-    echo json_encode($lista);
 }
 
 
 function get_lista_imoveis_disponiveis()
 {
+    try {
     $imoveis = Init::getInstance()->get_estoque()->get_lista_imoveis_disponiveis();
     // echo $imoveis;
     $lista = [];
@@ -180,11 +186,15 @@ function get_lista_imoveis_disponiveis()
     }
 
     echo json_encode($lista);
+    } catch (Exception $e) {
+        echo json_encode(["erro" => "Erro ao listar imóveis disponíveis: " . $e->getMessage()]);
+    }
 }
 
 
 function getImovelPorId($id)
 {
+    try {
     echo $id;
     // logging->info(f"Requisição para obter imóvel com ID => {id}")
     $imovel_obj = Init::getInstance()->get_imovel_por_id((int)$id);
@@ -263,6 +273,9 @@ function getImovelPorId($id)
     } else {
         echo json_encode(["erro" => "Imovel nao encontrado"]);
         return;
+    }
+    } catch (Exception $e) {
+        echo json_encode(["erro" => "Erro ao obter imóvel: " . $e->getMessage()]);
     }
 }
 

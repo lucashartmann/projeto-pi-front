@@ -25,6 +25,10 @@ async function listarImoveis() {
         const resposta = await fetch(caminho)
             .then(res => {
                 const contentType = res.headers.get("content-type");
+                if (res.erro) {
+                    alert("Erro ao listar atendimentos: " + res.erro);
+                    return null;
+                }
                 if (contentType && contentType.includes("application/json")) {
                     return res.json();
                 } else {
@@ -63,6 +67,10 @@ async function listarImoveisDisponiveis() {
         const resposta = await fetch(caminho)
             // .then(res => console.log(res))
             .then(res => {
+                if (res.erro) {
+                    alert("Erro ao listar atendimentos: " + res.erro);
+                    return null;
+                }
                 const contentType = res.headers.get("content-type");
                 if (contentType && contentType.includes("application/json")) {
                     return res.json();
@@ -109,6 +117,11 @@ async function getDadosImovel(id) {
         }
         );
 
+        if (resposta.erro) {
+            alert("Erro ao listar atendimentos: " + resposta.erro);
+            return null;
+        }
+
         const contentType = resposta.headers.get("content-type");
         if (contentType && contentType.includes("application/json")) {
             return await resposta.json();
@@ -145,6 +158,10 @@ async function deslogar() {
         const resposta = await fetch(caminho, {
             method: "POST"
         });
+        if (resposta.erro) {
+            alert("Erro ao listar atendimentos: " + resposta.erro);
+            return null;
+        }
         if (!resposta.ok) throw new Error(`HTTP ${resposta.status}`);
         const nav = document.querySelector("nav ul");
         if (nav) {
@@ -185,6 +202,10 @@ async function carregarUser() {
         const resposta = await fetch(caminho, {
             method: "GET"
         });
+        if (resposta.erro) {
+            alert("Erro ao listar atendimentos: " + resposta.erro);
+            return null;
+        }
         if (!resposta.ok) throw new Error(`HTTP ${resposta.status}`);
         const contentType = resposta.headers.get("content-type");
         if (contentType && contentType.includes("application/json")) {

@@ -50,6 +50,10 @@ function salvar() {
                 body: JSON.stringify(data)
             })
                 .then(response => {
+                    if (response.erro) {
+                        alert("Erro ao listar atendimentos: " + response.erro);
+                        return null;
+                    }
                     const contentType = response.headers.get("content-type");
                     if (contentType && contentType.includes("application/json")) {
                         return response.json();
@@ -104,6 +108,10 @@ async function excluir() {
                 body: JSON.stringify({ ref: imovel_id })
             })
                 .then(response => {
+                    if (response.erro) {
+                        alert("Erro ao listar atendimentos: " + response.erro);
+                        return null;
+                    }
                     const contentType = response.headers.get("content-type");
                     if (contentType && contentType.includes("application/json")) {
                         return response.json();

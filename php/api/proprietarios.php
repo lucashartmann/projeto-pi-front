@@ -17,3 +17,5 @@ require_once __DIR__ . '/../controller/controller.php';
 
 ob_start();
 header('Content-Type: application/json');
+ini_set('display_errors', 0);
+error_reporting(E_ALL);

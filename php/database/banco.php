@@ -12,7 +12,8 @@ require_once __DIR__ . '/../model/condominio.php';
 require_once __DIR__ . '/../model/gerente.php';
 require_once __DIR__ . '/../model/usuario.php';
 require_once __DIR__ . '/../model/proprietario.php';
-
+ini_set('display_errors', 0);
+error_reporting(E_ALL);
 class Banco
 {
     private $db;

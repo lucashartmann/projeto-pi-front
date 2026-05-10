@@ -17,6 +17,11 @@ async function listarAtendimentos() {
             throw new Error(`HTTP ${res.status}`);
         }
 
+        if (res.erro) {
+            alert("Erro ao listar atendimentos: " + res.erro);
+            return null;
+        }
+
         const contentType = res.headers.get("content-type");
 
         if (contentType && contentType.includes("application/json")) {

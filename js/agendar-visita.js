@@ -105,6 +105,10 @@ async function salvarEvento(data) {
     })
       .then(response => {
         const contentType = response.headers.get("content-type");
+        if (res.erro) {
+            alert("Erro ao listar atendimentos: " + res.erro);
+            return null;
+        }
         if (contentType && contentType.includes("application/json")) {
           return response.json();
         } else {

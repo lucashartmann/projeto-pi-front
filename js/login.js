@@ -22,6 +22,10 @@ async function fazerLogin() {
                 senha: senha
             })
         });
+        if (resposta.erro) {
+            alert("Erro ao listar atendimentos: " + resposta.erro);
+            return null;
+        }
         const contentType = resposta.headers.get("content-type");
         if (contentType && contentType.includes("application/json")) {
             dados = await resposta.json();
