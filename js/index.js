@@ -1,7 +1,7 @@
 function imovelPrincipal(dados) {
     if (!Array.isArray(dados) || dados.length === 0) return;
 
- 
+
     const imoveisComImagem = dados.filter(imovel => imovel?.anuncio?.imagens?.[0]);
     const ramdomNumber = Math.floor(Math.random() * imoveisComImagem.length);
     const imovel = imoveisComImagem[ramdomNumber] || dados[0];

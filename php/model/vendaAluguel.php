@@ -92,7 +92,7 @@ class VendaAluguel
         $this->captador = $value;
     }
 
-    public function getCorretor ()
+    public function getCorretor()
     {
         return $this->corretor;
     }
@@ -140,4 +140,4 @@ class VendaAluguel
     {
         $this->comissaoCorretor = $value;
     }
-} 
+}

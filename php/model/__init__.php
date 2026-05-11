@@ -20,7 +20,7 @@ error_reporting(E_ALL);
 class Init
 {
 
-    
+
 
     public static $imobiliaria;
     public static $usuarioAtual;
@@ -72,8 +72,9 @@ class Init
         "Heliponto",
         "Elevador de Serviço"
     ];
-    
-    public static function getInstance() {
+
+    public static function getInstance()
+    {
         if (self::$imobiliaria === null) {
             self::initialize();
         }
@@ -97,10 +98,10 @@ class Init
 
         self::$imobiliaria = new Imobiliaria("GameStart", "00000000000");
 
-        if(empty(self::$imobiliaria->getListaFiltrosApartamento())){
+        if (empty(self::$imobiliaria->getListaFiltrosApartamento())) {
             self::$imobiliaria->cadastrarListaFiltros(self::$filtrosImovel, "filtros_imovel");
         }
-        if(empty(self::$imobiliaria->getListaFiltrosCondominio())){
+        if (empty(self::$imobiliaria->getListaFiltrosCondominio())) {
             self::$imobiliaria->cadastrarListaFiltros(self::$filtrosCondominio, "filtros_condominio");
         }
 
@@ -329,8 +330,7 @@ class Init
             $consultarCondominio = self::$imobiliaria->getCondominioPorIdEndereco(
                 $consultaUm->getId()
             );
-        }
-        else {
+        } else {
             $consultarCondominio = NULL;
         }
 
@@ -341,7 +341,6 @@ class Init
 
         try {
             $blob = file_get_contents("../../assets/apartament.jpg");
-            
         } catch (Exception $e) {
             echo "Erro ao ler os arquivos de imagem: " . $e->getMessage();
         }
@@ -351,17 +350,17 @@ class Init
         } catch (Exception $e) {
             echo "Erro ao ler os arquivos de imagem: " . $e->getMessage();
         }
-        
-        
-        if ($blob && $blob2 ) {
+
+
+        if ($blob && $blob2) {
             $anuncioUm->setImagens([$blob, $blob, $blob2, $blob2, $blob]);
         }
-        
+
         $anuncioUm->setTitulo("Apartamento de 1 quarto, venda ou aluguel");
         $anuncioUm->setDescricao("Imóvel com uma posição privilegiada, próximo a parques, shoppings e com fácil acesso ao transporte público-> O apartamento possui uma sala aconchegante, cozinha funcional, banheiro moderno e um quarto confortável-> Ideal para quem busca praticidade e qualidade de vida->");
 
         $anuncioDois = new Anuncio();
-        
+
         try {
             $blob3 = file_get_contents("../../assets/patio.jpg");
         } catch (Exception $e) {
@@ -393,44 +392,43 @@ class Init
             categoria: Categoria::LOFT
         );
 
-        if(!self::$imobiliaria->getAnuncioPorId(1)){
+        if (!self::$imobiliaria->getAnuncioPorId(1)) {
             $cadastroAnuncio = self::$imobiliaria->getEstoque()->cadastrarAnuncio($anuncioUm);
         }
 
-        if(!self::$imobiliaria->getAnuncioPorId(2)){
+        if (!self::$imobiliaria->getAnuncioPorId(2)) {
             $cadastroAnuncio2 = self::$imobiliaria->getEstoque()->cadastrarAnuncio($anuncioDois);
         }
 
-        if ($cadastroAnuncio && !self::$imobiliaria->getImovelPorId(1))
-            {
-                $anuncioUm->setId($cadastroAnuncio);
-                $imovelUm->setAnuncio($anuncioUm);
-                if ($consultarCondominio) {
-                    $imovelUm->setCondominio($consultarCondominio);
-                }
-                self::$imobiliaria->getEstoque()->cadastrarImovel($imovelUm);
+        if ($cadastroAnuncio && !self::$imobiliaria->getImovelPorId(1)) {
+            $anuncioUm->setId($cadastroAnuncio);
+            $imovelUm->setAnuncio($anuncioUm);
+            if ($consultarCondominio) {
+                $imovelUm->setCondominio($consultarCondominio);
             }
+            self::$imobiliaria->getEstoque()->cadastrarImovel($imovelUm);
+        }
 
         if ($cadastroAnuncio2 && !self::$imobiliaria->getImovelPorId(2)) {
-                $anuncioDois->setId($cadastroAnuncio2);
-                $imovelDois->setAnuncio($anuncioDois);
-                if ($consultarCondominio) {
-                    $imovelDois->setCondominio($consultarCondominio);
-                }
-                self::$imobiliaria->getEstoque()->cadastrarImovel($imovelDois);
+            $anuncioDois->setId($cadastroAnuncio2);
+            $imovelDois->setAnuncio($anuncioDois);
+            if ($consultarCondominio) {
+                $imovelDois->setCondominio($consultarCondominio);
             }
+            self::$imobiliaria->getEstoque()->cadastrarImovel($imovelDois);
+        }
 
         if ($cadastroAnuncio && !self::$imobiliaria->getImovelPorId(3)) {
-                $anuncioUm->setId($cadastroAnuncio);
-                $imovelTres->setAnuncio($anuncioUm);
-                if ($consultarCondominio) {
-                    $imovelTres->setCondominio($consultarCondominio);
-                }
-                self::$imobiliaria->getEstoque()->cadastrarImovel($imovelTres);
+            $anuncioUm->setId($cadastroAnuncio);
+            $imovelTres->setAnuncio($anuncioUm);
+            if ($consultarCondominio) {
+                $imovelTres->setCondominio($consultarCondominio);
             }
-       
+            self::$imobiliaria->getEstoque()->cadastrarImovel($imovelTres);
+        }
+
         $condominioDois = new Condominio("Premium", $consultaDois);
-        
+
         if ($consultaDois && !self::$imobiliaria->getCondominioPorIdEndereco($consultaDois->getId())) {
             $cadastroCondominio2 = self::$imobiliaria->cadastrarCondominio($condominioDois);
 
@@ -443,8 +441,7 @@ class Init
             $condominioDois = self::$imobiliaria->getCondominioPorIdEndereco(
                 $consultaDois->getId()
             );
-        }
-        else {
+        } else {
             $condominioDois = NULL;
         }
 
@@ -459,7 +456,7 @@ class Init
             categoria: Categoria::CASA
         );
 
-        if($cadastroAnuncio && !self::$imobiliaria->getImovelPorId(4)){
+        if ($cadastroAnuncio && !self::$imobiliaria->getImovelPorId(4)) {
             $anuncioUm->setId($cadastroAnuncio);
             $imovelQuatro->setAnuncio($anuncioUm);
             if ($condominioDois) {
@@ -468,7 +465,7 @@ class Init
             self::$imobiliaria->getEstoque()->cadastrarImovel($imovelQuatro);
         }
 
-        if($cadastroAnuncio && !self::$imobiliaria->getImovelPorId(5)){
+        if ($cadastroAnuncio && !self::$imobiliaria->getImovelPorId(5)) {
             $anuncioUm->setId($cadastroAnuncio);
             $imovelCinco->setAnuncio($anuncioUm);
             if ($condominioDois) {

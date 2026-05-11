@@ -145,7 +145,7 @@ label {
             border: 2px solid black;
         }
 
-       &:read-only {
+        &:read-only {
             background: transparent 2%;
         }
     }
@@ -174,6 +174,7 @@ label {
         font-size: 100%;
         font-weight: 500;
         border-radius: 0%;
+
         &:hover {
             background: rgb(182, 176, 176);
         }

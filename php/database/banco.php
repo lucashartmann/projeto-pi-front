@@ -2057,7 +2057,7 @@ class Banco
 
                 $id = (int)$dados['id_imovel'];
                 $imovel = $this->getImovelPorId($id);
-                    
+
                 $lista[] = $imovel;
             }
 
@@ -2094,7 +2094,7 @@ class Banco
                 $id = (int)$dados['id_imovel'];
 
                 $imovel = $this->getImovelPorId($id);
-                if($imovel){
+                if ($imovel) {
                     $lista[] = $imovel;
                 }
             }

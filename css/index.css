@@ -245,7 +245,7 @@ section#anuncios {
         font-weight: 600;
         height: 100%;
         font-size: large;
-        
+
         &::placeholder {
             color: rgba(65, 73, 18, 0.9);
             animation: placeholderBlink 10s;

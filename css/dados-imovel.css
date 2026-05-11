@@ -26,6 +26,7 @@
     text-align: center;
     align-content: center;
     width: 10vw;
+
     button {
         border: solid black 1px;
         margin: 10px;
@@ -53,10 +54,12 @@ img {
     width: 100%;
     align-content: center;
     justify-content: center;
+
     /* background-color: rgb(241, 233, 233); */
-    li{
+    li {
         margin: 0px 0px;
         list-style-type: none;
+
         img {
             height: 19vh;
         }

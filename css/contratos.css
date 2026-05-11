@@ -1,4 +1,3 @@
-
 html,
 body {
     height: 100%;
@@ -19,7 +18,8 @@ body {
 }
 
 #botoes {
-    display: none; /* grid */
+    display: none;
+    /* grid */
     grid-template-columns: repeat(2, 1fr);
 }
 
@@ -42,11 +42,14 @@ body {
 }
 
 #proprietario {
-    display: none; /* grid */
+    display: none;
+    /* grid */
     z-index: 10000;
     position: fixed;
     top: 50%;
-    #endereco, #outras-informacoes {
+
+    #endereco,
+    #outras-informacoes {
         background-color: var(--background-nav);
     }
 }

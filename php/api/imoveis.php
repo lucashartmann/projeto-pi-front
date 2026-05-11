@@ -27,33 +27,30 @@ switch ($acao) {
     case "cadastrar_imovel":
         $body = file_get_contents("php://input");
         $data = json_decode($body, true);
-        
+
         if (json_last_error() !== JSON_ERROR_NONE) {
-            echo json_encode(["erro" => "JSON inválido"]);
+            $resultado = (["erro" => "JSON inválido"]);
             return;
         }
-        
+
         $resultado = $controller->cadastrarImovel($data);
-        echo json_encode($resultado);
+
         break;
 
     case 'listar_imoveis':
         $resultado = $controller->getListaImoveis();
-        echo json_encode($resultado);
         break;
 
     case 'listar_imoveis_disponiveis':
         $resultado = $controller->getListaImoveisDisponiveis();
-        echo json_encode($resultado);
         break;
 
     case "get_dados_imovel":
         $id = $_GET['id'] ?? null;
         if ($id) {
             $resultado = $controller->getImovelPorId($id);
-            echo json_encode($resultado);
         } else {
-            echo json_encode(["erro" => "ID do imóvel não fornecido"]);
+            $resultado = (["erro" => "ID do imóvel não fornecido"]);
         }
         break;
 
@@ -61,16 +58,17 @@ switch ($acao) {
         $id = $_GET['id'] ?? null;
         if ($id) {
             $resultado = $controller->apagarImovel($id);
-            echo json_encode($resultado);
         } else {
-            echo json_encode(["erro" => "ID do imóvel não fornecido"]);
+            $resultado = (["erro" => "ID do imóvel não fornecido"]);
         }
         break;
 
 
     default:
-        echo json_encode(["erro" => "Ação inválida"]);
+        $resultado = (["erro" => "Ação inválida"]);
         break;
 }
 
-
+if ($acao) {
+    echo json_encode($resultado);
+}

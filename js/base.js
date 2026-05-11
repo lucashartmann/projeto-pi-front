@@ -183,7 +183,7 @@ async function deslogar() {
                         a.href = "login.html";
                     }
                 }
-            }else {
+            } else {
                 console.warn("Elemento de navegação não encontrado para atualizar estado de login");
                 return;
             }
@@ -196,7 +196,7 @@ async function deslogar() {
                 window.location.href = "../index.html";
             }
         }
-        else{
+        else {
             console.warn("Erro ao deslogar: " + dados.mensagem);
         }
     } catch (erro) {

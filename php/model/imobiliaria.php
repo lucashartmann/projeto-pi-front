@@ -14,7 +14,7 @@ class Imobiliaria
     public $quantidadeClientes;
     public $quantidadeFornecedores;
     public $faturamento;
-   
+
 
     public function __construct($nome, $cnpj)
     {
@@ -212,7 +212,7 @@ class Imobiliaria
     }
 
 
-    public function 
+    public function
     getListaVistoriasPorVistoriador($vistoriador)
     {
         return $this->bancoDados->getListaVistoriasPorVistoriador($vistoriador);
@@ -222,5 +222,4 @@ class Imobiliaria
     {
         return $this->bancoDados->cadastrarVistoria($vistoria);
     }
-
 }

@@ -6,7 +6,7 @@
     width: 80%;
     margin: 30px;
     justify-items: center;
-    
+
 }
 
 body {
@@ -29,7 +29,7 @@ body {
 button {
     justify-self: center;
     width: 20%;
-    height: 35px;  
+    height: 35px;
 }
 
 #ctn-botao {

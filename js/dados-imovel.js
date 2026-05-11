@@ -8,7 +8,7 @@ function setupDados(dados) {
             swiperhtml += `<div class="swiper-slide" style="background-image: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), url(${imagem})"></div>`;
             imagensHtml += `<li><img src="${imagem}" alt="Imagem do imóvel" onclick="abrirImagem(this.src)" /></li>`;
         }
-        
+
     }
 
     const divPai = document.getElementById("div-pai");
@@ -47,7 +47,7 @@ window.addEventListener("DOMContentLoaded", async () => {
     if (dados) {
         await setupDados(dados);
         await inicializarSwiper();
-        
+
         setInterval(() => {
             const swiper = document.querySelector('.swiper').swiper;
             if (swiper) {

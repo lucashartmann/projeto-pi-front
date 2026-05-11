@@ -24,7 +24,7 @@ class Endereco
         $this->uf = $uf;
     }
 
-    
+
     public function __init__($rua, $bairro, $cep, $cidade, $uf)
     {
         $this->__construct($rua, $bairro, $cep, $cidade, $uf);

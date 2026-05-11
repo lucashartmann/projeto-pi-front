@@ -17,6 +17,103 @@ require_once __DIR__ . '/../model/__init__.php';
 class controller
 {
 
+
+    function deslogar()
+    {
+        try {
+            session_start();
+            session_destroy();
+            return (["status" => "ok"]);
+        } catch (Exception $e) {
+            return (["erro" => "Erro ao deslogar: " . $e->getMessage()]);
+        }
+    }
+
+    function carregarUsuario()
+    {
+        try {
+            session_start();
+            if (isset($_SESSION['usuario_id'])) {
+                return ([
+                    "status" => "ok",
+                    "tipo" => $_SESSION['tipo']
+                ]);
+            } else {
+                return ([
+                    "status" => "erro",
+                    "mensagem" => "Usuário não logado"
+                ]);
+            }
+        } catch (Exception $e) {
+            return (["erro" => "Erro ao carregar usuário: " . $e->getMessage()]);
+        }
+    }
+
+
+    function verificarLogin($data)
+    {
+
+        try {
+            session_start();
+
+            $usuario = $data['usuario'] ?? '';
+            $senha = $data['senha'] ?? '';
+
+            if (!$usuario || !$senha) {
+                return (["status" => "erro", "mensagem" => "Usuário ou senha não fornecidos"]);
+            }
+
+            $consulta = Init::getInstance()->verificarUsuario($usuario, $senha);
+
+            if ($consulta) {
+                $_SESSION['usuario_id'] = $consulta->getId();
+                $_SESSION['tipo'] = $consulta->getTipo() ?? NULL;
+                return (["status" => "ok", "usuario" => [
+                    "id" => $consulta->getId(),
+                    "nome" => $consulta->getNome(),
+                    "tipo" => $consulta->getTipo(),
+                ]]);
+            } else {
+                return (["status" => "erro", "mensagem" => "Usuário ou senha incorretos"]);
+            }
+        } catch (Exception $e) {
+            http_response_code(500);
+            return (["erro" => "Erro ao verificar login: " . $e->getMessage()]);
+        }
+    }
+
+
+    function listarAtendimentos()
+    {
+        try {
+            $atendimentos = Init::getInstance()->getListaAtendimentos();
+            $lista = [];
+            if ($atendimentos) {
+                foreach ($atendimentos as $atendimento) {
+                    $lista[] = [
+                        "id" => $atendimento->getid(),
+                        "corretor" => $atendimento->getCorretor() ? $atendimento->getCorretor()->getNome() : NULL,
+                        "cliente" =>  $atendimento->getCliente() ? [
+                            "id" => $atendimento->getCliente()->getid(),
+                            "nome" => $atendimento->getCliente()->getNome(),
+                            # "idade" => $atendimento->getCliente()->getidade(),
+                            "telefones" => [$atendimento->getCliente()->getTelefones()],
+                            "email" => $atendimento->getCliente()->getEmail(),
+                        ] : NULL,
+                        "imovel" => $atendimento->getImovel() ? [
+                            "id" => $atendimento->getImovel()->getid(),
+                            "titulo" => $atendimento->getImovel()->getAnuncio()->getTitulo() ?: NULL,
+                        ] : NULL,
+                        "status" =>  $atendimento->getStatus() ? $atendimento->getStatus()->value : NULL,
+                    ];
+                }
+            }
+            return $lista;
+        } catch (Exception $e) {
+            return (["erro" => "Erro ao listar atendimentos: " . $e->getMessage()]);
+        }
+    }
+
     function getListaImoveis()
     {
         try {
@@ -429,24 +526,6 @@ class controller
         }
     }
 
-
-    public function verificarLogin($username, $senha)
-    {
-        $username = $username;
-        $senha = $senha;
-
-        $consulta = Init::getInstance()->verificarUsuario(
-            $username,
-            $senha
-        );
-
-        if ($consulta) {
-            Init::$usuarioAtual = $consulta;
-            return (["mensagem" => "Login realizado com sucesso"]);
-        } else {
-            return (["erro" => "ERRO ao realizar login"]);
-        }
-    }
 
     public function salvarLogin($username, $senha, $email)
     {

@@ -21,90 +21,34 @@ header('Content-Type: application/json');
 ini_set('display_errors', 0);
 error_reporting(E_ALL);
 $acao = $_GET['acao'] ?? '';
+$controller = new controller();
 
 switch ($acao) {
 
     case "login":
-        verificarLogin();
+        $body = file_get_contents("php://input");
+        $data = json_decode($body, true);
+
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            $resultado = (["erro" => "JSON inválido"]);
+            return;
+        }
+        $resultado = $controller->verificarLogin($data);
         break;
 
     case "deslogar":
-        deslogar();
+        $resultado = $controller->deslogar();
         break;
 
     case "get_usuario":
-        carregarUsuario();
+        $resultado = $controller->carregarUsuario();
         break;
 
     default:
-        echo json_encode(["erro" => "Ação inválida"]);
+        $resultado = (["erro" => "Ação inválida"]);
         break;
 }
 
-function deslogar()
-{
-    try {
-        session_start();
-        session_destroy();
-
-        echo json_encode(["status" => "ok"]);
-    } catch (Exception $e) {
-        echo json_encode(["erro" => "Erro ao deslogar: " . $e->getMessage()]);
-    }
-}
-
-function carregarUsuario()
-{
-    try {
-        session_start();
-        if (isset($_SESSION['usuario_id'])) {
-            echo json_encode([
-                "status" => "ok",
-                "tipo" => $_SESSION['tipo']
-            ]);
-        } else {
-            echo json_encode([
-                "status" => "erro",
-                "mensagem" => "Usuário não logado"
-            ]);
-        }
-    } catch (Exception $e) {
-        echo json_encode(["erro" => "Erro ao carregar usuário: " . $e->getMessage()]);
-    }
-}
-
-
-function verificarLogin()
-{
-
-
-    try {
-        session_start();
-        $data = json_decode(file_get_contents('php://input'), true);
-
-        $usuario = $data['usuario'] ?? '';
-        $senha = $data['senha'] ?? '';
-
-        if (!$usuario || !$senha) {
-            echo json_encode(["status" => "erro", "mensagem" => "Usuário ou senha não fornecidos"]);
-            return;
-        }
-
-        $consulta = Init::getInstance()->verificarUsuario($usuario, $senha);
-
-        if ($consulta) {
-            $_SESSION['usuario_id'] = $consulta->getId();
-            $_SESSION['tipo'] = $consulta->getTipo() ?? NULL;
-            echo (json_encode(["status" => "ok", "usuario" => [
-                "id" => $consulta->getId(),
-                "nome" => $consulta->getNome(),
-                "tipo" => $consulta->getTipo(),
-            ]]));
-        } else {
-            echo (json_encode(["status" => "erro", "mensagem" => "Usuário ou senha incorretos"]));
-        }
-    } catch (Exception $e) {
-        http_response_code(500);
-        echo json_encode(["erro" => "Erro ao verificar login: " . $e->getMessage()]);
-    }
+if ($acao) {
+    echo json_encode($resultado);
 }

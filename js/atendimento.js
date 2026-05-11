@@ -43,7 +43,7 @@ async function carregarAtendimentos() {
     const dados = await listarAtendimentos();
     console.log(dados);
     const section = document.getElementById("container-horizontal");
-   
+
     if (!section || !dados) return;
 
     const divRecemCadastrados = document.getElementById("container-cadastrados");
@@ -55,14 +55,14 @@ async function carregarAtendimentos() {
     const divEmAndamento = document.getElementById("container-andamento");
 
     for (child of divEmAndamento.children) {
-            child.remove();
-    }   
+        child.remove();
+    }
 
     const divPendente = document.getElementById("container-esperando");
 
     for (child of divPendente.children) {
-            child.remove();
-    }   
+        child.remove();
+    }
 
     const tamanho = dados.length < 5 ? dados.length : 5;
 
