@@ -7,7 +7,7 @@ require_once __DIR__ . '/../model/captador.php';
 require_once __DIR__ . '/../model/atendimento.php';
 require_once __DIR__ . '/../model/endereco.php';
 require_once __DIR__ . '/../model/anuncio.php';
-require_once __DIR__ . '/../model/venda_aluguel.php';
+require_once __DIR__ . '/../model/vendaAluguel.php';
 require_once __DIR__ . '/../model/condominio.php';
 require_once __DIR__ . '/../model/gerente.php';
 require_once __DIR__ . '/../model/usuario.php';
@@ -24,7 +24,7 @@ $acao = $_GET['acao'] ?? '';
 switch ($acao) {
 
 
-    case "getUsuario":
+    case "get_usuario":
         carregarUsuario();
         break;
 

@@ -12,7 +12,7 @@ body {
    align-items: center;
 }
 
-#campo_dados {
+#campo-dados {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(20%, 1fr));
     grid-template-rows: repeat(auto-fit, minmax(30px, 1fr));
@@ -27,7 +27,7 @@ input {
     font-size: 100%;
 }
 
-#container_selects {
+#container-selects {
     display: inline-flex;
     margin: 50px 0px 25px 0px;
     justify-content: center;
@@ -43,12 +43,12 @@ input {
     }
 }
 
-#container_executar {
+#container-executar {
     margin: 0;
     justify-self: center;
 }
 
-#h_buttons {
+#h-buttons {
     margin: 30px 0px 42px 95px;
 
     button {
@@ -67,14 +67,14 @@ label {
     font-weight: 500;
 }
 
-#bt_executar {
+#bt-executar {
     font-size: 120%;
     background-color: var(--background);
     border: solid 2px;
 }
 
 
-#container_telefones {
+#container-telefones {
     width: auto;
     display: block;
     height: 100%;
@@ -91,17 +91,17 @@ label {
 
 
 @media screen and (max-width: 380px) {
-    #campo_dados {
+    #campo-dados {
         grid-template-columns: repeat(auto-fit, minmax(32%, 1fr));
     }
 }
 
-#inpt_data_nascimento,
-#ta_numero,
-#ta_cep {
+#inpt-data-nascimento,
+#ta-numero,
+#ta-cep {
     height: 100%;
 }
 
-#inpt_data_nascimento {
+#inpt-data-nascimento {
     height: 140%;
 }

@@ -7,7 +7,7 @@ require_once __DIR__ . '/../model/captador.php';
 require_once __DIR__ . '/../model/atendimento.php';
 require_once __DIR__ . '/../model/endereco.php';
 require_once __DIR__ . '/../model/anuncio.php';
-require_once __DIR__ . '/../model/venda_aluguel.php';
+require_once __DIR__ . '/../model/vendaAluguel.php';
 require_once __DIR__ . '/../model/condominio.php';
 require_once __DIR__ . '/../model/gerente.php';
 require_once __DIR__ . '/../model/usuario.php';
@@ -176,7 +176,7 @@ class controller
                 $resposta = [
                     "id" => $imovelObj->getId(),
                     "valor_venda" => $imovelObj->getValorVenda(),
-                    "valorCondominio" => $imovelObj->getValorCondominio(),
+                    "valor_condominio" => $imovelObj->getValorCondominio(),
                     "valor_iptu" => $imovelObj->getValorIptu(),
                     "valor_aluguel" => $imovelObj->getValorAluguel(),
                     "categoria" => $imovelObj->getCategoria()->value ?? null,
@@ -199,9 +199,9 @@ class controller
                     "andar" => $imovelObj->getAndar(),
                     "estado" => $imovelObj->getEstado()->value ?? null,
                     "bloco" => $imovelObj->getBloco(),
-                    "anoConstrucao" => $imovelObj->getAnoConstrucao(),
-                    "areaTotal" => $imovelObj->getAreaTotal(),
-                    "areaPrivativa" => $imovelObj->getAreaPrivativa(),
+                    "ano_construcao" => $imovelObj->getAnoConstrucao(),
+                    "area_total" => $imovelObj->getAreaTotal(),
+                    "area_privativa" => $imovelObj->getAreaPrivativa(),
                     "situacao" => $imovelObj->getSituacao()->value ?? null,
                     "ocupacao" => $imovelObj->getOcupacao()->value ?? null,
                     "proprietarios" => $imovelObj->getProprietarios() ? array_map(function ($proprietario) {
@@ -213,10 +213,10 @@ class controller
                             "rg" => $proprietario->getRg(),
                             "telefones" => [$proprietario->getTelefones()],
                             "endereco" => $proprietario->getEndereco(),
-                            "data_nascimento" => $proprietario->get_data_nascimento(),
-                            "imoveis" => $proprietario->get_imoveis(),
-                            "data_cadastro" => $proprietario->get_data_cadastro(),
-                            "data_modificacao" => $proprietario->get_data_modificacao()
+                            "data_nascimento" => $proprietario->getDataNascimento(),
+                            "imoveis" => $proprietario->getImoveis(),
+                            "data_cadastro" => $proprietario->getDataCadastro(),
+                            "data_modificacao" => $proprietario->getDataModificacao()
                         ];
                     }, $imovelObj->getProprietarios()) : [],
                     "corretor" => $imovelObj->getCorretor() ? ["username" => $imovelObj->getCorretor()->getUsername(), "senha" => $imovelObj->getCorretor()->getSenha(), "email" => $imovelObj->getCorretor()->getEmail(), "nome" => $imovelObj->getCorretor()->getNome(), "cpf_cnpj" => $imovelObj->getCorretor()->getCpfCnpj(), "tipo" => $imovelObj->getCorretor()->getTipo()] : null,
@@ -225,7 +225,7 @@ class controller
                     "data_modificacao" => $imovelObj->getDataModificacao(),
                     "condominio" => $imovelObj->getCondominio() ? ["id" => $imovelObj->getCondominio()->getId(), "nome" => $imovelObj->getCondominio()->getNome(), "filtros" => [$imovelObj->getCondominio()->getFiltros()]] : null,
                     "filtros" => [$imovelObj->getFiltros()],
-                    "complemento" => $imovelObj->getAnuncio() ? $imovelObj->get_complemento() : null
+                    "complemento" => $imovelObj->getAnuncio() ? $imovelObj->getComplemento() : null
                 ];
 
                 return ($resposta);
@@ -265,7 +265,7 @@ class controller
         try {
 
             $id =  array_key_exists("ref", $data) ? $data["ref"] : null;
-            $nome_condominio = array_key_exists("nome_condominio", $data) ? $data["nome_condominio"] : null;
+            $nomeCondominio = array_key_exists("nome_condominio", $data) ? $data["nome_condominio"] : null;
             $valorVenda = array_key_exists("valor_venda", $data) ? (float)($data["valor_venda"] ?? 0) : null;
             $valorAluguel = array_key_exists("valor_aluguel", $data) ? (float)($data["valor_aluguel"] ?? 0) : null;
             $quantQuartos = array_key_exists("quant_quartos", $data) ? (int)($data["quant_quartos"] ?? 0) : null;
@@ -281,14 +281,14 @@ class controller
             $status = null;
             isset($data["status"]) ? $status = Status::tryFrom(ucfirst(strtolower($data["status"]))) : null;
             $iptu = array_key_exists("iptu", $data) ? (float)($data["iptu"] ?? 0) : null;
-            $valorCondominio = array_key_exists("valorCondominio", $data) ? (float)($data["valorCondominio"] ?? 0) : null;
+            $valorCondominio = array_key_exists("valor_condominio", $data) ? (float)($data["valor_condominio"] ?? 0) : null;
             $andar = array_key_exists("andar", $data) ? (int)($data["andar"] ?? 0) : null;
             $estado = null;
             isset($data["estado"]) ? $estado = Estado::tryFrom(ucfirst(strtolower($data["estado"]))) : null;
             $bloco = array_key_exists("bloco", $data) ? $data["bloco"] : null;
-            $anoConstrucao = array_key_exists("anoConstrucao", $data) ? (int)($data["anoConstrucao"] ?? 0) : null;
-            $areaTotal = array_key_exists("areaTotal", $data) ? (float)($data["areaTotal"] ?? 0) : null;
-            $areaPrivativa = array_key_exists("areaPrivativa", $data) ? (float)($data["areaPrivativa"] ?? 0) : null;
+            $anoConstrucao = array_key_exists("ano_construcao", $data) ? (int)($data["ano_construcao"] ?? 0) : null;
+            $areaTotal = array_key_exists("area_total", $data) ? (float)($data["area_total"] ?? 0) : null;
+            $areaPrivativa = array_key_exists("area_privativa", $data) ? (float)($data["area_privativa"] ?? 0) : null;
             $situacao = null;
             isset($data["situacao"]) ? $situacao = Situacao::tryFrom(ucfirst(strtolower($data["situacao"]))) : null;
             $ocupacao = null;
@@ -316,18 +316,18 @@ class controller
             $enderecoObj->setComplemento($complemento);
             $enderecoObj->setUf($uf);
             $condominioObj = new Condominio(
-                $nome_condominio,
+                $nomeCondominio,
                 $enderecoObj
             );
             # imagens = anuncio->get("imagens", [])
-            # imagens_bytes = []
+            # imagensBytes = []
             # for imagem in imagens =>
             #     try =>
-            #         imagem_bytes = base64->b64decode(imagem)
-            #         imagens_bytes->append(imagem_bytes)
+            #         imagemBytes = base64->b64decode(imagem)
+            #         imagensBytes->append(imagemBytes)
             #     catch (base64->binascii->Error, ValueError) =>
             #         continue
-            # anuncioObj->set_imagens(imagens_bytes)
+            # anuncioObj->setImagens(imagensBytes)
             # condominio = data->get("condominio")
             # filtros = data->get("filtros", [])
 
@@ -360,8 +360,8 @@ class controller
             $imovelObj->setAreaPrivativa($areaPrivativa);
             $imovelObj->setSituacao($situacao);
             $imovelObj->setOcupacao($ocupacao);
-            # imovelObj->set_corretor(corretor)
-            # imovelObj->set_captador(captador)
+            # imovelObj->setCorretor(corretor)
+            # imovelObj->setCaptador(captador)
             $imovelObj->setAnuncio($anuncioObj);
             $imovelObj->setCondominio($condominioObj);
 
@@ -374,10 +374,10 @@ class controller
             if ($consultarEndereco) {
                 $endereco = $consultarEndereco;
             } else {
-                $cadastro_endereco = Init::getInstance()->cadastrarEndereco(
+                $cadastroEndereco = Init::getInstance()->cadastrarEndereco(
                     $imovelObj->getEndereco()
                 );
-                if ($cadastro_endereco) {
+                if ($cadastroEndereco) {
                     $endereco = Init::getInstance()->verificarEndereco(
                         $imovelObj->getEndereco()
                     );
@@ -393,8 +393,8 @@ class controller
                 );
 
                 if (! $consultarCondominio) {
-                    $cadastrar = Init::getInstance()->cadastrar_condominio(
-                        $imovelObj->get_condominio()
+                    $cadastrar = Init::getInstance()->cadastrarCondominio(
+                        $imovelObj->getCondominio()
                     );
                     if ($cadastrar) {
                         $consultarCondominio = Init::getInstance()->getCondominioPorIdEndereco(

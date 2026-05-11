@@ -76,14 +76,14 @@ async function salvarEvento(data) {
     return;
   }
 
-  let caminho_php = NULL;
+  let caminhoPhp = NULL;
 
   switch (usuario) {
     case "CORRETOR:":
-      caminho_php = "/php/api/visitas.php?acao=cadastrarVisita";
+      caminhoPhp = "/php/api/visitas.php?acao=cadastrar_visita";
       break;
     case "VISTORIADOR:":
-      caminho_php = "/php/api/visitas.php?acao=cadastrarVistoria";
+      caminhoPhp = "/php/api/visitas.php?acao=cadastrar_vistoria";
       break;
     default:
       return;
@@ -95,7 +95,7 @@ async function salvarEvento(data) {
     if (caminho.includes("/html/")) {
       caminho = caminho.replace("/html/", "/");
     }
-    caminho = caminho.replace(caminho.substring(caminho.lastIndexOf("/")), caminho_php);
+    caminho = caminho.replace(caminho.substring(caminho.lastIndexOf("/")), caminhoPhp);
     fetch(caminho, {
       method: "POST",
       headers: {

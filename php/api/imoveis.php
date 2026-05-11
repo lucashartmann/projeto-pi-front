@@ -7,7 +7,7 @@ require_once __DIR__ . '/../model/captador.php';
 require_once __DIR__ . '/../model/atendimento.php';
 require_once __DIR__ . '/../model/endereco.php';
 require_once __DIR__ . '/../model/anuncio.php';
-require_once __DIR__ . '/../model/venda_aluguel.php';
+require_once __DIR__ . '/../model/vendaAluguel.php';
 require_once __DIR__ . '/../model/condominio.php';
 require_once __DIR__ . '/../model/gerente.php';
 require_once __DIR__ . '/../model/usuario.php';
@@ -24,7 +24,7 @@ $controller = new controller();
 
 switch ($acao) {
 
-    case "cadastrarImovel":
+    case "cadastrar_imovel":
         $body = file_get_contents("php://input");
         $data = json_decode($body, true);
         
@@ -37,17 +37,17 @@ switch ($acao) {
         echo json_encode($resultado);
         break;
 
-    case 'listarImoveis':
+    case 'listar_imoveis':
         $resultado = $controller->getListaImoveis();
         echo json_encode($resultado);
         break;
 
-    case 'listarImoveisDisponiveis':
+    case 'listar_imoveis_disponiveis':
         $resultado = $controller->getListaImoveisDisponiveis();
         echo json_encode($resultado);
         break;
 
-    case "getDadosImovel":
+    case "get_dados_imovel":
         $id = $_GET['id'] ?? null;
         if ($id) {
             $resultado = $controller->getImovelPorId($id);
@@ -57,7 +57,7 @@ switch ($acao) {
         }
         break;
 
-    case "apagarImovel":
+    case "apagar_imovel":
         $id = $_GET['id'] ?? null;
         if ($id) {
             $resultado = $controller->apagarImovel($id);

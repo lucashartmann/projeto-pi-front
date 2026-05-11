@@ -23,7 +23,7 @@ async function fazerLogin() {
             })
         });
         if (resposta.erro) {
-            alert("Erro ao listar atendimentos: " + resposta.erro);
+            alert("Erro ao fazer login: " + resposta.erro);
             return null;
         }
         const contentType = resposta.headers.get("content-type");

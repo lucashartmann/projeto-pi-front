@@ -1,5 +1,5 @@
 function setupDados(dados) {
-    var div = document.getElementById("dados_imovel");
+    var div = document.getElementById("dados-imovel");
     let imagensHtml = "";
     console.log(dados);
     if (dados.anuncio.imagens && dados.anuncio.imagens.length > 0) {
@@ -11,22 +11,22 @@ function setupDados(dados) {
         
     }
 
-    const div_pai = document.getElementById("div_pai");
-    const swiper_wrapper = document.querySelector(".swiper-wrapper");
+    const divPai = document.getElementById("div-pai");
+    const swiperWrapper = document.querySelector(".swiper-wrapper");
     const swiper = document.querySelector(".swiper");
-    const div_titulo = document.getElementById("div_titulo");
-    const div_galeria = document.getElementById("ul_imagens");
-    const p_descricao = document.getElementById("p_descricao");
-    const div_contato = document.getElementById("entrar_contato");
+    const divTitulo = document.getElementById("div-titulo");
+    const divGaleria = document.getElementById("ul-imagens");
+    const pDescricao = document.getElementById("p-descricao");
+    const divContato = document.getElementById("entrar-contato");
 
-    div_titulo.querySelector("h3").innerText = dados.anuncio.titulo;
-    div_titulo.querySelector("p").innerText = `${dados.endereco.rua}, ${dados.endereco.numero}, ${dados.endereco.bairro}`;
-    swiper_wrapper.innerHTML = swiperhtml;
-    div_galeria.innerHTML = imagensHtml;
-    p_descricao.innerText = dados.anuncio.descricao;
+    divTitulo.querySelector("h3").innerText = dados.anuncio.titulo;
+    divTitulo.querySelector("p").innerText = `${dados.endereco.rua}, ${dados.endereco.numero}, ${dados.endereco.bairro}`;
+    swiperWrapper.innerHTML = swiperhtml;
+    divGaleria.innerHTML = imagensHtml;
+    pDescricao.innerText = dados.anuncio.descricao;
     try {
-        div_contato.getElementById("condominio").querySelector("p").innerText = dados.valor_condominio;
-        div_contato.getElementById("iptu").querySelector("p").innerText = dados.valor_iptu;
+        divContato.getElementById("condominio").querySelector("p").innerText = dados.valor_condominio;
+        divContato.getElementById("iptu").querySelector("p").innerText = dados.valor_iptu;
     } catch (e) {
         console.warn("Valores de condomínio e IPTU não encontrados");
     }

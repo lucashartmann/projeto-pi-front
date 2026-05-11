@@ -1,10 +1,10 @@
-#dados_imovel {
+#dados-imovel {
     display: flex;
     height: 170vh;
     overflow-y: hidden;
 }
 
-#div_titulo {
+#div-titulo {
     display: block;
     align-items: center;
     justify-content: center;
@@ -12,7 +12,7 @@
     text-align: center;
 }
 
-#div_pai {
+#div-pai {
     display: block;
     height: auto;
     height: 100%;
@@ -21,7 +21,7 @@
     width: 88vw;
 }
 
-#entrar_contato {
+#entrar-contato {
     background: rgb(241, 233, 233);
     text-align: center;
     align-content: center;
@@ -43,7 +43,7 @@ img {
     height: 80%;
 }
 
-#ul_imagens {
+#ul-imagens {
     display: flex;
     gap: 0px;
     overflow-x: auto;

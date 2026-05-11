@@ -1,4 +1,4 @@
-#imovelDestaque {
+#imovel-destaque {
     background: rgb(135, 126, 126, 0.2);
     width: 90%;
     margin: 30px 6px 0px 6px;
@@ -68,7 +68,7 @@ section#anuncios {
     height: auto;
 }
 
-.anuncio_imovel {
+.anuncio-imovel {
     background: rgba(203, 199, 199, 0.2);
     width: 90%;
     justify-items: center;
@@ -150,14 +150,14 @@ section#anuncios {
 
 
 
-#imgDestaque {
+#img-destaque {
     width: 100%;
     height: 100%;
     z-index: 0;
     object-fit: fill;
 }
 
-.imgBanner {
+.img-banner {
     width: 100%;
     height: 100%;
     z-index: 0;
@@ -239,7 +239,7 @@ section#anuncios {
         box-shadow: 0.1px 0.1px 3px black;
     }
 
-    #input_pesquisa {
+    #input-pesquisa {
         width: 100%;
         color: black;
         font-weight: 600;
@@ -290,7 +290,7 @@ section#anuncios {
 }
 
 
-#container_filtragem {
+#container-filtragem {
     color: white;
     display: flex;
     align-items: center;
@@ -505,7 +505,7 @@ section#anuncios {
             }
         }
 
-        #container_filtragem {
+        #container-filtragem {
             width: 90%;
 
             select {
@@ -515,7 +515,7 @@ section#anuncios {
 
     }
 
-    .anuncio_imovel {
+    .anuncio-imovel {
         height: 100%;
 
         p {

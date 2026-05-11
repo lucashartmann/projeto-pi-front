@@ -15,20 +15,18 @@
 
 <body>
 
-
-
     <div id="pesquisa">
         <div id="pesquisa-container">
-            <input placeholder="Pesquise aqui" id="input_pesquisa" oninput="pesquisar()">
+            <input placeholder="Pesquise aqui" id="input-pesquisa" oninput="pesquisar()">
             <button onclick="pesquisar()">
                 Encontre sua nova moradia!
             </button>
         </div>
-        <div id="container_filtragem">
+        <div id="container-filtragem">
             <label>Categoria</label>
-            <select prompt="Selecionar" id="select_categoria"></select>
+            <select prompt="Selecionar" id="select-categoria"></select>
             <label>Status</label>
-            <select prompt="Selecionar" id="select_status"></select>
+            <select prompt="Selecionar" id="select-status"></select>
             <label>CEP</label>
             <input oninput="pesquisarCEP(event)">
         </div>
@@ -61,7 +59,7 @@
 
 
     <section id="anuncios">
-        <div class="anuncio_imovel" onclick="abrirAnuncio(0)">
+        <div class="anuncio-imovel" onclick="abrirAnuncio(0)">
             <img src="assets/campo.jpg" />
             <h2>Apartamento 2 dormitórios na Bento</h2>
             <p>Avenida Bento Gonçalves, 123, Azenha</p>
@@ -71,7 +69,7 @@
                 comércios e
                 serviços.</p>
         </div>
-        <div class="anuncio_imovel" onclick="abrirAnuncio(1)">
+        <div class="anuncio-imovel" onclick="abrirAnuncio(1)">
             <img src="assets/patio.jpg" />
             <h2>Casa no Campo com Jardim</h2>
             <p>Rua Joaquim Nabuco, 456, Cidade Baixa</p>
@@ -81,7 +79,7 @@
                 comércios e serviços.
             </p>
         </div>
-        <div class="anuncio_imovel" onclick="abrirAnuncio(1)">
+        <div class="anuncio-imovel" onclick="abrirAnuncio(1)">
             <img src="assets/dentro_apartamento.jpg" />
             <h2>Casa no Campo com Jardim</h2>
             <p>Rua Joaquim Nabuco, 456, Cidade Baixa</p>
@@ -91,7 +89,7 @@
                 comércios e serviços.
             </p>
         </div>
-        <div class="anuncio_imovel" onclick="abrirAnuncio(1)">
+        <div class="anuncio-imovel" onclick="abrirAnuncio(1)">
             <img src="assets/apartament.jpg" />
             <h2>Casa no Campo com Jardim</h2>
             <p>Rua Joaquim Nabuco, 456, Cidade Baixa</p>
@@ -100,7 +98,7 @@
                 comércios e serviços.
             </p>
         </div>
-        <div class="anuncio_imovel" onclick="abrirAnuncio(0)">
+        <div class="anuncio-imovel" onclick="abrirAnuncio(0)">
             <img src="assets/campo.jpg" />
             <h2>Apartamento 2 dormitórios na Bento</h2>
             <p>Avenida Bento Gonçalves, 123, Azenha</p>
@@ -110,7 +108,7 @@
                 comércios e
                 serviços.</p>
         </div>
-        <div class="anuncio_imovel" onclick="abrirAnuncio(1)">
+        <div class="anuncio-imovel" onclick="abrirAnuncio(1)">
             <img src="assets/patio.jpg" />
             <h2>Casa no Campo com Jardim</h2>
             <p>Rua Joaquim Nabuco, 456, Cidade Baixa</p>
@@ -119,7 +117,7 @@
                 comércios e serviços.
             </p>
         </div>
-        <div class="anuncio_imovel" onclick="abrirAnuncio(1)">
+        <div class="anuncio-imovel" onclick="abrirAnuncio(1)">
             <img src="assets/dentro_apartamento.jpg" />
             <h2>Casa no Campo com Jardim</h2>
             <p>Rua Joaquim Nabuco, 456, Cidade Baixa</p>
@@ -129,7 +127,7 @@
                 comércios e serviços.
             </p>
         </div>
-        <div class="anuncio_imovel" onclick="abrirAnuncio(1)">
+        <div class="anuncio-imovel" onclick="abrirAnuncio(1)">
             <img src="assets/apartament.jpg" />
             <h2>Casa no Campo com Jardim</h2>
             <p>Rua Joaquim Nabuco, 456, Cidade Baixa</p>
@@ -155,7 +153,7 @@
         <img src="assets/dentro_apartamento.jpg" alt="">
         <img src="assets/patio.jpg" alt="">
     </div>
-    <div id="imovelDestaque"
+    <div id="imovel-destaque"
         style="background-image: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), url(assets/campo.jpg)">
         <h2 class="sobrepor">Casa no Campo com Jardim <span>R$ <p class="preco">300.000,00</p> - R$ <p class="preco">
                     3000</p></span></h2>
@@ -174,7 +172,7 @@
             <h2>Contato</h2>
             <p>Email: contato@imobiliaria.com</p>
         </div>
-        <div id="redesSociais">
+        <div id="redes-sociais">
             <h2>Redes Sociais</h2>
             <p>Siga-nos nas redes sociais para mais informações e novidades!</p>
         </div>
@@ -212,4 +210,5 @@
 <script src="js/base.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 <script src="js/index.js"></script>
+
 </html>

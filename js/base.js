@@ -20,7 +20,7 @@ async function listarImoveis() {
         }
         caminho = caminho.replace(
             caminho.substring(caminho.lastIndexOf("/")),
-            "/php/api/imoveis.php?acao=listarImoveis"
+            "/php/api/imoveis.php?acao=listar_imoveis"
         );
         const resposta = await fetch(caminho)
             .then(res => {
@@ -62,7 +62,7 @@ async function listarImoveisDisponiveis() {
         }
         caminho = caminho.replace(
             caminho.substring(caminho.lastIndexOf("/")),
-            "/php/api/imoveis.php?acao=listarImoveisDisponiveis"
+            "/php/api/imoveis.php?acao=listar_imoveis_disponiveis"
         );
         const resposta = await fetch(caminho)
             // .then(res => console.log(res))
@@ -107,7 +107,7 @@ async function getDadosImovel(id) {
         }
         caminho = caminho.replace(
             caminho.substring(caminho.lastIndexOf("/")),
-            "/php/api/imoveis.php?acao=getDadosImovel&id=" + id
+            "/php/api/imoveis.php?acao=get_dados_imovel&id=" + id
         );
         const resposta = await fetch(caminho, {
             method: "GET",
@@ -215,7 +215,7 @@ async function carregarUser() {
         }
 
         caminho = caminho.replace(caminho.substring(caminho.lastIndexOf("/"))
-            , "/php/api/login.php?acao=getUsuario"
+            , "/php/api/login.php?acao=get_usuario"
         );
         const resposta = await fetch(caminho, {
             method: "GET"

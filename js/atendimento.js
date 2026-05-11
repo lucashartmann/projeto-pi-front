@@ -8,7 +8,7 @@ async function listarAtendimentos() {
 
         caminho = caminho.replace(
             caminho.substring(caminho.lastIndexOf("/")),
-            "/php/api/atendimentos.php?acao=listarAtendimentos"
+            "/php/api/atendimentos.php?acao=listar_atendimentos"
         );
 
         const res = await fetch(caminho);
@@ -42,79 +42,79 @@ async function listarAtendimentos() {
 async function carregarAtendimentos() {
     const dados = await listarAtendimentos();
     console.log(dados);
-    const section = document.getElementById("container_horizontal");
+    const section = document.getElementById("container-horizontal");
    
     if (!section || !dados) return;
 
-    const div_recem_cadastrados = document.getElementById("container_cadastrados");
+    const divRecemCadastrados = document.getElementById("container-cadastrados");
 
-    for (child of div_recem_cadastrados.children) {
+    for (child of divRecemCadastrados.children) {
         child.remove();
     }
 
-    const div_em_andamento = document.getElementById("container_andamento");
+    const divEmAndamento = document.getElementById("container-andamento");
 
-    for (child of div_em_andamento.children) {
+    for (child of divEmAndamento.children) {
             child.remove();
     }   
 
-    const div_pendente = document.getElementById("container_esperando");
+    const divPendente = document.getElementById("container-esperando");
 
-    for (child of div_pendente.children) {
+    for (child of divPendente.children) {
             child.remove();
     }   
 
     const tamanho = dados.length < 5 ? dados.length : 5;
 
     for (let i = 0; i < tamanho; i++) {
-        const div_card = document.createElement("div");
-        div_card.id = "card_cadastrado";
-        div_card.className = "card";
-        div_card.onclick = () => abrirAtendimento(dados[i].id);
+        const divCard = document.createElement("div");
+        divCard.id = "card-cadastrado";
+        divCard.className = "card";
+        divCard.onclick = () => abrirAtendimento(dados[i].id);
         // <p>Idade ${dados[i].cliente.idade}</p>
-        div_card.innerHTML = `
+        divCard.innerHTML = `
             <p style="margin-top: 20px;">Nome: ${dados[i].cliente.nome}</p>
             <p>Telefone: ${dados[i].cliente.telefones}</p>
             <p>Email: ${dados[i].cliente.email}</p>
         `;
-        div_recem_cadastrados.appendChild(div_card);
+        divRecemCadastrados.appendChild(divCard);
     }
 
 
     for (const atendimento of dados) {
         if (atendimento.status === "Em andamento") {
-            const div_em_andamento = document.getElementById("container_em_andamento");
-            if (!div_em_andamento) continue;
-            const div_card = document.createElement("div");
-            div_card.id = "card_cadastrado";
-            div_card.onclick = () => abrirAtendimento(dados[i].id);
-            div_card.innerHTML = `
+            const divEmAndamento = document.getElementById("container-em-andamento");
+            if (!divEmAndamento) continue;
+            const divCard = document.createElement("div");
+            divCard.id = "card-cadastrado";
+            divCard.onclick = () => abrirAtendimento(dados[i].id);
+            divCard.innerHTML = `
                 <h2>Nome ${dados[i].cliente.nome}</h2>
                 <p>Idade ${dados[i].cliente.idade}</p>
                 <p>Telefone ${dados[i].cliente.telefone}</p>
                 <p>Email ${dados[i].cliente.email}</p>
             `;
-            div_em_andamento.appendChild(div_card);
+            divEmAndamento.appendChild(divCard);
         } else if (atendimento.status === "Pendente") {
-            const div_pendente = document.getElementById("container_esperando");
-            if (!div_pendente) continue;
-            const div_card = document.createElement("div");
-            div_card.id = "card_cadastrado";
-            div_card.onclick = () => abrirAtendimento(dados[i].id);
-            div_card.innerHTML = `
+            const divPendente = document.getElementById("container-esperando");
+            if (!divPendente) continue;
+            const divCard = document.createElement("div");
+            divCard.id = "card-cadastrado";
+            divCard.onclick = () => abrirAtendimento(dados[i].id);
+            divCard.innerHTML = `
                 <h2>Nome ${dados[i].cliente.nome}</h2>
                 <p>Idade ${dados[i].cliente.idade}</p>
                 <p>Telefone ${dados[i].cliente.telefone}</p>
                 <p>Email ${dados[i].cliente.email}</p>
             `;
-            div_pendente.appendChild(div_card);
+            divPendente.appendChild(divCard);
         }
     }
 
 }
 
-async function abrirAtendimento(atendimento_id) {
-    sessionStorage.setItem("atendimento_id", atendimento_id);
+async function abrirAtendimento(atendimentoId) {
+    sessionStorage.setItem("atendimentoId", atendimentoId);
     window.location.href = "html/dados-atendimento.html";
 }
 

@@ -7,7 +7,7 @@ require_once __DIR__ . '/../model/captador.php';
 require_once __DIR__ . '/../model/atendimento.php';
 require_once __DIR__ . '/../model/endereco.php';
 require_once __DIR__ . '/../model/anuncio.php';
-require_once __DIR__ . '/../model/venda_aluguel.php';
+require_once __DIR__ . '/../model/vendaAluguel.php';
 require_once __DIR__ . '/../model/condominio.php';
 require_once __DIR__ . '/../model/gerente.php';
 require_once __DIR__ . '/../model/usuario.php';
@@ -466,7 +466,7 @@ class Banco
 
                     # $stmt = $this->db->prepare("
                     #             SELECT * FROM cliente
-                    #             WHERE idUsuario = ?
+                    #             WHERE id_usuario = ?
                     #         ", (idUsuario,))
                     # registros = $stmt->fetch(PDO::FETCH_ASSOC)
             }
@@ -500,7 +500,7 @@ class Banco
 
             foreach ($dados as $registro) {
 
-                $idEndereco = (int) $registro['idEndereco'];
+                $idEndereco = (int) $registro['id_endereco'];
                 $rua = $registro['rua'];
                 $numero = $registro['numero'] !== null ? (int)$registro['numero'] : null;
                 $bairro = $registro['bairro'];
@@ -520,7 +520,7 @@ class Banco
 
             return $lista;
         } catch (Exception $e) {
-            error_log("ERRO! Banco->get_lista_enderecos: "  . $e->getMessage());
+            error_log("ERRO! Banco->getListaEnderecos: "  . $e->getMessage());
             return [];
         }
     }
@@ -547,11 +547,11 @@ class Banco
                 $id = (int)$registro['id_proprietario'];
                 $email = $registro['email'];
                 $nome = $registro['nome'];
-                $cpf = $registro['cpfCnpj'];
+                $cpf = $registro['cpf_cnpj'];
                 $rg = $registro['rg'];
 
-                $data = $registro['dataNascimento']
-                    ? new DateTime($registro['dataNascimento'])
+                $data = $registro['data_nascimento']
+                    ? new DateTime($registro['data_nascimento'])
                     : null;
 
                 $obj = new Proprietario($email, $nome, $cpf);
@@ -565,7 +565,7 @@ class Banco
 
             return $lista;
         } catch (Exception $e) {
-            error_log("ERRO Banco->get_lista_proprietarios: "  . $e->getMessage());
+            error_log("ERRO Banco->getListaProprietarios: "  . $e->getMessage());
             return [];
         }
     }
@@ -588,21 +588,21 @@ class Banco
 
             foreach ($dados as $registro) {
 
-                $id = (int)$registro['idUsuario'];
+                $id = (int)$registro['id_usuario'];
                 $username = $registro['username'];
                 $senha = $registro['senha'];
                 $email = $registro['email'];
                 $nome = $registro['nome'];
-                $cpf = $registro['cpfCnpj'];
+                $cpf = $registro['cpf_cnpj'];
                 $rg = $registro['rg'];
 
                 $endereco = null;
-                if ($registro['idEndereco']) {
-                    $endereco = $this->getEnderecoPorId((int)$registro['idEndereco']);
+                if ($registro['id_endereco']) {
+                    $endereco = $this->getEnderecoPorId((int)$registro['id_endereco']);
                 }
 
-                $data = $registro['dataNascimento']
-                    ? new DateTime($registro['dataNascimento'])
+                $data = $registro['data_nascimento']
+                    ? new DateTime($registro['data_nascimento'])
                     : null;
 
                 $cliente = new Cliente($username, $senha, $email, $nome, $cpf);
@@ -615,8 +615,8 @@ class Banco
                 $stmtTel = $this->db->prepare("
                 SELECT t.numero
                 FROM telefone_usuario tu
-                JOIN telefone t ON t.idTelefone = tu.idTelefone
-                WHERE tu.idUsuario = :id
+                JOIN telefone t ON t.id_telefone = tu.id_telefone
+                WHERE tu.id_usuario = :id
                 ");
                 $stmtTel->execute([':id' => $id]);
 
@@ -656,29 +656,29 @@ class Banco
 
             foreach ($dados as $registro) {
 
-                $id = $registro['idUsuario'];
+                $id = $registro['id_usuario'];
                 $username = $registro['username'];
                 $senha = $registro['senha'];
                 $email = $registro['email'];
                 $nome = $registro['nome'];
-                $cpf = $registro['cpfCnpj'];
+                $cpf = $registro['cpf_cnpj'];
                 $rg = $registro['rg'];
-                $tipo = $registro['tipoUsuario'];
+                $tipo = $registro['tipo_usuario'];
 
                 $endereco = null;
-                if ($registro['idEndereco']) {
-                    $endereco = $this->getEnderecoPorId((int)$registro['idEndereco']);
+                if ($registro['id_endereco']) {
+                    $endereco = $this->getEnderecoPorId((int)$registro['id_endereco']);
                 }
 
-                $data = $registro['dataNascimento']
-                    ? new DateTime($registro['dataNascimento'])
+                $data = $registro['data_nascimento']
+                    ? new DateTime($registro['data_nascimento'])
                     : null;
 
                 $stmtTel = $this->db->prepare("
                 SELECT t.numero
                 FROM telefone_usuario tu
-                JOIN telefone t ON t.idTelefone = tu.idTelefone
-                WHERE tu.idUsuario = :id
+                JOIN telefone t ON t.id_telefone = tu.id_telefone
+                WHERE tu.id_usuario = :id
                 ");
                 $stmtTel->execute([':id' => $id]);
 
@@ -692,7 +692,7 @@ class Banco
                     case 'CORRETOR':
 
                         $stmtC = $this->db->prepare("
-                        SELECT creci FROM corretor WHERE idUsuario = :id
+                        SELECT creci FROM corretor WHERE id_usuario = :id
                     ");
                         $stmtC->execute([':id' => $id]);
                         $creci = $stmtC->fetchColumn();
@@ -710,7 +710,7 @@ class Banco
                     case 'CAPTADOR':
 
                         $stmtC = $this->db->prepare("
-                        SELECT salario FROM captador WHERE idUsuario = :id
+                        SELECT salario FROM captador WHERE id_usuario = :id
                     ");
                         $stmtC->execute([':id' => $id]);
                         $salario = $stmtC->fetchColumn();
@@ -728,7 +728,7 @@ class Banco
                     case 'GERENTE':
 
                         $stmtC = $this->db->prepare("
-                        SELECT salario FROM gerente WHERE idUsuario = :id
+                        SELECT salario FROM gerente WHERE id_usuario = :id
                     ");
                         $stmtC->execute([':id' => $id]);
                         $salario = $stmtC->fetchColumn();
@@ -787,8 +787,8 @@ class Banco
     {
         try {
             $sql = "
-                    INSERT INTO usuario (username, senha, email, nome, cpfCnpj, rg, idEndereco, dataNascimento, tipoUsuario) 
-                    VALUES(:username, :senha, :email, :nome, :cpfCnpj, :rg, :endereco, :dataNascimento, :tipo)
+                    INSERT INTO usuario (username, senha, email, nome, cpf_cnpj, rg, id_endereco, data_nascimento, tipo_usuario) 
+                    VALUES(:username, :senha, :email, :nome, :cpf_cnpj, :rg, :endereco, :data_nascimento, :tipo)
                 ";
             $stmt = $this->db->prepare($sql);
             if ($usuario->getEndereco()) {
@@ -812,10 +812,10 @@ class Banco
                 ':senha' => $senha_hash,
                 ':email' => $usuario->getEmail(),
                 ':nome' => $usuario->getNome(),
-                ':cpfCnpj' => $usuario->getCpfCnpj(),
+                ':cpf_cnpj' => $usuario->getCpfCnpj(),
                 ':rg' => $usuario->getRg(),
                 ':endereco' => $endereco,
-                ':dataNascimento' => $dataNascimento,
+                ':data_nascimento' => $dataNascimento,
                 ':tipo' => $tipo
             ]);
             $id = $this->db->lastInsertId();
@@ -831,13 +831,13 @@ class Banco
                     ]);
                     $idTelefone = $this->db->lastInsertId();
                     $sqlQuery = " 
-                            INSERT INTO telefone_usuario (idUsuario, idTelefone) 
-                            VALUES(:idUsuario, :idTelefone)
+                            INSERT INTO telefone_usuario (id_usuario, id_telefone) 
+                            VALUES(:id_usuario, :id_telefone)
                             ";
                     $stmt = $this->db->prepare($sqlQuery);
                     $stmt->execute([
-                        ':idUsuario' => $id,
-                        ':idTelefone' => $idTelefone
+                        ':id_usuario' => $id,
+                        ':id_telefone' => $idTelefone
                     ]);
                 }
             }
@@ -845,38 +845,38 @@ class Banco
             $tipoUsuarioValor = $tipoUsuarioObj ? $tipoUsuarioObj->value : NULL;
             if ($tipoUsuarioValor == "CORRETOR") {
                 $stmt = $this->db->prepare("
-                                    INSERT INTO corretor (idUsuario, creci)
-                                    VALUES(:idUsuario, :creci)
+                                    INSERT INTO corretor (id_usuario, creci)
+                                    VALUES(:id_usuario, :creci)
                                 ");
                 $stmt->execute([
-                    ':idUsuario' => $id,
+                    ':id_usuario' => $id,
                     ':creci' => $usuario->getCreci()
                 ]);
             } else if ($tipoUsuarioValor == "CAPTADOR") {
                 $stmt = $this->db->prepare("
-                                    INSERT INTO captador (idUsuario, salario)
-                                    VALUES(:idUsuario, :salario)
+                                    INSERT INTO captador (id_usuario, salario)
+                                    VALUES(:id_usuario, :salario)
                                 ");
                 $stmt->execute([
-                    ':idUsuario' => $id,
+                    ':id_usuario' => $id,
                     ':salario' => $usuario->getSalario()
                 ]);
             } else if ($tipoUsuarioValor == "GERENTE") {
                 $stmt = $this->db->prepare("
-                                    INSERT INTO gerente (idUsuario, salario)
-                                    VALUES(:idUsuario, :salario)
+                                    INSERT INTO gerente (id_usuario, salario)
+                                    VALUES(:id_usuario, :salario)
                                 ");
                 $stmt->execute([
-                    ':idUsuario' => $id,
+                    ':id_usuario' => $id,
                     ':salario' => $usuario->getSalario()
                 ]);
             } else if ($tipoUsuarioValor == "CLIENTE") {
                 $stmt = $this->db->prepare("
-                                    INSERT INTO cliente (idUsuario)
-                                    VALUES(:idUsuario)
+                                    INSERT INTO cliente (id_usuario)
+                                    VALUES(:id_usuario)
                                 ");
                 $stmt->execute([
-                    ':idUsuario' => $id,
+                    ':id_usuario' => $id,
 
                 ]);
             }
@@ -927,30 +927,30 @@ class Banco
         try {
 
             $stmt = $this->db->prepare("
-                        SELECT * FROM usuario WHERE cpfCnpj = ? 
+                        SELECT * FROM usuario WHERE cpf_cnpj = ? 
                     ");
             $stmt->execute([$cpf]);
             $registro = $stmt->fetch(PDO::FETCH_ASSOC);
             if (!$registro) {
                 throw new Exception("Não existe usuário com CPF/CNPJ $cpf");
             }
-            $idUsuario = $registro['idUsuario'] !== null ? (int)$registro['idUsuario'] : null;
+            $idUsuario = $registro['id_usuario'] !== null ? (int)$registro['id_usuario'] : null;
             $username = $registro['username'];
             $senha = $registro['senha'];
             $email = $registro['email'];
             $nome = $registro['nome'];
-            $cpfCnpj = $registro['cpfCnpj'];
+            $cpfCnpj = $registro['cpf_cnpj'];
             $rg = $registro['rg'];
-            $endereco = $registro['idEndereco'];
+            $endereco = $registro['id_endereco'];
             if ($endereco) {
-                $endereco = $this->getEnderecoPorId((int)($registro['idEndereco']));
+                $endereco = $this->getEnderecoPorId((int)($registro['id_endereco']));
             }
-            $dataNascimento = $registro['dataNascimento'];
+            $dataNascimento = $registro['data_nascimento'];
             if ($dataNascimento) {
 
                 $dataNascimento = DateTime::createFromFormat('Y-m-d', $dataNascimento);
             }
-            $tipoUsuario = $registro['tipoUsuario'];
+            $tipoUsuario = $registro['tipo_usuario'];
             if ($tipoUsuario) {
                 $tipoUsuario = Tipo::tryFrom($tipoUsuario);
             }
@@ -963,8 +963,8 @@ class Banco
                 $tipoUsuario
             );
             $sqlQuery = " 
-                            SELECT idTelefone FROM telefone_usuario 
-                            WHERE idUsuario = ?
+                            SELECT id_telefone FROM telefone_usuario 
+                            WHERE id_usuario = ?
                             ";
             $stmt = $this->db->prepare($sqlQuery);
             $stmt->execute([$idUsuario]);
@@ -974,7 +974,7 @@ class Banco
                 foreach ($registros as $idTelefone) {
                     $sqlQuery = " 
                             SELECT numero FROM telefone 
-                            WHERE idTelefone = ?
+                            WHERE id_telefone = ?
                                 ";
                     $stmt = $this->db->prepare($sqlQuery);
                     $stmt->execute([$idTelefone]);
@@ -985,7 +985,7 @@ class Banco
                 case (Tipo::CORRETOR):
                     $stmt = $this->db->prepare("
                                     SELECT creci FROM corretor 
-                                    WHERE idUsuario = ?
+                                    WHERE id_usuario = ?
                                 ");
                     $stmt->execute([$idUsuario]);
                     $creci = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -1012,7 +1012,7 @@ class Banco
                     );
                     $stmt = $this->db->prepare("
                                     SELECT salario FROM captador 
-                                    WHERE idUsuario = ?
+                                    WHERE id_usuario = ?
                                 ");
                     $stmt->execute([$idUsuario]);
                     $salario = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -1032,7 +1032,7 @@ class Banco
                     );
                     $stmt = $this->db->prepare("
                                     SELECT salario FROM gerente 
-                                    WHERE idUsuario = ?
+                                    WHERE id_usuario = ?
                                 ");
                     $stmt->execute([$idUsuario]);
                     $salario = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -1054,7 +1054,7 @@ class Banco
 
                     # $stmt = $this->db->prepare("
                     #             SELECT * FROM cliente
-                    #             WHERE idUsuario = ?
+                    #             WHERE id_usuario = ?
                     #         ", (idUsuario,))
                     # registros = $stmt->fetch(PDO::FETCH_ASSOC)
             }
@@ -1077,16 +1077,16 @@ class Banco
             $stmt = $this->db->prepare("
                         SELECT * FROM filtros_imovel 
                 ");
+            $stmt->execute();
             $registros = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            if (empty($registros)) {
-                throw new Exception("Não existe filtros");
-            }
 
             $lista = [];
 
             foreach ($registros as $registro) {
-                $nome = $registro[1];
-                $lista[] = $nome;
+                $nome = $registro['nome'] ?? null;
+                if ($nome !== null) {
+                    $lista[] = $nome;
+                }
             }
             return $lista;
         } catch (Exception $e) {
@@ -1101,16 +1101,16 @@ class Banco
             $stmt = $this->db->prepare("
                         SELECT * FROM filtros_condominio 
                 ");
+            $stmt->execute();
             $registros = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            if (empty($registros)) {
-                throw new Exception("Não existe filtros");
-            }
 
             $lista = [];
 
             foreach ($registros as $registro) {
-                $nome = $registro[1];
-                $lista[] = $nome;
+                $nome = $registro['nome'] ?? null;
+                if ($nome !== null) {
+                    $lista[] = $nome;
+                }
             }
             return $lista;
         } catch (Exception $e) {
@@ -1209,7 +1209,7 @@ class Banco
             if ($corretor_obj) {
                 $corretor_obj = $corretor_obj->getId();
             }
-            $cliente_obj = $atendimento->get_cliente();
+            $cliente_obj = $atendimento->getCliente();
             if ($cliente_obj) {
                 $cliente_obj = $cliente_obj->getId();
             }
@@ -1247,9 +1247,6 @@ class Banco
             $stmt = $this->db->prepare($sql);
             $stmt->execute();
             $registros = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            if (empty($registros)) {
-                throw new Exception("Não há atendimentos cadastrados");
-            }
             $lista = [];
             foreach ($registros as $registro) {
                 $idAtendimento = $registro['id_atendimento'];
@@ -1279,7 +1276,7 @@ class Banco
             }
             return $lista;
         } catch (Exception $e) {
-            $erro = "ERRO! Banco->get_lista_atendimentos: " . $e->getMessage();
+            $erro = "ERRO! Banco->getListaAtendimentos: " . $e->getMessage();
             error_log($erro);
             return [];
         }
@@ -1296,7 +1293,7 @@ class Banco
             $stmt->execute([$idAnuncio]);
             $registro = $stmt->fetch(PDO::FETCH_ASSOC);
             if (!$registro) {
-                throw new Exception("Não existe anúncio com id {idAnuncio}");
+                throw new Exception("Não existe anúncio com id $idAnuncio");
             }
             $anuncioObj = new Anuncio();
             $idAnuncio = $registro['id_anuncio'];
@@ -1330,7 +1327,7 @@ class Banco
     {
         try {
             $sqlQuery = " 
-                    INSERT INTO midia_anuncio (idAnuncio, midia, tipo) 
+                    INSERT INTO midia_anuncio (id_anuncio, midia, tipo) 
                     VALUES(:id_anuncio, :midia, :tipo)
                     ";
             $stmt = $this->db->prepare($sqlQuery);
@@ -1361,9 +1358,6 @@ class Banco
             $imagens = [];
             $videos = [];
             $documentos = [];
-            if (empty($registros)) {
-                throw new Exception("Não há midias_imóveis cadastradas");
-            }
             foreach ($registros as $registro) {
                 $id = $registro['id_anuncio'];
                 $id = $registro['id_midia'];
@@ -1466,8 +1460,8 @@ class Banco
 
             $stmt = $this->db->prepare($sql);
             $stmt->execute([
-                ':cep' => $enderecoObj->get_cep(),
-                ':numero' => $enderecoObj->get_numero()
+                ':cep' => $enderecoObj->getCep(),
+                ':numero' => $enderecoObj->getNumero()
             ]);
 
             $registro = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -1523,15 +1517,15 @@ class Banco
             }
 
 
-            $idUsuario = (int)$registro['idUsuario'];
+            $idUsuario = (int)$registro['id_usuario'];
             $username = $registro['username'];
             $email = $registro['email'];
             $nome = $registro['nome'];
-            $cpfCnpj = $registro['cpfCnpj'];
+            $cpfCnpj = $registro['cpf_cnpj'];
             $rg = $registro['rg'];
-            $idEndereco = $registro['idEndereco'];
-            $dataNascimento = $registro['dataNascimento'];
-            $tipo = $registro['tipoUsuario'];
+            $idEndereco = $registro['id_endereco'];
+            $dataNascimento = $registro['data_nascimento'];
+            $tipo = $registro['tipo_usuario'];
 
 
             $endereco = null;
@@ -1548,7 +1542,7 @@ class Banco
             $telefones = [];
 
             $stmt = $this->db->prepare("
-            SELECT idTelefone FROM telefone_usuario 
+            SELECT id_telefone FROM telefone_usuario 
             WHERE id_usuario = ?
         ");
             $stmt->execute([$idUsuario]);
@@ -1686,13 +1680,13 @@ class Banco
 
             $stmt = $this->db->prepare($sql);
             $stmt->execute([
-                $endereco->get_rua(),
-                $endereco->get_numero(),
-                $endereco->get_bairro(),
-                $endereco->get_cep(),
-                $endereco->get_complemento(),
-                $endereco->get_cidade(),
-                $endereco->get_uf()
+                $endereco->getRua(),
+                $endereco->getNumero(),
+                $endereco->getBairro(),
+                $endereco->getCep(),
+                $endereco->getComplemento(),
+                $endereco->getCidade(),
+                $endereco->getUf()
             ]);
 
             return true;
@@ -1713,7 +1707,7 @@ class Banco
             }
 
             $sql = "
-            INSERT INTO condominio (nome, idEndereco) 
+            INSERT INTO condominio (nome, id_endereco) 
             VALUES (?, ?)
         ";
 
@@ -1747,7 +1741,7 @@ class Banco
 
             $sql = "
             INSERT INTO proprietario 
-            (email, nome, cpfCnpj, rg, idEndereco, dataNascimento) 
+            (email, nome, cpf_cnpj, rg, id_endereco, data_nascimento) 
             VALUES (?, ?, ?, ?, ?, ?)
         ";
 
@@ -1776,7 +1770,7 @@ class Banco
 
                     $stmtRel = $this->db->prepare("
                     INSERT INTO telefone_proprietario 
-                    (id_proprietario, idTelefone) 
+                    (id_proprietario, id_telefone) 
                     VALUES (?, ?)
                 ");
                     $stmtRel->execute([$id_proprietario, $idTelefone]);
@@ -1802,29 +1796,29 @@ class Banco
 
             $stmt = $this->db->prepare($sql);
             $stmt->execute([
-                $anuncio->get_descricao(),
-                $anuncio->get_titulo()
+                $anuncio->getDescricao(),
+                $anuncio->getTitulo()
             ]);
 
             $idAnuncio = $this->db->lastInsertId();
 
             // Imagens
-            if ($anuncio->get_imagens()) {
-                foreach ($anuncio->get_imagens() as $img) {
+            if ($anuncio->getImagens()) {
+                foreach ($anuncio->getImagens() as $img) {
                     $this->cadastrarAnexo($idAnuncio, $img, "Imagem");
                 }
             }
 
             // Vídeos
-            if ($anuncio->get_videos()) {
-                foreach ($anuncio->get_videos() as $video) {
+            if ($anuncio->getVideos()) {
+                foreach ($anuncio->getVideos() as $video) {
                     $this->cadastrarAnexo($idAnuncio, $video, "Video");
                 }
             }
 
             // Documentos
-            if ($anuncio->get_anexos()) {
-                foreach ($anuncio->get_anexos() as $anexo) {
+            if ($anuncio->getAnexos()) {
+                foreach ($anuncio->getAnexos() as $anexo) {
                     $this->cadastrarAnexo($idAnuncio, $anexo, "Documento");
                 }
             }
@@ -1843,7 +1837,7 @@ class Banco
 
             $stmt = $this->db->prepare("
             SELECT * FROM endereco 
-            WHERE idEndereco = ?
+            WHERE id_endereco = ?
         ");
             $stmt->execute([$id]);
 
@@ -1861,7 +1855,7 @@ class Banco
                 $registro['uf']
             );
 
-            $endereco->setId((int)$registro['idEndereco']);
+            $endereco->setId((int)$registro['id_endereco']);
             $endereco->setNumero((int)$registro['numero']);
             $endereco->setComplemento($registro['complemento']);
 
@@ -2100,8 +2094,9 @@ class Banco
                 $id = (int)$dados['id_imovel'];
 
                 $imovel = $this->getImovelPorId($id);
-
-                $lista[] = $imovel;
+                if($imovel){
+                    $lista[] = $imovel;
+                }
             }
 
             return $lista;

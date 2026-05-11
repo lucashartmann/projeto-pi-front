@@ -1,4 +1,4 @@
-<? 
+<?php 
 class Visita {
     private $id;
     private $cliente;

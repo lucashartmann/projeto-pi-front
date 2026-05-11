@@ -8,7 +8,7 @@ require_once __DIR__ . '/captador.php';
 require_once __DIR__ . '/atendimento.php';
 require_once __DIR__ . '/endereco.php';
 require_once __DIR__ . '/anuncio.php';
-require_once __DIR__ . '/venda_aluguel.php';
+require_once __DIR__ . '/vendaAluguel.php';
 require_once __DIR__ . '/condominio.php';
 require_once __DIR__ . '/gerente.php';
 require_once __DIR__ . '/usuario.php';
@@ -381,12 +381,12 @@ class Init
         );
         $imovelUm->setValorAluguel(1500);
         $imovelUm->setValorVenda(300000);
-        $imovel_dois = new Imovel(
+        $imovelDois = new Imovel(
             endereco: $consultaUm,
             status: Status::ALUGUEL,
             categoria: Categoria::APARTAMENTO
         );
-        $imovel_dois->setValorAluguel(2000);
+        $imovelDois->setValorAluguel(2000);
         $imovelTres = new Imovel(
             endereco: $consultaUm,
             status: Status::VENDIDO,
@@ -413,11 +413,11 @@ class Init
 
         if ($cadastroAnuncio2 && !self::$imobiliaria->getImovelPorId(2)) {
                 $anuncioDois->setId($cadastroAnuncio2);
-                $imovel_dois->setAnuncio($anuncioDois);
+                $imovelDois->setAnuncio($anuncioDois);
                 if ($consultarCondominio) {
-                    $imovel_dois->setCondominio($consultarCondominio);
+                    $imovelDois->setCondominio($consultarCondominio);
                 }
-                self::$imobiliaria->getEstoque()->cadastrarImovel($imovel_dois);
+                self::$imobiliaria->getEstoque()->cadastrarImovel($imovelDois);
             }
 
         if ($cadastroAnuncio && !self::$imobiliaria->getImovelPorId(3)) {
@@ -483,11 +483,11 @@ class Init
         $atendimentoDois->setStatus(StatusAtendimento::PENDENTE);
 
         if (empty(self::$imobiliaria->getListaAtendimentos())) {
-            $compradorAtendimento = self::$imobiliaria->getUsuarioPorId(6);
-            $corretorAtendimento = self::$imobiliaria->getUsuarioPorId(3);
+            $compradorAtendimento = self::$imobiliaria->getUsuarioPorCpfCnpj("44444444444");
+            $corretorAtendimento = self::$imobiliaria->getUsuarioPorCpfCnpj("66666666666");
             $imovelAtendimento = self::$imobiliaria->getEstoque()->getListaImoveis()[0];
-            $compradorAtendimentoDois = self::$imobiliaria->getUsuarioPorId(11);
-            $corretorAtendimentoDois = self::$imobiliaria->getUsuarioPorId(2);
+            $compradorAtendimentoDois = self::$imobiliaria->getUsuarioPorCpfCnpj("77777777777");
+            $corretorAtendimentoDois = self::$imobiliaria->getUsuarioPorCpfCnpj("99999999999");
             $imovelAtendimentoDois = self::$imobiliaria->getEstoque()->getListaImoveis()[1];
             $atendimentoUm->setCliente($compradorAtendimento);
             $atendimentoUm->setCorretor($corretorAtendimento);

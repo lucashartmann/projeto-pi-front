@@ -1,8 +1,8 @@
-Inputmask("99999-999").mask("#ta_cep");
+Inputmask("99999-999").mask("#ta-cep");
 
 function salvarMultiplosForms() {
-    const form1 = document.getElementById("container_cadastro");
-    const form2 = document.getElementById("container_anuncio");
+    const form1 = document.getElementById("container-cadastro");
+    const form2 = document.getElementById("container-anuncio");
 
     if (!form1.checkValidity() || !form2.checkValidity()) {
         form1.reportValidity();
@@ -14,8 +14,8 @@ function salvarMultiplosForms() {
 }
 
 function salvar() {
-    var form = document.getElementById("container_cadastro");
-    var form_anuncio = document.getElementById("container_anuncio");
+    var form = document.getElementById("container-cadastro");
+    var formAnuncio = document.getElementById("container-anuncio");
     var data = {};
 
     for (formulario of form) {
@@ -25,7 +25,7 @@ function salvar() {
         });
     };
 
-    for (formulario of form_anuncio) {
+    for (formulario of formAnuncio) {
         var formData = new FormData(formulario);
         formData.forEach(function (value, key) {
             data[key] = value;
@@ -40,7 +40,7 @@ function salvar() {
             }
             caminho = caminho.replace(
                 caminho.substring(caminho.lastIndexOf("/")),
-                "/php/api/imoveis.php?acao=cadastrarImovel"
+                "/php/api/imoveis.php?acao=cadastrar_imovel"
             );
             fetch(caminho, {
                 method: "POST",
@@ -90,7 +90,7 @@ function salvar() {
 }
 
 async function excluir() {
-    if (imovel_id) {
+    if (imovelId) {
         try {
             let caminho = window.location.pathname;
             if (caminho.includes("/html/")) {
@@ -105,7 +105,7 @@ async function excluir() {
                 headers: {
                     "Content-Type": "application/json"
                 },
-                body: JSON.stringify({ ref: imovel_id })
+                body: JSON.stringify({ ref: imovelId })
             })
                 .then(response => {
                     if (response.erro) {
@@ -185,38 +185,38 @@ function openTab(evento, tabId) {
     activateTab(tabId, evento?.currentTarget || evento?.target || null);
 }
 
-async function abrirCadastro(imovel_id) {
-    imovel = await getDadosImovel(imovel_id);
+async function abrirCadastro(imovelId) {
+    imovel = await getDadosImovel(imovelId);
     console.log("Dados do imóvel para cadastro:", imovel);
     if (imovel) {
-        document.getElementById("select_status").value = imovel.status?.toLowerCase()?.trim()?.replace(/\s+/g, "_") || "Selecionar";
-        document.getElementById("select_situacao").value = imovel.situacao?.toLowerCase()?.trim()?.replace(/\s+/g, "_") || "Selecionar";
-        document.getElementById("select_estado").value = imovel.estado?.toLowerCase()?.trim()?.replace(/\s+/g, "_") || "Selecionar";
-        document.getElementById("select_ocupacao").value = imovel.ocupacao?.toLowerCase()?.trim()?.replace(/\s+/g, "_") || "Selecionar";
-        document.getElementById("ta_nome_condominio").value = imovel.condominio?.nome || "";
-        document.getElementById("ta_rua").value = imovel.endereco?.rua || "";
-        document.getElementById("ta_bairro").value = imovel.endereco?.bairro || "";
-        document.getElementById("ta_cidade").value = imovel.endereco?.cidade || "";
-        document.getElementById("ta_estado").value = imovel.endereco?.uf || "";
-        document.getElementById("select_categoria").value = imovel.categoria?.toLowerCase()?.trim()?.replace(/\s+/g, "_") || "Selecionar";
-        // document.getElementById("ta_titulo").value = imovel.anuncio?.titulo || "";
-        // document.getElementById("ta_descricao").value = imovel.anuncio?.descricao || "";
-        document.getElementById("ta_numero").value = imovel.endereco.numero || "";
-        document.getElementById("ta_complemento").value = imovel.complemento || "";
-        document.getElementById("ta_bloco").value = imovel.bloco || "";
-        document.getElementById("ta_andar").value = imovel.andar || "";
-        document.getElementById("ta_salas").value = imovel.quantidade_salas || "";
-        document.getElementById("ta_banheiros").value = imovel.quantidade_banheiros || "";
-        document.getElementById("ta_vagas").value = imovel.quantidade_vagas || "";
-        document.getElementById("ta_varandas").value = imovel.quantidade_varandas || "";
-        document.getElementById("ta_quartos").value = imovel.quantidade_quartos || "";
-        document.getElementById("ta_area_total").value = imovel.area_total || "";
-        document.getElementById("ta_area_privativa").value = imovel.area_privativa || "";
-        document.getElementById("ta_venda").value = imovel.valor_venda || "";
-        document.getElementById("ta_aluguel").value = imovel.valor_aluguel || "";
-        document.getElementById("ta_condominio").value = imovel.valor_condominio || "";
-        document.getElementById("ta_iptu").value = imovel.valor_iptu || "";
-        document.getElementById("ta_ano_construcao").value = imovel.ano_construcao || "";
+        document.getElementById("select-status").value = imovel.status?.toLowerCase()?.trim()?.replace(/\s+/g, "_") || "Selecionar";
+        document.getElementById("select-situacao").value = imovel.situacao?.toLowerCase()?.trim()?.replace(/\s+/g, "_") || "Selecionar";
+        document.getElementById("select-estado").value = imovel.estado?.toLowerCase()?.trim()?.replace(/\s+/g, "_") || "Selecionar";
+        document.getElementById("select-ocupacao").value = imovel.ocupacao?.toLowerCase()?.trim()?.replace(/\s+/g, "_") || "Selecionar";
+        document.getElementById("ta-nome-condominio").value = imovel.condominio?.nome || "";
+        document.getElementById("ta-rua").value = imovel.endereco?.rua || "";
+        document.getElementById("ta-bairro").value = imovel.endereco?.bairro || "";
+        document.getElementById("ta-cidade").value = imovel.endereco?.cidade || "";
+        document.getElementById("ta-estado").value = imovel.endereco?.uf || "";
+        document.getElementById("select-categoria").value = imovel.categoria?.toLowerCase()?.trim()?.replace(/\s+/g, "_") || "Selecionar";
+        // document.getElementById("ta-titulo").value = imovel.anuncio?.titulo || "";
+        // document.getElementById("ta-descricao").value = imovel.anuncio?.descricao || "";
+        document.getElementById("ta-numero").value = imovel.endereco.numero || "";
+        document.getElementById("ta-complemento").value = imovel.complemento || "";
+        document.getElementById("ta-bloco").value = imovel.bloco || "";
+        document.getElementById("ta-andar").value = imovel.andar || "";
+        document.getElementById("ta-salas").value = imovel.quantidade_salas || "";
+        document.getElementById("ta-banheiros").value = imovel.quantidade_banheiros || "";
+        document.getElementById("ta-vagas").value = imovel.quantidade_vagas || "";
+        document.getElementById("ta-varandas").value = imovel.quantidade_varandas || "";
+        document.getElementById("ta-quartos").value = imovel.quantidade_quartos || "";
+        document.getElementById("ta-area-total").value = imovel.area_total || "";
+        document.getElementById("ta-area-privativa").value = imovel.area_privativa || "";
+        document.getElementById("ta-venda").value = imovel.valor_venda || "";
+        document.getElementById("ta-aluguel").value = imovel.valor_aluguel || "";
+        document.getElementById("ta-condominio").value = imovel.valor_condominio || "";
+        document.getElementById("ta-iptu").value = imovel.valor_iptu || "";
+        document.getElementById("ta-ano-construcao").value = imovel.ano_construcao || "";
     } else {
         alert("Imóvel não encontrado!");
         window.location.href = "estoque.html";
@@ -252,7 +252,7 @@ function adicionarAnexo(event) {
     input.click();
 }
 
-let imovel_id = null;
+let imovelId = null;
 
 window.addEventListener("DOMContentLoaded", function () {
     var tabcontent = document.getElementsByClassName("tabcontent");
@@ -276,10 +276,10 @@ window.addEventListener("DOMContentLoaded", function () {
         activateTab(initialTabId, null);
     }
 
-    imovel_id = this.sessionStorage.getItem("imovel_id_estoque") || null;
-    if (imovel_id) {
+    imovelId = this.sessionStorage.getItem("imovel_id_estoque") || null;
+    if (imovelId) {
         sessionStorage.removeItem("imovel_id_estoque");
-        abrirCadastro(imovel_id);
+        abrirCadastro(imovelId);
     }
 });
 
@@ -287,10 +287,10 @@ window.addEventListener("DOMContentLoaded", function () {
 function preencherEndereco(event) {
     let cep = event.target.value;
     if (cep.length > 7) {
-        let input_rua = document.getElementById("ta_rua");
-        let input_bairro = document.getElementById("ta_bairro");
-        let input_cidade = document.getElementById("ta_cidade");
-        let input_estado = document.getElementById("ta_estado");
+        let inputRua = document.getElementById("ta-rua");
+        let inputBairro = document.getElementById("ta-bairro");
+        let inputCidade = document.getElementById("ta-cidade");
+        let inputEstado = document.getElementById("ta-estado");
         fetch(`https://viacep.com.br/ws/${cep}/json`)
             .then(response => response.json())
             .then(dados => {
@@ -298,10 +298,10 @@ function preencherEndereco(event) {
                     alert("CEP não encontrado!");
                     return;
                 }
-                input_rua.value = dados.logradouro || "";
-                input_bairro.value = dados.bairro || "";
-                input_cidade.value = dados.localidade || "";
-                input_estado.value = dados.uf || "";
+                inputRua.value = dados.logradouro || "";
+                inputBairro.value = dados.bairro || "";
+                inputCidade.value = dados.localidade || "";
+                inputEstado.value = dados.uf || "";
             });
     }
 }

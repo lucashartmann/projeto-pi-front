@@ -1,6 +1,6 @@
 async function carregarAnuncios() {
     const dados = await listarImoveis();
-    const section = document.getElementById("container_resultado");
+    const section = document.getElementById("container-resultado");
 
     console.log(dados)
 
@@ -24,21 +24,21 @@ async function carregarAnuncios() {
 }
 
 function mudarOrdem() {
-    const section = document.getElementById("container_resultado");
-    filtro = document.getElementById("select_filtro").value;
+    const section = document.getElementById("container-resultado");
+    filtro = document.getElementById("select-filtro").value;
     botao = document.getElementById("seta");
     botao.textContent = botao.textContent === "⬇️" ? "⬆️" : "⬇️";
     if (!section) return;
 }
 
 function filtrar() {
-    filtro = document.getElementById("select_filtro").value;
-    const section = document.getElementById("container_resultado");
+    filtro = document.getElementById("select-filtro").value;
+    const section = document.getElementById("container-resultado");
     if (!section) return;
 }
 
 function abrirCadastro(imovel_id) {
-    sessionStorage.setItem("imovel_id_estoque", imovel_id);
+    sessionStorage.setItem("imovel-id-estoque", imovel_id);
     window.location.href = "cadastro-imovel.html";
 }
 

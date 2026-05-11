@@ -1,12 +1,18 @@
 function imovelPrincipal(dados) {
-    let imovel, b64;
-    while (true) {
-        var randomIndex = Math.floor(Math.random() * dados.length);
-        imovel = dados[randomIndex];
-        b64 = imovel.anuncio?.imagens?.[0];
-        if (b64) break;
+    if (!Array.isArray(dados) || dados.length === 0) return;
+
+ 
+    const imoveisComImagem = dados.filter(imovel => imovel?.anuncio?.imagens?.[0]);
+    const ramdomNumber = Math.floor(Math.random() * imoveisComImagem.length);
+    const imovel = imoveisComImagem[ramdomNumber] || dados[0];
+    const b64 = imovel?.anuncio?.imagens?.[0] || null;
+
+    if (!b64) {
+        console.warn("Imóvel principal não possui imagem");
+        return;
     }
-    var banner = document.getElementById("imovelDestaque");
+
+    var banner = document.getElementById("imovel-destaque");
     if (!banner) return;
     let preco = document.createElement("span");
     if (imovel.valor_aluguel && imovel.valor_venda) {
@@ -26,7 +32,7 @@ function imovelPrincipal(dados) {
 }
 
 function bannerImoveis(dados) {
-    var div = document.getElementsByClassName("swiper-wrapper")[0];
+    var div = document.querySelector(".swiper-wrapper");
     var banner = document.createElement("div")
     banner.className = "swiper-slide";
     var wrapper = document.querySelector(".swiper-wrapper");
@@ -50,6 +56,10 @@ function bannerImoveis(dados) {
         div.style.backgroundImage = `linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), url(${b64})`
         div.innerHTML = `<h2 class="sobrepor">${imovel.anuncio.titulo}${preco.outerHTML}</h2>`
         html += div.outerHTML;
+    }
+    if (html.length === 0) {
+        console.warn("Nenhum imóvel com imagem encontrado para o banner");
+        return;
     }
     wrapper.innerHTML = html;
 
@@ -95,40 +105,45 @@ async function carregarAnuncios(dados) {
 
     console.log("Carregando anúncios com os dados:", dados);
 
-    select_categoria = document.getElementById("select_categoria");
-    select_status = document.getElementById("select_status");
+    selectCategoria = document.getElementById("select-categoria");
+    selectStatus = document.getElementById("select-status");
 
     const categorias = [...new Set(dados.map(imovel => imovel.categoria))];
     categorias.unshift("");
     const status = [...new Set(dados.map(imovel => imovel.status))];
     status.unshift("");
 
-    select_categoria.innerHTML = categorias.map(cat => `<option value="${cat}">${cat}</option>`).join("");
-    select_status.innerHTML = status.map(st => `<option value="${st}">${st}</option>`).join("");
+    selectCategoria.innerHTML = categorias.map(cat => `<option value="${cat}">${cat}</option>`).join("");
+    selectStatus.innerHTML = status.map(st => `<option value="${st}">${st}</option>`).join("");
 
     let html = "";
     for (const imovel of dados) {
-        const b64 = imovel.anuncio?.imagens?.[0] || "";
-        let preco_venda = document.createElement("span");
-        let preco_aluguel = document.createElement("span");
+        const b64 = imovel.anuncio?.imagens?.[0] || null;
+        if (!b64) continue;
+        let precoVenda = document.createElement("span");
+        let precoAluguel = document.createElement("span");
         if (imovel.valor_aluguel && imovel.valor_venda) {
-            preco_venda.innerHTML = `Venda: R$ <p class="preco">${imovel.valor_venda}</p>`;
-            preco_aluguel.innerHTML = `Aluguel: R$ <p class="preco">${imovel.valor_aluguel}</p>/ mês`;
+            precoVenda.innerHTML = `Venda: R$ <p class="preco">${imovel.valor_venda}</p>`;
+            precoAluguel.innerHTML = `Aluguel: R$ <p class="preco">${imovel.valor_aluguel}</p>/ mês`;
         } else if (imovel.valor_venda) {
-            preco_venda.innerHTML = `Venda: R$ <p class="preco">${imovel.valor_venda}</p>`;
+            precoVenda.innerHTML = `Venda: R$ <p class="preco">${imovel.valor_venda}</p>`;
         } else {
-            preco_aluguel.innerHTML = `Aluguel: R$ <p class="preco">${imovel.valor_aluguel}</p>/ mês`;
+            precoAluguel.innerHTML = `Aluguel: R$ <p class="preco">${imovel.valor_aluguel}</p>/ mês`;
         }
         html += `
-            <div class="anuncio_imovel" onclick="abrirAnuncio(${imovel.id})">
+            <div class="anuncio-imovel" onclick="abrirAnuncio(${imovel.id})">
                 <img src="${b64}" />
                 <h2>${imovel.anuncio.titulo}</h2>
                 <p>${imovel.endereco.rua}, ${imovel.endereco.numero}, ${imovel.endereco.bairro}</p>
-                ${preco_venda.outerHTML}
-                ${preco_aluguel.outerHTML}
+                ${precoVenda.outerHTML}
+                ${precoAluguel.outerHTML}
                 <p class="descricao">${imovel.anuncio.descricao}</p>
             </div>
         `;
+    }
+    if (html.length === 0) {
+        console.warn("Nenhum imóvel com imagem encontrado para os anúncios");
+        return;
     }
     section.innerHTML = html;
 
@@ -137,8 +152,8 @@ async function carregarAnuncios(dados) {
 
 function pesquisarCEP(event) {
     const termo = event.target.value.replace(/\D/g, '');
-    const anuncios = document.querySelectorAll(".anuncio_imovel");
-    if (dados_imoveis == null) return;
+    const anuncios = document.querySelectorAll(".anuncio-imovel");
+    if (dadosImoveis == null) return;
     console.log(termo);
     const gallery = document.getElementById("gallery");
     gallery.style.display = "none";
@@ -148,9 +163,9 @@ function pesquisarCEP(event) {
     gallery3.style.display = "none";
     const swiper = document.querySelector(".swiper");
     swiper.style.display = "none";
-    const imovelDestaque = document.getElementById("imovelDestaque");
+    const imovelDestaque = document.getElementById("imovel-destaque");
     imovelDestaque.style.display = "none";
-    const imovel = dados_imoveis.find(imovel => imovel.endereco.cep == termo);
+    const imovel = dadosImoveis.find(imovel => imovel.endereco.cep == termo);
     for (const anuncio of anuncios) {
         anuncio.style.display = "none";
     }
@@ -163,14 +178,14 @@ function pesquisarCEP(event) {
                 anuncio.style.display = "block";
                 const swiper = document.querySelector(".swiper");
                 swiper.style.display = "block";
-                const imovelDestaque = document.getElementById("imovelDestaque");
+                const imovelDestaque = document.getElementById("imovel-destaque");
                 imovelDestaque.style.display = "block"
             }
             else {
                 anuncio.style.display = "none";
                 const swiper = document.querySelector(".swiper");
                 swiper.style.display = "none";
-                const imovelDestaque = document.getElementById("imovelDestaque");
+                const imovelDestaque = document.getElementById("imovel-destaque");
                 imovelDestaque.style.display = "none";
             }
         });
@@ -195,9 +210,9 @@ async function abrirAnuncio(imovel_id) {
 }
 
 function pesquisar() {
-    const termo = document.getElementById("input_pesquisa").value.toLowerCase();
+    const termo = document.getElementById("input-pesquisa").value.toLowerCase();
 
-    const anuncios = document.querySelectorAll(".anuncio_imovel");
+    const anuncios = document.querySelectorAll(".anuncio-imovel");
     const gallery = document.getElementById("gallery");
     gallery.style.display = "none";
     const gallery2 = document.getElementById("gallery2");
@@ -206,7 +221,7 @@ function pesquisar() {
     gallery3.style.display = "none";
     const swiper = document.querySelector(".swiper");
     swiper.style.display = "none";
-    const imovelDestaque = document.getElementById("imovelDestaque");
+    const imovelDestaque = document.getElementById("imovel-destaque");
     imovelDestaque.style.display = "none";
     anuncios.forEach(anuncio => {
         const titulo = anuncio.querySelector("h2").textContent.toLowerCase();
@@ -227,11 +242,11 @@ function pesquisar() {
     }
 }
 
-let dados_imoveis = null;
+let dadosImoveis = null;
 
 window.addEventListener("DOMContentLoaded", async () => {
     const dados = await listarImoveisDisponiveis() || NaN;
-    dados_imoveis = dados;
+    dadosImoveis = dados;
     if (dados) {
         carregarAnuncios(dados);
         imovelPrincipal(dados);
