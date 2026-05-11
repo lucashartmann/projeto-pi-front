@@ -20,155 +20,155 @@ class Usuario
     public $senha;
     public $email;
     public $nome;
-    public $cpf_cnpj;
+    public $cpfCnpj;
     public $rg;
     public $telefones;
     public $endereco;
-    public $data_nascimento;
+    public $dataNascimento;
     public $tipo;
-    public $data_cadastro;
-    public $data_modificacao;
+    public $dataCadastro;
+    public $dataModificacao;
 
-    public function __construct($username, $senha, $email, $nome, $cpf_cnpj, $tipo)
+    public function __construct($username, $senha, $email, $nome, $cpfCnpj, $tipo)
     {
         $this->id = NULL;
         $this->username = $username;
         $this->senha = $senha;
         $this->email = $email;
         $this->nome = $nome;
-        $this->cpf_cnpj = $cpf_cnpj;
+        $this->cpfCnpj = $cpfCnpj;
         $this->rg = NULL;
         $this->telefones = [];
         $this->endereco = NULL;
-        $this->data_nascimento = NULL;
+        $this->dataNascimento = NULL;
         $this->tipo = $tipo;
-        $this->data_cadastro = NULL;
-        $this->data_modificacao = NULL;
+        $this->dataCadastro = NULL;
+        $this->dataModificacao = NULL;
     }
 
-    public function set_data_cadastro($data)
+    public function setDataCadastro($data)
     {
-        $this->data_cadastro = $data;
+        $this->dataCadastro = $data;
     }
 
-    public function get_data_cadastro()
+    public function getDataCadastro()
     {
-        return $this->data_cadastro;
+        return $this->dataCadastro;
     }
 
-    public function set_data_modificacao($data)
+    public function setDataModificacao($data)
     {
-        $this->data_modificacao = $data;
+        $this->dataModificacao = $data;
     }
 
-    public function get_data_modificacao()
+    public function getDataModificacao()
     {
-        return $this->data_modificacao;
+        return $this->dataModificacao;
     }
 
-    public function get_id()
+    public function getId()
     {
         return $this->id;
     }
 
-    public function set_id($value)
+    public function setId($value)
     {
         $this->id = $value;
     }
 
-    public function get_username()
+    public function getUsername()
     {
         return $this->username;
     }
 
-    public function set_username($value)
+    public function setUsername($value)
     {
         $this->username = $value;
     }
 
-    public function get_senha()
+    public function getSenha()
     {
         return $this->senha;
     }
-    public function set_senha($value)
+    public function setSenha($value)
     {
         $this->senha = $value;
     }
-    public function get_email()
+    public function getEmail()
     {
         return $this->email;
     }
-    public function set_email($value)
+    public function setEmail($value)
     {
         $this->email = $value;
     }
 
-    public function get_nome()
+    public function getNome()
     {
         return $this->nome;
     }
 
-    public function set_nome($value)
+    public function setNome($value)
     {
         $this->nome = $value;
     }
 
-    public function get_cpf_cnpj()
+    public function getCpfCnpj()
     {
-        return $this->cpf_cnpj;
+        return $this->cpfCnpj;
     }
 
-    public function set_cpf_cnpj($value)
+    public function setCpfCnpj($value)
     {
-        $this->cpf_cnpj = $value;
+        $this->cpfCnpj = $value;
     }
 
-    public function get_rg()
+    public function getRg()
     {
         return $this->rg;
     }
 
-    public function set_rg($value)
+    public function setRg($value)
     {
         $this->rg = $value;
     }
 
-    public function get_telefones()
+    public function getTelefones()
     {
         return $this->telefones;
     }
 
-    public function set_telefones($value)
+    public function setTelefones($value)
     {
         $this->telefones = $value;
     }
 
-    public function get_endereco()
+    public function getEndereco()
     {
         return $this->endereco;
     }
 
-    public function set_endereco($value)
+    public function setEndereco($value)
     {
         $this->endereco = $value;
     }
 
-    public function get_data_nascimento()
+    public function getDataNascimento()
     {
-        return $this->data_nascimento;
+        return $this->dataNascimento;
     }
 
-    public function set_data_nascimento($value)
+    public function setDataNascimento($value)
     {
-        $this->data_nascimento = $value;
+        $this->dataNascimento = $value;
     }
 
-    public function get_tipo()
+    public function getTipo()
     {
         return $this->tipo;
     }
 
-    public function set_tipo($value)
+    public function setTipo($value)
     {
         $this->tipo = $value;
     }

@@ -25,15 +25,15 @@ $acao = $_GET['acao'] ?? '';
 switch ($acao) {
 
     case "login":
-        verificar_login();
+        verificarLogin();
         break;
 
     case "deslogar":
         deslogar();
         break;
 
-    case "get_usuario":
-        carregar_usuario();
+    case "getUsuario":
+        carregarUsuario();
         break;
 
     default:
@@ -44,39 +44,39 @@ switch ($acao) {
 function deslogar()
 {
     try {
-    session_start();
-    session_destroy();
+        session_start();
+        session_destroy();
 
-    echo json_encode(["status" => "ok"]);
+        echo json_encode(["status" => "ok"]);
     } catch (Exception $e) {
         echo json_encode(["erro" => "Erro ao deslogar: " . $e->getMessage()]);
     }
 }
 
-function carregar_usuario()
+function carregarUsuario()
 {
     try {
-    session_start();
-    if (isset($_SESSION['usuario_id'])) {
-        echo json_encode([
-            "status" => "ok",
-            "tipo" => $_SESSION['tipo']
-        ]);
-    } else {
-        echo json_encode([
-            "status" => "erro",
-            "mensagem" => "Usuário não logado"
-        ]);
-    }
+        session_start();
+        if (isset($_SESSION['usuario_id'])) {
+            echo json_encode([
+                "status" => "ok",
+                "tipo" => $_SESSION['tipo']
+            ]);
+        } else {
+            echo json_encode([
+                "status" => "erro",
+                "mensagem" => "Usuário não logado"
+            ]);
+        }
     } catch (Exception $e) {
         echo json_encode(["erro" => "Erro ao carregar usuário: " . $e->getMessage()]);
     }
 }
 
 
-function verificar_login()
+function verificarLogin()
 {
-    
+
 
     try {
         session_start();
@@ -90,15 +90,15 @@ function verificar_login()
             return;
         }
 
-        $consulta = Init::getInstance()->verificar_usuario($usuario, $senha);
+        $consulta = Init::getInstance()->verificarUsuario($usuario, $senha);
 
         if ($consulta) {
-            $_SESSION['usuario_id'] = $consulta->get_id();
-            $_SESSION['tipo'] = $consulta->get_tipo() ?? NULL;
+            $_SESSION['usuario_id'] = $consulta->getId();
+            $_SESSION['tipo'] = $consulta->getTipo() ?? NULL;
             echo (json_encode(["status" => "ok", "usuario" => [
-                "id" => $consulta->get_id(),
-                "nome" => $consulta->get_nome(),
-                "tipo" => $consulta->get_tipo(),
+                "id" => $consulta->getId(),
+                "nome" => $consulta->getNome(),
+                "tipo" => $consulta->getTipo(),
             ]]));
         } else {
             echo (json_encode(["status" => "erro", "mensagem" => "Usuário ou senha incorretos"]));

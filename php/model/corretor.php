@@ -8,18 +8,18 @@ class Corretor extends Usuario
 {
     public $creci;
 
-    public function __construct($username, $senha, $email, $nome, $cpf_cnpj, $creci)
+    public function __construct($username, $senha, $email, $nome, $cpfCnpj, $creci)
     {
-        parent::__construct($username, $senha, $email, $nome, $cpf_cnpj, Tipo::CORRETOR);
+        parent::__construct($username, $senha, $email, $nome, $cpfCnpj, Tipo::CORRETOR);
         $this->creci = $creci;
     }
 
-    public function get_creci()
+    public function getCreci()
     {
         return $this->creci;
     }
 
-    public function set_creci($value)
+    public function setCreci($value)
     {
         $this->creci = $value;
     }

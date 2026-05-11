@@ -1,6 +1,6 @@
 <?php
 
-enum Status_Atendimento: string
+enum StatusAtendimento: string
 {
     case EM_ANDAMENTO = 'Em Andamento';
     case PENDENTE = 'Pendente';
@@ -24,52 +24,52 @@ class Atendimento
         $this->status = NULL;
     }
 
-    public function set_id($id)
+    public function setId($id)
     {
         $this->id = $id;
     }
 
-    public function get_id()
+    public function getId()
     {
         return $this->id;
     }
 
-    public function get_corretor()
+    public function getCorretor()
     {
         return $this->corretor;
     }
 
-    public function set_corretor($value)
+    public function setCorretor($value)
     {
         $this->corretor = $value;
     }
 
-    public function get_cliente()
+    public function getCliente()
     {
         return $this->cliente;
     }
 
-    public function set_cliente($value)
+    public function setCliente($value)
     {
         $this->cliente = $value;
     }
 
-    public function get_imovel()
+    public function getImovel()
     {
         return $this->imovel;
     }
 
-    public function set_imovel($value)
+    public function setImovel($value)
     {
         $this->imovel = $value;
     }
 
-    public function get_status()
+    public function getStatus()
     {
         return $this->status;
     }
 
-    public function set_status($value)
+    public function setStatus($value)
     {
         $this->status = $value;
     }

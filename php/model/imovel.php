@@ -141,31 +141,31 @@ enum Status: string
 class Imovel
 {
     public $id;
-    public $valor_venda;
-    public $valor_aluguel;
-    public $quant_quartos;
-    public $quant_salas;
-    public $quant_vagas;
-    public $quant_banheiros;
-    public $quant_varandas;
+    public $valorVenda;
+    public $valorAluguel;
+    public $quantQuartos;
+    public $quantSalas;
+    public $quantVagas;
+    public $quantBanheiros;
+    public $quantVarandas;
     public $categoria;
     public $endereco;
     public $status;
     public $iptu;
-    public $valor_condominio;
+    public $valorCondominio;
     public $andar;
     public $estado;
     public $bloco;
-    public $ano_construcao;
-    public $area_total;
-    public $area_privativa;
+    public $anoConstrucao;
+    public $areaTotal;
+    public $areaPrivativa;
     public $situacao;
     public $ocupacao;
     public $proprietarios;
     public $corretor;
     public $captador;
-    public $data_cadastro;
-    public $data_modificacao;
+    public $dataCadastro;
+    public $dataModificacao;
     public $anuncio;
     public $condominio;
     public $filtros;
@@ -174,333 +174,333 @@ class Imovel
     public function __construct($endereco, $status, $categoria)
     {
         $this->id = NULL;
-        $this->valor_venda = 0;
-        $this->valor_aluguel = 0;
-        $this->quant_quartos = 0;
-        $this->quant_salas = 0;
-        $this->quant_vagas = 0;
-        $this->quant_banheiros = 0;
-        $this->quant_varandas = 0;
+        $this->valorVenda = 0;
+        $this->valorAluguel = 0;
+        $this->quantQuartos = 0;
+        $this->quantSalas = 0;
+        $this->quantVagas = 0;
+        $this->quantBanheiros = 0;
+        $this->quantVarandas = 0;
         $this->categoria = $categoria;
         $this->endereco = $endereco;
         $this->status = $status;
         $this->iptu = 0;
-        $this->valor_condominio = 0;
+        $this->valorCondominio = 0;
         $this->andar = 0;
         $this->estado = NULL;
         $this->bloco = NULL;
-        $this->ano_construcao = NULL;
-        $this->area_total = 0;
-        $this->area_privativa = 0;
+        $this->anoConstrucao = NULL;
+        $this->areaTotal = 0;
+        $this->areaPrivativa = 0;
         $this->situacao = NULL;
         $this->ocupacao = NULL;
         $this->proprietarios = [];
         $this->corretor = NULL;
         $this->captador = NULL;
-        $this->data_cadastro = NULL;
-        $this->data_modificacao = NULL;
+        $this->dataCadastro = NULL;
+        $this->dataModificacao = NULL;
         $this->anuncio = NULL;
         $this->condominio = NULL;
         $this->filtros = [];
         $this->complemento = NULL;
     }
 
-    public function get_complemento()
+    public function getComplemento()
     {
         return $this->complemento;
     }
 
-    public function set_complemento($complemento)
+    public function setComplemento($complemento)
     {
         $this->complemento = $complemento;
     }
 
-    public function set_filtros($filtros)
+    public function setFiltros($filtros)
     {
         $this->filtros = $filtros;
     }
 
-    public function get_filtros()
+    public function getFiltros()
     {
         return $this->filtros;
     }
 
-    public function get_condominio()
+    public function getCondominio()
     {
         return $this->condominio;
     }
 
-    public function set_condominio($nome)
+    public function setCondominio($nome)
     {
         $this->condominio = $nome;
     }
 
-    public function set_data_cadastro($data)
+    public function setDataCadastro($data)
     {
-        $this->data_cadastro = $data;
+        $this->dataCadastro = $data;
     }
 
-    public function get_data_cadastro()
+    public function getDataCadastro()
     {
-        return $this->data_cadastro;
+        return $this->dataCadastro;
     }
 
-    public function set_data_modificacao($data)
+    public function setDataModificacao($data)
     {
-        $this->data_modificacao = $data;
+        $this->dataModificacao = $data;
     }
 
-    public function get_data_modificacao()
+    public function getDataModificacao()
     {
-        return $this->data_modificacao;
+        return $this->dataModificacao;
     }
 
-    public function get_id()
+    public function getId()
     {
         return $this->id;
     }
 
-    public function set_id($value)
+    public function setId($value)
     {
         $this->id = $value;
     }
 
-    public function get_valor_venda()
+    public function getValorVenda()
     {
-        return $this->valor_venda;
+        return $this->valorVenda;
     }
 
-    public function set_valor_venda($value)
+    public function setValorVenda($value)
     {
-        $this->valor_venda = $value;
+        $this->valorVenda = $value;
     }
 
-    public function get_valor_aluguel()
+    public function getValorAluguel()
     {
-        return $this->valor_aluguel;
+        return $this->valorAluguel;
     }
 
-    public function set_valor_aluguel($value)
+    public function setValorAluguel($value)
     {
-        $this->valor_aluguel = $value;
+        $this->valorAluguel = $value;
     }
 
-    public function get_quant_quartos()
+    public function getQuantQuartos()
     {
-        return $this->quant_quartos;
+        return $this->quantQuartos;
     }
 
-    public function set_quant_quartos($value)
+    public function setQuantQuartos($value)
     {
-        $this->quant_quartos = $value;
+        $this->quantQuartos = $value;
     }
 
-    public function get_quant_salas()
+    public function getQuantSalas()
     {
-        return $this->quant_salas;
+        return $this->quantSalas;
     }
 
-    public function set_quant_salas($value)
+    public function setQuantSalas($value)
     {
-        $this->quant_salas = $value;
+        $this->quantSalas = $value;
     }
 
-    public function get_quant_vagas()
+    public function getQuantVagas()
     {
-        return $this->quant_vagas;
+        return $this->quantVagas;
     }
 
-    public function set_quant_vagas($value)
+    public function setQuantVagas($value)
     {
-        $this->quant_vagas = $value;
+        $this->quantVagas = $value;
     }
 
-    public function get_quant_banheiros()
+    public function getQuantBanheiros()
     {
-        return $this->quant_banheiros;
+        return $this->quantBanheiros;
     }
 
-    public function set_quant_banheiros($value)
+    public function setQuantBanheiros($value)
     {
-        $this->quant_banheiros = $value;
+        $this->quantBanheiros = $value;
     }
 
-    public function get_quant_varandas()
+    public function getQuantVarandas()
     {
-        return $this->quant_varandas;
+        return $this->quantVarandas;
     }
 
-    public function set_quant_varandas($value)
+    public function setQuantVarandas($value)
     {
-        $this->quant_varandas = $value;
+        $this->quantVarandas = $value;
     }
 
-    public function get_categoria()
+    public function getCategoria()
     {
         return $this->categoria;
     }
 
-    public function set_categoria($value)
+    public function setCategoria($value)
     {
         $this->categoria = $value;
     }
 
-    public function get_endereco()
+    public function getEndereco()
     {
         return $this->endereco;
     }
 
-    public function set_endereco($value)
+    public function setEndereco($value)
     {
         $this->endereco = $value;
     }
 
-    public function get_status()
+    public function getStatus()
     {
         return $this->status;
     }
 
-    public function set_status($value)
+    public function setStatus($value)
     {
         $this->status = $value;
     }
 
-    public function get_iptu()
+    public function getIptu()
     {
         return $this->iptu;
     }
 
-    public function set_iptu($value)
+    public function setIptu($value)
     {
         $this->iptu = $value;
     }
 
-    public function get_valor_condominio()
+    public function getValorCondominio()
     {
-        return $this->valor_condominio;
+        return $this->valorCondominio;
     }
 
-    public function set_valor_condominio($value)
+    public function setValorCondominio($value)
     {
-        $this->valor_condominio = $value;
+        $this->valorCondominio = $value;
     }
 
-    public function get_andar()
+    public function getAndar()
     {
         return $this->andar;
     }
 
-    public function set_andar($value)
+    public function setAndar($value)
     {
         $this->andar = $value;
     }
 
-    public function get_estado()
+    public function getEstado()
     {
         return $this->estado;
     }
 
-    public function set_estado($value)
+    public function setEstado($value)
     {
         $this->estado = $value;
     }
 
-    public function get_bloco()
+    public function getBloco()
     {
         return $this->bloco;
     }
 
-    public function set_bloco($value)
+    public function setBloco($value)
     {
         $this->bloco = $value;
     }
 
-    public function get_ano_construcao()
+    public function getAnoConstrucao()
     {
-        return $this->ano_construcao;
+        return $this->anoConstrucao;
     }
 
-    public function set_ano_construcao($value)
+    public function setAnoConstrucao($value)
     {
-        $this->ano_construcao = $value;
+        $this->anoConstrucao = $value;
     }
 
-    public function get_area_total()
+    public function getAreaTotal()
     {
-        return $this->area_total;
+        return $this->areaTotal;
     }
 
-    public function set_area_total($value)
+    public function setAreaTotal($value)
     {
-        $this->area_total = $value;
+        $this->areaTotal = $value;
     }
 
-    public function get_area_privativa()
+    public function getAreaPrivativa()
     {
-        return $this->area_privativa;
+        return $this->areaPrivativa;
     }
 
-    public function set_area_privativa($value)
+    public function setAreaPrivativa($value)
     {
-        $this->area_privativa = $value;
+        $this->areaPrivativa = $value;
     }
 
-    public function get_situacao()
+    public function getSituacao()
     {
         return $this->situacao;
     }
 
-    public function set_situacao($value)
+    public function setSituacao($value)
     {
         $this->situacao = $value;
     }
 
-    public function get_ocupacao()
+    public function getOcupacao()
     {
         return $this->ocupacao;
     }
 
-    public function set_ocupacao($value)
+    public function setOcupacao($value)
     {
         $this->ocupacao = $value;
     }
 
-    public function get_proprietarios()
+    public function getProprietarios()
     {
         return $this->proprietarios;
     }
 
-    public function set_proprietarios($value)
+    public function setProprietarios($value)
     {
         $this->proprietarios = $value;
     }
 
-    public function get_corretor()
+    public function getCorretor()
     {
         return $this->corretor;
     }
 
-    public function set_corretor($value)
+    public function setCorretor($value)
     {
         $this->corretor = $value;
     }
 
-    public function get_captador()
+    public function getCaptador()
     {
         return $this->captador;
     }
 
-    public function set_captador($value)
+    public function setCaptador($value)
     {
         $this->captador = $value;
     }
 
-    public function set_anuncio($value)
+    public function setAnuncio($value)
     {
         $this->anuncio = $value;
     }
 
-    public function get_anuncio()
+    public function getAnuncio()
     {
         return $this->anuncio;
     }

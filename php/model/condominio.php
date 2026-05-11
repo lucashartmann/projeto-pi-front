@@ -21,38 +21,38 @@ class Condominio
         $this->__construct($nome, $endereco);
     }
 
-    public function set_filtros($filtros)
+    public function setFiltros($filtros)
     {
         $this->filtros = $filtros;
     }
 
-    public function get_filtros()
+    public function getFiltros()
     {
         return $this->filtros;
     }
 
-    public function get_id()
+    public function getId()
     {
         return $this->id;
     }
 
-    public function set_id($id)
+    public function setId($id)
     {
         $this->id = $id;
     }
-    public function get_endereco()
+    public function getEndereco()
     {
         return $this->endereco;
     }
-    public function set_endereco($endereco)
+    public function setEndereco($endereco)
     {
         $this->endereco = $endereco;
     }
-    public function get_nome()
+    public function getNome()
     {
         return $this->nome;
     }
-    public function set_nome($nome)
+    public function setNome($nome)
     {
         $this->nome = $nome;
     }

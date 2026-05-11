@@ -19,61 +19,61 @@ class Anuncio
         $this->anexos = [];
     }
 
-    public function set_anexos($value)
+    public function setAnexos($value)
     {
         $this->anexos = $value;
     }
 
-    public function set_videos($value)
+    public function setVideos($value)
     {
         $this->videos = $value;
     }
 
-    public function set_id($id)
+    public function setId($id)
     {
         $this->id = $id;
     }
 
-    public function set_descricao($descricao)
+    public function setDescricao($descricao)
     {
         $this->descricao = $descricao;
     }
 
-    public function set_imagens($value)
+    public function setImagens($value)
     {
         $this->imagens = $value;
     }
 
-    public function set_titulo($titulo)
+    public function setTitulo($titulo)
     {
         $this->titulo = $titulo;
     }
-    public function get_titulo()
+    public function getTitulo()
     {
         return $this->titulo;
     }
 
-    public function get_descricao()
+    public function getDescricao()
     {
         return $this->descricao;
     }
 
-    public function get_id()
+    public function getId()
     {
         return $this->id;
     }
 
-    public function get_imagens()
+    public function getImagens()
     {
         return $this->imagens;
     }
 
-    public function get_videos()
+    public function getVideos()
     {
         return $this->videos;
     }
 
-    public function get_anexos()
+    public function getAnexos()
     {
         return $this->anexos;
     }

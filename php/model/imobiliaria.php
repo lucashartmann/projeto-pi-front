@@ -8,212 +8,219 @@ class Imobiliaria
 {
     public $nome;
     public $cnpj;
-    public $banco_dados;
+    public $bancoDados;
     public $estoque;
-    public $quantidade_funcionarios;
-    public $quantidade_clientes;
-    public $quantidade_fornecedores;
+    public $quantidadeFuncionarios;
+    public $quantidadeClientes;
+    public $quantidadeFornecedores;
     public $faturamento;
    
 
     public function __construct($nome, $cnpj)
     {
-        $this->banco_dados = new Banco();
+        $this->bancoDados = new Banco();
         $this->nome = $nome;
         $this->cnpj = $cnpj;
         $this->estoque = new Estoque();
-        $this->quantidade_funcionarios = 0;
-        $this->quantidade_clientes = 0;
-        $this->quantidade_fornecedores = 0;
+        $this->quantidadeFuncionarios = 0;
+        $this->quantidadeClientes = 0;
+        $this->quantidadeFornecedores = 0;
         $this->faturamento = 0;
     }
 
-    public function get_nome()
+    public function getNome()
     {
         return $this->nome;
     }
 
-    public function set_nome($value)
+    public function setNome($value)
     {
         $this->nome = $value;
     }
 
-    public function get_cnpj()
+    public function getCnpj()
     {
         return $this->cnpj;
     }
 
-    public function set_cnpj($value)
+    public function setCnpj($value)
     {
         $this->cnpj = $value;
     }
 
-    public function get_estoque()
+    public function getEstoque()
     {
         return $this->estoque;
     }
 
-    public function set_estoque($value)
+    public function setEstoque($value)
     {
         $this->estoque = $value;
     }
 
     public function atualizar($campo_desejado, $valor, $tabela)
     {
-        return $this->banco_dados->atualizar($campo_desejado, $valor, $tabela);
+        return $this->bancoDados->atualizar($campo_desejado, $valor, $tabela);
     }
 
-    public function verificar_usuario($username, $senha)
+    public function verificarUsuario($username, $senha)
     {
-        return $this->banco_dados->verificar_usuario(
+        return $this->bancoDados->verificarUsuario(
             $username,
             $senha
         );
     }
 
-    public function get_usuario_por_id($id)
+    public function getUsuarioPorId($id)
     {
-        return $this->banco_dados->get_usuario_por_id($id);
+        return $this->bancoDados->getUsuarioPorId($id);
     }
 
-    public function cadastrar_endereco($endereco)
+    public function cadastrarEndereco($endereco)
     {
-        return $this->banco_dados->cadastrar_endereco($endereco);
+        return $this->bancoDados->cadastrarEndereco($endereco);
     }
 
-    public function cadastrar_atendimento($atendimento)
+    public function cadastrarAtendimento($atendimento)
     {
-        return $this->banco_dados->cadastrar_atendimento($atendimento);
+        return $this->bancoDados->cadastrarAtendimento($atendimento);
     }
 
-    public function get_lista_atendimentos()
+    public function getListaAtendimentos()
     {
-        return $this->banco_dados->get_lista_atendimentos();
+        return $this->bancoDados->getListaAtendimentos();
     }
 
-    public function cadastrar_usuario($usuario)
+    public function cadastrarUsuario($usuario)
     {
-        return $this->banco_dados->cadastrar_usuario($usuario);
+        return $this->bancoDados->cadastrarUsuario($usuario);
     }
 
-    public function cadastrar_proprietario($proprietario)
+    public function cadastrarProprietario($proprietario)
     {
-        return $this->banco_dados->cadastrar_proprietario($proprietario);
+        return $this->bancoDados->cadastrarProprietario($proprietario);
     }
 
-    public function get_lista_usuarios()
+    public function getListaUsuarios()
     {
-        return $this->banco_dados->get_lista_usuarios();
+        return $this->bancoDados->getListaUsuarios();
     }
 
-    public function get_usuario_por_cpf_cnpj($cpf)
+    public function getUsuarioPorCpfCnpj($cpf)
     {
-        return $this->banco_dados->get_usuario_por_cpf_cnpj($cpf);
+        return $this->bancoDados->getUsuarioPorCpfCnpj($cpf);
     }
 
-    public function get_proprietario_por_cpf_cnpj($cpf)
+    public function getProprietarioPorCpfCnpj($cpf)
     {
-        return $this->banco_dados->get_proprietario_por_cpf_cnpj($cpf);
+        return $this->bancoDados->getProprietarioPorCpfCnpj($cpf);
     }
 
-    public function get_lista_clientes()
+    public function getListaClientes()
     {
-        return $this->banco_dados->get_lista_clientes();
+        return $this->bancoDados->getListaClientes();
     }
 
-    public function cadastrar_lista_filtros($lista_filtros, $tabela)
+    public function cadastrarListaFiltros($lista_filtros, $tabela)
     {
-        return $this->banco_dados->cadastrar_lista_filtros($lista_filtros, $tabela);
+        return $this->bancoDados->cadastrarListaFiltros($lista_filtros, $tabela);
     }
 
-    public function verificar_endereco($endereco)
+    public function verificarEndereco($endereco)
     {
-        return $this->banco_dados->verificar_endereco($endereco);
+        return $this->bancoDados->verificarEndereco($endereco);
     }
 
-    public function get_condominio_por_id_endereco($id)
+    public function getCondominioPorIdEndereco($id)
     {
-        return $this->banco_dados->get_condominio_por_id_endereco($id);
+        return $this->bancoDados->getCondominioPorIdEndereco($id);
     }
 
-    public function cadastrar_condominio($condominio)
+    public function cadastrarCondominio($condominio)
     {
-        return $this->banco_dados->cadastrar_condominio($condominio);
+        return $this->bancoDados->cadastrarCondominio($condominio);
     }
 
-    public function get_lista_proprietarios()
+    public function getListaProprietarios()
     {
-        return $this->banco_dados->get_lista_proprietarios();
+        return $this->bancoDados->getListaProprietarios();
     }
 
-    public function get_lista_enderecos()
+    public function getListaEnderecos()
     {
-        return $this->banco_dados->get_lista_enderecos();
+        return $this->bancoDados->getListaEnderecos();
     }
 
-    public function get_lista_filtros_apartamento()
+    public function getListaFiltrosApartamento()
     {
-        return $this->banco_dados->get_lista_filtros_apartamento();
+        return $this->bancoDados->getListaFiltrosApartamento();
     }
 
-    public function get_lista_filtros_condominio()
+    public function getListaFiltrosCondominio()
     {
-        return $this->banco_dados->get_lista_filtros_condominio();
+        return $this->bancoDados->getListaFiltrosCondominio();
     }
 
-    public function atualizar_anuncio($anuncio)
+    public function atualizarAnuncio($anuncio)
     {
-        return $this->banco_dados->atualizar_anuncio($anuncio);
+        return $this->bancoDados->atualizarAnuncio($anuncio);
     }
 
-    public function atualizar_condominio($condominio)
+    public function atualizarCondominio($condominio)
     {
-        return $this->banco_dados->atualizar_condominio($condominio);
+        return $this->bancoDados->atualizarCondominio($condominio);
     }
 
-    public function atualizar_usuario($usuario)
+    public function atualizarUsuario($usuario)
     {
-        return $this->banco_dados->atualizar_usuario($usuario);
+        return $this->bancoDados->atualizarUsuario($usuario);
     }
 
-    public function atualizar_proprietario($proprietario)
+    public function atualizarProprietario($proprietario)
     {
-        return $this->banco_dados->atualizar_proprietario($proprietario);
+        return $this->bancoDados->atualizarProprietario($proprietario);
     }
 
     public function remover($campo_desejado, $valor, $tabela)
     {
-        return $this->banco_dados->remover($campo_desejado, $valor, $tabela);
+        return $this->bancoDados->remover($campo_desejado, $valor, $tabela);
     }
 
-    public function get_imoveis_por_proprietario($cpf)
+    public function getImoveisPorProprietario($cpf)
     {
-        return $this->banco_dados->get_imoveis_por_proprietario($cpf);
+        return $this->bancoDados->getImoveisPorProprietario($cpf);
     }
 
-    public function get_imovel_por_id($id_imovel)
+    public function getImovelPorId($id_imovel)
     {
-        return $this->banco_dados->get_imovel_por_id($id_imovel);
+        return $this->bancoDados->getImovelPorId($id_imovel);
     }
 
-    public function get_anuncio_por_id($id_anuncio)
+    public function getAnuncioPorId($id_anuncio)
     {
-        return $this->banco_dados->get_anuncio_por_id($id_anuncio);
+        return $this->bancoDados->getAnuncioPorId($id_anuncio);
     }
 
-    // public function cadastrar_visita($visita)
-    // {
-    //     return $this->banco_dados->cadastrar_visita($visita);
-    // }
+    public function cadastrarVisita($visita)
+    {
+        return $this->bancoDados->cadastrarVisita($visita);
+    }
 
-    // public function get_lista_visitas()
-    // {
-    //     return $this->banco_dados->get_lista_visitas();
-    // }
+    public function getListaVisitasPorCorretor($corretor)
+    {
+        return $this->bancoDados->getListaVisitasPorCorretor($corretor);
+    }
 
-    // public function cadastrar_vistoria($vistoria)
-    // {
-    //     return $this->banco_dados->cadastrar_vistoria($vistoria);
-    // }
+
+    public function 
+    getListaVistoriasPorVistoriador($vistoriador)
+    {
+        return $this->bancoDados->getListaVistoriasPorVistoriador($vistoriador);
+    }
+
+    public function cadastrarVistoria($vistoria)
+    {
+        return $this->bancoDados->cadastrarVistoria($vistoria);
+    }
 
 }

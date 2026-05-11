@@ -12,6 +12,9 @@ require_once __DIR__ . '/../model/condominio.php';
 require_once __DIR__ . '/../model/gerente.php';
 require_once __DIR__ . '/../model/usuario.php';
 require_once __DIR__ . '/../model/proprietario.php';
+require_once __DIR__ . '/../model/visita.php';
+require_once __DIR__ . '/../model/vistoria.php';
+
 ini_set('display_errors', 0);
 error_reporting(E_ALL);
 class Banco
@@ -28,7 +31,7 @@ class Banco
         try {
             $this->db = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
             $this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-            $this->init_tabelas();
+            $this->initTabelas();
             // error_log("Connected successfully";
         } catch (PDOException $e) {
             error_log($e->getMessage());
@@ -41,7 +44,7 @@ class Banco
         return $this->db;
     }
 
-    public function init_tabelas()
+    public function initTabelas()
     {
 
         $queries = [
@@ -269,7 +272,64 @@ class Banco
         }
     }
 
-    public function get_usuario_por_id($id)
+    public function getListaVistoriasPorVistoriador($vistoriador)
+    {
+        $lista = [];
+        $vistorias = $this->db->exec("SELECT * from vistoria WHERE id_vistoriador = $vistoriador");
+
+        foreach ($vistorias as $vistoria) {
+            $novaVistoria = new Vistoria();
+            $novaVistoria->setId($vistoria['id_vistoria']);
+            $novaVistoria->setImovel($this->getImovelPorId($vistoria['id_imovel']));
+            $lista[] = $novaVistoria;
+        }
+
+        return $lista;
+    }
+
+    public function getListaVisitasPorCorretor($corretor)
+    {
+        $lista = [];
+        $visitas = $this->db->exec("SELECT * from visita WHERE id_corretor = $corretor");
+
+        foreach ($visitas as $visita) {
+            $novaVisita = new Visita();
+            $novaVisita->setId($visita['id_visita']);
+            $novaVisita->setImovel($this->getImovelPorId($visita['id_imovel']));
+            $novaVisita->setCliente($this->getUsuarioPorId($visita['id_cliente']));
+            $lista[] = $novaVisita;
+        }
+
+        return $lista;
+    }
+
+    public function cadastrarVistoria($vistoria)
+    {
+        return $this->db->exec("
+            INSERT INTO vistoria (id_imovel, data_vistoria, status) 
+            VALUES (
+                " . ($vistoria->getImovel() ? $vistoria->getImovel()->getId() : "NULL") . ",
+                '" . ($vistoria->getDataVistoria() ? $vistoria->getDataVistoria()->format("Y-m-d H:i:s") : "NULL") . "',
+                '" . ($vistoria->getStatus() ? $vistoria->getStatus()->value : "NULL") . "'
+            )
+        ");
+    }
+
+    public function cadastrarVisita($visita)
+    {
+        return $this->db->exec("
+            INSERT INTO visita (id_cliente, id_imovel, id_corretor, data_visita, status) 
+            VALUES (
+                " . ($visita->getCliente() ? $visita->getCliente()->getId() : "NULL") . ",
+                " . ($visita->getImovel() ? $visita->getImovel()->getId() : "NULL") . ",
+                " . ($visita->getCorretor() ? $visita->getCorretor()->getId() : "NULL") . ",
+                '" . ($visita->getDataVisita() ? $visita->getDataVisita()->format("Y-m-d H:i:s") : "NULL") . "',
+                '" . ($visita->getStatus() ? $visita->getStatus()->value : "NULL") . "'
+            )
+        ");
+    }
+
+    public function getUsuarioPorId($id)
     {
         try {
             $sql = "SELECT * FROM usuario WHERE id_usuario = ?";
@@ -279,154 +339,150 @@ class Banco
             if (!$registro) {
                 throw new Exception("Não existe usuário com ID $id");
             }
-            $id_usuario = $registro['id_usuario'] !== null ? (int)$registro['id_usuario'] : null;
+            $idUsuario = $registro['id_usuario'] !== null ? (int)$registro['id_usuario'] : null;
             $username = $registro['username'];
             $senha = $registro['senha'];
             $email = $registro['email'];
             $nome = $registro['nome'];
-            $cpf_cnpj = $registro['cpf_cnpj'];
+            $cpfCnpj = $registro['cpf_cnpj'];
             $rg = $registro['rg'];
-            $endereco = $registro['id_endereco'];
-            if ($endereco) {
-                $endereco = $this->get_endereco_por_id((int)($registro['id_endereco']));
+            $endereco = $registro['id_endereco'] !== null ? $this->getEnderecoPorId((int)$registro['id_endereco']) : null;
+            $dataNascimento = $registro['data_nascimento'];
+            if ($dataNascimento) {
+                $dataNascimento = DateTime::createFromFormat('Y-m-d', $dataNascimento);
             }
-            $data_nascimento = $registro['data_nascimento'];
-            if ($data_nascimento) {
-
-                $data_nascimento = DateTime::createFromFormat('Y-m-d', $data_nascimento);
+            $tipoUsuario = $registro['tipo_usuario'];
+            if ($tipoUsuario) {
+                $tipoUsuario = Tipo::tryFrom($tipoUsuario);
             }
-            $tipo_usuario = $registro['tipo_usuario'];
-            if ($tipo_usuario) {
-                $tipo_usuario = Tipo::tryFrom($tipo_usuario);
-            }
-            $usuario_obj = new Usuario(
+            $usuarioObj = new Usuario(
                 $username,
                 $senha,
                 $email,
                 $nome,
-                $cpf_cnpj,
-                $tipo_usuario
+                $cpfCnpj,
+                $tipoUsuario
             );
-            $sql_query = " 
+            $sqlQuery = " 
                             SELECT id_telefone FROM telefone_usuario 
                             WHERE id_usuario = :id_usuario
                             ";
-            $stmt = $this->db->prepare($sql_query);
-            $stmt->execute([':id_usuario' => $id_usuario]);
+            $stmt = $this->db->prepare($sqlQuery);
+            $stmt->execute([':id_usuario' => $idUsuario]);
             $registros = $stmt->fetch(PDO::FETCH_ASSOC);
             $telefones = [];
             if ($registros) {
-                foreach ($registros as $id_telefone) {
-                    $sql_query = " 
+                foreach ($registros as $idTelefone) {
+                    $sqlQuery = " 
                             SELECT numero FROM telefone 
                             WHERE id_telefone = :id_telefone
                                 ";
-                    $stmt = $this->db->prepare($sql_query);
-                    $stmt->execute([':id_telefone' => $id_telefone]);
+                    $stmt = $this->db->prepare($sqlQuery);
+                    $stmt->execute([':id_telefone' => $idTelefone]);
                     $registro = $stmt->fetch(PDO::FETCH_ASSOC);
                 }
             }
-            switch ($tipo_usuario) {
+            switch ($tipoUsuario) {
                 case (Tipo::CORRETOR):
                     $stmt = $this->db->prepare("
                                     SELECT creci FROM corretor 
                                     WHERE id_usuario = :id_usuario
                                 ");
-                    $stmt->execute([':id_usuario' => $id_usuario]);
+                    $stmt->execute([':id_usuario' => $idUsuario]);
                     $creci = $stmt->fetch(PDO::FETCH_ASSOC);
                     if ($creci) {
                         $creci = (int)($creci);
                     }
-                    $usuario_obj = new Corretor(
+                    $usuarioObj = new Corretor(
                         $username,
                         $senha,
                         $email,
                         $nome,
-                        $cpf_cnpj,
+                        $cpfCnpj,
                         $creci
                     );
                     break;
 
                 case (Tipo::CAPTADOR):
-                    $usuario_obj = new Captador(
+                    $usuarioObj = new Captador(
                         $username,
                         $senha,
                         $email,
                         $nome,
-                        $cpf_cnpj
+                        $cpfCnpj
                     );
                     $stmt = $this->db->prepare("
                                     SELECT salario FROM captador 
                                     WHERE id_usuario = :id_usuario
                                 ");
-                    $stmt->execute([':id_usuario' => $id_usuario]);
+                    $stmt->execute([':id_usuario' => $idUsuario]);
                     $salario = $stmt->fetch(PDO::FETCH_ASSOC);
                     if ($salario) {
                         $salario = (float)($salario);
                     }
-                    $usuario_obj->set_salario($salario);
+                    $usuarioObj->setSalario($salario);
                     break;
 
                 case (Tipo::GERENTE):
-                    $usuario_obj = new Gerente(
+                    $usuarioObj = new Gerente(
                         $username,
                         $senha,
                         $email,
                         $nome,
-                        $cpf_cnpj
+                        $cpfCnpj
                     );
                     $stmt = $this->db->prepare("
                                     SELECT salario FROM gerente 
                                     WHERE id_usuario = :id_usuario
                                 ");
-                    $stmt->execute([':id_usuario' => $id_usuario]);
+                    $stmt->execute([':id_usuario' => $idUsuario]);
                     $salario = $stmt->fetch(PDO::FETCH_ASSOC);
                     if ($salario) {
                         $salario = (float)($salario);
                     }
-                    $usuario_obj->set_salario($salario);
+                    $usuarioObj->setSalario($salario);
                     break;
 
                 case (Tipo::ADMINISTRADOR):
-                    $usuario_obj = new Usuario(
+                    $usuarioObj = new Usuario(
                         $username,
                         $senha,
                         $email,
                         $nome,
-                        $cpf_cnpj,
-                        $tipo_usuario
+                        $cpfCnpj,
+                        $tipoUsuario
                     );
                     break;
 
                 case (Tipo::CLIENTE):
-                    $usuario_obj = new Cliente(
+                    $usuarioObj = new Cliente(
                         $username,
                         $senha,
                         $email,
                         $nome,
-                        $cpf_cnpj
+                        $cpfCnpj
                     );
                     break;
 
                     # $stmt = $this->db->prepare("
                     #             SELECT * FROM cliente
-                    #             WHERE id_usuario = ?
-                    #         ", (id_usuario,))
+                    #             WHERE idUsuario = ?
+                    #         ", (idUsuario,))
                     # registros = $stmt->fetch(PDO::FETCH_ASSOC)
             }
-            $usuario_obj->set_id($id_usuario);
-            $usuario_obj->set_rg($rg);
-            $usuario_obj->set_endereco($endereco);
-            $usuario_obj->set_data_nascimento($data_nascimento);
-            $usuario_obj->set_telefones($telefones);
-            return $usuario_obj;
+            $usuarioObj->setId($idUsuario);
+            $usuarioObj->setRg($rg);
+            $usuarioObj->setEndereco($endereco);
+            $usuarioObj->setDataNascimento($dataNascimento);
+            $usuarioObj->setTelefones($telefones);
+            return $usuarioObj;
         } catch (Exception $e) {
-            error_log("ERRO Banco->get_usuario_por_id: " . $e->getMessage());
+            error_log("ERRO Banco->getUsuarioPorId: " . $e->getMessage());
             return null;
         }
     }
 
-    public function get_lista_enderecos()
+    public function getListaEnderecos()
     {
 
         try {
@@ -444,7 +500,7 @@ class Banco
 
             foreach ($dados as $registro) {
 
-                $id_endereco = (int) $registro['id_endereco'];
+                $idEndereco = (int) $registro['idEndereco'];
                 $rua = $registro['rua'];
                 $numero = $registro['numero'] !== null ? (int)$registro['numero'] : null;
                 $bairro = $registro['bairro'];
@@ -453,13 +509,13 @@ class Banco
                 $cidade = $registro['cidade'];
                 $uf = $registro['uf'];
 
-                $endereco_obj = new Endereco($rua, $bairro, $cep, $cidade, $uf);
+                $enderecoObj = new Endereco($rua, $bairro, $cep, $cidade, $uf);
 
-                $endereco_obj->set_id($id_endereco);
-                $endereco_obj->set_numero($numero);
-                $endereco_obj->set_complemento($complemento);
+                $enderecoObj->setId($idEndereco);
+                $enderecoObj->setNumero($numero);
+                $enderecoObj->setComplemento($complemento);
 
-                $lista[] = $endereco_obj;
+                $lista[] = $enderecoObj;
             }
 
             return $lista;
@@ -469,7 +525,7 @@ class Banco
         }
     }
 
-    public function get_lista_proprietarios()
+    public function getListaProprietarios()
     {
 
         try {
@@ -491,18 +547,18 @@ class Banco
                 $id = (int)$registro['id_proprietario'];
                 $email = $registro['email'];
                 $nome = $registro['nome'];
-                $cpf = $registro['cpf_cnpj'];
+                $cpf = $registro['cpfCnpj'];
                 $rg = $registro['rg'];
 
-                $data = $registro['data_nascimento']
-                    ? new DateTime($registro['data_nascimento'])
+                $data = $registro['dataNascimento']
+                    ? new DateTime($registro['dataNascimento'])
                     : null;
 
                 $obj = new Proprietario($email, $nome, $cpf);
 
-                $obj->set_id($id);
-                $obj->set_rg($rg);
-                $obj->set_data_nascimento($data);
+                $obj->setId($id);
+                $obj->setRg($rg);
+                $obj->setDataNascimento($data);
 
                 $lista[] = $obj;
             }
@@ -513,12 +569,12 @@ class Banco
             return [];
         }
     }
-    public function get_lista_clientes()
+    public function getListaClientes()
     {
 
         try {
 
-            $sql = "SELECT * FROM usuario WHERE tipo_usuario = 'CLIENTE'";
+            $sql = "SELECT * FROM usuario WHERE tipoUsuario = 'CLIENTE'";
             $stmt = $this->db->prepare($sql);
             $stmt->execute();
 
@@ -532,35 +588,35 @@ class Banco
 
             foreach ($dados as $registro) {
 
-                $id = (int)$registro['id_usuario'];
+                $id = (int)$registro['idUsuario'];
                 $username = $registro['username'];
                 $senha = $registro['senha'];
                 $email = $registro['email'];
                 $nome = $registro['nome'];
-                $cpf = $registro['cpf_cnpj'];
+                $cpf = $registro['cpfCnpj'];
                 $rg = $registro['rg'];
 
                 $endereco = null;
-                if ($registro['id_endereco']) {
-                    $endereco = $this->get_endereco_por_id((int)$registro['id_endereco']);
+                if ($registro['idEndereco']) {
+                    $endereco = $this->getEnderecoPorId((int)$registro['idEndereco']);
                 }
 
-                $data = $registro['data_nascimento']
-                    ? new DateTime($registro['data_nascimento'])
+                $data = $registro['dataNascimento']
+                    ? new DateTime($registro['dataNascimento'])
                     : null;
 
                 $cliente = new Cliente($username, $senha, $email, $nome, $cpf);
 
-                $cliente->set_id($id);
-                $cliente->set_rg($rg);
-                $cliente->set_endereco($endereco);
-                $cliente->set_data_nascimento($data);
+                $cliente->setId($id);
+                $cliente->setRg($rg);
+                $cliente->setEndereco($endereco);
+                $cliente->setDataNascimento($data);
 
                 $stmtTel = $this->db->prepare("
                 SELECT t.numero
                 FROM telefone_usuario tu
-                JOIN telefone t ON t.id_telefone = tu.id_telefone
-                WHERE tu.id_usuario = :id
+                JOIN telefone t ON t.idTelefone = tu.idTelefone
+                WHERE tu.idUsuario = :id
                 ");
                 $stmtTel->execute([':id' => $id]);
 
@@ -570,18 +626,18 @@ class Banco
                     $telefones[] = $row['numero'];
                 }
 
-                $cliente->set_telefones($telefones);
+                $cliente->setTelefones($telefones);
 
                 $lista[] = $cliente;
             }
 
             return $lista;
         } catch (Exception $e) {
-            error_log("ERRO Banco->get_lista_clientes: "  . $e->getMessage());
+            error_log("ERRO Banco->getListaClientes: "  . $e->getMessage());
             return [];
         }
     }
-    public function get_lista_usuarios()
+    public function getListaUsuarios()
     {
 
         try {
@@ -600,29 +656,29 @@ class Banco
 
             foreach ($dados as $registro) {
 
-                $id = $registro['id_usuario'];
+                $id = $registro['idUsuario'];
                 $username = $registro['username'];
                 $senha = $registro['senha'];
                 $email = $registro['email'];
                 $nome = $registro['nome'];
-                $cpf = $registro['cpf_cnpj'];
+                $cpf = $registro['cpfCnpj'];
                 $rg = $registro['rg'];
-                $tipo = $registro['tipo_usuario'];
+                $tipo = $registro['tipoUsuario'];
 
                 $endereco = null;
-                if ($registro['id_endereco']) {
-                    $endereco = $this->get_endereco_por_id((int)$registro['id_endereco']);
+                if ($registro['idEndereco']) {
+                    $endereco = $this->getEnderecoPorId((int)$registro['idEndereco']);
                 }
 
-                $data = $registro['data_nascimento']
-                    ? new DateTime($registro['data_nascimento'])
+                $data = $registro['dataNascimento']
+                    ? new DateTime($registro['dataNascimento'])
                     : null;
 
                 $stmtTel = $this->db->prepare("
                 SELECT t.numero
                 FROM telefone_usuario tu
-                JOIN telefone t ON t.id_telefone = tu.id_telefone
-                WHERE tu.id_usuario = :id
+                JOIN telefone t ON t.idTelefone = tu.idTelefone
+                WHERE tu.idUsuario = :id
                 ");
                 $stmtTel->execute([':id' => $id]);
 
@@ -636,7 +692,7 @@ class Banco
                     case 'CORRETOR':
 
                         $stmtC = $this->db->prepare("
-                        SELECT creci FROM corretor WHERE id_usuario = :id
+                        SELECT creci FROM corretor WHERE idUsuario = :id
                     ");
                         $stmtC->execute([':id' => $id]);
                         $creci = $stmtC->fetchColumn();
@@ -654,7 +710,7 @@ class Banco
                     case 'CAPTADOR':
 
                         $stmtC = $this->db->prepare("
-                        SELECT salario FROM captador WHERE id_usuario = :id
+                        SELECT salario FROM captador WHERE idUsuario = :id
                     ");
                         $stmtC->execute([':id' => $id]);
                         $salario = $stmtC->fetchColumn();
@@ -666,13 +722,13 @@ class Banco
                             $nome,
                             $cpf
                         );
-                        $usuario->set_salario($salario ? (float)$salario : null);
+                        $usuario->setSalario($salario ? (float)$salario : null);
                         break;
 
                     case 'GERENTE':
 
                         $stmtC = $this->db->prepare("
-                        SELECT salario FROM gerente WHERE id_usuario = :id
+                        SELECT salario FROM gerente WHERE idUsuario = :id
                     ");
                         $stmtC->execute([':id' => $id]);
                         $salario = $stmtC->fetchColumn();
@@ -684,7 +740,7 @@ class Banco
                             $nome,
                             $cpf
                         );
-                        $usuario->set_salario($salario ? (float)$salario : null);
+                        $usuario->setSalario($salario ? (float)$salario : null);
                         break;
 
                     case 'CLIENTE':
@@ -711,136 +767,136 @@ class Banco
                         break;
                 }
 
-                $usuario->set_id($id);
-                $usuario->set_rg($rg);
-                $usuario->set_endereco($endereco);
-                $usuario->set_data_nascimento($data);
-                $usuario->set_telefones($telefones);
+                $usuario->setId($id);
+                $usuario->setRg($rg);
+                $usuario->setEndereco($endereco);
+                $usuario->setDataNascimento($data);
+                $usuario->setTelefones($telefones);
 
                 $lista[] = $usuario;
             }
 
             return $lista;
         } catch (Exception $e) {
-            error_log("ERRO Banco->get_lista_usuarios: "  . $e->getMessage());
+            error_log("ERRO Banco->getListaUsuarios: "  . $e->getMessage());
             return [];
         }
     }
 
-    public function cadastrar_usuario($usuario)
+    public function cadastrarUsuario($usuario)
     {
         try {
             $sql = "
-                    INSERT INTO usuario (username, senha, email, nome, cpf_cnpj, rg, id_endereco, data_nascimento, tipo_usuario) 
-                    VALUES(:username, :senha, :email, :nome, :cpf_cnpj, :rg, :endereco, :data_nascimento, :tipo)
+                    INSERT INTO usuario (username, senha, email, nome, cpfCnpj, rg, idEndereco, dataNascimento, tipoUsuario) 
+                    VALUES(:username, :senha, :email, :nome, :cpfCnpj, :rg, :endereco, :dataNascimento, :tipo)
                 ";
             $stmt = $this->db->prepare($sql);
-            if ($usuario->get_endereco()) {
-                $endereco = $usuario->get_endereco()->get_id();
+            if ($usuario->getEndereco()) {
+                $endereco = $usuario->getEndereco()->getId();
             } else {
                 $endereco = NULL;
             }
-            if ($usuario->get_tipo()) {
-                $tipo = $usuario->get_tipo()->value;
+            if ($usuario->getTipo()) {
+                $tipo = $usuario->getTipo()->value;
             } else {
                 $tipo = NULL;
             }
-            if ($usuario->get_data_nascimento()) {
-                $data_nascimento = $usuario->get_data_nascimento()->format("Y-m-d");
+            if ($usuario->getDataNascimento()) {
+                $dataNascimento = $usuario->getDataNascimento()->format("Y-m-d");
             } else {
-                $data_nascimento = NULL;
+                $dataNascimento = NULL;
             }
-            $senha_hash = hash('sha256', $usuario->get_senha());
+            $senha_hash = hash('sha256', $usuario->getSenha());
             $stmt->execute([
-                ':username' => $usuario->get_username(),
+                ':username' => $usuario->getUsername(),
                 ':senha' => $senha_hash,
-                ':email' => $usuario->get_email(),
-                ':nome' => $usuario->get_nome(),
-                ':cpf_cnpj' => $usuario->get_cpf_cnpj(),
-                ':rg' => $usuario->get_rg(),
+                ':email' => $usuario->getEmail(),
+                ':nome' => $usuario->getNome(),
+                ':cpfCnpj' => $usuario->getCpfCnpj(),
+                ':rg' => $usuario->getRg(),
                 ':endereco' => $endereco,
-                ':data_nascimento' => $data_nascimento,
+                ':dataNascimento' => $dataNascimento,
                 ':tipo' => $tipo
             ]);
             $id = $this->db->lastInsertId();
-            if ($usuario->get_telefones()) {
-                foreach ($usuario->get_telefones() as $telefone) {
-                    $sql_query = " 
+            if ($usuario->getTelefones()) {
+                foreach ($usuario->getTelefones() as $telefone) {
+                    $sqlQuery = " 
                             INSERT INTO telefone (numero) 
                             VALUES(:numero)
                             ";
-                    $stmt = $this->db->prepare($sql_query);
+                    $stmt = $this->db->prepare($sqlQuery);
                     $stmt->execute([
                         ':numero' => $telefone,
                     ]);
-                    $id_telefone = $this->db->lastInsertId();
-                    $sql_query = " 
-                            INSERT INTO telefone_usuario (id_usuario, id_telefone) 
-                            VALUES(:id_usuario, :id_telefone)
+                    $idTelefone = $this->db->lastInsertId();
+                    $sqlQuery = " 
+                            INSERT INTO telefone_usuario (idUsuario, idTelefone) 
+                            VALUES(:idUsuario, :idTelefone)
                             ";
-                    $stmt = $this->db->prepare($sql_query);
+                    $stmt = $this->db->prepare($sqlQuery);
                     $stmt->execute([
-                        ':id_usuario' => $id,
-                        ':id_telefone' => $id_telefone
+                        ':idUsuario' => $id,
+                        ':idTelefone' => $idTelefone
                     ]);
                 }
             }
-            $tipo_usuario_obj = $usuario->get_tipo();
-            $tipo_usuario_valor = $tipo_usuario_obj ? $tipo_usuario_obj->value : NULL;
-            if ($tipo_usuario_valor == "CORRETOR") {
+            $tipoUsuarioObj = $usuario->getTipo();
+            $tipoUsuarioValor = $tipoUsuarioObj ? $tipoUsuarioObj->value : NULL;
+            if ($tipoUsuarioValor == "CORRETOR") {
                 $stmt = $this->db->prepare("
-                                    INSERT INTO corretor (id_usuario, creci)
-                                    VALUES(:id_usuario, :creci)
+                                    INSERT INTO corretor (idUsuario, creci)
+                                    VALUES(:idUsuario, :creci)
                                 ");
                 $stmt->execute([
-                    ':id_usuario' => $id,
-                    ':creci' => $usuario->get_creci()
+                    ':idUsuario' => $id,
+                    ':creci' => $usuario->getCreci()
                 ]);
-            } else if ($tipo_usuario_valor == "CAPTADOR") {
+            } else if ($tipoUsuarioValor == "CAPTADOR") {
                 $stmt = $this->db->prepare("
-                                    INSERT INTO captador (id_usuario, salario)
-                                    VALUES(:id_usuario, :salario)
+                                    INSERT INTO captador (idUsuario, salario)
+                                    VALUES(:idUsuario, :salario)
                                 ");
                 $stmt->execute([
-                    ':id_usuario' => $id,
-                    ':salario' => $usuario->get_salario()
+                    ':idUsuario' => $id,
+                    ':salario' => $usuario->getSalario()
                 ]);
-            } else if ($tipo_usuario_valor == "GERENTE") {
+            } else if ($tipoUsuarioValor == "GERENTE") {
                 $stmt = $this->db->prepare("
-                                    INSERT INTO gerente (id_usuario, salario)
-                                    VALUES(:id_usuario, :salario)
+                                    INSERT INTO gerente (idUsuario, salario)
+                                    VALUES(:idUsuario, :salario)
                                 ");
                 $stmt->execute([
-                    ':id_usuario' => $id,
-                    ':salario' => $usuario->get_salario()
+                    ':idUsuario' => $id,
+                    ':salario' => $usuario->getSalario()
                 ]);
-            } else if ($tipo_usuario_valor == "CLIENTE") {
+            } else if ($tipoUsuarioValor == "CLIENTE") {
                 $stmt = $this->db->prepare("
-                                    INSERT INTO cliente (id_usuario)
-                                    VALUES(:id_usuario)
+                                    INSERT INTO cliente (idUsuario)
+                                    VALUES(:idUsuario)
                                 ");
                 $stmt->execute([
-                    ':id_usuario' => $id,
+                    ':idUsuario' => $id,
 
                 ]);
             }
             return True;
         } catch (Exception $e) {
-            $erro = "ERRO! Banco->cadastrar_usuario " . $e->getMessage();
+            $erro = "ERRO! Banco->cadastrarUsuario " . $e->getMessage();
             error_log($erro);
             return False;
         }
     }
 
 
-    public function remover($campo_desejado, $valor, $tabela)
+    public function remover($campoDesejado, $valor, $tabela)
     {
         try {
-            $sql_delete_query = "
+            $sqlDeleteQuery = "
                 DELETE FROM $tabela
-                WHERE $campo_desejado = ?;
+                WHERE $campoDesejado = ?;
                 ";
-            $stmt = $this->db->prepare($sql_delete_query);
+            $stmt = $this->db->prepare($sqlDeleteQuery);
             $stmt->execute([$valor]);
             return True;
         } catch (Exception $e) {
@@ -849,14 +905,14 @@ class Banco
         }
     }
 
-    public function atualizar($campo_desejado, $valor, $tabela)
+    public function atualizar($campoDesejado, $valor, $tabela)
     {
         try {
-            $sql_update_query = "
+            $sqlUpdateQuery = "
                 UPDATE $tabela
-                SET $campo_desejado = ?
+                SET $campoDesejado = ?
                 ";
-            $stmt = $this->db->prepare($sql_update_query);
+            $stmt = $this->db->prepare($sqlUpdateQuery);
             $stmt->execute([$valor]);
             $this->db->commit();
             return True;
@@ -866,155 +922,155 @@ class Banco
         }
     }
 
-    public function get_usuario_por_cpf_cnpj($cpf)
+    public function getUsuarioPorCpfCnpj($cpf)
     {
         try {
 
             $stmt = $this->db->prepare("
-                        SELECT * FROM usuario WHERE cpf_cnpj = ? 
+                        SELECT * FROM usuario WHERE cpfCnpj = ? 
                     ");
             $stmt->execute([$cpf]);
             $registro = $stmt->fetch(PDO::FETCH_ASSOC);
             if (!$registro) {
                 throw new Exception("Não existe usuário com CPF/CNPJ $cpf");
             }
-            $id_usuario = $registro['id_usuario'] !== null ? (int)$registro['id_usuario'] : null;
+            $idUsuario = $registro['idUsuario'] !== null ? (int)$registro['idUsuario'] : null;
             $username = $registro['username'];
             $senha = $registro['senha'];
             $email = $registro['email'];
             $nome = $registro['nome'];
-            $cpf_cnpj = $registro['cpf_cnpj'];
+            $cpfCnpj = $registro['cpfCnpj'];
             $rg = $registro['rg'];
-            $endereco = $registro['id_endereco'];
+            $endereco = $registro['idEndereco'];
             if ($endereco) {
-                $endereco = $this->get_endereco_por_id((int)($registro['id_endereco']));
+                $endereco = $this->getEnderecoPorId((int)($registro['idEndereco']));
             }
-            $data_nascimento = $registro['data_nascimento'];
-            if ($data_nascimento) {
+            $dataNascimento = $registro['dataNascimento'];
+            if ($dataNascimento) {
 
-                $data_nascimento = DateTime::createFromFormat('Y-m-d', $data_nascimento);
+                $dataNascimento = DateTime::createFromFormat('Y-m-d', $dataNascimento);
             }
-            $tipo_usuario = $registro['tipo_usuario'];
-            if ($tipo_usuario) {
-                $tipo_usuario = Tipo::tryFrom($tipo_usuario);
+            $tipoUsuario = $registro['tipoUsuario'];
+            if ($tipoUsuario) {
+                $tipoUsuario = Tipo::tryFrom($tipoUsuario);
             }
-            $usuario_obj = new Usuario(
+            $usuarioObj = new Usuario(
                 $username,
                 $senha,
                 $email,
                 $nome,
-                $cpf_cnpj,
-                $tipo_usuario
+                $cpfCnpj,
+                $tipoUsuario
             );
-            $sql_query = " 
-                            SELECT id_telefone FROM telefone_usuario 
-                            WHERE id_usuario = ?
+            $sqlQuery = " 
+                            SELECT idTelefone FROM telefone_usuario 
+                            WHERE idUsuario = ?
                             ";
-            $stmt = $this->db->prepare($sql_query);
-            $stmt->execute([$id_usuario]);
+            $stmt = $this->db->prepare($sqlQuery);
+            $stmt->execute([$idUsuario]);
             $registros = $stmt->fetch(PDO::FETCH_ASSOC);
             $telefones = [];
             if ($registros) {
-                foreach ($registros as $id_telefone) {
-                    $sql_query = " 
+                foreach ($registros as $idTelefone) {
+                    $sqlQuery = " 
                             SELECT numero FROM telefone 
-                            WHERE id_telefone = ?
+                            WHERE idTelefone = ?
                                 ";
-                    $stmt = $this->db->prepare($sql_query);
-                    $stmt->execute([$id_telefone]);
+                    $stmt = $this->db->prepare($sqlQuery);
+                    $stmt->execute([$idTelefone]);
                     $registro = $stmt->fetch(PDO::FETCH_ASSOC);
                 }
             }
-            switch ($tipo_usuario) {
+            switch ($tipoUsuario) {
                 case (Tipo::CORRETOR):
                     $stmt = $this->db->prepare("
                                     SELECT creci FROM corretor 
-                                    WHERE id_usuario = ?
+                                    WHERE idUsuario = ?
                                 ");
-                    $stmt->execute([$id_usuario]);
+                    $stmt->execute([$idUsuario]);
                     $creci = $stmt->fetch(PDO::FETCH_ASSOC);
                     if ($creci) {
                         $creci = (int)($creci);
                     }
-                    $usuario_obj = new Corretor(
+                    $usuarioObj = new Corretor(
                         $username,
                         $senha,
                         $email,
                         $nome,
-                        $cpf_cnpj,
+                        $cpfCnpj,
                         $creci
                     );
                     break;
 
                 case (Tipo::CAPTADOR):
-                    $usuario_obj = new Captador(
+                    $usuarioObj = new Captador(
                         $username,
                         $senha,
                         $email,
                         $nome,
-                        $cpf_cnpj
+                        $cpfCnpj
                     );
                     $stmt = $this->db->prepare("
                                     SELECT salario FROM captador 
-                                    WHERE id_usuario = ?
+                                    WHERE idUsuario = ?
                                 ");
-                    $stmt->execute([$id_usuario]);
+                    $stmt->execute([$idUsuario]);
                     $salario = $stmt->fetch(PDO::FETCH_ASSOC);
                     if ($salario) {
                         $salario = (float)($salario);
                     }
-                    $usuario_obj->set_salario($salario);
+                    $usuarioObj->setSalario($salario);
                     break;
 
                 case (Tipo::GERENTE):
-                    $usuario_obj = new Gerente(
+                    $usuarioObj = new Gerente(
                         $username,
                         $senha,
                         $email,
                         $nome,
-                        $cpf_cnpj
+                        $cpfCnpj
                     );
                     $stmt = $this->db->prepare("
                                     SELECT salario FROM gerente 
-                                    WHERE id_usuario = ?
+                                    WHERE idUsuario = ?
                                 ");
-                    $stmt->execute([$id_usuario]);
+                    $stmt->execute([$idUsuario]);
                     $salario = $stmt->fetch(PDO::FETCH_ASSOC);
                     if ($salario) {
                         $salario = (float)($salario);
                     }
-                    $usuario_obj->set_salario($salario);
+                    $usuarioObj->setSalario($salario);
                     break;
 
                 case (Tipo::CLIENTE):
-                    $usuario_obj = new Cliente(
+                    $usuarioObj = new Cliente(
                         $username,
                         $senha,
                         $email,
                         $nome,
-                        $cpf_cnpj
+                        $cpfCnpj
                     );
                     break;
 
                     # $stmt = $this->db->prepare("
                     #             SELECT * FROM cliente
-                    #             WHERE id_usuario = ?
-                    #         ", (id_usuario,))
+                    #             WHERE idUsuario = ?
+                    #         ", (idUsuario,))
                     # registros = $stmt->fetch(PDO::FETCH_ASSOC)
             }
-            $usuario_obj->set_id($id_usuario);
-            $usuario_obj->set_rg($rg);
-            $usuario_obj->set_endereco($endereco);
-            $usuario_obj->set_data_nascimento($data_nascimento);
-            $usuario_obj->set_telefones($telefones);
-            return $usuario_obj;
+            $usuarioObj->setId($idUsuario);
+            $usuarioObj->setRg($rg);
+            $usuarioObj->setEndereco($endereco);
+            $usuarioObj->setDataNascimento($dataNascimento);
+            $usuarioObj->setTelefones($telefones);
+            return $usuarioObj;
         } catch (Exception $e) {
-            $erro = "ERRO! Banco->get_usuario_por_cpf_cnpj: " . $e->getMessage();
+            $erro = "ERRO! Banco->getUsuarioPorCpfCnpj: " . $e->getMessage();
             error_log($erro);
             return NULL;
         }
     }
-    public function get_lista_filtros_apartamento()
+    public function getListaFiltrosApartamento()
     {
         try {
 
@@ -1034,12 +1090,12 @@ class Banco
             }
             return $lista;
         } catch (Exception $e) {
-            error_log("ERRO! Banco->get_lista_filtros_apartamento: " . $e->getMessage());
+            error_log("ERRO! Banco->getListaFiltrosApartamento: " . $e->getMessage());
             return [];
         }
     }
 
-    public function get_lista_filtros_condominio()
+    public function getListaFiltrosCondominio()
     {
         try {
             $stmt = $this->db->prepare("
@@ -1058,31 +1114,30 @@ class Banco
             }
             return $lista;
         } catch (Exception $e) {
-            error_log("ERRO! Banco->get_lista_filtros_condominio: " . $e->getMessage());
+            error_log("ERRO! Banco->getListaFiltrosCondominio: " . $e->getMessage());
             return [];
         }
     }
 
-    public function cadastrar_lista_filtros($lista_filtros, $tabela)
+    public function cadastrarListaFiltros($lista_filtros, $tabela)
     {
-            foreach ($lista_filtros as $filtro) {
-                try {
-                    $sql_query = " 
+        foreach ($lista_filtros as $filtro) {
+            try {
+                $sqlQuery = " 
                             INSERT INTO $tabela (nome) 
                             VALUES(:nome)
                             ";
-                    $stmt = $this->db->prepare($sql_query);
-                    $stmt->execute([':nome' => $filtro]);
-                    } catch (Exception $e) {
-                        $erro = "ERRO! Banco->cadastrar_lista_filtros: " . $e->getMessage();
-                        // error_log($erro);
-                        continue;
-                    }
+                $stmt = $this->db->prepare($sqlQuery);
+                $stmt->execute([':nome' => $filtro]);
+            } catch (Exception $e) {
+                $erro = "ERRO! Banco->cadastrarListaFiltros: " . $e->getMessage();
+                // error_log($erro);
+                continue;
             }
-        
+        }
     }
 
-    public function get_condominio_por_id_imovel($id_imovel)
+    public function getCondominioPorIdImovel($id_imovel)
     {
         try {
             $stmt = $this->db->prepare("
@@ -1096,34 +1151,34 @@ class Banco
                     "Não existe condomínio para o imóvel com id $id_imovel"
                 );
             }
-            $id_condominio = (int)($registro);
+            $idCondominio = (int)($registro);
             $nome = $registro[1];
-            $id_endereco = $registro[2];
-            $endereco_obj = $this->get_endereco_por_id($id_endereco);
-            if (!$endereco_obj) {
+            $idEndereco = $registro[2];
+            $enderecoObj = $this->getEnderecoPorId($idEndereco);
+            if (!$enderecoObj) {
                 throw new Exception(
-                    "Não existe endereço com id $id_endereco"
+                    "Não existe endereço com id $idEndereco"
                 );
             }
             $condominio_obj = new Condominio();
-            $condominio_obj->set_id($id_condominio);
-            $condominio_obj->set_nome($nome);
-            $condominio_obj->set_endereco($endereco_obj);
+            $condominio_obj->setId($idCondominio);
+            $condominio_obj->setNome($nome);
+            $condominio_obj->setEndereco($enderecoObj);
             $stmt = $this->db->prepare("
                         SELECT * FROM condominio_filtros
                         WHERE id_condominio = ?
                     ");
-            $stmt->execute([$id_condominio]);
+            $stmt->execute([$idCondominio]);
             $condominio_filtros = $stmt->fetch(PDO::FETCH_ASSOC);
             $lista_condominio_filtros = [];
             if ($condominio_filtros) {
                 foreach ($condominio_filtros as $registro) {
-                    $id_condominio_filtros = (int)($registro);
+                    $idCondominio_filtros = (int)($registro);
                     $stmt = $this->db->prepare("
                                 SELECT nome FROM filtros_condominio
                                 WHERE id_filtros_condominio = ?
                             ");
-                    $stmt->execute([$id_condominio_filtros]);
+                    $stmt->execute([$idCondominio_filtros]);
                     $nome = $stmt->fetch(PDO::FETCH_ASSOC);
                     if ($nome) {
                         $lista_condominio_filtros[] = $nome;
@@ -1131,58 +1186,58 @@ class Banco
                 }
             }
             if ($lista_condominio_filtros) {
-                $condominio_obj->set_filtros($lista_condominio_filtros);
+                $condominio_obj->setFiltros($lista_condominio_filtros);
             }
             return $condominio_obj;
         } catch (Exception $e) {
-            $erro = "ERRO! Banco->get_condominio_por_id_imovel: " . $e->getMessage();
+            $erro = "ERRO! Banco->getCondominioPorIdImovel: " . $e->getMessage();
             error_log($erro);
             return NULL;
         }
     }
 
 
-    public function cadastrar_atendimento($atendimento)
+    public function cadastrarAtendimento($atendimento)
     {
         try {
 
-            $sql_query = " 
+            $sqlQuery = " 
                     INSERT INTO atendimento (id_imovel, id_corretor, id_cliente, status) 
                     VALUES(:id_imovel, :id_corretor, :id_cliente, :status)
                     ";
-            $corretor_obj = $atendimento->get_corretor();
+            $corretor_obj = $atendimento->getCorretor();
             if ($corretor_obj) {
-                $corretor_obj = $corretor_obj->get_id();
+                $corretor_obj = $corretor_obj->getId();
             }
             $cliente_obj = $atendimento->get_cliente();
             if ($cliente_obj) {
-                $cliente_obj = $cliente_obj->get_id();
+                $cliente_obj = $cliente_obj->getId();
             }
 
-            $imovel_obj = $atendimento->get_imovel();
-            if ($imovel_obj) {
-                $imovel_obj = $imovel_obj->get_id();
+            $imovelObj = $atendimento->getImovel();
+            if ($imovelObj) {
+                $imovelObj = $imovelObj->getId();
             }
-            $status = $atendimento->get_status();
+            $status = $atendimento->getStatus();
             if ($status) {
                 $status = $status->value;
             }
-            $stmt = $this->db->prepare($sql_query);
+            $stmt = $this->db->prepare($sqlQuery);
             $stmt->execute([
-                ":id_imovel" => $imovel_obj,
+                ":id_imovel" => $imovelObj,
                 ":id_corretor" => $corretor_obj,
                 ":id_cliente" => $cliente_obj,
                 ":status" => $status
             ]);
             return True;
         } catch (Exception $e) {
-            $erro = "ERRO! Banco->cadastrar_atendimento: " . $e->getMessage();
+            $erro = "ERRO! Banco->cadastrarAtendimento: " . $e->getMessage();
             error_log($erro);
             return False;
         }
     }
 
-    public function get_lista_atendimentos()
+    public function getListaAtendimentos()
     {
         try {
 
@@ -1197,30 +1252,30 @@ class Banco
             }
             $lista = [];
             foreach ($registros as $registro) {
-                $id_atendimento = $registro['id_atendimento'];
+                $idAtendimento = $registro['id_atendimento'];
                 $imovel = $registro['id_imovel'];
                 $corretor = $registro['id_corretor'];
                 $comprador = $registro['id_cliente'];
                 $status = $registro['status'];
                 if ($imovel) {
-                    $imovel = $this->get_imovel_por_id($imovel);
+                    $imovel = $this->getImovelPorId($imovel);
                 }
                 if ($corretor) {
-                    $corretor = $this->get_usuario_por_id($corretor);
+                    $corretor = $this->getUsuarioPorId($corretor);
                 }
                 if ($comprador) {
-                    $comprador = $this->get_usuario_por_id($comprador);
+                    $comprador = $this->getUsuarioPorId($comprador);
                 }
                 if ($status) {
-                    $status =  Status_Atendimento::tryFrom($status);
+                    $status =  StatusAtendimento::tryFrom($status);
                 }
-                $atendimento_obj = new Atendimento();
-                $atendimento_obj->set_status($status);
-                $atendimento_obj->set_id($id_atendimento);
-                $atendimento_obj->set_corretor($corretor);
-                $atendimento_obj->set_cliente($comprador);
-                $atendimento_obj->set_imovel($imovel);
-                $lista[] = $atendimento_obj;
+                $atendimentoObj = new Atendimento();
+                $atendimentoObj->setStatus($status);
+                $atendimentoObj->setId($idAtendimento);
+                $atendimentoObj->setCorretor($corretor);
+                $atendimentoObj->setCliente($comprador);
+                $atendimentoObj->setImovel($imovel);
+                $lista[] = $atendimentoObj;
             }
             return $lista;
         } catch (Exception $e) {
@@ -1230,7 +1285,7 @@ class Banco
         }
     }
 
-    public function get_anuncio_por_id($id_anuncio)
+    public function getAnuncioPorId($idAnuncio)
     {
         try {
 
@@ -1238,61 +1293,61 @@ class Banco
                         SELECT * FROM anuncio
                         WHERE id_anuncio = ?
                     ");
-            $stmt->execute([$id_anuncio]);
+            $stmt->execute([$idAnuncio]);
             $registro = $stmt->fetch(PDO::FETCH_ASSOC);
             if (!$registro) {
-                throw new Exception("Não existe anúncio com id {id_anuncio}");
+                throw new Exception("Não existe anúncio com id {idAnuncio}");
             }
-            $anuncio_obj = new Anuncio();
-            $id_anuncio = $registro['id_anuncio'];
-            if ($id_anuncio) {
-                $id_anuncio = (int)($id_anuncio);
+            $anuncioObj = new Anuncio();
+            $idAnuncio = $registro['id_anuncio'];
+            if ($idAnuncio) {
+                $idAnuncio = (int)($idAnuncio);
             }
             $descricao = $registro['descricao'];
             $titulo = $registro['titulo'];
-            $anuncio_obj->set_id($id_anuncio);
-            $anuncio_obj->set_descricao($descricao);
-            $anuncio_obj->set_titulo($titulo);
-            $mapa_anexos = $this->get_lista_anexos_por_id_anuncio($id_anuncio);
-            if ($mapa_anexos && isset($mapa_anexos["Imagens"])) {
-                $anuncio_obj->set_imagens($mapa_anexos["Imagens"]);
+            $anuncioObj->setId($idAnuncio);
+            $anuncioObj->setDescricao($descricao);
+            $anuncioObj->setTitulo($titulo);
+            $mapaAnexos = $this->getListaAnexosPorIdAnuncio($idAnuncio);
+            if ($mapaAnexos && isset($mapaAnexos["Imagens"])) {
+                $anuncioObj->setImagens($mapaAnexos["Imagens"]);
             }
-            if ($mapa_anexos && isset($mapa_anexos["Videos"])) {
-                $anuncio_obj->set_videos($mapa_anexos["Videos"]);
+            if ($mapaAnexos && isset($mapaAnexos["Videos"])) {
+                $anuncioObj->setVideos($mapaAnexos["Videos"]);
             }
-            if ($mapa_anexos && isset($mapa_anexos["Documentos"])) {
-                $anuncio_obj->set_anexos($mapa_anexos["Documentos"]);
+            if ($mapaAnexos && isset($mapaAnexos["Documentos"])) {
+                $anuncioObj->setAnexos($mapaAnexos["Documentos"]);
             }
-            return $anuncio_obj;
+            return $anuncioObj;
         } catch (Exception $e) {
-            $erro = "ERRO! Banco->get_anuncio_por_id: " . $e->getMessage();
+            $erro = "ERRO! Banco->getAnuncioPorId: " . $e->getMessage();
             error_log($erro);
             return NULL;
         }
     }
 
-    public function cadastrar_anexo($id_anuncio, $blob, $tipo)
+    public function cadastrarAnexo($idAnuncio, $blob, $tipo)
     {
         try {
-            $sql_query = " 
-                    INSERT INTO midia_anuncio (id_anuncio, midia, tipo) 
+            $sqlQuery = " 
+                    INSERT INTO midia_anuncio (idAnuncio, midia, tipo) 
                     VALUES(:id_anuncio, :midia, :tipo)
                     ";
-            $stmt = $this->db->prepare($sql_query);
+            $stmt = $this->db->prepare($sqlQuery);
             $stmt->execute([
-                ':id_anuncio' => $id_anuncio,
+                ':id_anuncio' => $idAnuncio,
                 ':midia' => $blob,
                 ':tipo' => $tipo
             ]);
             return True;
         } catch (Exception $e) {
-            $erro = "ERRO! Banco->cadastrar_anexo: " . $e->getMessage();
+            $erro = "ERRO! Banco->cadastrarAnexo: " . $e->getMessage();
             error_log($erro);
             return False;
         }
     }
 
-    public function get_lista_anexos_por_id_anuncio($id_anuncio)
+    public function getListaAnexosPorIdAnuncio($idAnuncio)
     {
         try {
 
@@ -1301,7 +1356,7 @@ class Banco
                         SELECT * FROM midia_anuncio 
                         WHERE id_anuncio = :id_anuncio
                     ");
-            $stmt->execute([':id_anuncio' => $id_anuncio]);
+            $stmt->execute([':id_anuncio' => $idAnuncio]);
             $registros = $stmt->fetchAll(PDO::FETCH_ASSOC);
             $imagens = [];
             $videos = [];
@@ -1327,13 +1382,13 @@ class Banco
             $mapa["Documentos"] = $documentos;
             return $mapa;
         } catch (Exception $e) {
-            $erro = "ERRO! Banco->get_lista_anexos: " . $e->getMessage();
+            $erro = "ERRO! Banco->getListaAnexosPorIdAnuncio: " . $e->getMessage();
             error_log($erro);
             return [];
         }
     }
 
-    public function get_condominio_por_id_endereco($id)
+    public function getCondominioPorIdEndereco($id)
     {
         try {
             $stmt = $this->db->prepare("
@@ -1345,27 +1400,27 @@ class Banco
             $registro = $stmt->fetch(PDO::FETCH_ASSOC);
 
             if (!$registro) {
-                throw new Exception("Não existe condominio com id_endereco {$id}");
+                throw new Exception("Não existe condominio com idEndereco {$id}");
             }
 
-            $id_condominio = (int)$registro['id_condominio'];
+            $idCondominio = (int)$registro['id_condominio'];
             $nome = $registro['nome'];
-            $id_endereco = (int)$registro['id_endereco'];
+            $idEndereco = (int)$registro['id_endereco'];
 
-            $endereco_obj = $this->get_endereco_por_id($id_endereco);
+            $enderecoObj = $this->getEnderecoPorId($idEndereco);
 
-            $condominio_obj = new Condominio($nome, $endereco_obj);
-            $condominio_obj->set_id($id_condominio);
+            $condominio_obj = new Condominio($nome, $enderecoObj);
+            $condominio_obj->setId($idCondominio);
 
             return $condominio_obj;
         } catch (Exception $e) {
-            $erro = "ERRO! Banco->get_condominio_por_id_endereco: "  . $e->getMessage();
+            $erro = "ERRO! Banco->getCondominioPorIdEndereco: "  . $e->getMessage();
             error_log($erro);
             return null;
         }
     }
 
-    public function get_condominio_por_id($id)
+    public function getCondominioPorId($id)
     {
         try {
 
@@ -1381,24 +1436,24 @@ class Banco
                 throw new Exception("Não existe condominio com id {$id}");
             }
 
-            $id_condominio = (int)$registro['id_condominio'];
+            $idCondominio = (int)$registro['id_condominio'];
             $nome = $registro['nome'];
-            $id_endereco = (int)$registro['id_endereco'];
+            $idEndereco = (int)$registro['id_endereco'];
 
-            $endereco_obj = $this->get_endereco_por_id($id_endereco);
+            $enderecoObj = $this->getEnderecoPorId($idEndereco);
 
-            $condominio_obj = new Condominio($nome, $endereco_obj);
-            $condominio_obj->set_id($id_condominio);
+            $condominio_obj = new Condominio($nome, $enderecoObj);
+            $condominio_obj->setId($idCondominio);
 
             return $condominio_obj;
         } catch (Exception $e) {
-            $erro = "ERRO! Banco->get_condominio_por_id: "  . $e->getMessage();
+            $erro = "ERRO! Banco->getCondominioPorId: "  . $e->getMessage();
             error_log($erro);
             return null;
         }
     }
 
-    public function verificar_endereco($endereco_obj)
+    public function verificarEndereco($enderecoObj)
     {
         try {
 
@@ -1411,8 +1466,8 @@ class Banco
 
             $stmt = $this->db->prepare($sql);
             $stmt->execute([
-                ':cep' => $endereco_obj->get_cep(),
-                ':numero' => $endereco_obj->get_numero()
+                ':cep' => $enderecoObj->get_cep(),
+                ':numero' => $enderecoObj->get_numero()
             ]);
 
             $registro = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -1421,7 +1476,7 @@ class Banco
                 throw new Exception("Não existe imóvel com este endereço");
             }
 
-            $id_endereco = (int)$registro['id_endereco'];
+            $idEndereco = (int)$registro['id_endereco'];
             $rua = $registro['rua'];
             $numero = $registro['numero'] ? (int)$registro['numero'] : null;
             $bairro = $registro['bairro'];
@@ -1431,19 +1486,19 @@ class Banco
             $uf = $registro['uf'];
 
             $endereco_resultado = new Endereco($rua, $bairro, $cep, $cidade, $uf);
-            $endereco_resultado->set_id($id_endereco);
-            $endereco_resultado->set_numero($numero);
-            $endereco_resultado->set_complemento($complemento);
+            $endereco_resultado->setId($idEndereco);
+            $endereco_resultado->setNumero($numero);
+            $endereco_resultado->setComplemento($complemento);
 
             return $endereco_resultado;
         } catch (Exception $e) {
-            $erro = "ERRO! Banco->verificar_endereco: "  . $e->getMessage();
+            $erro = "ERRO! Banco->verificarEndereco: "  . $e->getMessage();
             error_log($erro);
             return null;
         }
     }
 
-    public function verificar_usuario($username, $senha)
+    public function verificarUsuario($username, $senha)
     {
         try {
 
@@ -1468,46 +1523,46 @@ class Banco
             }
 
 
-            $id_usuario = (int)$registro['id_usuario'];
+            $idUsuario = (int)$registro['idUsuario'];
             $username = $registro['username'];
             $email = $registro['email'];
             $nome = $registro['nome'];
-            $cpf_cnpj = $registro['cpf_cnpj'];
+            $cpfCnpj = $registro['cpfCnpj'];
             $rg = $registro['rg'];
-            $id_endereco = $registro['id_endereco'];
-            $data_nascimento = $registro['data_nascimento'];
-            $tipo = $registro['tipo_usuario'];
+            $idEndereco = $registro['idEndereco'];
+            $dataNascimento = $registro['dataNascimento'];
+            $tipo = $registro['tipoUsuario'];
 
 
             $endereco = null;
-            if ($id_endereco) {
-                $endereco = $this->get_endereco_por_id($id_endereco);
+            if ($idEndereco) {
+                $endereco = $this->getEnderecoPorId($idEndereco);
             }
 
 
-            if ($data_nascimento) {
-                $data_nascimento = DateTime::createFromFormat('d-m-Y', $data_nascimento);
+            if ($dataNascimento) {
+                $dataNascimento = DateTime::createFromFormat('d-m-Y', $dataNascimento);
             }
 
 
             $telefones = [];
 
             $stmt = $this->db->prepare("
-            SELECT id_telefone FROM telefone_usuario 
+            SELECT idTelefone FROM telefone_usuario 
             WHERE id_usuario = ?
         ");
-            $stmt->execute([$id_usuario]);
+            $stmt->execute([$idUsuario]);
 
             $registros = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
             foreach ($registros as $row) {
-                $id_telefone = $row['id_telefone'];
+                $idTelefone = $row['id_telefone'];
 
                 $stmtTel = $this->db->prepare("
                 SELECT numero FROM telefone 
                 WHERE id_telefone = ?
             ");
-                $stmtTel->execute([$id_telefone]);
+                $stmtTel->execute([$idTelefone]);
 
                 $tel = $stmtTel->fetch(PDO::FETCH_ASSOC);
                 if ($tel) {
@@ -1522,100 +1577,103 @@ class Banco
                     SELECT creci FROM corretor 
                     WHERE id_usuario = ?
                 ");
-                    $stmt->execute([$id_usuario]);
+                    $stmt->execute([$idUsuario]);
 
                     $creci = $stmt->fetchColumn();
                     $creci = $creci ? (int)$creci : null;
 
-                    $usuario_obj = new Corretor(
+                    $usuarioObj = new Corretor(
                         $username,
                         $senha_hash_banco,
                         $email,
                         $nome,
-                        $cpf_cnpj,
+                        $cpfCnpj,
                         $creci
                     );
                     break;
 
                 case 'CAPTADOR':
-                    $usuario_obj = new Captador(
+                    $usuarioObj = new Captador(
                         $username,
                         $senha_hash_banco,
                         $email,
                         $nome,
-                        $cpf_cnpj
+                        $cpfCnpj
                     );
 
                     $stmt = $this->db->prepare("
                     SELECT salario FROM captador 
                     WHERE id_usuario = ?
                 ");
-                    $stmt->execute([$id_usuario]);
+                    $stmt->execute([$idUsuario]);
 
                     $salario = $stmt->fetchColumn();
                     if ($salario) {
-                        $usuario_obj->set_salario((float)$salario);
+                        $usuarioObj->setSalario((float)$salario);
                     }
                     break;
 
                 case 'GERENTE':
-                    $usuario_obj = new Gerente(
+                    $usuarioObj = new Gerente(
                         $username,
                         $senha_hash_banco,
                         $email,
                         $nome,
-                        $cpf_cnpj
+                        $cpfCnpj
                     );
 
                     $stmt = $this->db->prepare("
                     SELECT salario FROM gerente 
                     WHERE id_usuario = ?
                 ");
-                    $stmt->execute([$id_usuario]);
+                    $stmt->execute([$idUsuario]);
 
                     $salario = $stmt->fetchColumn();
                     if ($salario) {
-                        $usuario_obj->set_salario((float)$salario);
+                        $usuarioObj->setSalario((float)$salario);
                     }
                     break;
 
                 case 'CLIENTE':
-                    $usuario_obj = new Cliente(
+                    $usuarioObj = new Cliente(
                         $username,
                         $senha_hash_banco,
                         $email,
                         $nome,
-                        $cpf_cnpj
+                        $cpfCnpj
                     );
                     break;
 
                 case "ADMIN":
-                    $usuario_obj = new Usuario(
-                       $username, $senha_hash_banco, $email, $nome, $cpf_cnpj, $tipo
+                    $usuarioObj = new Usuario(
+                        $username,
+                        $senha_hash_banco,
+                        $email,
+                        $nome,
+                        $cpfCnpj,
+                        $tipo
                     );
                     break;
-                   
+
                 default:
                     throw new Exception("Tipo de usuário desconhecido: $tipo");
-                  
-                    
             }
 
-            $usuario_obj->set_endereco($endereco);
-            $usuario_obj->set_data_nascimento($data_nascimento);
-            $usuario_obj->set_rg($rg);
-            $usuario_obj->set_id($id_usuario);
-            $usuario_obj->set_telefones($telefones);
+            $usuarioObj->setEndereco($endereco);
+            $usuarioObj->setDataNascimento($dataNascimento);
+            $usuarioObj->setRg($rg);
+            $usuarioObj->setId($idUsuario);
+            $usuarioObj->setTelefones($telefones);
 
-            return $usuario_obj;
+            return $usuarioObj;
         } catch (Exception $e) {
-            $erro = "ERRO! Banco->verificar_usuario: "  . $e->getMessage();
+            $erro = "ERRO! Banco->verificarUsuario: "  . $e->getMessage();
             error_log($erro);
             return null;
         }
     }
 
-    public function cadastrar_endereco($endereco)
+    public function cadastrarEndereco($endereco)
     {
         try {
 
@@ -1639,100 +1697,100 @@ class Banco
 
             return true;
         } catch (Exception $e) {
-            error_log("ERRO! Banco->cadastrar_endereco: " . $e->getMessage());
+            error_log("ERRO! Banco->cadastrarEndereco: " . $e->getMessage());
             return false;
         }
     }
 
-    public function cadastrar_condominio($condominio)
+    public function cadastrarCondominio($condominio)
     {
         try {
 
 
-            $id_endereco = null;
-            if ($condominio->get_endereco()) {
-                $id_endereco = $condominio->get_endereco()->get_id();
+            $idEndereco = null;
+            if ($condominio->getEndereco()) {
+                $idEndereco = $condominio->getEndereco()->getId();
             }
 
             $sql = "
-            INSERT INTO condominio (nome, id_endereco) 
+            INSERT INTO condominio (nome, idEndereco) 
             VALUES (?, ?)
         ";
 
             $stmt = $this->db->prepare($sql);
             $stmt->execute([
-                $condominio->get_nome(),
-                $id_endereco
+                $condominio->getNome(),
+                $idEndereco
             ]);
 
             return true;
         } catch (Exception $e) {
-            error_log("ERRO! Banco->cadastrar_condominio: " . $e->getMessage());
+            error_log("ERRO! Banco->cadastrarCondominio: " . $e->getMessage());
             return false;
         }
     }
 
-    public function cadastrar_proprietario($proprietario)
+    public function cadastrarProprietario($proprietario)
     {
         try {
 
 
-            $id_endereco = null;
-            if ($proprietario->get_endereco()) {
-                $id_endereco = $proprietario->get_endereco()->get_id();
+            $idEndereco = null;
+            if ($proprietario->getEndereco()) {
+                $idEndereco = $proprietario->getEndereco()->getId();
             }
 
-            $data = $proprietario->get_data_nascimento();
+            $data = $proprietario->getDataNascimento();
             if ($data) {
                 $data = $data->format("d-m-Y");
             }
 
             $sql = "
             INSERT INTO proprietario 
-            (email, nome, cpf_cnpj, rg, id_endereco, data_nascimento) 
+            (email, nome, cpfCnpj, rg, idEndereco, dataNascimento) 
             VALUES (?, ?, ?, ?, ?, ?)
         ";
 
             $stmt = $this->db->prepare($sql);
             $stmt->execute([
-                $proprietario->get_email(),
-                $proprietario->get_nome(),
-                $proprietario->get_cpf_cnpj(),
-                $proprietario->get_rg(),
-                $id_endereco,
+                $proprietario->getEmail(),
+                $proprietario->getNome(),
+                $proprietario->getCpfCnpj(),
+                $proprietario->getRg(),
+                $idEndereco,
                 $data
             ]);
 
             $id_proprietario = $this->db->lastInsertId();
 
             // Telefones
-            if ($proprietario->get_telefones()) {
-                foreach ($proprietario->get_telefones() as $telefone) {
+            if ($proprietario->getTelefones()) {
+                foreach ($proprietario->getTelefones() as $telefone) {
 
                     $stmtTel = $this->db->prepare("
                     INSERT INTO telefone (numero) VALUES (?)
                 ");
                     $stmtTel->execute([$telefone]);
 
-                    $id_telefone = $this->db->lastInsertId();
+                    $idTelefone = $this->db->lastInsertId();
 
                     $stmtRel = $this->db->prepare("
                     INSERT INTO telefone_proprietario 
-                    (id_proprietario, id_telefone) 
+                    (id_proprietario, idTelefone) 
                     VALUES (?, ?)
                 ");
-                    $stmtRel->execute([$id_proprietario, $id_telefone]);
+                    $stmtRel->execute([$id_proprietario, $idTelefone]);
                 }
             }
 
             return true;
         } catch (Exception $e) {
-            error_log("ERRO! Banco->cadastrar_proprietario: " . $e->getMessage());
+            error_log("ERRO! Banco->cadastrarProprietario: " . $e->getMessage());
             return false;
         }
     }
 
-    public function cadastrar_anuncio($anuncio)
+    public function cadastrarAnuncio($anuncio)
     {
         try {
 
@@ -1748,44 +1806,44 @@ class Banco
                 $anuncio->get_titulo()
             ]);
 
-            $id_anuncio = $this->db->lastInsertId();
+            $idAnuncio = $this->db->lastInsertId();
 
             // Imagens
             if ($anuncio->get_imagens()) {
                 foreach ($anuncio->get_imagens() as $img) {
-                    $this->cadastrar_anexo($id_anuncio, $img, "Imagem");
+                    $this->cadastrarAnexo($idAnuncio, $img, "Imagem");
                 }
             }
 
             // Vídeos
             if ($anuncio->get_videos()) {
                 foreach ($anuncio->get_videos() as $video) {
-                    $this->cadastrar_anexo($id_anuncio, $video, "Video");
+                    $this->cadastrarAnexo($idAnuncio, $video, "Video");
                 }
             }
 
             // Documentos
             if ($anuncio->get_anexos()) {
                 foreach ($anuncio->get_anexos() as $anexo) {
-                    $this->cadastrar_anexo($id_anuncio, $anexo, "Documento");
+                    $this->cadastrarAnexo($idAnuncio, $anexo, "Documento");
                 }
             }
 
-            return $id_anuncio;
+            return $idAnuncio;
         } catch (Exception $e) {
-            error_log("ERRO! Banco->cadastrar_anuncio: " . $e->getMessage());
+            error_log("ERRO! Banco->cadastrarAnuncio: " . $e->getMessage());
             return false;
         }
     }
 
-    public function get_endereco_por_id($id)
+    public function getEnderecoPorId($id)
     {
         try {
 
 
             $stmt = $this->db->prepare("
             SELECT * FROM endereco 
-            WHERE id_endereco = ?
+            WHERE idEndereco = ?
         ");
             $stmt->execute([$id]);
 
@@ -1803,18 +1861,18 @@ class Banco
                 $registro['uf']
             );
 
-            $endereco->set_id((int)$registro['id_endereco']);
-            $endereco->set_numero((int)$registro['numero']);
-            $endereco->set_complemento($registro['complemento']);
+            $endereco->setId((int)$registro['idEndereco']);
+            $endereco->setNumero((int)$registro['numero']);
+            $endereco->setComplemento($registro['complemento']);
 
             return $endereco;
         } catch (Exception $e) {
-            error_log("ERRO! Banco->get_endereco_por_id: " . $e->getMessage());
+            error_log("ERRO! Banco->getEnderecoPorId: " . $e->getMessage());
             return null;
         }
     }
 
-    public function get_proprietario_por_cpf_cnpj($cpf_cnpj)
+    public function getProprietarioPorCpfCnpj($cpfCnpj)
     {
         try {
 
@@ -1823,12 +1881,12 @@ class Banco
             SELECT * FROM proprietario 
             WHERE cpf_cnpj = ?
         ");
-            $stmt->execute([$cpf_cnpj]);
+            $stmt->execute([$cpfCnpj]);
 
             $registro = $stmt->fetch(PDO::FETCH_ASSOC);
 
             if (!$registro) {
-                throw new Exception("Não existe proprietário com CPF/CNPJ {$cpf_cnpj}");
+                throw new Exception("Não existe proprietário com CPF/CNPJ {$cpfCnpj}");
             }
 
             $data = $registro['data_nascimento'];
@@ -1842,19 +1900,19 @@ class Banco
                 $registro['cpf_cnpj']
             );
 
-            $proprietario->set_id((int)$registro['id_proprietario']);
-            $proprietario->set_data_nascimento($data);
-            $proprietario->set_rg($registro['rg']);
+            $proprietario->setId((int)$registro['id_proprietario']);
+            $proprietario->setDataNascimento($data);
+            $proprietario->setRg($registro['rg']);
 
             return $proprietario;
         } catch (Exception $e) {
-            error_log("ERRO! Banco->get_proprietario_por_cpf_cnpj: " . $e->getMessage());
+            error_log("ERRO! Banco->getProprietarioPorCpfCnpj: " . $e->getMessage());
             return null;
         }
     }
 
 
-    public function cadastrar_imovel($imovel)
+    public function cadastrarImovel($imovel)
     {
         try {
 
@@ -1874,99 +1932,99 @@ class Banco
         ";
 
 
-            $categoria = $imovel->get_categoria();
+            $categoria = $imovel->getCategoria();
             $categoria = $categoria ? $categoria->value : null;
 
-            $endereco = $imovel->get_endereco();
-            $id_endereco = ($endereco && $endereco->get_id()) ? $endereco->get_id() : null;
+            $endereco = $imovel->getEndereco();
+            $idEndereco = ($endereco && $endereco->getId()) ? $endereco->getId() : null;
 
-            $anuncio = $imovel->get_anuncio();
-            $id_anuncio = ($anuncio && $anuncio->get_id()) ? $anuncio->get_id() : null;
+            $anuncio = $imovel->getAnuncio();
+            $idAnuncio = ($anuncio && $anuncio->getId()) ? $anuncio->getId() : null;
 
-            $status = $imovel->get_status();
+            $status = $imovel->getStatus();
             $status = $status ? $status->value : null;
 
-            $estado = $imovel->get_estado();
+            $estado = $imovel->getEstado();
             $estado = $estado ? $estado->value : null;
 
-            $situacao = $imovel->get_situacao();
+            $situacao = $imovel->getSituacao();
             $situacao = $situacao ? $situacao->value : null;
 
-            $ocupacao = $imovel->get_ocupacao();
+            $ocupacao = $imovel->getOcupacao();
             $ocupacao = $ocupacao ? $ocupacao->value : null;
 
-            $corretor = $imovel->get_corretor();
-            $cpf_corretor = $corretor ? $corretor->get_cpf_cnpj() : null;
+            $corretor = $imovel->getCorretor();
+            $cpf_corretor = $corretor ? $corretor->getCpfCnpj() : null;
 
-            $captador = $imovel->get_captador();
-            $cpf_captador = $captador ? $captador->get_cpf_cnpj() : null;
+            $captador = $imovel->getCaptador();
+            $cpf_captador = $captador ? $captador->getCpfCnpj() : null;
 
-            $condominio = $imovel->get_condominio();
-            $id_condominio = $condominio ? $condominio->get_id() : null;
+            $condominio = $imovel->getCondominio();
+            $idCondominio = $condominio ? $condominio->getId() : null;
 
-            $data_cadastro = $imovel->get_data_cadastro();
-            if ($data_cadastro instanceof DateTime) {
-                $data_cadastro = $data_cadastro->format("d-m-Y");
+            $dataCadastro = $imovel->getDataCadastro();
+            if ($dataCadastro instanceof DateTime) {
+                $dataCadastro = $dataCadastro->format("d-m-Y");
             }
 
-            $data_modificacao = $imovel->get_data_modificacao();
-            if ($data_modificacao instanceof DateTime) {
-                $data_modificacao = $data_modificacao->format("d-m-Y");
+            $dataModificacao = $imovel->getDataModificacao();
+            if ($dataModificacao instanceof DateTime) {
+                $dataModificacao = $dataModificacao->format("d-m-Y");
             }
 
 
             $stmt = $this->db->prepare($sql);
             $stmt->execute([
-                $imovel->get_valor_venda(),
-                $imovel->get_valor_aluguel(),
-                $imovel->get_quant_quartos(),
-                $imovel->get_quant_salas(),
-                $imovel->get_quant_vagas(),
-                $imovel->get_quant_banheiros(),
-                $imovel->get_quant_varandas(),
+                $imovel->getValorVenda(),
+                $imovel->getValorAluguel(),
+                $imovel->getQuantQuartos(),
+                $imovel->getQuantSalas(),
+                $imovel->getQuantVagas(),
+                $imovel->getQuantBanheiros(),
+                $imovel->getQuantVarandas(),
                 $categoria,
-                $id_endereco,
+                $idEndereco,
                 $status,
-                $imovel->get_iptu(),
-                $imovel->get_valor_condominio(),
-                $imovel->get_andar(),
+                $imovel->getIptu(),
+                $imovel->getValorCondominio(),
+                $imovel->getAndar(),
                 $estado,
-                $imovel->get_bloco(),
-                $imovel->get_ano_construcao(),
-                $imovel->get_area_total(),
-                $imovel->get_area_privativa(),
+                $imovel->getBloco(),
+                $imovel->getAnoConstrucao(),
+                $imovel->getAreaTotal(),
+                $imovel->getAreaPrivativa(),
                 $situacao,
                 $ocupacao,
                 $cpf_corretor,
                 $cpf_captador,
-                $data_cadastro,
-                $data_modificacao,
-                $id_anuncio,
-                $id_condominio
+                $dataCadastro,
+                $dataModificacao,
+                $idAnuncio,
+                $idCondominio
             ]);
 
             $id_imovel = $this->db->lastInsertId();
 
 
-            if ($imovel->get_proprietarios()) {
-                foreach ($imovel->get_proprietarios() as $prop) {
+            if ($imovel->getProprietarios()) {
+                foreach ($imovel->getProprietarios() as $prop) {
                     $stmtProp = $this->db->prepare("
                     INSERT INTO proprietario_imovel (cpf_cnpj_proprietario, id_imovel)
                     VALUES (?, ?)
                 ");
                     $stmtProp->execute([
-                        $prop->get_cpf_cnpj(),
+                        $prop->getCpfCnpj(),
                         $id_imovel
                     ]);
                 }
             }
 
 
-            if ($imovel->get_filtros()) {
-                foreach ($imovel->get_filtros() as $filtro) {
-                    $idFiltro = $this->get_id_filtro_imovel_por_nome($filtro);
+            if ($imovel->getFiltros()) {
+                foreach ($imovel->getFiltros() as $filtro) {
+                    $idFiltro = $this->getIdFiltroImovelPorNome($filtro);
                     if ($idFiltro) {
-                        $this->cadastrar_filtro_imovel($id_imovel, $filtro);
+                        $this->cadastrarFiltroImovel($id_imovel, $filtro);
                     }
                 }
             }
@@ -1976,12 +2034,12 @@ class Banco
             return true;
         } catch (Exception $e) {
             // $this->db->rollBack();
-            error_log("ERRO! Banco->cadastrar_imovel: " . $e->getMessage());
+            error_log("ERRO! Banco->cadastrarImovel: " . $e->getMessage());
             return false;
         }
     }
 
-    public function get_lista_imoveis()
+    public function getListaImoveis()
     {
 
         try {
@@ -2004,124 +2062,19 @@ class Banco
             foreach ($resultados as $dados) {
 
                 $id = (int)$dados['id_imovel'];
-
-                $valor_venda = $dados['valor_venda'] ? (float)$dados['valor_venda'] : null;
-                $valor_aluguel = $dados['valor_aluguel'] ? (float)$dados['valor_aluguel'] : null;
-                $quartos = $dados['quant_quartos'] ? (int)$dados['quant_quartos'] : null;
-                $salas = $dados['quant_salas'] ? (int)$dados['quant_salas'] : null;
-                $vagas = $dados['quant_vagas'] ? (int)$dados['quant_vagas'] : null;
-                $banheiros = $dados['quant_banheiros'] ? (int)$dados['quant_banheiros'] : null;
-                $varandas = $dados['quant_varandas'] ? (int)$dados['quant_varandas'] : null;
-
-                $categoria = $dados['categoria'] ?? null;
-                $status = $dados['status'] ?? null;
-                $estado = $dados['estado'] ?? null;
-                $situacao = $dados['situacao'] ?? null;
-                $ocupacao = $dados['ocupacao'] ?? null;
-
-                $endereco = $dados['id_endereco']
-                    ? $this->get_endereco_por_id((int)$dados['id_endereco'])
-                    : null;
-
-                $corretor = $dados['id_corretor']
-                    ? $this->get_usuario_por_id($dados['id_corretor'])
-                    : null;
-
-                $captador = $dados['id_captador']
-                    ? $this->get_usuario_por_id($dados['id_captador'])
-                    : null;
-
-                $anuncio = $dados['id_anuncio']
-                    ? $this->get_anuncio_por_id((int)$dados['id_anuncio'])
-                    : null;
-
-                $condominio = $dados['id_condominio']
-                    ? $this->get_condominio_por_id((int)$dados['id_condominio'])
-                    : null;
-
-                $data_cadastro = $dados['data_cadastro']
-                    ? new DateTime($dados['data_cadastro'])
-                    : null;
-
-                $data_modificacao = $dados['data_modificacao']
-                    ? new DateTime($dados['data_modificacao'])
-                    : null;
-
-
-                $imovel = new Imovel($endereco, $status, $categoria);
-
-                $imovel->set_id($id);
-                $imovel->set_valor_venda($valor_venda);
-                $imovel->set_valor_aluguel($valor_aluguel);
-                $imovel->set_quant_quartos($quartos);
-                $imovel->set_quant_salas($salas);
-                $imovel->set_quant_vagas($vagas);
-                $imovel->set_quant_banheiros($banheiros);
-                $imovel->set_quant_varandas($varandas);
-                $imovel->set_iptu($dados['iptu']);
-                $imovel->set_valor_condominio($dados['valor_condominio']);
-                $imovel->set_andar($dados['andar']);
-                $imovel->set_estado($estado);
-                $imovel->set_bloco($dados['bloco']);
-                $imovel->set_ano_construcao($dados['ano_construcao']);
-                $imovel->set_area_total($dados['area_total']);
-                $imovel->set_area_privativa($dados['area_privativa']);
-                $imovel->set_situacao($situacao);
-                $imovel->set_ocupacao($ocupacao);
-                $imovel->set_corretor($corretor);
-                $imovel->set_captador($captador);
-                $imovel->set_data_cadastro($data_cadastro);
-                $imovel->set_data_modificacao($data_modificacao);
-                $imovel->set_anuncio($anuncio);
-                $imovel->set_condominio($condominio);
-
-
-                $stmtP = $this->db->prepare("
-                SELECT cpf_cnpj_proprietario
-                FROM proprietario_imovel
-                WHERE id_imovel = :id
-            ");
-                $stmtP->execute([':id' => $id]);
-
-                $proprietarios = [];
-
-                while ($row = $stmtP->fetch(PDO::FETCH_ASSOC)) {
-                    $prop = $this->get_proprietario_por_cpf_cnpj($row['cpf_cnpj_proprietario']);
-                    if ($prop) {
-                        $proprietarios[] = $prop;
-                    }
-                }
-
-                $imovel->set_proprietarios($proprietarios);
-
-
-                $stmtF = $this->db->prepare("
-                SELECT f.nome
-                FROM imovel_filtros i
-                JOIN filtros_imovel f ON f.id_filtros_imovel = i.id_filtros_imovel
-                WHERE i.id_imovel = :id
-            ");
-                $stmtF->execute([':id' => $id]);
-
-                $filtros = [];
-
-                while ($row = $stmtF->fetch(PDO::FETCH_ASSOC)) {
-                    $filtros[] = $row['nome'];
-                }
-
-                $imovel->set_filtros($filtros);
-
+                $imovel = $this->getImovelPorId($id);
+                    
                 $lista[] = $imovel;
             }
 
             return $lista;
         } catch (Exception $e) {
-            error_log("ERRO Banco->get_lista_imoveis: " . $e->getMessage());
+            error_log("ERRO Banco->getListaImoveis: " . $e->getMessage());
             return [];
         }
     }
 
-    public function get_lista_imoveis_disponiveis()
+    public function getListaImoveisDisponiveis()
     {
 
         try {
@@ -2146,127 +2099,19 @@ class Banco
 
                 $id = (int)$dados['id_imovel'];
 
-
-                $valor_venda = $dados['valor_venda'] ? (float)$dados['valor_venda'] : null;
-                $valor_aluguel = $dados['valor_aluguel'] ? (float)$dados['valor_aluguel'] : null;
-                $quartos = $dados['quant_quartos'] ? (int)$dados['quant_quartos'] : null;
-                $salas = $dados['quant_salas'] ? (int)$dados['quant_salas'] : null;
-                $vagas = $dados['quant_vagas'] ? (int)$dados['quant_vagas'] : null;
-                $banheiros = $dados['quant_banheiros'] ? (int)$dados['quant_banheiros'] : null;
-                $varandas = $dados['quant_varandas'] ? (int)$dados['quant_varandas'] : null;
-
-
-                $categoria = $dados['categoria'] ?? null;
-                $status = $dados['status'] ?? null;
-                $estado = $dados['estado'] ?? null;
-                $situacao = $dados['situacao'] ?? null;
-                $ocupacao = $dados['ocupacao'] ?? null;
-
-
-                $endereco = $dados['id_endereco']
-                    ? $this->get_endereco_por_id((int)$dados['id_endereco'])
-                    : null;
-
-                $corretor = $dados['id_corretor']
-                    ? $this->get_usuario_por_id($dados['id_corretor'])
-                    : null;
-
-                $captador = $dados['id_captador']
-                    ? $this->get_usuario_por_id($dados['id_captador'])
-                    : null;
-
-                $anuncio = $dados['id_anuncio']
-                    ? $this->get_anuncio_por_id((int)$dados['id_anuncio'])
-                    : null;
-
-                $condominio = $dados['id_condominio']
-                    ? $this->get_condominio_por_id((int)$dados['id_condominio'])
-                    : null;
-
-
-                $data_cadastro = $dados['data_cadastro']
-                    ? new DateTime($dados['data_cadastro'])
-                    : null;
-
-                $data_modificacao = $dados['data_modificacao']
-                    ? new DateTime($dados['data_modificacao'])
-                    : null;
-
-
-                $imovel = new Imovel($endereco, $status, $categoria);
-
-                $imovel->set_id($id);
-                $imovel->set_valor_venda($valor_venda);
-                $imovel->set_valor_aluguel($valor_aluguel);
-                $imovel->set_quant_quartos($quartos);
-                $imovel->set_quant_salas($salas);
-                $imovel->set_quant_vagas($vagas);
-                $imovel->set_quant_banheiros($banheiros);
-                $imovel->set_quant_varandas($varandas);
-                $imovel->set_iptu($dados['iptu']);
-                $imovel->set_valor_condominio($dados['valor_condominio']);
-                $imovel->set_andar($dados['andar']);
-                $imovel->set_estado($estado);
-                $imovel->set_bloco($dados['bloco']);
-                $imovel->set_ano_construcao($dados['ano_construcao']);
-                $imovel->set_area_total($dados['area_total']);
-                $imovel->set_area_privativa($dados['area_privativa']);
-                $imovel->set_situacao($situacao);
-                $imovel->set_ocupacao($ocupacao);
-                $imovel->set_corretor($corretor);
-                $imovel->set_captador($captador);
-                $imovel->set_data_cadastro($data_cadastro);
-                $imovel->set_data_modificacao($data_modificacao);
-                $imovel->set_anuncio($anuncio);
-                $imovel->set_condominio($condominio);
-
-
-                $stmtP = $this->db->prepare("
-                SELECT cpf_cnpj_proprietario
-                FROM proprietario_imovel
-                WHERE id_imovel = :id
-            ");
-                $stmtP->execute([':id' => $id]);
-
-                $proprietarios = [];
-
-                while ($row = $stmtP->fetch(PDO::FETCH_ASSOC)) {
-                    $prop = $this->get_proprietario_por_cpf_cnpj($row['cpf_cnpj_proprietario']);
-                    if ($prop) {
-                        $proprietarios[] = $prop;
-                    }
-                }
-
-                $imovel->set_proprietarios($proprietarios);
-
-
-                $stmtF = $this->db->prepare("
-                SELECT f.nome
-                FROM imovel_filtros i
-                JOIN filtros_imovel f ON f.id_filtros_imovel = i.id_filtros_imovel
-                WHERE i.id_imovel = :id
-            ");
-                $stmtF->execute([':id' => $id]);
-
-                $filtros = [];
-
-                while ($row = $stmtF->fetch(PDO::FETCH_ASSOC)) {
-                    $filtros[] = $row['nome'];
-                }
-
-                $imovel->set_filtros($filtros);
+                $imovel = $this->getImovelPorId($id);
 
                 $lista[] = $imovel;
             }
 
             return $lista;
         } catch (Exception $e) {
-            error_log("ERRO Banco->get_lista_imoveis_disponiveis: " . $e->getMessage());
+            error_log("ERRO Banco->getListaImoveisDisponiveis: " . $e->getMessage());
             return [];
         }
     }
 
-    public function atualizar_imovel($imovel)
+    public function atualizarImovel($imovel)
     {
 
         try {
@@ -2274,53 +2119,53 @@ class Banco
             $this->db->beginTransaction();
 
 
-            $categoria = $imovel->get_categoria();
+            $categoria = $imovel->getCategoria();
             $categoria = $categoria ? $categoria->value : null;
 
-            $status = $imovel->get_status();
+            $status = $imovel->getStatus();
             $status = $status ? $status->value : null;
 
-            $estado = $imovel->get_estado();
+            $estado = $imovel->getEstado();
             $estado = $estado ? $estado->value : null;
 
-            $situacao = $imovel->get_situacao();
+            $situacao = $imovel->getSituacao();
             $situacao = $situacao ? $situacao->value : null;
 
-            $ocupacao = $imovel->get_ocupacao();
+            $ocupacao = $imovel->getOcupacao();
             $ocupacao = $ocupacao ? $ocupacao->value : null;
 
 
-            $endereco = $imovel->get_endereco();
-            $endereco = ($endereco && $endereco->get_id()) ? $endereco->get_id() : null;
+            $endereco = $imovel->getEndereco();
+            $endereco = ($endereco && $endereco->getId()) ? $endereco->getId() : null;
 
-            $anuncio = $imovel->get_anuncio();
-            $anuncio = ($anuncio && $anuncio->get_id()) ? $anuncio->get_id() : null;
+            $anuncio = $imovel->getAnuncio();
+            $anuncio = ($anuncio && $anuncio->getId()) ? $anuncio->getId() : null;
 
-            $condominio = $imovel->get_condominio();
-            $condominio = $condominio ? $condominio->get_id() : null;
+            $condominio = $imovel->getCondominio();
+            $condominio = $condominio ? $condominio->getId() : null;
 
-            $corretor = $imovel->get_corretor();
-            $corretor = $corretor ? $corretor->get_cpf_cnpj() : null;
+            $corretor = $imovel->getCorretor();
+            $corretor = $corretor ? $corretor->getCpfCnpj() : null;
 
-            $captador = $imovel->get_captador();
-            $captador = $captador ? $captador->get_cpf_cnpj() : null;
-
-
-            $data_cadastro = $imovel->get_data_cadastro();
-            $data_cadastro = $data_cadastro ? $data_cadastro->format("Y-m-d") : null;
-
-            $data_modificacao = $imovel->get_data_modificacao();
-            $data_modificacao = $data_modificacao ? $data_modificacao->format("Y-m-d") : null;
+            $captador = $imovel->getCaptador();
+            $captador = $captador ? $captador->getCpfCnpj() : null;
 
 
-            $imovel_db = $this->get_imovel_por_id($imovel->get_id());
+            $dataCadastro = $imovel->getDataCadastro();
+            $dataCadastro = $dataCadastro ? $dataCadastro->format("Y-m-d") : null;
+
+            $dataModificacao = $imovel->getDataModificacao();
+            $dataModificacao = $dataModificacao ? $dataModificacao->format("Y-m-d") : null;
 
 
-            $props_antigos = $imovel_db ? $imovel_db->get_proprietarios() : [];
-            $props_novos = $imovel->get_proprietarios() ?: [];
+            $imovelDb = $this->getImovelPorId($imovel->getId());
 
-            foreach ($props_antigos as $p) {
-                if (!in_array($p, $props_novos)) {
+
+            $propsAntigos = $imovelDb ? $imovelDb->getProprietarios() : [];
+            $propsNovos = $imovel->getProprietarios() ?: [];
+
+            foreach ($propsAntigos as $p) {
+                if (!in_array($p, $propsNovos)) {
 
                     $stmt = $this->db->prepare("
                     DELETE FROM proprietario_imovel
@@ -2328,44 +2173,44 @@ class Banco
                       AND id_imovel = :id
                 ");
                     $stmt->execute([
-                        ':cpf' => $p->get_cpf_cnpj(),
-                        ':id' => $imovel->get_id()
+                        ':cpf' => $p->getCpfCnpj(),
+                        ':id' => $imovel->getId()
                     ]);
                 }
             }
 
-            foreach ($props_novos as $p) {
-                if (!in_array($p, $props_antigos)) {
+            foreach ($propsNovos as $p) {
+                if (!in_array($p, $propsAntigos)) {
 
                     $stmt = $this->db->prepare("
                     INSERT INTO proprietario_imovel (cpf_cnpj_proprietario, id_imovel)
                     VALUES (:cpf, :id)
                 ");
                     $stmt->execute([
-                        ':cpf' => $p->get_cpf_cnpj(),
-                        ':id' => $imovel->get_id()
+                        ':cpf' => $p->getCpfCnpj(),
+                        ':id' => $imovel->getId()
                     ]);
                 }
             }
 
 
-            $filtros_antigos = $imovel_db ? $imovel_db->get_filtros() : [];
-            $filtros_novos = $imovel->get_filtros() ?: [];
+            $filtrosAntigos = $imovelDb ? $imovelDb->getFiltros() : [];
+            $filtrosNovos = $imovel->getFiltros() ?: [];
 
-            foreach ($filtros_antigos as $f) {
-                if (!in_array($f, $filtros_novos)) {
-                    $id = $this->get_id_filtro_imovel_por_nome($f);
+            foreach ($filtrosAntigos as $f) {
+                if (!in_array($f, $filtrosNovos)) {
+                    $id = $this->getIdFiltroImovelPorNome($f);
                     if ($id !== null) {
-                        $this->remover_filtro_do_imovel($imovel->get_id(), $id);
+                        $this->removerFiltroDoImovel($imovel->getId(), $id);
                     }
                 }
             }
 
-            foreach ($filtros_novos as $f) {
-                if (!in_array($f, $filtros_antigos)) {
-                    $id = $this->get_id_filtro_imovel_por_nome($f);
+            foreach ($filtrosNovos as $f) {
+                if (!in_array($f, $filtrosAntigos)) {
+                    $id = $this->getIdFiltroImovelPorNome($f);
                     if ($id !== null) {
-                        $this->cadastrar_filtro_imovel($imovel->get_id(), $id);
+                        $this->cadastrarFiltroImovel($imovel->getId(), $id);
                     }
                 }
             }
@@ -2404,45 +2249,45 @@ class Banco
 
             $stmt = $this->db->prepare($sql);
             $stmt->execute([
-                ':valor_venda' => $imovel->get_valor_venda(),
-                ':valor_aluguel' => $imovel->get_valor_aluguel(),
-                ':quartos' => $imovel->get_quant_quartos(),
-                ':salas' => $imovel->get_quant_salas(),
-                ':vagas' => $imovel->get_quant_vagas(),
-                ':banheiros' => $imovel->get_quant_banheiros(),
-                ':varandas' => $imovel->get_quant_varandas(),
+                ':valor_venda' => $imovel->getValorVenda(),
+                ':valor_aluguel' => $imovel->getValorAluguel(),
+                ':quartos' => $imovel->getQuantQuartos(),
+                ':salas' => $imovel->getQuantSalas(),
+                ':vagas' => $imovel->getQuantVagas(),
+                ':banheiros' => $imovel->getQuantBanheiros(),
+                ':varandas' => $imovel->getQuantVarandas(),
                 ':categoria' => $categoria,
                 ':endereco' => $endereco,
                 ':status' => $status,
-                ':iptu' => $imovel->get_iptu(),
-                ':condominio_valor' => $imovel->get_valor_condominio(),
-                ':andar' => $imovel->get_andar(),
+                ':iptu' => $imovel->getIptu(),
+                ':condominio_valor' => $imovel->getValorCondominio(),
+                ':andar' => $imovel->getAndar(),
                 ':estado' => $estado,
-                ':bloco' => $imovel->get_bloco(),
-                ':ano' => $imovel->get_ano_construcao(),
-                ':area_total' => $imovel->get_area_total(),
-                ':area_privativa' => $imovel->get_area_privativa(),
+                ':bloco' => $imovel->getBloco(),
+                ':ano' => $imovel->getAnoConstrucao(),
+                ':area_total' => $imovel->getAreaTotal(),
+                ':area_privativa' => $imovel->getAreaPrivativa(),
                 ':situacao' => $situacao,
                 ':ocupacao' => $ocupacao,
                 ':corretor' => $corretor,
                 ':captador' => $captador,
-                ':data_cadastro' => $data_cadastro,
-                ':data_modificacao' => $data_modificacao,
+                ':data_cadastro' => $dataCadastro,
+                ':data_modificacao' => $dataModificacao,
                 ':anuncio' => $anuncio,
                 ':condominio' => $condominio,
-                ':id' => $imovel->get_id()
+                ':id' => $imovel->getId()
             ]);
 
             $this->db->commit();
             return true;
         } catch (Exception $e) {
             $this->db->rollBack();
-            error_log("ERRO Banco->atualizar_imovel: " . $e->getMessage());
+            error_log("ERRO Banco->atualizarImovel: " . $e->getMessage());
             return false;
         }
     }
 
-    public function get_id_filtro_imovel_por_nome($nome)
+    public function getIdFiltroImovelPorNome($nome)
     {
         try {
 
@@ -2457,12 +2302,12 @@ class Banco
 
             return $row ? (int)$row['id_filtros_imovel'] : null;
         } catch (Exception $e) {
-            error_log("ERRO Banco->get_id_filtro_imovel_por_nome: " . $e->getMessage());
+            error_log("ERRO Banco->getIdFiltroImovelPorNome: " . $e->getMessage());
             return null;
         }
     }
 
-    public function cadastrar_filtro_imovel($id_imovel, $id_filtro)
+    public function cadastrarFiltroImovel($idImovel, $idFiltro)
     {
         try {
 
@@ -2471,18 +2316,18 @@ class Banco
             VALUES (:id_imovel, :id_filtro)
         ");
             $stmt->execute([
-                ':id_imovel' => $id_imovel,
-                ':id_filtro' => $id_filtro
+                ':id_imovel' => $idImovel,
+                ':id_filtro' => $idFiltro
             ]);
 
             return true;
         } catch (Exception $e) {
-            error_log("ERRO Banco->cadastrar_filtro_imovel: " . $e->getMessage());
+            error_log("ERRO Banco->cadastrarFiltroImovel: " . $e->getMessage());
             return false;
         }
     }
 
-    public function remover_filtro_do_imovel($id_imovel, $id_filtro)
+    public function removerFiltroDoImovel($idImovel, $idFiltro)
     {
         try {
 
@@ -2492,18 +2337,18 @@ class Banco
               AND id_filtros_imovel = :id_filtro
         ");
             $stmt->execute([
-                ':id_imovel' => $id_imovel,
-                ':id_filtro' => $id_filtro
+                ':id_imovel' => $idImovel,
+                ':id_filtro' => $idFiltro
             ]);
 
             return true;
         } catch (Exception $e) {
-            error_log("ERRO Banco->remover_filtro_do_imovel: " . $e->getMessage());
+            error_log("ERRO Banco->removerFiltroDoImovel: " . $e->getMessage());
             return false;
         }
     }
 
-    public function get_id_filtro_condominio_por_nome($nome)
+    public function getIdFiltroCondominioPorNome($nome)
     {
         try {
 
@@ -2518,12 +2363,12 @@ class Banco
 
             return $row ? (int)$row['id_filtros_condominio'] : null;
         } catch (Exception $e) {
-            error_log("ERRO Banco->get_id_filtro_condominio_por_nome: " . $e->getMessage());
+            error_log("ERRO Banco->getIdFiltroCondominioPorNome: " . $e->getMessage());
             return null;
         }
     }
 
-    public function cadastrar_filtro_condominio($id_condominio, $id_filtro)
+    public function cadastrarFiltroCondominio($idCondominio, $idFiltro)
     {
         try {
 
@@ -2532,18 +2377,18 @@ class Banco
             VALUES (:id_filtro, :id_condominio)
         ");
             $stmt->execute([
-                ':id_filtro' => $id_filtro,
-                ':id_condominio' => $id_condominio
+                ':id_filtro' => $idFiltro,
+                ':id_condominio' => $idCondominio
             ]);
 
             return true;
         } catch (Exception $e) {
-            error_log("ERRO Banco->cadastrar_filtro_condominio: " . $e->getMessage());
+            error_log("ERRO Banco->cadastrarFiltroCondominio: " . $e->getMessage());
             return false;
         }
     }
 
-    public function remover_filtro_do_condominio($id_condominio, $id_filtro)
+    public function removerFiltroDoCondominio($idCondominio, $idFiltro)
     {
         try {
 
@@ -2553,22 +2398,18 @@ class Banco
               AND id_filtros_condominio = :id_filtro
         ");
             $stmt->execute([
-                ':id_condominio' => $id_condominio,
-                ':id_filtro' => $id_filtro
+                ':id_condominio' => $idCondominio,
+                ':id_filtro' => $idFiltro
             ]);
 
             return true;
         } catch (Exception $e) {
-            error_log("ERRO Banco->remover_filtro_do_condominio: " . $e->getMessage());
+            error_log("ERRO Banco->removerFiltroDoCondominio: " . $e->getMessage());
             return false;
         }
     }
 
-
-
-
-
-    public function atualizar_anuncio($anuncio)
+    public function atualizarAnuncio($anuncio)
     {
 
         try {
@@ -2585,9 +2426,9 @@ class Banco
 
             $stmt = $this->db->prepare($sql);
             $stmt->execute([
-                ':descricao' => $anuncio->get_descricao(),
-                ':titulo' => $anuncio->get_titulo(),
-                ':id' => $anuncio->get_id()
+                ':descricao' => $anuncio->getDescricao(),
+                ':titulo' => $anuncio->getTitulo(),
+                ':id' => $anuncio->getId()
             ]);
 
             // mídias
@@ -2598,12 +2439,12 @@ class Banco
             return true;
         } catch (Exception $e) {
             $this->db->rollBack();
-            error_log("ERRO Banco->atualizar_anuncio: " . $e->getMessage());
+            error_log("ERRO Banco->atualizarAnuncio: " . $e->getMessage());
             return false;
         }
     }
 
-    public function atualizar_condominio($condominio)
+    public function atualizarCondominio($condominio)
     {
 
         try {
@@ -2619,27 +2460,27 @@ class Banco
 
             $stmt = $this->db->prepare($sql);
             $stmt->execute([
-                ':nome' => $condominio->get_nome(),
-                ':id' => $condominio->get_id()
+                ':nome' => $condominio->getNome(),
+                ':id' => $condominio->getId()
             ]);
 
 
-            $condominio_db = $this->get_condominio_por_id(
-                $condominio->get_id()
+            $condominioDb = $this->getCondominioPorId(
+                $condominio->getId()
             );
 
-            $filtros_antigos = $condominio_db ? $condominio_db->get_filtros() : [];
-            $filtros_novos = $condominio->get_filtros() ?: [];
+            $filtrosAntigos = $condominioDb ? $condominioDb->getFiltros() : [];
+            $filtrosNovos = $condominio->getFiltros() ?: [];
 
 
-            foreach ($filtros_antigos as $filtro) {
-                if (!in_array($filtro, $filtros_novos)) {
+            foreach ($filtrosAntigos as $filtro) {
+                if (!in_array($filtro, $filtrosNovos)) {
 
-                    $id = $this->get_id_filtro_condominio_por_nome($filtro);
+                    $id = $this->getIdFiltroCondominioPorNome($filtro);
 
                     if ($id !== null) {
-                        $this->remover_filtro_do_condominio(
-                            $condominio->get_id(),
+                        $this->removerFiltroDoCondominio(
+                            $condominio->getId(),
                             $id
                         );
                     }
@@ -2647,15 +2488,15 @@ class Banco
             }
 
 
-            foreach ($filtros_novos as $filtro) {
-                if (!in_array($filtro, $filtros_antigos)) {
+            foreach ($filtrosNovos as $filtro) {
+                if (!in_array($filtro, $filtrosAntigos)) {
 
-                    $id = $this->get_id_filtro_condominio_por_nome($filtro);
+                    $id = $this->getIdFiltroCondominioPorNome($filtro);
 
                     if ($id !== null) {
-                        $this->cadastrar_filtro_condominio(
-                            $condominio->get_id(),
-                            $filtro
+                        $this->cadastrarFiltroCondominio(
+                            $condominio->getId(),
+                            $id
                         );
                     }
                 }
@@ -2665,12 +2506,12 @@ class Banco
             return true;
         } catch (Exception $e) {
             $this->db->rollBack();
-            error_log("ERRO Banco->atualizar_condominio: " . $e->getMessage());
+            error_log("ERRO Banco->atualizarCondominio: " . $e->getMessage());
             return false;
         }
     }
 
-    public function atualizar_usuario($usuario)
+    public function atualizarUsuario($usuario)
     {
         try {
 
@@ -2690,45 +2531,45 @@ class Banco
                 WHERE cpf_cnpj = :cpf_where
             ";
 
-            $endereco = $usuario->get_endereco();
-            $endereco = $endereco ? $endereco->get_id() : null;
+            $endereco = $usuario->getEndereco();
+            $endereco = $endereco ? $endereco->getId() : null;
 
-            $data_nascimento = $usuario->get_data_nascimento();
-            $data_nascimento = $data_nascimento
-                ? $data_nascimento->format("Y-m-d")
+            $dataNascimento = $usuario->getDataNascimento();
+            $dataNascimento = $dataNascimento
+                ? $dataNascimento->format("Y-m-d")
                 : null;
 
-            $tipo_usuario = $usuario->get_tipo();
-            $tipo_usuario = $tipo_usuario ? $tipo_usuario->value : null;
+            $tipoUsuario = $usuario->getTipo();
+            $tipoUsuario = $tipoUsuario ? $tipoUsuario->value : null;
 
 
-            $senha_hash = hash('sha256', $usuario->get_senha());
+            $senha_hash = hash('sha256', $usuario->getSenha());
 
             $stmt = $this->db->prepare($sql);
             $stmt->execute([
-                ':username' => $usuario->get_username(),
+                ':username' => $usuario->getUsername(),
                 ':senha' => $senha_hash,
-                ':email' => $usuario->get_email(),
-                ':nome' => $usuario->get_nome(),
-                ':cpf' => $usuario->get_cpf_cnpj(),
-                ':rg' => $usuario->get_rg(),
+                ':email' => $usuario->getEmail(),
+                ':nome' => $usuario->getNome(),
+                ':cpf' => $usuario->getCpfCnpj(),
+                ':rg' => $usuario->getRg(),
                 ':endereco' => $endereco,
-                ':data' => $data_nascimento,
-                ':tipo' => $tipo_usuario,
-                ':cpf_where' => $usuario->get_cpf_cnpj()
+                ':data' => $dataNascimento,
+                ':tipo' => $tipoUsuario,
+                ':cpf_where' => $usuario->getCpfCnpj()
             ]);
 
 
-            $usuario_db = $this->get_usuario_por_cpf_cnpj(
-                $usuario->get_cpf_cnpj()
+            $usuario_db = $this->getUsuarioPorCpfCnpj(
+                $usuario->getCpfCnpj()
             );
 
-            $telefones_antigos = $usuario_db ? $usuario_db->get_telefones() : [];
-            $telefones_novos = $usuario->get_telefones() ?: [];
+            $telefonesAntigos = $usuario_db ? $usuario_db->getTelefones() : [];
+            $telefonesNovos = $usuario->getTelefones() ?: [];
 
 
-            foreach ($telefones_antigos as $tel) {
-                if (!in_array($tel, $telefones_novos)) {
+            foreach ($telefonesAntigos as $tel) {
+                if (!in_array($tel, $telefonesNovos)) {
 
                     $stmt = $this->db->prepare("
                         SELECT id_telefone FROM telefone WHERE numero = :numero
@@ -2755,8 +2596,8 @@ class Banco
             }
 
 
-            foreach ($telefones_novos as $tel) {
-                if (!in_array($tel, $telefones_antigos)) {
+            foreach ($telefonesNovos as $tel) {
+                if (!in_array($tel, $telefonesAntigos)) {
 
                     $stmt = $this->db->prepare("
                         INSERT INTO telefone (numero) VALUES (:numero)
@@ -2770,14 +2611,14 @@ class Banco
                         VALUES (:id_usuario, :id_tel)
                     ");
                     $stmt->execute([
-                        ':id_usuario' => $usuario->get_id(),
+                        ':id_usuario' => $usuario->getId(),
                         ':id_tel' => $id_tel
                     ]);
                 }
             }
 
 
-            if ($tipo_usuario === "CORRETOR") {
+            if ($tipoUsuario === "CORRETOR") {
 
                 $stmt = $this->db->prepare("
                     UPDATE corretor
@@ -2785,10 +2626,10 @@ class Banco
                     WHERE id_usuario = :id
                 ");
                 $stmt->execute([
-                    ':creci' => $usuario->get_creci(),
-                    ':id' => $usuario->get_id()
+                    ':creci' => $usuario->getCreci(),
+                    ':id' => $usuario->getId()
                 ]);
-            } elseif ($tipo_usuario === "CAPTADOR") {
+            } elseif ($tipoUsuario === "CAPTADOR") {
 
                 $stmt = $this->db->prepare("
                     UPDATE captador
@@ -2796,10 +2637,10 @@ class Banco
                     WHERE id_usuario = :id
                 ");
                 $stmt->execute([
-                    ':salario' => $usuario->get_salario(),
-                    ':id' => $usuario->get_id()
+                    ':salario' => $usuario->getSalario(),
+                    ':id' => $usuario->getId()
                 ]);
-            } elseif ($tipo_usuario === "GERENTE") {
+            } elseif ($tipoUsuario === "GERENTE") {
 
                 $stmt = $this->db->prepare("
                     UPDATE gerente
@@ -2807,8 +2648,8 @@ class Banco
                     WHERE id_usuario = :id
                 ");
                 $stmt->execute([
-                    ':salario' => $usuario->get_salario(),
-                    ':id' => $usuario->get_id()
+                    ':salario' => $usuario->getSalario(),
+                    ':id' => $usuario->getId()
                 ]);
             }
 
@@ -2816,12 +2657,12 @@ class Banco
             return true;
         } catch (Exception $e) {
             $this->db->rollBack();
-            error_log("ERRO Banco->atualizar_usuario: " . $e->getMessage());
+            error_log("ERRO Banco->atualizarUsuario: " . $e->getMessage());
             return false;
         }
     }
 
-    public function atualizar_proprietario($proprietario)
+    public function atualizarProprietario($proprietario)
     {
 
         try {
@@ -2839,34 +2680,34 @@ class Banco
                 WHERE cpf_cnpj = :cpf_where
             ";
 
-            $endereco = $proprietario->get_endereco();
-            $endereco = $endereco ? $endereco->get_id() : null;
+            $endereco = $proprietario->getEndereco();
+            $endereco = $endereco ? $endereco->getId() : null;
 
-            $data_nascimento = $proprietario->get_data_nascimento();
-            $data_nascimento = $data_nascimento
-                ? $data_nascimento->format("Y-m-d")
+            $dataNascimento = $proprietario->getDataNascimento();
+            $dataNascimento = $dataNascimento
+                ? $dataNascimento->format("Y-m-d")
                 : null;
 
             $stmt = $this->db->prepare($sql);
             $stmt->execute([
-                ':email' => $proprietario->get_email(),
-                ':nome' => $proprietario->get_nome(),
-                ':cpf' => $proprietario->get_cpf_cnpj(),
-                ':rg' => $proprietario->get_rg(),
+                ':email' => $proprietario->getEmail(),
+                ':nome' => $proprietario->getNome(),
+                ':cpf' => $proprietario->getCpfCnpj(),
+                ':rg' => $proprietario->getRg(),
                 ':endereco' => $endereco,
-                ':data' => $data_nascimento,
-                ':cpf_where' => $proprietario->get_cpf_cnpj()
+                ':data' => $dataNascimento,
+                ':cpf_where' => $proprietario->getCpfCnpj()
             ]);
 
-            $proprietario_db = $this->get_proprietario_por_cpf_cnpj(
-                $proprietario->get_cpf_cnpj()
+            $proprietarioDb = $this->getProprietarioPorCpfCnpj(
+                $proprietario->getCpfCnpj()
             );
 
-            $telefones_antigos = $proprietario_db ? $proprietario_db->get_telefones() : [];
-            $telefones_novos = $proprietario->get_telefones() ?: [];
+            $telefonesAntigos = $proprietarioDb ? $proprietarioDb->getTelefones() : [];
+            $telefonesNovos = $proprietario->getTelefones() ?: [];
 
-            foreach ($telefones_antigos as $tel) {
-                if (!in_array($tel, $telefones_novos)) {
+            foreach ($telefonesAntigos as $tel) {
+                if (!in_array($tel, $telefonesNovos)) {
 
                     $stmt = $this->db->prepare("
                         SELECT id_telefone FROM telefone WHERE numero = :numero
@@ -2892,8 +2733,8 @@ class Banco
                 }
             }
 
-            foreach ($telefones_novos as $tel) {
-                if (!in_array($tel, $telefones_antigos)) {
+            foreach ($telefonesNovos as $tel) {
+                if (!in_array($tel, $telefonesAntigos)) {
 
                     $stmt = $this->db->prepare("
                         INSERT INTO telefone (numero) VALUES (:numero)
@@ -2907,7 +2748,7 @@ class Banco
                         VALUES (:id_prop, :id_tel)
                     ");
                     $stmt->execute([
-                        ':id_prop' => $proprietario->get_id(),
+                        ':id_prop' => $proprietario->getId(),
                         ':id_tel' => $id_tel
                     ]);
                 }
@@ -2917,12 +2758,12 @@ class Banco
             return true;
         } catch (Exception $e) {
             $this->db->rollBack();
-            error_log("ERRO Banco->atualizar_proprietario: " . $e->getMessage());
+            error_log("ERRO Banco->atualizarProprietario: " . $e->getMessage());
             return false;
         }
     }
 
-    public function get_imovel_por_id($id_imovel)
+    public function getImovelPorId($id_imovel)
     {
 
         try {
@@ -2937,14 +2778,14 @@ class Banco
                 throw new Exception("Não há imóveis disponíveis");
             }
 
-            $valor_venda = $dados['valor_venda'] !== null ? (float)$dados['valor_venda'] : null;
-            $valor_aluguel = $dados['valor_aluguel'] !== null ? (float)$dados['valor_aluguel'] : null;
+            $valorVenda = $dados['valor_venda'] !== null ? (float)$dados['valor_venda'] : null;
+            $valorAluguel = $dados['valor_aluguel'] !== null ? (float)$dados['valor_aluguel'] : null;
 
-            $quant_quartos = $dados['quant_quartos'] !== null ? (int)$dados['quant_quartos'] : null;
-            $quant_salas = $dados['quant_salas'] !== null ? (int)$dados['quant_salas'] : null;
-            $quant_vagas = $dados['quant_vagas'] !== null ? (int)$dados['quant_vagas'] : null;
-            $quant_banheiros = $dados['quant_banheiros'] !== null ? (int)$dados['quant_banheiros'] : null;
-            $quant_varandas = $dados['quant_varandas'] !== null ? (int)$dados['quant_varandas'] : null;
+            $quantQuartos = $dados['quant_quartos'] !== null ? (int)$dados['quant_quartos'] : null;
+            $quantSalas = $dados['quant_salas'] !== null ? (int)$dados['quant_salas'] : null;
+            $quantVagas = $dados['quant_vagas'] !== null ? (int)$dados['quant_vagas'] : null;
+            $quantBanheiros = $dados['quant_banheiros'] !== null ? (int)$dados['quant_banheiros'] : null;
+            $quantVarandas = $dados['quant_varandas'] !== null ? (int)$dados['quant_varandas'] : null;
 
             $categoria = $dados['categoria'];
             $status = $dados['status'];
@@ -2954,51 +2795,51 @@ class Banco
 
             $endereco = null;
             if ($dados['id_endereco']) {
-                $endereco = $this->get_endereco_por_id((int)$dados['id_endereco']);
+                $endereco = $this->getEnderecoPorId((int)$dados['id_endereco']);
             }
 
             $corretor = null;
             if ($dados['id_corretor']) {
-                $corretor = $this->get_usuario_por_cpf_cnpj($dados['id_corretor']);
+                $corretor = $this->getUsuarioPorCpfCnpj($dados['id_corretor']);
             }
 
             $captador = null;
             if ($dados['id_captador']) {
-                $captador = $this->get_usuario_por_cpf_cnpj($dados['id_captador']);
+                $captador = $this->getUsuarioPorCpfCnpj($dados['id_captador']);
             }
 
-            $data_cadastro = $dados['data_cadastro'] ? new DateTime($dados['data_cadastro']) : null;
-            $data_modificacao = $dados['data_modificacao'] ? new DateTime($dados['data_modificacao']) : null;
+            $dataCadastro = $dados['data_cadastro'] ? new DateTime($dados['data_cadastro']) : null;
+            $dataModificacao = $dados['data_modificacao'] ? new DateTime($dados['data_modificacao']) : null;
 
             $anuncio = null;
             if ($dados['id_anuncio']) {
-                $anuncio = $this->get_anuncio_por_id((int)$dados['id_anuncio']);
+                $anuncio = $this->getAnuncioPorId((int)$dados['id_anuncio']);
             }
 
             $condominio = null;
             if ($dados['id_condominio']) {
-                $condominio = $this->get_condominio_por_id((int)$dados['id_condominio']);
+                $condominio = $this->getCondominioPorId((int)$dados['id_condominio']);
             }
 
-            $imovel_obj = new Imovel($endereco, $status, $categoria);
+            $imovelObj = new Imovel($endereco, $status, $categoria);
 
-            $imovel_obj->set_id((int)$dados['id_imovel']);
-            $imovel_obj->set_valor_venda($valor_venda);
-            $imovel_obj->set_valor_aluguel($valor_aluguel);
-            $imovel_obj->set_quant_quartos($quant_quartos);
-            $imovel_obj->set_quant_salas($quant_salas);
-            $imovel_obj->set_quant_vagas($quant_vagas);
-            $imovel_obj->set_quant_banheiros($quant_banheiros);
-            $imovel_obj->set_quant_varandas($quant_varandas);
-            $imovel_obj->set_estado($estado);
-            $imovel_obj->set_situacao($situacao);
-            $imovel_obj->set_ocupacao($ocupacao);
-            $imovel_obj->set_corretor($corretor);
-            $imovel_obj->set_captador($captador);
-            $imovel_obj->set_data_cadastro($data_cadastro);
-            $imovel_obj->set_data_modificacao($data_modificacao);
-            $imovel_obj->set_anuncio($anuncio);
-            $imovel_obj->set_condominio($condominio);
+            $imovelObj->setId((int)$dados['id_imovel']);
+            $imovelObj->setValorVenda($valorVenda);
+            $imovelObj->setValorAluguel($valorAluguel);
+            $imovelObj->setQuantQuartos($quantQuartos);
+            $imovelObj->setQuantSalas($quantSalas);
+            $imovelObj->setQuantVagas($quantVagas);
+            $imovelObj->setQuantBanheiros($quantBanheiros);
+            $imovelObj->setQuantVarandas($quantVarandas);
+            $imovelObj->setEstado($estado);
+            $imovelObj->setSituacao($situacao);
+            $imovelObj->setOcupacao($ocupacao);
+            $imovelObj->setCorretor($corretor);
+            $imovelObj->setCaptador($captador);
+            $imovelObj->setDataCadastro($dataCadastro);
+            $imovelObj->setDataModificacao($dataModificacao);
+            $imovelObj->setAnuncio($anuncio);
+            $imovelObj->setCondominio($condominio);
 
             $stmt = $this->db->prepare("
                 SELECT cpf_cnpj_proprietario 
@@ -3010,13 +2851,12 @@ class Banco
             $proprietarios = [];
 
             while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-                $prop = $this->get_proprietario_por_cpf_cnpj($row['cpf_cnpj_proprietario']);
+                $prop = $this->getProprietarioPorCpfCnpj($row['cpf_cnpj_proprietario']);
                 if ($prop) {
                     $proprietarios[] = $prop;
                 }
             }
-
-            $imovel_obj->set_proprietarios($proprietarios);
+            $imovelObj->setProprietarios($proprietarios);
 
             $stmt = $this->db->prepare("
                 SELECT fi.nome
@@ -3033,16 +2873,16 @@ class Banco
                 $filtros[] = $row['nome'];
             }
 
-            $imovel_obj->set_filtros($filtros);
+            $imovelObj->setFiltros($filtros);
 
-            return $imovel_obj;
+            return $imovelObj;
         } catch (Exception $e) {
-            error_log("ERRO! Banco->get_imovel_por_id: " . $e->getMessage());
+            error_log("ERRO! Banco->getImovelPorId: " . $e->getMessage());
             return null;
         }
     }
 
-    public function get_imoveis_por_proprietario($cpf)
+    public function getImoveisPorProprietario($cpf)
     {
         try {
             $stmt = $this->db->prepare("SELECT id_imovel FROM proprietario_imovel WHERE cpf_cnpj_proprietario = ?");
@@ -3054,16 +2894,121 @@ class Banco
             $imoveis = [];
             foreach ($dados as $row) {
                 $id = (int)$row['id_imovel'];
-                $imovel = $this->get_imovel_por_id($id);
+                $imovel = $this->getImovelPorId($id);
                 if ($imovel) {
                     $imoveis[] = $imovel;
                 }
             }
             return $imoveis;
         } catch (Exception $e) {
-            $erro = "ERRO! Banco->get_imoveis_por_proprietario: "  . $e->getMessage();
+            $erro = "ERRO! Banco->getImoveisPorProprietario: "  . $e->getMessage();
             error_log($erro);
             return [];
         }
     }
 }
+
+
+//  $valorVenda = $dados['valor_venda'] ? (float)$dados['valor_venda'] : null;
+//                 $valorAluguel = $dados['valor_aluguel'] ? (float)$dados['valor_aluguel'] : null;
+//                 $quartos = $dados['quant_quartos'] ? (int)$dados['quant_quartos'] : null;
+//                 $salas = $dados['quant_salas'] ? (int)$dados['quant_salas'] : null;
+//                 $vagas = $dados['quant_vagas'] ? (int)$dados['quant_vagas'] : null;
+//                 $banheiros = $dados['quant_banheiros'] ? (int)$dados['quant_banheiros'] : null;
+//                 $varandas = $dados['quant_varandas'] ? (int)$dados['quant_varandas'] : null;
+
+//                 $categoria = $dados['categoria'] ?? null;
+//                 $status = $dados['status'] ?? null;
+//                 $estado = $dados['estado'] ?? null;
+//                 $situacao = $dados['situacao'] ?? null;
+//                 $ocupacao = $dados['ocupacao'] ?? null;
+
+//                 $endereco = $dados['id_endereco']
+//                     ? $this->getEnderecoPorId((int)$dados['id_endereco'])
+//                     : null;
+
+//                 $corretor = $dados['id_corretor']
+//                     ? $this->getUsuarioPorId($dados['id_corretor'])
+//                     : null;
+
+//                 $captador = $dados['id_captador']
+//                     ? $this->getUsuarioPorId($dados['id_captador'])
+//                     : null;
+
+//                 $anuncio = $dados['id_anuncio']
+//                     ? $this->getAnuncioPorId((int)$dados['id_anuncio'])
+//                     : null;
+
+//                 $condominio = $dados['id_condominio']
+//                     ? $this->getCondominioPorId((int)$dados['id_condominio'])
+//                     : null;
+
+//                 $dataCadastro = $dados['data_cadastro']
+//                     ? new DateTime($dados['data_cadastro'])
+//                     : null;
+
+//                 $dataModificacao = $dados['data_modificacao']
+//                     ? new DateTime($dados['data_modificacao'])
+//                     : null;
+
+
+//                 $imovel = new Imovel($endereco, $status, $categoria);
+
+//                 $imovel->setId($id);
+//                 $imovel->setValorVenda($valorVenda);
+//                 $imovel->setValorAluguel($valorAluguel);
+//                 $imovel->setQuantQuartos($quartos);
+//                 $imovel->setQuantSalas($salas);
+//                 $imovel->setQuantVagas($vagas);
+//                 $imovel->setQuantBanheiros($banheiros);
+//                 $imovel->setQuantVarandas($varandas);
+//                 $imovel->setIptu($dados['iptu']);
+//                 $imovel->setValorCondominio($dados['valor_condominio']);
+//                 $imovel->setAndar($dados['andar']);
+//                 $imovel->setEstado($estado);
+//                 $imovel->setBloco($dados['bloco']);
+//                 $imovel->setAnoConstrucao($dados['ano_construcao']);
+//                 $imovel->setAreaTotal($dados['area_total']);
+//                 $imovel->setAreaPrivativa($dados['area_privativa']);
+//                 $imovel->setSituacao($situacao);
+//                 $imovel->setOcupacao($ocupacao);
+//                 $imovel->setCorretor($corretor);
+//                 $imovel->setCaptador($captador);
+//                 $imovel->setDataCadastro($dataCadastro);
+//                 $imovel->setDataModificacao($dataModificacao);
+//                 $imovel->setAnuncio($anuncio);
+//                 $imovel->setCondominio($condominio);
+//                 $stmtP = $this->db->prepare("
+//                 SELECT cpf_cnpj_proprietario
+//                 FROM proprietario_imovel
+//                 WHERE id_imovel = :id
+//             ");
+//                 $stmtP->execute([':id' => $id]);
+
+//                 $proprietarios = [];
+
+//                 while ($row = $stmtP->fetch(PDO::FETCH_ASSOC)) {
+//                     $prop = $this->getProprietarioPorCpfCnpj($row['cpf_cnpj_proprietario']);
+//                     if ($prop) {
+//                         $proprietarios[] = $prop;
+//                     }
+//                 }
+
+//                 $imovel->setProprietarios($proprietarios);
+
+
+//                 $stmtF = $this->db->prepare("
+//                 SELECT f.nome
+//                 FROM imovel_filtros i
+//                 JOIN filtros_imovel f ON f.id_filtros_imovel = i.id_filtros_imovel
+//                 WHERE i.id_imovel = :id
+//             ");
+//                 $stmtF->execute([':id' => $id]);
+
+//                 $filtros = [];
+
+//                 while ($row = $stmtF->fetch(PDO::FETCH_ASSOC)) {
+//                     $filtros[] = $row['nome'];
+//                 }
+
+//                 $imovel->setFiltros($filtros);

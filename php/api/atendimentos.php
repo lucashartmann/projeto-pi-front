@@ -25,8 +25,8 @@ $acao = $_GET['acao'] ?? '';
 
 switch ($acao) {
 
-    case "listar_atendimentos":
-        listar_atendimentos();
+    case "listarAtendimentos":
+        listarAtendimentos();
         break;
 
     default:
@@ -34,28 +34,28 @@ switch ($acao) {
         break;
 }
 
-function listar_atendimentos()
+function listarAtendimentos()
 {
     try {
-            $atendimentos = Init::getInstance()->get_lista_atendimentos();
-            $lista = [];
-            if ($atendimentos) {
-                foreach ($atendimentos as $atendimento) {
-                    $lista[] = [
-                        "id" => $atendimento->get_id(),
-                    "corretor" => $atendimento->get_corretor() ? $atendimento->get_corretor()->get_nome() : NULL,
-                    "cliente" =>  $atendimento->get_cliente() ? [
-                        "id" => $atendimento->get_cliente()->get_id(),
-                        "nome" => $atendimento->get_cliente()->get_nome(),
-                        # "idade" => $atendimento->get_cliente()->get_idade(),
-                        "telefones" => [$atendimento->get_cliente()->get_telefones()],
-                        "email" => $atendimento->get_cliente()->get_email(),
+        $atendimentos = Init::getInstance()->getListaAtendimentos();
+        $lista = [];
+        if ($atendimentos) {
+            foreach ($atendimentos as $atendimento) {
+                $lista[] = [
+                    "id" => $atendimento->getid(),
+                    "corretor" => $atendimento->getCorretor() ? $atendimento->getCorretor()->getNome() : NULL,
+                    "cliente" =>  $atendimento->getCliente() ? [
+                        "id" => $atendimento->getCliente()->getid(),
+                        "nome" => $atendimento->getCliente()->getNome(),
+                        # "idade" => $atendimento->getCliente()->getidade(),
+                        "telefones" => [$atendimento->getCliente()->getTelefones()],
+                        "email" => $atendimento->getCliente()->getEmail(),
                     ] : NULL,
-                    "imovel" => $atendimento->get_imovel() ? [
-                        "id" => $atendimento->get_imovel()->get_id(),
-                        "titulo" => $atendimento->get_imovel()->get_anuncio()->get_titulo() ?: NULL,
+                    "imovel" => $atendimento->getImovel() ? [
+                        "id" => $atendimento->getImovel()->getid(),
+                        "titulo" => $atendimento->getImovel()->getAnuncio()->getTitulo() ?: NULL,
                     ] : NULL,
-                    "status" =>  $atendimento->get_status() ? $atendimento->get_status()->value : NULL,
+                    "status" =>  $atendimento->getStatus() ? $atendimento->getStatus()->value : NULL,
                 ];
             }
         }

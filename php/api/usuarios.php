@@ -24,8 +24,8 @@ $acao = $_GET['acao'] ?? '';
 switch ($acao) {
 
 
-    case "get_usuario":
-        carregar_usuario();
+    case "getUsuario":
+        carregarUsuario();
         break;
 
     default:

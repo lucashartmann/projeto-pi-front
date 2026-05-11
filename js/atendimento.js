@@ -8,7 +8,7 @@ async function listarAtendimentos() {
 
         caminho = caminho.replace(
             caminho.substring(caminho.lastIndexOf("/")),
-            "/php/api/atendimentos.php?acao=listar_atendimentos"
+            "/php/api/atendimentos.php?acao=listarAtendimentos"
         );
 
         const res = await fetch(caminho);

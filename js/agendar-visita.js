@@ -80,10 +80,10 @@ async function salvarEvento(data) {
 
   switch (usuario) {
     case "CORRETOR:":
-      caminho_php = "/php/api/visitas.php?acao=cadastrar_visita";
+      caminho_php = "/php/api/visitas.php?acao=cadastrarVisita";
       break;
     case "VISTORIADOR:":
-      caminho_php = "/php/api/visitas.php?acao=cadastrar_vistoria";
+      caminho_php = "/php/api/visitas.php?acao=cadastrarVistoria";
       break;
     default:
       return;

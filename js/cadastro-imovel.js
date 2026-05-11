@@ -40,7 +40,7 @@ function salvar() {
             }
             caminho = caminho.replace(
                 caminho.substring(caminho.lastIndexOf("/")),
-                "/php/api/imoveis.php?acao=cadastrar_imovel"
+                "/php/api/imoveis.php?acao=cadastrarImovel"
             );
             fetch(caminho, {
                 method: "POST",

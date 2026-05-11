@@ -30,82 +30,82 @@ class Endereco
         $this->__construct($rua, $bairro, $cep, $cidade, $uf);
     }
 
-    public function get_uf()
+    public function getUf()
     {
         return $this->uf;
     }
 
-    public function set_uf($uf)
+    public function setUf($uf)
     {
         $this->uf = $uf;
     }
 
-    public function get_id()
+    public function getId()
     {
         return $this->id;
     }
 
-    public function set_id($id)
+    public function setId($id)
     {
         $this->id = $id;
     }
 
-    public function get_rua()
+    public function getRua()
     {
         return $this->rua;
     }
 
-    public function set_rua($value)
+    public function setRua($value)
     {
         $this->rua = $value;
     }
 
-    public function get_numero()
+    public function getNumero()
     {
         return $this->numero;
     }
 
-    public function set_numero($value)
+    public function setNumero($value)
     {
         $this->numero = $value;
     }
 
-    public function get_bairro()
+    public function getBairro()
     {
         return $this->bairro;
     }
 
-    public function set_bairro($value)
+    public function setBairro($value)
     {
         $this->bairro = $value;
     }
 
-    public function get_cep()
+    public function getCep()
     {
         return $this->cep;
     }
 
-    public function set_cep($value)
+    public function setCep($value)
     {
         $this->cep = $value;
     }
 
-    public function get_complemento()
+    public function getComplemento()
     {
         return $this->complemento;
     }
 
-    public function set_complemento($value)
+    public function setComplemento($value)
     {
         $this->complemento = $value;
     }
 
-    public function get_cidade()
+    public function getCidade()
     {
         return $this->cidade;
     }
 
-    public function set_cidade($value)
+    public function setCidade($value)
     {
         $this->cidade = $value;
     }
