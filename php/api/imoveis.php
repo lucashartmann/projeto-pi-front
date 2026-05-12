@@ -29,7 +29,7 @@ switch ($acao) {
         $data = json_decode($body, true);
 
         if (json_last_error() !== JSON_ERROR_NONE) {
-            $resultado = (["erro" => "JSON inválido"]);
+            $resultado = (["status" => "erro", "mensagem" => "JSON inválido"]);
             return;
         }
 
@@ -50,7 +50,7 @@ switch ($acao) {
         if ($id) {
             $resultado = $controller->getImovelPorId($id);
         } else {
-            $resultado = (["erro" => "ID do imóvel não fornecido"]);
+            $resultado = (["status" => "erro", "mensagem" => "ID do imóvel não fornecido"]);
         }
         break;
 
@@ -59,13 +59,13 @@ switch ($acao) {
         if ($id) {
             $resultado = $controller->apagarImovel($id);
         } else {
-            $resultado = (["erro" => "ID do imóvel não fornecido"]);
+            $resultado = (["status" => "erro", "mensagem" => "ID do imóvel não fornecido"]);
         }
         break;
 
 
     default:
-        $resultado = (["erro" => "Ação inválida"]);
+        $resultado = (["status" => "erro", "mensagem" => "Ação inválida"]);
         break;
 }
 

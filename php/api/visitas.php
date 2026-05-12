@@ -32,6 +32,6 @@ switch ($acao) {
         break;
 
     default:
-        echo json_encode(["erro" => "Ação inválida"]);
+        echo json_encode(["status" => "erro", "mensagem" => "Ação inválida"]);
         break;
 }

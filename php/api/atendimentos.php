@@ -30,7 +30,7 @@ switch ($acao) {
         break;
 
     default:
-        $resultado = (["erro" => "Ação inválida"]);
+        $resultado = (["status" => "erro", "mensagem" => "Ação inválida"]);
         break;
 }
 

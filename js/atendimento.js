@@ -17,8 +17,8 @@ async function listarAtendimentos() {
             throw new Error(`HTTP ${res.status}`);
         }
 
-        if (res.erro) {
-            alert("Erro ao listar atendimentos: " + res.erro);
+        if (res.status == "erro") {
+            alert("Erro ao listar atendimentos: " + res.mensagem);
             return null;
         }
 

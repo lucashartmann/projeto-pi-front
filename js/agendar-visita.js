@@ -1,5 +1,5 @@
-function calendar() {
-  $('#calendar').fullCalendar({
+async function calendar() {
+  await $('#calendar').fullCalendar({
     header: {
       left: 'prev,next today',
       center: 'title',
@@ -119,8 +119,8 @@ async function salvarEvento(data) {
         }
       })
       .then(data => {
-        if (data.erro) {
-          alert("Erro ao cadastrar imóvel: " + data.erro);
+        if (data.status == "erro") {
+          alert("Erro ao cadastrar imóvel: " + data.mensagem);
           return;
         }
         else if (data.mensagem) {
@@ -145,6 +145,29 @@ function adicionarEventoAoCalendario(evento) {
   this.event.preventDefault();
 }
 
+function getIdImoveis() {
+  listarImoveis().then(imoveis => {
+    if (!imoveis || imoveis.length === 0) {
+      const p = document.createElement("p");
+      p.textContent = "Nenhum imóvel encontrado.";
+      return p;
+    }
+    const select = document.createElement("select");
+    select.id = "imovel";
+    select.name = "imovel";
+    select.required = true;
+
+    imoveis.forEach(imovel => {
+      const option = document.createElement("option");
+      option.value = imovel.id;
+      option.textContent = imovel.nome;
+      select.appendChild(option);
+    });
+
+    return select;
+  });
+}
+
 document.addEventListener("submit", function (e) {
   if (!e.target.matches(".form-container form")) return;
 
@@ -163,7 +186,7 @@ document.addEventListener("submit", function (e) {
   e.target.closest(".form-container")?.remove();
 });
 
-document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener('DOMContentLoaded', async function () {
   calendar();
 
   var datas = document.querySelectorAll('.fc-day');
@@ -182,9 +205,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
       div.classList.add('form-container');
 
-      //TODO:         <select id="imovel" name="imovel" required> </select> depois
-      //TODO: adicionar hora que acaba (talvez)
-
       div.innerHTML = `
             <div class="form-header"><h2>Agendar visita para ${dataSelecionada}</h2>
             <button id="close-btn" onclick="this.parentElement.parentElement.remove()">X</button></div>
@@ -194,7 +214,11 @@ document.addEventListener('DOMContentLoaded', function () {
               <input type="text" id="nome" name="nome" required>
               <label for="hora">Hora do evento:</label>
               <input type="time" id="hora" name="hora" required>
-              
+              <div class="checkbox-container">
+                <input type="checkbox" id="confirmar" name="confirmar">
+                <label for="">Mandar email para cliente?</label>
+              </div>
+              ${getIdImoveis() ?? "<p>Nenhum imóvel encontrado.</p>"}
               <button type="submit">Agendar</button>
             </form>
           `;

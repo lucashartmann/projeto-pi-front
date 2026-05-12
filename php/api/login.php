@@ -30,10 +30,21 @@ switch ($acao) {
         $data = json_decode($body, true);
 
         if (json_last_error() !== JSON_ERROR_NONE) {
-            $resultado = (["erro" => "JSON inválido"]);
+            $resultado = (["status" => "erro", "mensagem" => "JSON inválido"]);
             return;
         }
         $resultado = $controller->verificarLogin($data);
+        break;
+
+    case "cadastro":
+        $body = file_get_contents("php://input");
+        $data = json_decode($body, true);
+
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            $resultado = (["status" => "erro", "mensagem" => "JSON inválido"]);
+            return;
+        }
+        $resultado = $controller->cadastrarUsuario($data);
         break;
 
     case "deslogar":
@@ -45,7 +56,7 @@ switch ($acao) {
         break;
 
     default:
-        $resultado = (["erro" => "Ação inválida"]);
+        $resultado = (["status" => "erro", "mensagem" => "Ação inválida"]);
         break;
 }
 

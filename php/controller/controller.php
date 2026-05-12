@@ -17,15 +17,38 @@ require_once __DIR__ . '/../model/__init__.php';
 class controller
 {
 
+    function cadastrarUsuario($data)
+    {
+        try {
+
+            $nome = $data['nome'] ?? '';
+            $email = $data['email'] ?? '';
+            $senha = $data['senha'] ?? '';
+            $cpf = $data['cpf'] ?? '';
+            $dataNascimento = $data['data_nascimento'] ?? '';
+
+            $usuario = new Cliente($email, $senha, $email, $nome, $cpf);
+            $usuario->setDataNascimento($dataNascimento);
+
+            $resultado = Init::getInstance()->cadastrarUsuario($usuario);
+            if ($resultado) {
+                return (["status" => "sucesso", "mensagem" => "Usuário cadastrado com sucesso"]);
+            } else {
+                return (["status" => "erro", "mensagem" => "Erro ao cadastrar usuário"]);
+            }
+        } catch (Exception $e) {
+            return (["status" => "erro", "mensagem" => "Erro ao cadastrar usuário: " . $e->getMessage()]);
+        }
+    }
 
     function deslogar()
     {
         try {
             session_start();
             session_destroy();
-            return (["status" => "ok"]);
+            return (["status" => "sucesso", "mensagem" => "Usuário deslogado com sucesso"]);
         } catch (Exception $e) {
-            return (["erro" => "Erro ao deslogar: " . $e->getMessage()]);
+            return (["status" => "erro", "mensagem" => "Erro ao deslogar: " . $e->getMessage()]);
         }
     }
 
@@ -35,7 +58,7 @@ class controller
             session_start();
             if (isset($_SESSION['usuario_id'])) {
                 return ([
-                    "status" => "ok",
+                    "status" => "sucesso",
                     "tipo" => $_SESSION['tipo']
                 ]);
             } else {
@@ -45,7 +68,7 @@ class controller
                 ]);
             }
         } catch (Exception $e) {
-            return (["erro" => "Erro ao carregar usuário: " . $e->getMessage()]);
+            return (["status" => "erro", "mensagem" => "Erro ao carregar usuário: " . $e->getMessage()]);
         }
     }
 
@@ -68,7 +91,7 @@ class controller
             if ($consulta) {
                 $_SESSION['usuario_id'] = $consulta->getId();
                 $_SESSION['tipo'] = $consulta->getTipo() ?? NULL;
-                return (["status" => "ok", "usuario" => [
+                return (["status" => "sucesso", "usuario" => [
                     "id" => $consulta->getId(),
                     "nome" => $consulta->getNome(),
                     "tipo" => $consulta->getTipo(),
@@ -78,7 +101,7 @@ class controller
             }
         } catch (Exception $e) {
             http_response_code(500);
-            return (["erro" => "Erro ao verificar login: " . $e->getMessage()]);
+            return (["status" => "erro", "mensagem" => "Erro ao verificar login: " . $e->getMessage()]);
         }
     }
 
@@ -110,7 +133,7 @@ class controller
             }
             return $lista;
         } catch (Exception $e) {
-            return (["erro" => "Erro ao listar atendimentos: " . $e->getMessage()]);
+            return (["status" => "erro", "mensagem" => "Erro ao listar atendimentos: " . $e->getMessage()]);
         }
     }
 
@@ -175,7 +198,7 @@ class controller
 
             return ($lista);
         } catch (Exception $e) {
-            return (["erro" => "Erro ao listar imóveis: " . $e->getMessage()]);
+            return (["status" => "erro", "mensagem" => "Erro ao listar imóveis: " . $e->getMessage()]);
         }
     }
 
@@ -241,7 +264,7 @@ class controller
 
             return $lista;
         } catch (Exception $e) {
-            return (["erro" => "Erro ao listar imóveis disponíveis: " . $e->getMessage()]);
+            return (["status" => "erro", "mensagem" => "Erro ao listar imóveis disponíveis: " . $e->getMessage()]);
         }
     }
 
@@ -328,11 +351,11 @@ class controller
                 return ($resposta);
                 return;
             } else {
-                return (["erro" => "Imovel nao encontrado"]);
+                return (["status" => "erro", "mensagem" => "Imovel nao encontrado"]);
                 return;
             }
         } catch (Exception $e) {
-            return (["erro" => "Erro ao obter imóvel: " . $e->getMessage()]);
+            return (["status" => "erro", "mensagem" => "Erro ao obter imóvel: " . $e->getMessage()]);
         }
     }
 
@@ -344,15 +367,15 @@ class controller
             if ($imovel) {
                 $remocao = Init::getInstance()->remover("id_imovel", $id, "imovel");
                 if ($remocao) {
-                    return (["status" => "ok"]);
+                    return (["status" => "sucesso", "mensagem" => "Imóvel removido com sucesso"]);
                 } else {
-                    return (["erro" => "Erro ao remover imóvel"]);
+                    return (["status" => "erro", "mensagem" => "Erro ao remover imóvel"]);
                 }
             } else {
-                return (["erro" => "Imóvel não encontrado"]);
+                return (["status" => "erro", "mensagem" => "Imóvel não encontrado"]);
             }
         } catch (Exception $e) {
-            echo (json_encode(["erro" => $e->getMessage()]));
+            echo (json_encode(["status" => "erro", "mensagem" => $e->getMessage()]));
         }
     }
 
@@ -482,7 +505,7 @@ class controller
             }
 
             if (! $endereco) {
-                return (["erro" => "ERRO ao cadastrar imóvel! Problema com o endereço"]);
+                return (["status" => "erro", "mensagem" => "ERRO ao cadastrar imóvel! Problema com o endereço"]);
             } else {
                 $imovelObj->getEndereco()->setId($endereco->getId());
                 $consultarCondominio = Init::getInstance()->getCondominioPorIdEndereco(
@@ -516,13 +539,13 @@ class controller
                 $imovelObj->setDataCadastro(new DateTime());
                 $cadastrado = Init::getInstance()->getEstoque()->cadastrarImovel($imovelObj);
                 if ($cadastrado == True) {
-                    return (["mensagem" => "imovel cadastrado!\n"]);
+                    return (["status" => "sucesso", "mensagem" => "imovel cadastrado!\n"]);
                 } else {
-                    return (["erro" => "ERRO ao cadastrar imóvel"]);
+                    return (["status" => "erro", "mensagem" => "ERRO ao cadastrar imóvel"]);
                 }
             }
         } catch (Exception $e) {
-            return (["erro" => "Erro interno"]);
+            return (["status" => "erro", "mensagem" => "Erro interno"]);
         }
     }
 
@@ -545,9 +568,9 @@ class controller
 
         if ($consulta) {
             Init::$usuarioAtual = $umUsuario;
-            return (["mensagem" => "Cadastro realizado com sucesso"]);
+            return (["status" => "sucesso", "mensagem" => "Cadastro realizado com sucesso"]);
         } else {
-            return (["erro" => "ERRO ao cadastrar. Tente Novamente"]);
+            return (["status" => "erro", "mensagem" => "ERRO ao cadastrar. Tente Novamente"]);
         }
     }
 }

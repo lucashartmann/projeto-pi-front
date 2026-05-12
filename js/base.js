@@ -39,6 +39,10 @@ async function listarImoveis() {
                 }
             })
             .then(data => {
+                if (data.status == "erro") {
+                    alert("Erro ao listar imóveis: " + data.mensagem);
+                    return null;
+                }
                 return data;
                 console.log(data);
             })
@@ -172,7 +176,7 @@ async function deslogar() {
             console.error("Resposta não é JSON:", texto);
             return;
         }
-        if (dados.status == "ok") {
+        if (dados.status == "sucesso") {
             const nav = document.querySelector("nav ul");
             if (nav) {
                 for (const li of nav.children) {
@@ -257,73 +261,73 @@ function carregarTabs(usuario) {
     switch (usuario) {
         case 'ADMIN':
             tabs = [
-                { text: "Atendimento", href: "atendimento.html" },
-                { text: "Estoque", href: "estoque.html" },
-                { text: "Agendar Visita", href: "agendar-visita.html" }
+                { text: "Atendimento", href: "../../projeto-pi-front/html/atendimento.html" },
+                { text: "Estoque", href: "../../projeto-pi-front/html/estoque.html" },
+                { text: "Agendar Visita", href: "../../projeto-pi-front/html/agendar-visita.html" }
             ];
             cadastros = [
-                { text: "Imóveis", href: "cadastro-imovel.html" },
-                { text: "Venda/Aluguel", href: "cadastro-venda-aluguel.html" },
-                { text: "Cliente", href: "cadastro-cliente.html" },
-                { text: "Contratos", href: "contratos.html" }
+                { text: "Imóveis", href: "../../projeto-pi-front/html/cadastro-imovel.html" },
+                { text: "Venda/Aluguel", href: "../../projeto-pi-front/html/cadastro-venda-aluguel.html" },
+                { text: "Cliente", href: "../../projeto-pi-front/html/cadastro-cliente.html" },
+                { text: "Contratos", href: "../../projeto-pi-front/html/contratos.html" }
             ];
             dados = [
-                { text: "Imobiliária", href: "dados-imobiliaria.html" },
-                { text: "Dados Cliente", href: "dados-cliente.html" }
+                { text: "Imobiliária", href: "../../projeto-pi-front/html/dados-imobiliaria.html" },
+                { text: "Dados Cliente", href: "../../projeto-pi-front/html/dados-cliente.html" }
             ];
             break;
 
         case "FINANCEIRO":
             tabs = [
-                { text: "Contratos", href: "contratos.html" }
+                { text: "Contratos", href: "../../projeto-pi-front/html/contratos.html" }
             ];
             break;
 
         case "VISTORIADOR":
             tabs = [
-                { text: "Agendar Vistoria", href: "agendar-visita.html" },
-                { text: "Relatório", href: "relatorio.html" }
+                { text: "Agendar Vistoria", href: "../../projeto-pi-front/html/agendar-visita.html" },
+                { text: "Relatório", href: "../../projeto-pi-front/html/relatorio.html" }
             ];
             break;
 
         case "CORRETOR":
             tabs = [
-                { text: "Atendimento", href: "atendimento.html" },
-                { text: "Estoque", href: "estoque.html" },
-                { text: "Agendar Visita", href: "agendar-visita.html" }
+                { text: "Atendimento", href: "../../projeto-pi-front/html/atendimento.html" },
+                { text: "Estoque", href: "../../projeto-pi-front/html/estoque.html" },
+                { text: "Agendar Visita", href: "../../projeto-pi-front/html/agendar-visita.html" }
             ];
             cadastros = [
-                { text: "Imóveis", href: "cadastro-imovel.html" },
-                { text: "Venda/Aluguel", href: "cadastro-venda-aluguel.html" },
-                { text: "Cliente", href: "cadastro-cliente.html" },
+                { text: "Imóveis", href: "../../projeto-pi-front/html/cadastro-imovel.html" },
+                { text: "Venda/Aluguel", href: "../../projeto-pi-front/html/cadastro-venda-aluguel.html" },
+                { text: "Cliente", href: "../../projeto-pi-front/html/cadastro-cliente.html" },
             ];
             break;
 
         case "GERENTE":
             tabs = [
-                { text: "Estoque", href: "estoque.html" }
+                { text: "Estoque", href: "../../projeto-pi-front/html/estoque.html" }
             ];
             cadastros = [
-                { text: "Imobiliária", href: "dados-imobiliaria.html" }
+                { text: "Imobiliária", href: "../../projeto-pi-front/html/dados-imobiliaria.html" }
             ];
             dados = [
-                { text: "Imobiliária", href: "dados-imobiliaria.html" },
+                { text: "Imobiliária", href: "../../projeto-pi-front/html/dados-imobiliaria.html" },
             ];
             break;
 
         case "CAPTADOR":
             tabs = [
-                { text: "Estoque", href: "estoque.html" }
+                { text: "Estoque", href: "../../projeto-pi-front/html/estoque.html" }
             ];
             cadastros = [
-                { text: "Imóveis", href: "cadastro-imovel.html" },
-                { text: "Cliente", href: "cadastro-cliente.html" },
+                { text: "Imóveis", href: "../../projeto-pi-front/html/cadastro-imovel.html" },
+                { text: "Cliente", href: "../../projeto-pi-front/html/cadastro-cliente.html" },
             ];
             break;
 
         case "CLIENTE":
             tabs = [
-                { text: "Dados Cliente", href: "dados-cliente.html" }
+                { text: "Dados Cliente", href: "../../projeto-pi-front/html/dados-cliente.html" }
             ];
             break;
     }

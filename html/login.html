@@ -14,12 +14,30 @@
 
 <body>
     <div>
-        <form onsubmit="fazerLogin()">
-            <h1>Login</h1>
+        <div id="login-header">
+                <h1 id="h3-login">Login</h1>
+                <h1 id="barra">|</h1>
+                <h1 id="h3-cadastro">Cadastro</h1>
+        </div>
+        <form onsubmit="fazerCadastro()" id="form-cadastro">
+            <h3>Nome Completo</h3>
+            <input type="text" name="nome" id="nome" autocomplete="name" required>
+            <h3>Data de Nascimento</h3>
+            <input type="date" name="data_nascimento" id="data-nascimento" required>
+            <h3>CPF</h3>
+            <input type="text" name="cpf" id="cpf" autocomplete="off" required>
             <h3>Email</h3>
-            <input type="text" name="email" id="usuario" autocomplete="username">
+            <input type="email" name="email" id="email-cadastro" autocomplete="email" required>
             <h3>Senha</h3>
-            <input type="password" name="senha" id="senha" autocomplete="current-password" minlength="3">
+            <input type="password" name="senha" id="senha-cadastro" autocomplete="current-password" minlength="3" required>
+            <button type="submit" onsubmit="fazerCadastro()">Cadastrar</button>
+        </form>
+        <form onsubmit="fazerLogin()" id="form-login">
+            <h3>Email</h3>
+            <input type="text" name="email" id="usuario" required autocomplete="username">
+            <!--  Mudar para email depois -->
+            <h3>Senha</h3>
+            <input type="password" name="senha" id="senha" autocomplete="current-password" minlength="3" required>
             <button type="submit" onsubmit="fazerLogin()">Login</button>
         </form>
     </div>

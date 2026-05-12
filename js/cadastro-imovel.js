@@ -65,8 +65,8 @@ function salvar() {
                     }
                 })
                 .then(data => {
-                    if (data.erro) {
-                        alert("Erro ao cadastrar imóvel: " + data.erro);
+                    if (data.status == "erro") {
+                        alert("Erro ao cadastrar imóvel: " + data.mensagem);
                         return;
                     }
                     else if (data.mensagem) {
@@ -123,8 +123,12 @@ async function excluir() {
                     }
                 })
                 .then(data => {
-                    console.log("Imóvel excluído com sucesso:", data);
-                    window.location.href = "estoque.html";
+                    if (data.status == "erro") {
+                        alert("Erro ao excluir imóvel: " + data.mensagem);
+                    } else {
+                        console.log("Imóvel excluído com sucesso:", data);
+                        window.location.href = "estoque.html";
+                    }
                 })
                 .catch(error => {
                     console.error("Erro ao excluir imóvel:", error);

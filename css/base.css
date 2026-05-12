@@ -159,10 +159,14 @@ body {
     }
 
     .dropdown-content {
+        list-style: none;
+        position: fixed;
+        z-index: 1000;
+        box-sizing: border-box;
         display: none;
         position: absolute;
         background: rgb(118, 73, 73);
-        min-width: 180px;
+        min-width: 100%;
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
     }
 
