@@ -5,14 +5,126 @@
     justify-self: center;
     width: 80%;
     margin: 30px;
-    justify-items: center;
+    /* justify-items: center; */
+    display: grid;
+    /* grid-template-columns: repeat(auto-fit, minmax(20%, 1fr)); */
+    /* grid-template-rows: repeat(auto-fit, minmax(30px, 1fr)); */
+    row-gap: 50px;
+    /* column-gap: 52px; */
+    /* justify-self: center; */
+    /* width: 90%; */
 
+    textarea {
+        height: 2.4rem !important;
+        font-size: 140%;
+        border: 1px solid black;
+    }
+
+    input {
+        height: 3rem !important;
+        font-size: 100%;
+        &:disabled {
+            border: 1px solid black;
+        }
+    }
+
+    
+    #ta-cep {
+        height: 70% !important;
+    }
+
+    input[type="number"] {
+        height: 3rem !important;
+    }
+
+    label {
+        font-size: 100%;
+        font-weight: 500;
+    }
+
+    #container-telefones {
+        width: auto;
+        display: block;
+        height: 100%;
+
+        button {
+            margin-top: 8px;
+            background-color: black;
+            color: white;
+            border: none;
+            &:hover {
+                background-color: var(--background-nav);
+            }
+        }
+
+        input {
+            width: 100%;
+            height: 70% !important;
+        }
+    }
+
+
+
+}
+
+#detalhes {
+    
+    justify-self: center;
+    justify-items: center;
+    align-items: center;
+    justify-content: center;
+    align-content: center;
+    width: 100%;
+    height: auto;
+    margin-top: 70px;
+    margin-bottom: 50px;
+    display: flex;
+    text-align: center;
+    div {
+        display: flex;
+        justify-self: center;
+        justify-items: center;
+        align-self: center;
+        align-items: center;
+        justify-content: center;
+        align-content: center;
+    }
+
+    input {
+        height: 3rem !important;
+        width: 20rem;
+        font-size: 100%;
+        &:disabled {
+            border: 1px solid black;
+        }
+    }
+
+    input[type="number"] {
+        height: 3rem !important;
+    }
+
+    label {
+        font-size: 100%;
+        font-weight: 500;
+        text-align: center;
+        height: 100%;
+        margin: 0px 50px;
+    }
+
+}
+
+h3 {
+    font-size: 140%;
+    font-weight: 500;
+    text-align: center;
+    margin-bottom: 30px;
+    margin-top: 80px;
 }
 
 body {
     display: flex;
     flex-direction: column;
-    height: 100vh;
+    height: 100%;
 }
 
 
@@ -20,16 +132,16 @@ body {
     display: none;
 }
 
-#detalhes {
-    justify-self: center;
-    justify-items: center;
-    margin: 30px;
-}
+
 
 button {
     justify-self: center;
     width: 20%;
     height: 35px;
+    margin-bottom: 0px;
+    background-color: var(--background-nav);
+    color: white;
+
 }
 
 #ctn-botao {
@@ -40,6 +152,6 @@ button {
 }
 
 .detalhes-content input {
-    margin: 20px 0px 0px 40px;
+    margin: 0px 0px 0px 40px;
     width: 30%;
 }

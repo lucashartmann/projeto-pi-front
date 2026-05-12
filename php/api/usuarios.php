@@ -20,17 +20,28 @@ header('Content-Type: application/json');
 ini_set('display_errors', 0);
 error_reporting(E_ALL);
 $acao = $_GET['acao'] ?? '';
-
+$controller = new controller();
 switch ($acao) {
 
+    case "atualizar":
+        $body = file_get_contents("php://input");
+        $data = json_decode($body, true);
 
-    case "get_usuario":
-        carregarUsuario();
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            $resultado = (["status" => "erro", "mensagem" => "JSON inválido"]);
+            return;
+        }
+        
+        $resultado = $controller->atualizarUsuario($data);
         break;
+
+    // case "get_usuario":
+    //     // carregarUsuario();
+    //     break;
 
     default:
-        echo json_encode(["status" => "erro", "mensagem" => "Ação inválida"]);
+        $resultado = (["status" => "erro", "mensagem" => "Ação inválida"]);
         break;
 }
-
+echo json_encode($resultado);
 // remover '-' do cep e converter para inteiro

@@ -17,6 +17,73 @@ require_once __DIR__ . '/../model/__init__.php';
 class controller
 {
 
+    function atualizarUsuario($dados)
+    {
+        try {
+            $nome = $dados['nome'] ?? null;
+            $email = $dados['email'] ?? null;
+            $senha = $dados['senha'] ?? null;
+            $dataNascimento = isset($dados['data_nascimento']) ? DateTime::createFromFormat('Y-m-d', $dados['data_nascimento']) : null;
+            $cpfCnpj = $dados['cpf_cnpj'] ?? null;
+            $rg = $dados['rg'] ?? null;
+            $telefones = $dados['telefones'] ?? null;
+            $endereco = $dados['endereco'] ?? null;
+            $tipo = $dados['tipo'] ?? null;
+            $usuario = Null;
+            $creci = $dados['creci'] ?? null;
+            $salario = $dados['salario'] ?? null;
+            $id = $dados['id'] ?? null;
+            if (!$id) {
+                return (["status" => "erro", "mensagem" => "ID do usuário não fornecido"]);
+            }
+            if ($tipo == "CORRETOR") {
+                $usuario = new Corretor($email, $senha, $email, $nome, $cpfCnpj, $creci);
+            } else if ($tipo == "GERENTE") {
+                $usuario = new Gerente($email, $senha, $email, $nome, $cpfCnpj);
+            } else if ($tipo == "CAPTADOR") {
+                $usuario = new Captador($email, $senha, $email, $nome, $cpfCnpj);
+            } else if ($tipo == "CLIENTE") {
+                $usuario = new Cliente($email, $senha, $email, $nome, $cpfCnpj);
+            } else if ($tipo == "PROPRIETARIO") {
+                $usuario = new Proprietario($email, $nome, $cpfCnpj);
+            } else {
+                return (["status" => "erro", "mensagem" => "Tipo de usuário inválido"]);
+            }
+
+            $usuario->setDataNascimento($dataNascimento);
+            $usuario->setRg($rg);
+            $usuario->setTelefones($telefones);
+            $usuario->setId($id);
+
+            $endereco = new Endereco(
+                $endereco['rua'] ?? null,
+                $endereco['bairro'] ?? null,
+                $endereco['cep'] ?? null,
+                $endereco['cidade'] ?? null,
+                $endereco['uf'] ?? null,
+            );
+
+            $endereco->setNumero($endereco['numero'] ?? null);
+            $endereco->setComplemento($endereco['complemento'] ?? null);
+            $verificar_endereco = Init::getInstance()->verificarEndereco($endereco);
+            if ($verificar_endereco) {
+                $endereco = $verificar_endereco;
+            } else {
+                $endereco = Init::getInstance()->cadastrarEndereco($endereco);
+            }
+            $usuario->setEndereco($endereco);
+
+            $atualizacao = Init::getInstance()->atualizarUsuario($usuario);
+            if ($atualizacao) {
+                return (["status" => "sucesso", "mensagem" => "Usuário atualizado com sucesso"]);
+            } else {
+                return (["status" => "erro", "mensagem" => "Erro ao atualizar usuário"]);
+            }
+        } catch (Exception $e) {
+            return (["status" => "erro", "mensagem" => "Erro ao atualizar usuário: " . $e->getMessage()]);
+        }
+    }
+
     function cadastrarUsuario($data)
     {
         try {
@@ -25,14 +92,19 @@ class controller
             $email = $data['email'] ?? '';
             $senha = $data['senha'] ?? '';
             $cpf = $data['cpf'] ?? '';
-            $dataNascimento = $data['data_nascimento'] ?? '';
+            $dataNascimento = $data['data_nascimento'] ? DateTime::createFromFormat('Y-m-d', $data['data_nascimento']) : null;
 
             $usuario = new Cliente($email, $senha, $email, $nome, $cpf);
             $usuario->setDataNascimento($dataNascimento);
 
             $resultado = Init::getInstance()->cadastrarUsuario($usuario);
             if ($resultado) {
-                return (["status" => "sucesso", "mensagem" => "Usuário cadastrado com sucesso"]);
+                $login = $this->verificarLogin(['usuario' => $email, 'senha' => $senha]);
+                if ($login['status'] === 'sucesso') {
+                    return (["status" => "sucesso", "mensagem" => "Usuário cadastrado com sucesso"]);
+                } else {
+                    return (["status" => "erro", "mensagem" => "Usuário cadastrado, mas falha ao logar automaticamente"]);
+                }
             } else {
                 return (["status" => "erro", "mensagem" => "Erro ao cadastrar usuário"]);
             }
@@ -57,9 +129,40 @@ class controller
         try {
             session_start();
             if (isset($_SESSION['usuario_id'])) {
+                $usuario = Init::getInstance()->getUsuarioPorId($_SESSION['usuario_id']);
+
+                $dados = [
+                    "id" => $usuario->getId(),
+                    "nome" => $usuario->getNome(),
+                    "email" => $usuario->getEmail(),
+                    "cpf_cnpj" => $usuario->getCpfCnpj(),
+                    "rg" => $usuario->getRg(),
+                    "telefones" => [$usuario->getTelefones()],
+                    "endereco" => $usuario->getEndereco() ? [
+                        "rua" => $usuario->getEndereco()->rua ?? null,
+                        "numero" => $usuario->getEndereco()->numero ?? null,
+                        "bairro" => $usuario->getEndereco()->bairro ?? null,
+                        "cidade" => $usuario->getEndereco()->cidade ?? null,
+                        "uf" => $usuario->getEndereco()->uf ?? null,
+                        "cep" => $usuario->getEndereco()->cep ?? null,
+                        "complemento" => $usuario->getEndereco()->complemento ?? null,
+                    ] : null,
+                    "data_nascimento" => $usuario->getDataNascimento(),
+                    "tipo" => $usuario->getTipo() ?? null,
+                    "data_cadastro" => $usuario->getDataCadastro(),
+                    "data_modificacao" => $usuario->getDataModificacao()
+                ];
+
+                if ($usuario->getTipo() == "CORRETOR") {
+                    $dados["creci"] = $usuario->getCreci();
+                } elseif (in_array($usuario->getTipo(), ["GERENTE", "CAPTADOR", "FINANCEIRO"])) {
+                    $dados["salario"] = $usuario->getSalario();
+                }
+
                 return ([
                     "status" => "sucesso",
-                    "tipo" => $_SESSION['tipo']
+                    "tipo" => $_SESSION['tipo'],
+                    "usuario" => $dados
                 ]);
             } else {
                 return ([
@@ -375,7 +478,7 @@ class controller
                 return (["status" => "erro", "mensagem" => "Imóvel não encontrado"]);
             }
         } catch (Exception $e) {
-            echo (json_encode(["status" => "erro", "mensagem" => $e->getMessage()]));
+            return (["status" => "erro", "mensagem" => $e->getMessage()]);
         }
     }
 

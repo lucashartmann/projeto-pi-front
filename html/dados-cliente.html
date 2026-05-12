@@ -14,42 +14,61 @@
 
 <body>
     <div>
-        <div class="grid-container">
-            <label>Username</label>
-            <textarea id="inpt-username"></textarea>
-            <label>Nome</label>
-            <textarea id="inpt-nome"></textarea>
-            <label>CPF/CNPJ</label>
-            <input template="000.000.000-00" id="inpt-cpf" minlength="11" maxlength="14">
-            <label>RG</label>
-            <input id="inpt-rg" placeholder="RG aqui" minlength="7" maxlength="9">
-            <label>"Telefone"</label>
-            <input template="(00) 00000-0000" id="inpt-telefone">
-            <label>Endereco</label>
-            <input id="inpt-endereco" placeholder="Endereco aqui">
-            <label>Email</label>
-            <textarea id="inpt-email"></textarea>
-            <label>Senha</label>
-            <input placeholder="alterar senha" id="inpt-senha" password=True>
+        <form class="grid-container">
+            <!-- <label>Username</label>
+            <input name="username" type="text" id="inpt-username"> -->
+            <label id="stt-nome">Nome</label>
+            <input placeholder="nome aqui" id="inpt-nome" type="text">
+            <label id="stt-email">Email</label>
+            <input type="email" placeholder="email aqui" id="inpt-email">
+            <label id="stt-telefone">Telefone</label>
+            <div id="container-telefones">
+                <input placeholder="(00) 00000-0000" id="inpt-telefone" type="text">
+                <button id="bt-mais-numero">+</button>
+                <button id="bt-remover-numero">X</button>
+            </div>
+            <label id="stt-cep">CEP</label>
+            <input type="text" id="ta-cep" maxlength="9" minlength="9" required placeholder="00000-000">
+            <label id="stt-rua">Rua</label>
+            <textarea disabled=True id="ta-rua"></textarea>
+            <label id="stt-numero">Número do endereço</label>
+            <input id="ta-numero" type="number">
+            <label id="stt-complemento">Complemento do endereço</label>
+            <textarea id="ta-complemento"></textarea>
+            <label id="stt-bloco">Bloco do endereço</label>
+            <textarea id="ta-bloco"></textarea>
+            <label id="stt-bairro">Bairro</label>
+            <textarea id="ta-bairro" disabled=True></textarea>
+            <label id="stt-cidade">Cidade</label>
+            <textarea id="ta-cidade" disabled=True></textarea>
+            <label id="stt-estado">Estado</label>
+            <input disabled=True placeholder="XX" id="ta-estado" maxlength="2" minlength="2" type="text">
             <label id="stt-data-nascimento">Data de nascimento</label>
-            <input template="00/00/0000" id="inpt-data-nascimento" minlength="10" maxlength="10">
-        </div>
-        <div id="detalhes">
+            <input placeholder="00/00/0000" type="date" id="inpt-data-nascimento" maxlength="10" minlength="10">
+            <label id="stt-cpf">CPF</label>
+            <input placeholder="000.000.000-00" type="text" id="inpt-cpf" maxlength="14" minlength="14">
+            <label id="stt-rg">RG</label>
+            <input id="inpt-rg" placeholder="RG aqui" max="9" min="7" type="number">
+            <label>Senha</label>
+            <input type="password" name="senha" placeholder="alterar senha" id="inpt-senha">
+        </form>
+        <h3 id="stt-detalhes">Detalhes do imóvel desejado:</h3>
+        <form id="detalhes">
             <div class="detalhes-content">
                 <label>Quartos:</label>
-                <input placeholder="00" type="number" maxlength="2">
+                <input type="text" placeholder="00" name="quartos" id="inpt-quartos" maxlength="2">
             </div>
             <div class="detalhes-content">
                 <label>Banheiros:</label>
-                <input placeholder="00" type="number" maxlength="2">
+                <input type="text" placeholder="00" name="banheiros" id="inpt-banheiros" maxlength="2">
             </div>
             <div class="detalhes-content">
                 <label>CEP desejado:</label>
-                <input placeholder="00000-000" id="inpt-cep" minlength="9" maxlength="9">
+                <input type="text" placeholder="00000-000" id="inpt-cep" minlength="9" maxlength="9">
             </div>
-        </div>
+        </form>
         <div id="ctn-botao">
-            <button>Salvar</button>
+            <button onclick="salvarDados()">Salvar</button>
         </div>
         <label id="stt-compras">Imoveis do usuário</label>
         <div id="imoveis"></div>
@@ -86,5 +105,6 @@
         });
 </script>
 <script src="../js/base.js"></script>
+<script src="../js/dados-cliente.js"></script>
 
 </html>

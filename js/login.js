@@ -1,3 +1,31 @@
+Inputmask("999.999.999-99").mask("#cpf");
+
+function togglePasswordVisibility() {
+    const senhaInput = document.getElementById("senha");
+    const toggleIcon = document.getElementById("togglePassword");
+    if (senhaInput.type === "password") {
+        senhaInput.type = "text";
+        toggleIcon.src = "../assets/eye-off.png";
+    } else {
+        senhaInput.type = "password";
+        toggleIcon.src = "../assets/eye.png";
+    }
+}
+
+function verificaSenha() {
+    const senhaInput = document.getElementById("senha-cadastro");
+    const senha = senhaInput.value;
+    const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!#%*?&])[A-Za-z\d@$!#%*?&]{8,}$/;
+    if (!regex.test(senha)) {
+        senhaInput.setCustomValidity("A senha deve conter pelo menos 8 caracteres, incluindo letras maiúsculas, minúsculas, números e caracteres especiais.");
+        senhaInput.reportValidity();
+        senhaInput.focus();
+    } else {
+        senhaInput.setCustomValidity("");
+
+    }
+}
+
 async function fazerLogin() {
     event.preventDefault();
     const usuario = document.getElementById("usuario").value;
@@ -42,6 +70,10 @@ async function fazerLogin() {
         }
 
         if (resposta.ok && dados.status == "sucesso") {
+            if (dados.usuario.tipo == "CLIENTE") {
+                window.location.href = "../index.html";
+                return;
+            }
             window.location.href = "../html/cadastro-imovel.html";
             return;
         }
@@ -77,6 +109,7 @@ document.addEventListener("DOMContentLoaded", function () {
 async function fazerCadastro() {
     event.preventDefault();
     var formAnuncio = document.getElementById("form-cadastro");
+    if (!formAnuncio) return;
     var data = {};
     var formData = new FormData(formAnuncio);
     formData.forEach(function (value, key) {
@@ -106,17 +139,22 @@ async function fazerCadastro() {
         const contentType = resposta.headers.get("content-type");
         if (contentType && contentType.includes("application/json")) {
             const data = resposta.status !== 204 ? await resposta.json() : {};
-            if (data.length === 0) {
+            if (data.length < 1) {
                 alert("Resposta inesperada do servidor: JSON vazio");
                 console.error("Resposta JSON vazia:", data);
                 return;
             } else {
-                if (dados.status == "erro") {
-                    alert(dados.mensagem);
+                if (data.status == "erro") {
+                    alert(data.mensagem);
                     return;
                 }
 
-                if (resposta.ok && dados.status == "sucesso") {
+                if (resposta.ok && data.status == "sucesso") {
+                    document.getElementById("form-login").style.display = "flex";
+                    document.getElementById("form-cadastro").style.display = "none";
+                    document.getElementById("h3-login").style.color = "var(--background-nav)";
+                    document.getElementById("h3-cadastro").style.color = "white";
+                    document.getElementById("login-header").style.top = "26%";
                     window.location.href = "../index.html";
                     return;
                 }

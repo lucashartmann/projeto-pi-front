@@ -243,7 +243,7 @@ async function carregarUser() {
             console.log("Erro ao carregar usuário: " + dados.mensagem);
             return null;
         }
-        return dados.tipo;
+        return dados;
     } catch (erro) {
         console.error("Falha ao conectar com o backend:", erro);
         return null;
@@ -258,7 +258,12 @@ function carregarTabs(usuario) {
     let tabs = [];
     let cadastros = [];
 
-    switch (usuario) {
+    if (!usuario || !usuario.tipo) {
+        console.warn("Tipo de usuário não encontrado:", usuario);
+        return;
+    }
+
+    switch (usuario.tipo) {
         case 'ADMIN':
             tabs = [
                 { text: "Atendimento", href: "../../projeto-pi-front/html/atendimento.html" },
@@ -327,7 +332,8 @@ function carregarTabs(usuario) {
 
         case "CLIENTE":
             tabs = [
-                { text: "Dados Cliente", href: "../../projeto-pi-front/html/dados-cliente.html" }
+                { text: "<i class='fas fa-user'></i>", href: "../../projeto-pi-front/html/dados-cliente.html" },
+
             ];
             break;
     }

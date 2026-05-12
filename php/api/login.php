@@ -29,6 +29,11 @@ switch ($acao) {
         $body = file_get_contents("php://input");
         $data = json_decode($body, true);
 
+        if (!is_array($data)) {
+            $resultado = (["status" => "erro", "mensagem" => "JSON inválido"]);
+            return;
+        }
+
         if (json_last_error() !== JSON_ERROR_NONE) {
             $resultado = (["status" => "erro", "mensagem" => "JSON inválido"]);
             return;
