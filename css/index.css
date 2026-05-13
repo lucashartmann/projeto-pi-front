@@ -214,6 +214,17 @@ section#anuncios {
     }
 }
 
+@keyframes placeholderBlink {
+
+        0%,
+        100% {
+            text-opacity: 1;
+        }
+
+        50% {
+            text-opacity: 0;
+        }
+    }
 
 #pesquisa {
     display: block;
@@ -235,7 +246,7 @@ section#anuncios {
         width: 50%;
         padding: 10px;
         border: solid rgba(47, 45, 45, 0.2) 2px;
-        border-radius: 0;
+        border-radius: 2% / 30%;
         box-shadow: 0.1px 0.1px 3px black;
     }
 
@@ -245,25 +256,14 @@ section#anuncios {
         font-weight: 600;
         height: 100%;
         font-size: large;
-
+        border-radius: 2% / 30%;
         &::placeholder {
             color: rgba(65, 73, 18, 0.9);
             animation: placeholderBlink 10s;
-
         }
     }
 
-    @keyframes placeholderBlink {
-
-        0%,
-        100% {
-            opacity: 1;
-        }
-
-        50% {
-            opacity: 0;
-        }
-    }
+    
 
     #pesquisa-container {
         width: 60%;
@@ -271,16 +271,16 @@ section#anuncios {
         margin-bottom: 80px;
         margin-left: 80px;
         display: flex;
-
+        align-items: center;
         button {
             width: 25%;
-            height: 162%;
+            height: 160%;
             background-color: rgb(65, 73, 18);
             color: white;
             border: rgb(109, 97, 0) solid 1px;
-            border-radius: 0%;
+            /* border-radius: 0%; */
             margin-left: 5px;
-
+            border-radius: 2% / 30%;
             &:hover {
                 background-color: rgb(109, 97, 0);
                 cursor: pointer;
@@ -304,8 +304,9 @@ section#anuncios {
         width: 100%;
         padding: 10px;
         border: solid rgba(47, 45, 45, 0.2) 2px;
-        border-radius: 3px;
+        /* border-radius: 3px; */
         box-shadow: 0.1px 0.1px 3px black;
+        border-radius: 2% / 30%;
     }
 }
 

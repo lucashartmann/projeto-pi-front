@@ -1,15 +1,21 @@
 Inputmask("999.999.999-99").mask("#cpf");
 
-function togglePasswordVisibility() {
-    const senhaInput = document.getElementById("senha");
-    const toggleIcon = document.getElementById("togglePassword");
+function togglePasswordVisibility(event) {
+    const senhaInput = event.target.previousElementSibling;
+    const toggleIcons = event.target;
+
     if (senhaInput.type === "password") {
-        senhaInput.type = "text";
-        toggleIcon.src = "../assets/eye-off.png";
+            senhaInput.type = "text";
+            console.log(senhaInput);
+            console.log(toggleIcons);
+            toggleIcons.classList.remove("fa-eye-slash");
+            toggleIcons.classList.add("fa-eye");
     } else {
-        senhaInput.type = "password";
-        toggleIcon.src = "../assets/eye.png";
+            senhaInput.type = "password";
+            toggleIcons.classList.remove("fa-eye");
+            toggleIcons.classList.add("fa-eye-slash");
     }
+    
 }
 
 function verificaSenha() {
@@ -97,7 +103,7 @@ document.getElementById("h3-cadastro").addEventListener("click", function () {
     document.getElementById("form-cadastro").style.display = "flex";
     document.getElementById("h3-cadastro").style.color = "var(--background-nav)";
     document.getElementById("h3-login").style.color = "white";
-    document.getElementById("login-header").style.top = "18%";
+    document.getElementById("login-header").style.top = "13%";
 });
 
 document.addEventListener("DOMContentLoaded", function () {

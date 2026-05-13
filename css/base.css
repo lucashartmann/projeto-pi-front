@@ -220,17 +220,52 @@ footer {
     }
 }
 
-input:invalid {
-    border: 2px dashed red;
+
+select {
+        height: 2.5rem;
+        border-radius: 2% / 30%;
+        &:required {
+            border: dashed 2px rgb(195, 174, 14);
+        }
+
+        &:invalid {
+            border: 2px dashed red;
+        }
+
 }
 
-input:valid {
-    border: 2px solid black;
+input {
+    border-radius: 2% / 30%;
+    &:invalid {
+        border: 2px dashed red;
+    }
+
+    &:required {
+            border: dashed 2px rgb(195, 174, 14);
+    }
+    
+}
+
+textarea {
+        height: 2.2rem;
+        border-radius: 2% / 30%;
+
+        &:required {
+            border: dashed 2px rgb(195, 174, 14);
+        }
+
+        &:invalid {
+            border: 2px dashed red;
+        }
 }
 
 button {
     cursor: pointer;
     font-size: 100%;
+    border-radius: 2% / 30%;
+    &:hover {
+        background-color: var(--hover);
+    }
 }
 
 

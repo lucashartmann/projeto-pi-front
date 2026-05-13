@@ -43,11 +43,11 @@ form {
     input {
         min-width: 60%;
         width: auto;
-        height: 9%;
+        height: 3.5vh;
         color: black;
         background: var(--background);
         font-size: 100%;
-
+        border-radius: 2% / 30%;
     }
     button {
         width: 40%;
@@ -57,7 +57,7 @@ form {
         background: var(--background-nav);
         color: white;
         box-shadow: 0px 1px 6px 0px black;
-
+        border-radius: 2% / 30%;
         &:hover {
             cursor: pointer;
             background-color: var(--background);
@@ -103,5 +103,37 @@ footer {
 
     #barra {
         height: 1px;
+    }
+}
+
+.senha-container {
+    display: flex;
+    min-width: 60%;
+    width: auto;
+    background: var(--background);
+    border: 2px dashed red;
+    border-radius: 2% / 30%;
+    input {
+        width: 100%;
+        margin-right: 10px;
+        border:none;
+        background: transparent;
+        &:invalid {
+            border:none;
+        }
+        &:focus {
+            outline: none;
+        }
+    }
+    
+    i {
+        border: none !important;
+        background: transparent !important;
+        color: black;
+        width: 2vw;
+        text-align: center;
+        align-items: center;
+        align-content: center;
+        
     }
 }

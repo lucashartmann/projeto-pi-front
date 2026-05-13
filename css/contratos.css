@@ -1,6 +1,5 @@
 html,
 body {
-    height: 100%;
     margin: 0;
     padding: 0;
 }
@@ -28,17 +27,22 @@ body {
     grid-template-columns: repeat(6, 9vw);
     /* gap: 10px; */
     row-gap: 10px;
-    column-gap: 0;
+    column-gap: 20px;
     width: 80vw;
     justify-self: center;
     align-self: center;
     align-items: center;
     top: 50%;
     bottom: 50%;
-    height: 60vh;
+    height: 80vh;
     border: 10px solid var(--background-nav);
     justify-content: center;
     margin-top: auto;
+    margin: 20px;
+    p {
+        background-color: #ccc;
+        width: auto;
+    }
 }
 
 #proprietario {
@@ -53,3 +57,4 @@ body {
         background-color: var(--background-nav);
     }
 }
+

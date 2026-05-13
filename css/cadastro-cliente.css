@@ -1,15 +1,12 @@
 html,
 body {
-    height: 100%;
     margin: 0;
     padding: 0;
-
 }
 
 body {
-    display: flex;
-    flex-direction: column;
     align-items: center;
+    min-height: 100vh;
 }
 
 #campo-dados {
@@ -20,15 +17,18 @@ body {
     column-gap: 52px;
     justify-self: center;
     width: 90%;
+    position: relative;
+    margin-bottom: 40px;
 }
 
 input {
-    height: 140%;
+    height: 2vw;
     font-size: 100%;
 }
 
 #container-selects {
     display: inline-flex;
+    position: relative;
     margin: 50px 0px 25px 0px;
     justify-content: center;
     justify-items: center;
@@ -46,6 +46,12 @@ input {
 #container-executar {
     margin: 0;
     justify-self: center;
+    margin: 20px 0px;
+    #bt-executar {
+        font-size: 1.1rem;
+        background-color: var(--background);
+        border: solid 2px;
+    }
 }
 
 #h-buttons {
@@ -58,20 +64,16 @@ input {
 }
 
 textarea {
-    height: 90%;
+    height: 2vw;
     font-size: 140%;
 }
 
 label {
-    font-size: 140%;
+    font-size: 1.1rem;
     font-weight: 500;
 }
 
-#bt-executar {
-    font-size: 120%;
-    background-color: var(--background);
-    border: solid 2px;
-}
+
 
 
 #container-telefones {
@@ -85,7 +87,7 @@ label {
 
     input {
         width: 86%;
-        height: 100%;
+        
     }
 }
 
@@ -96,12 +98,3 @@ label {
     }
 }
 
-#inpt-data-nascimento,
-#ta-numero,
-#ta-cep {
-    height: 100%;
-}
-
-#inpt-data-nascimento {
-    height: 140%;
-}

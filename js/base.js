@@ -272,7 +272,6 @@ function carregarTabs(usuario) {
             ];
             cadastros = [
                 { text: "Imóveis", href: "../../projeto-pi-front/html/cadastro-imovel.html" },
-                { text: "Venda/Aluguel", href: "../../projeto-pi-front/html/cadastro-venda-aluguel.html" },
                 { text: "Cliente", href: "../../projeto-pi-front/html/cadastro-cliente.html" },
                 { text: "Contratos", href: "../../projeto-pi-front/html/contratos.html" }
             ];

@@ -6,6 +6,7 @@ textarea {
 input {
     height: 140%;
     font-size: 100%;
+    
 }
 
 label {
@@ -173,7 +174,7 @@ label {
         height: 40px;
         font-size: 100%;
         font-weight: 500;
-        border-radius: 0%;
+        /* border-radius: 0%; */
 
         &:hover {
             background: rgb(182, 176, 176);
