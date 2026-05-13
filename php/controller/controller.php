@@ -20,58 +20,66 @@ class controller
     function atualizarUsuario($dados)
     {
         try {
-            $nome = $dados['nome'] ?? null;
-            $email = $dados['email'] ?? null;
-            $senha = $dados['senha'] ?? null;
-            $dataNascimento = isset($dados['data_nascimento']) ? DateTime::createFromFormat('Y-m-d', $dados['data_nascimento']) : null;
-            $cpfCnpj = $dados['cpf_cnpj'] ?? null;
-            $rg = $dados['rg'] ?? null;
-            $telefones = $dados['telefones'] ?? null;
-            $endereco = $dados['endereco'] ?? null;
-            $tipo = $dados['tipo'] ?? null;
+            $nome =isset($dados['nome']) ? $dados['nome'] : null;
+            // $email = isset($dados['email']) ? $dados['email'] : null;
+            // $senha = isset($dados['senha']) ? $dados['senha'] : null;
+            $dataNascimento = isset($dados['data_nascimento']) ? DateTime::createFromFormat('d/m/Y', $dados['data_nascimento']) : null;
+            $cpfCnpj = isset($dados['cpf_cnpj']) ? str_replace(['.', '-', ' '], '', $dados['cpf_cnpj']) : null;
+            $rg = isset($dados['rg']) ? $dados['rg'] : null;
+            $telefones = isset($dados['telefones']) ? $dados['telefones'] : null;
+            $tipo = isset($dados['tipo']) ? $dados['tipo'] : null;
             $usuario = Null;
-            $creci = $dados['creci'] ?? null;
-            $salario = $dados['salario'] ?? null;
-            $id = $dados['id'] ?? null;
+            $creci = isset($dados['creci']) ? $dados['creci'] : null;
+            $salario = isset($dados['salario']) ? $dados['salario'] : null;
+            $id = isset($dados['id']) ? $dados['id'] : null;
+            $rua = isset($dados['rua']) ? $dados['rua'] : null;
+            $numero = isset($dados['numero']) ? $dados['numero'] : null;
+            $bairro = isset($dados['bairro']) ? $dados['bairro'] : null;
+            $cidade = isset($dados['cidade']) ? $dados['cidade'] : null;
+            $uf = isset($dados['uf']) ? $dados['uf'] : null;
+            $cep = isset($dados['cep']) ? str_replace('-', '', $dados['cep']) : null;
+            $complemento = isset($dados['complemento']) ? $dados['complemento'] : null;
             if (!$id) {
                 return (["status" => "erro", "mensagem" => "ID do usuário não fornecido"]);
             }
+            $usuario = Init::getInstance()->getUsuarioPorId($id);
             if ($tipo == "CORRETOR") {
-                $usuario = new Corretor($email, $senha, $email, $nome, $cpfCnpj, $creci);
+               $usuario->setCreci($creci);
             } else if ($tipo == "GERENTE") {
-                $usuario = new Gerente($email, $senha, $email, $nome, $cpfCnpj);
+                $usuario->setSalario($salario);
             } else if ($tipo == "CAPTADOR") {
-                $usuario = new Captador($email, $senha, $email, $nome, $cpfCnpj);
+                $usuario->setSalario($salario);
             } else if ($tipo == "CLIENTE") {
-                $usuario = new Cliente($email, $senha, $email, $nome, $cpfCnpj);
+                $usuario->setNome($nome);
             } else if ($tipo == "PROPRIETARIO") {
-                $usuario = new Proprietario($email, $nome, $cpfCnpj);
+                $usuario->setNome($nome);
             } else {
                 return (["status" => "erro", "mensagem" => "Tipo de usuário inválido"]);
             }
-
+            $usuario->setNome($nome);
+            $usuario->setCpfCnpj($cpfCnpj);
             $usuario->setDataNascimento($dataNascimento);
             $usuario->setRg($rg);
             $usuario->setTelefones($telefones);
             $usuario->setId($id);
 
-            $endereco = new Endereco(
-                $endereco['rua'] ?? null,
-                $endereco['bairro'] ?? null,
-                $endereco['cep'] ?? null,
-                $endereco['cidade'] ?? null,
-                $endereco['uf'] ?? null,
-            );
+            // $endereco = new Endereco(
+            //     $endereco['rua'] ?? null,
+            //     $endereco['bairro'] ?? null,
+            //     $endereco['cep'] ?? null,
+            //     $endereco['cidade'] ?? null,
+            //     $endereco['uf'] ?? null,
+            // );
 
-            $endereco->setNumero($endereco['numero'] ?? null);
-            $endereco->setComplemento($endereco['complemento'] ?? null);
-            $verificar_endereco = Init::getInstance()->verificarEndereco($endereco);
-            if ($verificar_endereco) {
-                $endereco = $verificar_endereco;
-            } else {
-                $endereco = Init::getInstance()->cadastrarEndereco($endereco);
-            }
-            $usuario->setEndereco($endereco);
+            // $endereco->setNumero($endereco['numero'] ?? null);
+            // $endereco->setComplemento($endereco['complemento'] ?? null);
+            // $verificar_endereco = Init::getInstance()->verificarEndereco($endereco);
+            // if ($verificar_endereco) {
+            //     $endereco = $verificar_endereco;
+            // } else {
+            //     $endereco = Init::getInstance()->cadastrarEndereco($endereco);
+            // }
+            // $usuario->setEndereco($endereco);
 
             $atualizacao = Init::getInstance()->atualizarUsuario($usuario);
             if ($atualizacao) {
@@ -88,11 +96,11 @@ class controller
     {
         try {
 
-            $nome = $data['nome'] ?? '';
-            $email = $data['email'] ?? '';
-            $senha = $data['senha'] ?? '';
-            $cpf = $data['cpf'] ?? '';
-            $dataNascimento = $data['data_nascimento'] ? DateTime::createFromFormat('Y-m-d', $data['data_nascimento']) : null;
+            $nome = isset($data['nome']) ? $data['nome'] : '';
+            $email = isset($data['email']) ? $data['email'] : '';
+            $senha = isset($data['senha']) ? $data['senha'] : '';
+            $cpf = isset($data['cpf_cnpj']) ? str_replace(['.', '-', ' '], '', $data['cpf_cnpj']) : null;
+            $dataNascimento = isset($data['data_nascimento']) ? DateTime::createFromFormat('d/m/Y', $data['data_nascimento']) : null;
 
             $usuario = new Cliente($email, $senha, $email, $nome, $cpf);
             $usuario->setDataNascimento($dataNascimento);
@@ -137,7 +145,7 @@ class controller
                     "email" => $usuario->getEmail(),
                     "cpf_cnpj" => $usuario->getCpfCnpj(),
                     "rg" => $usuario->getRg(),
-                    "telefones" => [$usuario->getTelefones()],
+                    "telefones" => $usuario->getTelefones() ? [$usuario->getTelefones()] : null,
                     "endereco" => $usuario->getEndereco() ? [
                         "rua" => $usuario->getEndereco()->rua ?? null,
                         "numero" => $usuario->getEndereco()->numero ?? null,
@@ -147,7 +155,7 @@ class controller
                         "cep" => $usuario->getEndereco()->cep ?? null,
                         "complemento" => $usuario->getEndereco()->complemento ?? null,
                     ] : null,
-                    "data_nascimento" => $usuario->getDataNascimento(),
+                    "data_nascimento" => $usuario->getDataNascimento() ? $usuario->getDataNascimento()->format('d-m-Y') : null,
                     "tipo" => $usuario->getTipo() ?? null,
                     "data_cadastro" => $usuario->getDataCadastro(),
                     "data_modificacao" => $usuario->getDataModificacao()

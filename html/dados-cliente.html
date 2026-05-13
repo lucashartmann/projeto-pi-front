@@ -5,11 +5,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dados do Cliente</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <link rel="stylesheet" href="../css/base.css">
     <link rel="stylesheet" href="../css/dados-cliente.css">
     <link rel="icon" type="image/x-icon" href="img/logo.png">
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="icon" type="image/x-icon" href="img/logo.png">
+    <script src="https://cdn.jsdelivr.net/npm/inputmask/dist/inputmask.min.js"></script>
 </head>
 
 <body>
@@ -18,39 +19,24 @@
             <!-- <label>Username</label>
             <input name="username" type="text" id="inpt-username"> -->
             <label id="stt-nome">Nome</label>
-            <input placeholder="nome aqui" id="inpt-nome" type="text">
+            <input placeholder="nome aqui" id="inpt-nome" type="text" name="nome">
             <label id="stt-email">Email</label>
-            <input type="email" placeholder="email aqui" id="inpt-email">
+            <input type="email" placeholder="email aqui"  id="inpt-email" name="email">
             <label id="stt-telefone">Telefone</label>
             <div id="container-telefones">
-                <input placeholder="(00) 00000-0000" id="inpt-telefone" type="text">
-                <button id="bt-mais-numero">+</button>
-                <button id="bt-remover-numero">X</button>
+                <input placeholder="(00) 00000-0000" id="inpt-telefone" type="text" class="telefone" maxlength="15">
+                <button id="bt-mais-numero" onclick="adicionarNumeroTelefone()">+</button>
+                <button id="bt-remover-numero" onclick="removerNumeroTelefone()">X</button>
             </div>
-            <label id="stt-cep">CEP</label>
-            <input type="text" id="ta-cep" maxlength="9" minlength="9" required placeholder="00000-000">
-            <label id="stt-rua">Rua</label>
-            <textarea disabled=True id="ta-rua"></textarea>
-            <label id="stt-numero">Número do endereço</label>
-            <input id="ta-numero" type="number">
-            <label id="stt-complemento">Complemento do endereço</label>
-            <textarea id="ta-complemento"></textarea>
-            <label id="stt-bloco">Bloco do endereço</label>
-            <textarea id="ta-bloco"></textarea>
-            <label id="stt-bairro">Bairro</label>
-            <textarea id="ta-bairro" disabled=True></textarea>
-            <label id="stt-cidade">Cidade</label>
-            <textarea id="ta-cidade" disabled=True></textarea>
-            <label id="stt-estado">Estado</label>
-            <input disabled=True placeholder="XX" id="ta-estado" maxlength="2" minlength="2" type="text">
+           
             <label id="stt-data-nascimento">Data de nascimento</label>
-            <input placeholder="00/00/0000" type="date" id="inpt-data-nascimento" maxlength="10" minlength="10">
+            <input placeholder="00/00/0000" type="date" id="inpt-data-nascimento" maxlength="10" minlength="10" name="data_nascimento">
             <label id="stt-cpf">CPF</label>
-            <input placeholder="000.000.000-00" type="text" id="inpt-cpf" maxlength="14" minlength="14">
+            <input placeholder="000.000.000-00" type="text" id="inpt-cpf" maxlength="14" minlength="14" name="cpf_cnpj">
             <label id="stt-rg">RG</label>
-            <input id="inpt-rg" placeholder="RG aqui" max="9" min="7" type="number">
+            <input id="inpt-rg" placeholder="RG aqui" max="9" min="7" type="number" name="rg">
             <label>Senha</label>
-            <input type="password" name="senha" placeholder="alterar senha" id="inpt-senha">
+            <input type="password" name="senha" placeholder="alterar senha" id="inpt-senha" minlength="8" maxlength="255">
         </form>
         <h3 id="stt-detalhes">Detalhes do imóvel desejado:</h3>
         <form id="detalhes">

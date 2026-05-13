@@ -18,6 +18,22 @@ function togglePasswordVisibility(event) {
     
 }
 
+function verificaDataNascimento() {
+    const dataInput = document.getElementById("data-nascimento");
+    const dataNascimento = new Date(dataInput.value);
+    const hoje = new Date();
+    const idadeMinima = 18;
+    const idade = hoje.getFullYear() - dataNascimento.getFullYear();
+
+    if (idade < idadeMinima || (idade === idadeMinima && hoje.getMonth() < dataNascimento.getMonth()) || (idade === idadeMinima && hoje.getMonth() === dataNascimento.getMonth() && hoje.getDate() < dataNascimento.getDate())) {
+        dataInput.setCustomValidity("Você deve ter pelo menos 18 anos para se cadastrar.");
+        dataInput.reportValidity();
+        dataInput.focus();
+    } else {
+        dataInput.setCustomValidity("");
+    }
+}
+
 function verificaSenha() {
     const senhaInput = document.getElementById("senha-cadastro");
     const senha = senhaInput.value;
@@ -103,7 +119,7 @@ document.getElementById("h3-cadastro").addEventListener("click", function () {
     document.getElementById("form-cadastro").style.display = "flex";
     document.getElementById("h3-cadastro").style.color = "var(--background-nav)";
     document.getElementById("h3-login").style.color = "white";
-    document.getElementById("login-header").style.top = "13%";
+    document.getElementById("login-header").style.top = "28%";
 });
 
 document.addEventListener("DOMContentLoaded", function () {

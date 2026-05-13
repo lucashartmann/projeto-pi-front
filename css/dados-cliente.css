@@ -155,3 +155,19 @@ button {
     margin: 0px 0px 0px 40px;
     width: 30%;
 }
+
+
+@media (max-width: 750px) {
+    #detalhes {
+        width: 100% !important;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(50%, 1fr));
+        row-gap: 40px;
+        input {
+           width: 8rem;
+        }
+        div {
+            width: 100% !important;
+        }
+    }
+}

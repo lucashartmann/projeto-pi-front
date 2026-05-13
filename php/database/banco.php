@@ -2523,7 +2523,7 @@ class Banco
                     id_endereco = :endereco,
                     data_nascimento = :data,
                     tipo_usuario = :tipo
-                WHERE cpf_cnpj = :cpf_where
+                WHERE cpf_cnpj = :cpf_where OR id_usuario = :id
             ";
 
             $endereco = $usuario->getEndereco();
@@ -2551,17 +2551,19 @@ class Banco
                 ':endereco' => $endereco,
                 ':data' => $dataNascimento,
                 ':tipo' => $tipoUsuario,
-                ':cpf_where' => $usuario->getCpfCnpj()
+                ':cpf_where' => $usuario->getCpfCnpj(),
+                ':id' => $usuario->getId()
             ]);
 
 
-            $usuario_db = $this->getUsuarioPorCpfCnpj(
+            $usuario_db = $usuario->getCpfCnpj() ? $this->getUsuarioPorCpfCnpj(
                 $usuario->getCpfCnpj()
-            );
+            ) : $this->getUsuarioPorId($usuario->getId());
 
-            $telefonesAntigos = $usuario_db ? $usuario_db->getTelefones() : [];
-            $telefonesNovos = $usuario->getTelefones() ?: [];
+            $telefonesAntigos = $usuario_db ? ($usuario_db->getTelefones() ?? []) : [];
+            $telefonesNovos = $usuario_db ? ($usuario->getTelefones() ?? []) : [];
 
+        
 
             foreach ($telefonesAntigos as $tel) {
                 if (!in_array($tel, $telefonesNovos)) {
