@@ -13,6 +13,7 @@ require_once __DIR__ . '/condominio.php';
 require_once __DIR__ . '/gerente.php';
 require_once __DIR__ . '/usuario.php';
 require_once __DIR__ . '/proprietario.php';
+require_once __DIR__ . '/../utils/converterImagem.php';
 
 ini_set('display_errors', 0);
 error_reporting(E_ALL);
@@ -337,18 +338,18 @@ class Init
 
         $anuncioUm = new Anuncio();
 
-        // echo file_get_contents("../assets/apartament.jpg");
+        // echo imagemParaWebpBlob("../assets/apartament.jpg");
 
         try {
-            $blob = file_get_contents("../../assets/apartament.jpg");
+            $blob = imagemParaWebpBlob("../../assets/apartament.jpg", 80);
         } catch (Exception $e) {
-            echo "Erro ao ler os arquivos de imagem: " . $e->getMessage();
+            error_log("Erro ao ler os arquivos de imagem: " . $e->getMessage());
         }
 
         try {
-            $blob2 = file_get_contents("../../assets/campo.jpg");
+            $blob2 = imagemParaWebpBlob("../../assets/campo.jpg", 80);
         } catch (Exception $e) {
-            echo "Erro ao ler os arquivos de imagem: " . $e->getMessage();
+            error_log("Erro ao ler os arquivos de imagem: " . $e->getMessage());
         }
 
 
@@ -362,9 +363,9 @@ class Init
         $anuncioDois = new Anuncio();
 
         try {
-            $blob3 = file_get_contents("../../assets/patio.jpg");
+            $blob3 = imagemParaWebpBlob("../../assets/patio.jpg", 80);
         } catch (Exception $e) {
-            echo "Erro ao ler os arquivos de imagem: " . $e->getMessage();
+            error_log("Erro ao ler os arquivos de imagem: " . $e->getMessage());
         }
         if ($blob3) {
             $anuncioDois->setImagens([$blob3, $blob3, $blob3, $blob3, $blob3]);

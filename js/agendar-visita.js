@@ -103,22 +103,22 @@ async function salvarEvento(data) {
       },
       body: JSON.stringify(data)
     })
-      .then(response => {
+      .then(async response => {
         const contentType = response.headers.get("content-type");
         if (res.erro) {
           alert("Erro ao listar atendimentos: " + res.erro);
           return null;
         }
         if (contentType && contentType.includes("application/json")) {
-          return response.json();
+          return await response.json();
         } else {
-          const texto = response.text();
+          const texto = await response.text();
           alert("Resposta inesperada do servidor");
           console.error("Resposta não é JSON:", texto);
           return null;
         }
       })
-      .then(data => {
+      .then(async data => {
         if (data.status == "erro") {
           alert("Erro ao cadastrar imóvel: " + data.mensagem);
           return;

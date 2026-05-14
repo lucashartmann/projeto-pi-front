@@ -13,7 +13,7 @@ function salvarMultiplosForms() {
     salvar();
 }
 
-function salvar() {
+async function salvar() {
     var form = document.getElementById("container-cadastro");
     var formAnuncio = document.getElementById("container-anuncio");
     var data = {};
@@ -42,29 +42,29 @@ function salvar() {
                 caminho.substring(caminho.lastIndexOf("/")),
                 "/php/api/imoveis.php?acao=cadastrar_imovel"
             );
-            fetch(caminho, {
+            await fetch(caminho, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
                 },
                 body: JSON.stringify(data)
             })
-                .then(response => {
+                .then(async (response) => {
                     if (response.erro) {
                         alert("Erro ao listar atendimentos: " + response.erro);
                         return null;
                     }
                     const contentType = response.headers.get("content-type");
                     if (contentType && contentType.includes("application/json")) {
-                        return response.json();
+                        return await response.json();
                     } else {
-                        const texto = response.text();
+                        const texto = await response.text();
                         alert("Resposta inesperada do servidor");
                         console.error("Resposta não é JSON:", texto);
                         return null;
                     }
                 })
-                .then(data => {
+                .then(async (data) => {
                     if (data.status == "erro") {
                         alert("Erro ao cadastrar imóvel: " + data.mensagem);
                         return;
@@ -107,22 +107,22 @@ async function excluir() {
                 },
                 body: JSON.stringify({ ref: imovelId })
             })
-                .then(response => {
+                .then(async (response) => {
                     if (response.erro) {
                         alert("Erro ao listar atendimentos: " + response.erro);
                         return null;
                     }
                     const contentType = response.headers.get("content-type");
                     if (contentType && contentType.includes("application/json")) {
-                        return response.json();
+                        return await response.json();
                     } else {
-                        const texto = response.text();
+                        const texto = await response.text();
                         alert("Resposta inesperada do servidor");
                         console.error("Resposta não é JSON:", texto);
                         return null;
                     }
                 })
-                .then(data => {
+                .then(async (data) => {
                     if (data.status == "erro") {
                         alert("Erro ao excluir imóvel: " + data.mensagem);
                     } else {
@@ -288,24 +288,22 @@ window.addEventListener("DOMContentLoaded", function () {
 });
 
 
-function preencherEndereco(event) {
+async function preencherEndereco(event) {
     let cep = event.target.value;
     if (cep.length > 7) {
         let inputRua = document.getElementById("ta-rua");
         let inputBairro = document.getElementById("ta-bairro");
         let inputCidade = document.getElementById("ta-cidade");
         let inputEstado = document.getElementById("ta-estado");
-        fetch(`https://viacep.com.br/ws/${cep}/json`)
-            .then(response => response.json())
-            .then(dados => {
-                if (dados.erro) {
-                    alert("CEP não encontrado!");
-                    return;
-                }
-                inputRua.value = dados.logradouro || "";
-                inputBairro.value = dados.bairro || "";
-                inputCidade.value = dados.localidade || "";
-                inputEstado.value = dados.uf || "";
-            });
-    }
+        const response = await fetch(`https://viacep.com.br/ws/${cep}/json`);
+        const data = await response.json();
+        if (data.erro) {
+            alert("CEP não encontrado!");
+            return;
+        }
+        inputRua.value = data.logradouro || "";
+        inputBairro.value = data.bairro || "";
+        inputCidade.value = data.localidade || "";
+        inputEstado.value = data.uf || "";
+    };
 }

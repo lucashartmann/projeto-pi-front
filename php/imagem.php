@@ -22,5 +22,5 @@ if (!$img) {
     exit;
 }
 
-header("Content-Type: image/jpeg");
+header("Content-Type: image/webp");
 echo $img;

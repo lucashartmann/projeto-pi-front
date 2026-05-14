@@ -23,22 +23,22 @@ async function listarImoveis() {
             "/php/api/imoveis.php?acao=listar_imoveis"
         );
         const resposta = await fetch(caminho)
-            .then(res => {
+            .then(async (res) => {
                 const contentType = res.headers.get("content-type");
                 if (res.erro) {
                     alert("Erro ao listar atendimentos: " + res.erro);
                     return null;
                 }
                 if (contentType && contentType.includes("application/json")) {
-                    return res.json();
+                    return await res.json();
                 } else {
-                    const texto = res.text();
+                    const texto = await res.text();
                     alert("Resposta inesperada do servidor");
                     console.error("Resposta não é JSON:", texto);
                     return;
                 }
             })
-            .then(data => {
+            .then(async (data) => {
                 if (data.status == "erro") {
                     alert("Erro ao listar imóveis: " + data.mensagem);
                     return null;
@@ -70,24 +70,24 @@ async function listarImoveisDisponiveis() {
         );
         const resposta = await fetch(caminho)
             // .then(res => console.log(res))
-            .then(res => {
+            .then(async (res) => {
                 if (res.erro) {
                     alert("Erro ao listar atendimentos: " + res.erro);
                     return null;
                 }
                 const contentType = res.headers.get("content-type");
                 if (contentType && contentType.includes("application/json")) {
-                    return res.json();
+                    return await res.json();
                 } else {
-                    const texto = res.text();
+                    const texto = await res.text();
                     alert("Resposta inesperada do servidor");
                     console.error("Resposta não é JSON:", texto);
                     return;
                 }
             })
-            .then(data => {
+            .then(async (data) => {
                 // console.log(data);
-                return data;
+                return await data;
             })
             .catch(erro => {
                 console.error("Falha ao conectar com o backend:", erro);
