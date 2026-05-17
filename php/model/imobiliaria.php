@@ -18,7 +18,7 @@ class Imobiliaria
 
     public function __construct($nome, $cnpj)
     {
-        $this->bancoDados = new Banco();
+        $this->bancoDados = Banco::getInstance();
         $this->nome = $nome;
         $this->cnpj = $cnpj;
         $this->estoque = new Estoque();

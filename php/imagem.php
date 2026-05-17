@@ -2,7 +2,7 @@
 
 require_once(__DIR__ . '/database/banco.php');
 
-$banco = new Banco();
+$banco = Banco::getInstance();
 $pdo = $banco->getDb();
 
 $id = $_GET['id'] ?? null;

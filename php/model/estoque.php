@@ -8,7 +8,7 @@ class Estoque
 
     public function __construct()
     {
-        $this->bancoDados = new Banco();
+        $this->bancoDados = Banco::getInstance();
     }
 
     public function cadastrarAnuncio($anuncio)

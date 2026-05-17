@@ -17,26 +17,31 @@ require_once __DIR__ . '/../model/vistoria.php';
 
 ini_set('display_errors', 0);
 error_reporting(E_ALL);
-class Banco
+class Banco extends PDO
 {
-    private $db;
+    private static $db;
 
-    public function __construct()
+    public function __construct() {}
+
+    public static function getInstance()
     {
-        $servername = "127.0.0.1";
-        $username = "root";
-        $password = "";
-        $dbname = "imobiliaria";
-
-        try {
-            $this->db = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
-            $this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-            $this->initTabelas();
-            // error_log("Connected successfully";
-        } catch (PDOException $e) {
-            error_log($e->getMessage());
-            return;
+        if (!self::$db) {
+            try {
+                $servername = "127.0.0.1";
+                $username = "root";
+                $password = "";
+                $dbname = "imobiliaria";
+                self::$db = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
+                self::$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+                self::initTabelas();
+                // error_log("Connected successfully";
+                return self::$db;
+            } catch (PDOException $e) {
+                error_log($e->getMessage());
+                return;
+            }
         }
+        return self::$db;
     }
 
     public function getDb()
@@ -2563,7 +2568,7 @@ class Banco
             $telefonesAntigos = $usuario_db ? ($usuario_db->getTelefones() ?? []) : [];
             $telefonesNovos = $usuario_db ? ($usuario->getTelefones() ?? []) : [];
 
-        
+
 
             foreach ($telefonesAntigos as $tel) {
                 if (!in_array($tel, $telefonesNovos)) {
