@@ -20,7 +20,7 @@ class controller
     function atualizarUsuario($dados)
     {
         try {
-            $nome =isset($dados['nome']) ? $dados['nome'] : null;
+            $nome = isset($dados['nome']) ? $dados['nome'] : null;
             // $email = isset($dados['email']) ? $dados['email'] : null;
             // $senha = isset($dados['senha']) ? $dados['senha'] : null;
             $dataNascimento = isset($dados['data_nascimento']) ? DateTime::createFromFormat('d/m/Y', $dados['data_nascimento']) : null;
@@ -44,7 +44,7 @@ class controller
             }
             $usuario = Init::getInstance()->getUsuarioPorId($id);
             if ($tipo == "CORRETOR") {
-               $usuario->setCreci($creci);
+                $usuario->setCreci($creci);
             } else if ($tipo == "GERENTE") {
                 $usuario->setSalario($salario);
             } else if ($tipo == "CAPTADOR") {
@@ -125,6 +125,15 @@ class controller
     {
         try {
             session_start();
+            $_SESSION = array();
+            if (ini_get("session.use_cookies")) {
+                try {
+                    $params = session_get_cookie_params();
+                    setcookie(session_name(), "", time() - 42000, $params["path"], $params["domain"], $params['httponly']);
+                } catch (Exception $e) {
+                    return;
+                }
+            }
             session_destroy();
             return (["status" => "sucesso", "mensagem" => "Usuário deslogado com sucesso"]);
         } catch (Exception $e) {

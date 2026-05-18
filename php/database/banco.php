@@ -19,9 +19,13 @@ ini_set('display_errors', 0);
 error_reporting(E_ALL);
 class Banco extends PDO
 {
-    private static $db;
+    private static $db = null;
 
-    public function __construct() {}
+    public function __construct($dsn, $username, $password)
+    {
+        parent::__construct($dsn, $username, $password);
+        $this->initTabelas();
+    }
 
     public static function getInstance()
     {
@@ -31,22 +35,16 @@ class Banco extends PDO
                 $username = "root";
                 $password = "";
                 $dbname = "imobiliaria";
-                self::$db = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
+                self::$db = new Banco("mysql:host=$servername;dbname=$dbname", $username, $password);
                 self::$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-                self::initTabelas();
-                // error_log("Connected successfully";
+                // error_log("Connected successfully");
                 return self::$db;
             } catch (PDOException $e) {
                 error_log($e->getMessage());
-                return;
+                return null;
             }
         }
         return self::$db;
-    }
-
-    public function getDb()
-    {
-        return $this->db;
     }
 
     public function initTabelas()
@@ -56,7 +54,7 @@ class Banco extends PDO
             "CREATE DATABASE IF NOT EXISTS imobiliaria;",
 
             "CREATE TABLE IF NOT EXISTS usuario (
-                id_usuario INTEGER PRIMARY KEY AUTO_INCREMENT,
+                id INTEGER PRIMARY KEY AUTO_INCREMENT,
                 username VARCHAR(255) UNIQUE,
                 senha VARCHAR(255) NOT NULL,
                 email VARCHAR(255) UNIQUE,
@@ -69,12 +67,12 @@ class Banco extends PDO
             )",
 
             "CREATE TABLE IF NOT EXISTS telefone (
-                id_telefone INTEGER PRIMARY KEY AUTO_INCREMENT,
+                id INTEGER PRIMARY KEY AUTO_INCREMENT,
                 numero VARCHAR(11) NOT NULL UNIQUE
             )",
 
             "CREATE TABLE IF NOT EXISTS endereco (
-                id_endereco INTEGER PRIMARY KEY AUTO_INCREMENT,
+                id INTEGER PRIMARY KEY AUTO_INCREMENT,
                 rua VARCHAR(255) NOT NULL,
                 numero INTEGER(10) NULL,
                 bairro VARCHAR(255) NOT NULL,
@@ -85,63 +83,63 @@ class Banco extends PDO
             )",
 
             "CREATE TABLE IF NOT EXISTS proprietario (
-                id_proprietario INTEGER PRIMARY KEY AUTO_INCREMENT,
+                id INTEGER PRIMARY KEY AUTO_INCREMENT,
                 email VARCHAR(255) UNIQUE NULL,
                 nome VARCHAR(255) NOT NULL,
                 cpf_cnpj VARCHAR(14) UNIQUE NULL,
                 rg VARCHAR(12) NULL,
                 id_endereco INTEGER NULL,
                 data_nascimento DATE NULL,
-                FOREIGN KEY (id_endereco) REFERENCES endereco(id_endereco)
+                FOREIGN KEY (id_endereco) REFERENCES endereco(id)
             )",
 
             "CREATE TABLE IF NOT EXISTS telefone_usuario (
                 id_usuario INTEGER,
                 id_telefone INTEGER,
-                FOREIGN KEY (id_usuario) REFERENCES usuario(id_usuario) ON DELETE CASCADE,
-                FOREIGN KEY (id_telefone) REFERENCES telefone(id_telefone) ON DELETE CASCADE
+                FOREIGN KEY (id_usuario) REFERENCES usuario(id) ON DELETE CASCADE,
+                FOREIGN KEY (id_telefone) REFERENCES telefone(id) ON DELETE CASCADE
             )",
 
             "CREATE TABLE IF NOT EXISTS telefone_proprietario (
                 id_telefone INTEGER,
                 id_proprietario INTEGER,
-                FOREIGN KEY (id_telefone) REFERENCES telefone(id_telefone) ON DELETE CASCADE,
-                FOREIGN KEY (id_proprietario) REFERENCES proprietario (id_proprietario) ON DELETE CASCADE
+                FOREIGN KEY (id_telefone) REFERENCES telefone(id) ON DELETE CASCADE,
+                FOREIGN KEY (id_proprietario) REFERENCES proprietario (id) ON DELETE CASCADE
             )",
 
             "CREATE TABLE IF NOT EXISTS cliente (
                     id_usuario INTEGER PRIMARY KEY,
-                    FOREIGN KEY (id_usuario) REFERENCES usuario(id_usuario) ON DELETE CASCADE
+                    FOREIGN KEY (id_usuario) REFERENCES usuario(id) ON DELETE CASCADE
             )",
 
             "CREATE TABLE IF NOT EXISTS captador (
                     id_usuario INTEGER PRIMARY KEY,
                     salario REAL NULL,
-                    FOREIGN KEY (id_usuario) REFERENCES usuario(id_usuario) ON DELETE CASCADE
+                    FOREIGN KEY (id_usuario) REFERENCES usuario(id) ON DELETE CASCADE
             )",
 
             "CREATE TABLE IF NOT EXISTS corretor (
                     id_usuario INTEGER PRIMARY KEY,
                     creci TEXT NULL,
-                    FOREIGN KEY (id_usuario) REFERENCES usuario(id_usuario) ON DELETE CASCADE
+                    FOREIGN KEY (id_usuario) REFERENCES usuario(id) ON DELETE CASCADE
             )",
 
 
             "CREATE TABLE IF NOT EXISTS anuncio (
-                id_anuncio INTEGER PRIMARY KEY AUTO_INCREMENT,
+                id INTEGER PRIMARY KEY AUTO_INCREMENT,
                 descricao VARCHAR(255) NULL,
                 titulo VARCHAR(255) NULL
             )",
 
             "CREATE TABLE IF NOT EXISTS condominio (
-                id_condominio INTEGER PRIMARY KEY AUTO_INCREMENT,
+                id INTEGER PRIMARY KEY AUTO_INCREMENT,
                 nome VARCHAR(255) NULL,
                 id_endereco INTEGER NULL,
-                FOREIGN KEY (id_endereco) REFERENCES endereco(id_endereco)
+                FOREIGN KEY (id_endereco) REFERENCES endereco(id)
             )",
 
             "CREATE TABLE IF NOT EXISTS imovel (
-                id_imovel INTEGER PRIMARY KEY AUTO_INCREMENT,
+                id INTEGER PRIMARY KEY AUTO_INCREMENT,
                 valor_venda REAL NULL,
                 valor_aluguel REAL NULL,
                 quant_quartos INTEGER NULL,
@@ -168,24 +166,24 @@ class Banco extends PDO
                 data_modificacao DATETIME NULL,
                 id_anuncio INT NULL,
                 id_condominio INT NULL,
-                FOREIGN KEY (id_anuncio) REFERENCES anuncio (id_anuncio),
-                FOREIGN KEY (id_endereco) REFERENCES endereco(id_endereco),
-                FOREIGN KEY (id_corretor) REFERENCES corretor(id_usuario),
-                FOREIGN KEY (id_captador) REFERENCES captador(id_usuario),
-                FOREIGN KEY (id_condominio) REFERENCES condominio (id_condominio)
+                FOREIGN KEY (id_anuncio) REFERENCES anuncio (id),
+                FOREIGN KEY (id_endereco) REFERENCES endereco(id),
+                FOREIGN KEY (id_corretor) REFERENCES corretor(id),
+                FOREIGN KEY (id_captador) REFERENCES captador(id),
+                FOREIGN KEY (id_condominio) REFERENCES condominio (id)
 
             )",
 
             "CREATE TABLE IF NOT EXISTS midia_anuncio (
-                id_midia INTEGER PRIMARY KEY AUTO_INCREMENT,
+                id INTEGER PRIMARY KEY AUTO_INCREMENT,
                 id_anuncio INTEGER NULL,
                 midia LONGBLOB NULL,
                 tipo VARCHAR(255) NULL,
-                FOREIGN KEY (id_anuncio) REFERENCES anuncio(id_anuncio) ON DELETE CASCADE
+                FOREIGN KEY (id_anuncio) REFERENCES anuncio(id) ON DELETE CASCADE
             )",
 
             "CREATE TABLE IF NOT EXISTS venda_aluguel (
-                    id_venda INTEGER PRIMARY KEY AUTO_INCREMENT,
+                    id INTEGER PRIMARY KEY AUTO_INCREMENT,
                     id_cliente INT NULL,
                     cpf_cnpj_proprietario VARCHAR(14) NULL, 
                     id_captador INT NULL,
@@ -194,93 +192,93 @@ class Banco extends PDO
                     id_imovel INTEGER  NULL,
                     comissao_captador REAL NULL,
                     comissao_corretor REAL NULL,
-                    FOREIGN KEY (id_imovel) REFERENCES imovel (id_imovel),
-                    FOREIGN KEY (id_cliente) REFERENCES cliente (id_usuario),
+                    FOREIGN KEY (id_imovel) REFERENCES imovel (id),
+                    FOREIGN KEY (id_cliente) REFERENCES cliente (id),
                     FOREIGN KEY (cpf_cnpj_proprietario) references proprietario (cpf_cnpj),
-                    FOREIGN KEY (id_corretor) references corretor (id_usuario)
+                    FOREIGN KEY (id_corretor) references corretor (id)
                     )",
 
             "CREATE TABLE IF NOT EXISTS gerente (
                     id_usuario INTEGER PRIMARY KEY AUTO_INCREMENT,
                     salario REAL NULL,
-                    FOREIGN KEY (id_usuario) REFERENCES usuario(id_usuario) ON DELETE CASCADE
+                    FOREIGN KEY (id_usuario) REFERENCES usuario(id) ON DELETE CASCADE
                 )",
 
             "CREATE TABLE IF NOT EXISTS atendimento (
-                    id_atendimento INTEGER PRIMARY KEY AUTO_INCREMENT,
+                    id INTEGER PRIMARY KEY AUTO_INCREMENT,
                     id_imovel INTEGER  NULL,
                     id_corretor INT  NULL,
                     id_cliente INT NULL,
                     status VARCHAR(255) NULL,
-                    FOREIGN KEY (id_imovel) REFERENCES imovel (id_imovel),
-                    FOREIGN KEY (id_corretor) references corretor (id_usuario),
-                    FOREIGN KEY (id_cliente) references cliente (id_usuario) ON DELETE CASCADE
+                    FOREIGN KEY (id_imovel) REFERENCES imovel (id),
+                    FOREIGN KEY (id_corretor) references corretor (id),
+                    FOREIGN KEY (id_cliente) references cliente (id) ON DELETE CASCADE
                 )",
             "CREATE TABLE IF NOT EXISTS filtros_imovel (
-                    id_filtros_imovel INTEGER PRIMARY KEY AUTO_INCREMENT,
+                    id INTEGER PRIMARY KEY AUTO_INCREMENT,
                     nome VARCHAR(255) NOT NULL UNIQUE                    
                 )",
             "CREATE TABLE IF NOT EXISTS filtros_condominio
                 (
-                    id_filtros_condominio INTEGER PRIMARY KEY AUTO_INCREMENT,
+                    id INTEGER PRIMARY KEY AUTO_INCREMENT,
                     nome VARCHAR(255) NOT NULL UNIQUE                    
                 )",
             "CREATE TABLE IF NOT EXISTS imovel_filtros (
                     id_filtros_imovel INTEGER,
                     id_imovel INTEGER, 
-                    FOREIGN KEY (id_filtros_imovel) references filtros_imovel (id_filtros_imovel) ON DELETE CASCADE,
-                    FOREIGN KEY (id_imovel) references imovel (id_imovel) ON DELETE CASCADE                
+                    FOREIGN KEY (id_filtros_imovel) references filtros_imovel (id) ON DELETE CASCADE,
+                    FOREIGN KEY (id_imovel) references imovel (id) ON DELETE CASCADE                
                 )",
             "CREATE TABLE IF NOT EXISTS condominio_filtros (
                     id_filtros_condominio INTEGER,
                     id_condominio INTEGER, 
-                    FOREIGN KEY (id_filtros_condominio) references filtros_condominio (id_filtros_condominio) ON DELETE CASCADE,
-                    FOREIGN KEY (id_condominio) references condominio (id_condominio) ON DELETE CASCADE               
+                    FOREIGN KEY (id_filtros_condominio) references filtros_condominio (id) ON DELETE CASCADE,
+                    FOREIGN KEY (id_condominio) references condominio (id) ON DELETE CASCADE               
                 )",
 
             "CREATE TABLE IF NOT EXISTS proprietario_imovel (
                     cpf_cnpj_proprietario VARCHAR(14) NULL,
                     id_imovel INTEGER NULL,
                     FOREIGN KEY (cpf_cnpj_proprietario) references proprietario (cpf_cnpj) ON DELETE CASCADE,
-                    FOREIGN KEY (id_imovel) references imovel (id_imovel) ON DELETE CASCADE                
+                    FOREIGN KEY (id_imovel) references imovel (id) ON DELETE CASCADE                
                 )",
 
             "CREATE TABLE IF NOT EXISTS visita (
-                    id_visita INTEGER PRIMARY KEY AUTO_INCREMENT,
+                    id INTEGER PRIMARY KEY AUTO_INCREMENT,
                     id_cliente INTEGER NULL,
                     id_imovel INTEGER NULL,
                     id_corretor INTEGER NULL,
                     data_visita DATETIME NULL,
                     status VARCHAR(255) NULL,
-                    FOREIGN KEY (id_cliente) references cliente (id_usuario) ON DELETE CASCADE,
-                    FOREIGN KEY (id_imovel) references imovel (id_imovel) ON DELETE CASCADE,
-                    FOREIGN KEY (id_corretor) references corretor (id_usuario) ON DELETE CASCADE
+                    FOREIGN KEY (id_cliente) references cliente (id) ON DELETE CASCADE,
+                    FOREIGN KEY (id_imovel) references imovel (id) ON DELETE CASCADE,
+                    FOREIGN KEY (id_corretor) references corretor (id) ON DELETE CASCADE
                 )",
 
             "CREATE TABLE IF NOT EXISTS vistoria (
-                    id_vistoria INTEGER PRIMARY KEY AUTO_INCREMENT,
+                    id INTEGER PRIMARY KEY AUTO_INCREMENT,
                     id_imovel INTEGER NULL,
                     data_vistoria DATETIME NULL,
                     status VARCHAR(255) NULL,
-                    FOREIGN KEY (id_imovel) references imovel (id_imovel) ON DELETE CASCADE
+                    FOREIGN KEY (id_imovel) references imovel (id) ON DELETE CASCADE
                 )",
             "CREATE TABLE IF NOT EXISTS relatorio_vistoria (
-                    id_relatorio INTEGER PRIMARY KEY AUTO_INCREMENT,
+                    id INTEGER PRIMARY KEY AUTO_INCREMENT,
                     id_vistoria INTEGER NULL,
                     descricao TEXT NULL,
-                    FOREIGN KEY (id_vistoria) references vistoria (id_vistoria) ON DELETE CASCADE
+                    FOREIGN KEY (id_vistoria) references vistoria (id) ON DELETE CASCADE
                 )"
         ];
 
         foreach ($queries as $sql) {
-            $this->db->exec($sql);
+            $this->exec($sql);
         }
     }
 
     public function getListaVistoriasPorVistoriador($vistoriador)
     {
         $lista = [];
-        $vistorias = $this->db->exec("SELECT * from vistoria WHERE id_vistoriador = $vistoriador");
+        $vistorias = $this->prepare("SELECT * from vistoria WHERE id_vistoriador = $vistoriador");
 
         foreach ($vistorias as $vistoria) {
             $novaVistoria = new Vistoria();
@@ -295,7 +293,7 @@ class Banco extends PDO
     public function getListaVisitasPorCorretor($corretor)
     {
         $lista = [];
-        $visitas = $this->db->exec("SELECT * from visita WHERE id_corretor = $corretor");
+        $visitas = $this->prepare("SELECT * from visita WHERE id_corretor = $corretor");
 
         foreach ($visitas as $visita) {
             $novaVisita = new Visita();
@@ -310,7 +308,7 @@ class Banco extends PDO
 
     public function cadastrarVistoria($vistoria)
     {
-        return $this->db->exec("
+        return $this->exec("
             INSERT INTO vistoria (id_imovel, data_vistoria, status) 
             VALUES (
                 " . ($vistoria->getImovel() ? $vistoria->getImovel()->getId() : "NULL") . ",
@@ -322,7 +320,7 @@ class Banco extends PDO
 
     public function cadastrarVisita($visita)
     {
-        return $this->db->exec("
+        return $this->exec("
             INSERT INTO visita (id_cliente, id_imovel, id_corretor, data_visita, status) 
             VALUES (
                 " . ($visita->getCliente() ? $visita->getCliente()->getId() : "NULL") . ",
@@ -337,14 +335,14 @@ class Banco extends PDO
     public function getUsuarioPorId($id)
     {
         try {
-            $sql = "SELECT * FROM usuario WHERE id_usuario = ?";
-            $stmt = $this->db->prepare($sql);
+            $sql = "SELECT * FROM usuario WHERE id = ?";
+            $stmt = $this->prepare($sql);
             $stmt->execute([$id]);
             $registro = $stmt->fetch(PDO::FETCH_ASSOC);
             if (!$registro) {
                 throw new Exception("Não existe usuário com ID $id");
             }
-            $idUsuario = $registro['id_usuario'] !== null ? (int)$registro['id_usuario'] : null;
+            $idUsuario = $registro['id'] !== null ? (int)$registro['id'] : null;
             $username = $registro['username'];
             $senha = $registro['senha'];
             $email = $registro['email'];
@@ -372,7 +370,7 @@ class Banco extends PDO
                             SELECT id_telefone FROM telefone_usuario 
                             WHERE id_usuario = :id_usuario
                             ";
-            $stmt = $this->db->prepare($sqlQuery);
+            $stmt = $this->prepare($sqlQuery);
             $stmt->execute([':id_usuario' => $idUsuario]);
             $registros = $stmt->fetch(PDO::FETCH_ASSOC);
             $telefones = [];
@@ -380,16 +378,16 @@ class Banco extends PDO
                 foreach ($registros as $idTelefone) {
                     $sqlQuery = " 
                             SELECT numero FROM telefone 
-                            WHERE id_telefone = :id_telefone
+                            WHERE id = :id_telefone
                                 ";
-                    $stmt = $this->db->prepare($sqlQuery);
+                    $stmt = $this->prepare($sqlQuery);
                     $stmt->execute([':id_telefone' => $idTelefone]);
                     $registro = $stmt->fetch(PDO::FETCH_ASSOC);
                 }
             }
             switch ($tipoUsuario) {
                 case (Tipo::CORRETOR):
-                    $stmt = $this->db->prepare("
+                    $stmt = $this->prepare("
                                     SELECT creci FROM corretor 
                                     WHERE id_usuario = :id_usuario
                                 ");
@@ -416,7 +414,7 @@ class Banco extends PDO
                         $nome,
                         $cpfCnpj
                     );
-                    $stmt = $this->db->prepare("
+                    $stmt = $this->prepare("
                                     SELECT salario FROM captador 
                                     WHERE id_usuario = :id_usuario
                                 ");
@@ -436,7 +434,7 @@ class Banco extends PDO
                         $nome,
                         $cpfCnpj
                     );
-                    $stmt = $this->db->prepare("
+                    $stmt = $this->prepare("
                                     SELECT salario FROM gerente 
                                     WHERE id_usuario = :id_usuario
                                 ");
@@ -469,7 +467,7 @@ class Banco extends PDO
                     );
                     break;
 
-                    # $stmt = $this->db->prepare("
+                    # $stmt = $this->prepare("
                     #             SELECT * FROM cliente
                     #             WHERE id_usuario = ?
                     #         ", (idUsuario,))
@@ -492,7 +490,7 @@ class Banco extends PDO
 
         try {
             $sql = "SELECT * FROM endereco";
-            $stmt = $this->db->prepare($sql);
+            $stmt = $this->prepare($sql);
             $stmt->execute();
 
             $dados = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -505,7 +503,7 @@ class Banco extends PDO
 
             foreach ($dados as $registro) {
 
-                $idEndereco = (int) $registro['id_endereco'];
+                $idEndereco = (int) $registro['id'];
                 $rua = $registro['rua'];
                 $numero = $registro['numero'] !== null ? (int)$registro['numero'] : null;
                 $bairro = $registro['bairro'];
@@ -536,7 +534,7 @@ class Banco extends PDO
         try {
 
             $sql = "SELECT * FROM proprietario";
-            $stmt = $this->db->prepare($sql);
+            $stmt = $this->prepare($sql);
             $stmt->execute();
 
             $dados = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -549,7 +547,7 @@ class Banco extends PDO
 
             foreach ($dados as $registro) {
 
-                $id = (int)$registro['id_proprietario'];
+                $id = (int)$registro['id'];
                 $email = $registro['email'];
                 $nome = $registro['nome'];
                 $cpf = $registro['cpf_cnpj'];
@@ -580,7 +578,7 @@ class Banco extends PDO
         try {
 
             $sql = "SELECT * FROM usuario WHERE tipoUsuario = 'CLIENTE'";
-            $stmt = $this->db->prepare($sql);
+            $stmt = $this->prepare($sql);
             $stmt->execute();
 
             $dados = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -593,7 +591,7 @@ class Banco extends PDO
 
             foreach ($dados as $registro) {
 
-                $id = (int)$registro['id_usuario'];
+                $id = (int)$registro['id'];
                 $username = $registro['username'];
                 $senha = $registro['senha'];
                 $email = $registro['email'];
@@ -617,10 +615,10 @@ class Banco extends PDO
                 $cliente->setEndereco($endereco);
                 $cliente->setDataNascimento($data);
 
-                $stmtTel = $this->db->prepare("
+                $stmtTel = $this->prepare("
                 SELECT t.numero
                 FROM telefone_usuario tu
-                JOIN telefone t ON t.id_telefone = tu.id_telefone
+                JOIN telefone t ON t.id = tu.id_telefone
                 WHERE tu.id_usuario = :id
                 ");
                 $stmtTel->execute([':id' => $id]);
@@ -648,7 +646,7 @@ class Banco extends PDO
         try {
 
             $sql = "SELECT * FROM usuario";
-            $stmt = $this->db->prepare($sql);
+            $stmt = $this->prepare($sql);
             $stmt->execute();
 
             $dados = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -661,7 +659,7 @@ class Banco extends PDO
 
             foreach ($dados as $registro) {
 
-                $id = $registro['id_usuario'];
+                $id = $registro['id'];
                 $username = $registro['username'];
                 $senha = $registro['senha'];
                 $email = $registro['email'];
@@ -679,10 +677,10 @@ class Banco extends PDO
                     ? new DateTime($registro['data_nascimento'])
                     : null;
 
-                $stmtTel = $this->db->prepare("
+                $stmtTel = $this->prepare("
                 SELECT t.numero
                 FROM telefone_usuario tu
-                JOIN telefone t ON t.id_telefone = tu.id_telefone
+                JOIN telefone t ON t.id = tu.id_telefone
                 WHERE tu.id_usuario = :id
                 ");
                 $stmtTel->execute([':id' => $id]);
@@ -696,7 +694,7 @@ class Banco extends PDO
 
                     case 'CORRETOR':
 
-                        $stmtC = $this->db->prepare("
+                        $stmtC = $this->prepare("
                         SELECT creci FROM corretor WHERE id_usuario = :id
                     ");
                         $stmtC->execute([':id' => $id]);
@@ -714,7 +712,7 @@ class Banco extends PDO
 
                     case 'CAPTADOR':
 
-                        $stmtC = $this->db->prepare("
+                        $stmtC = $this->prepare("
                         SELECT salario FROM captador WHERE id_usuario = :id
                     ");
                         $stmtC->execute([':id' => $id]);
@@ -732,7 +730,7 @@ class Banco extends PDO
 
                     case 'GERENTE':
 
-                        $stmtC = $this->db->prepare("
+                        $stmtC = $this->prepare("
                         SELECT salario FROM gerente WHERE id_usuario = :id
                     ");
                         $stmtC->execute([':id' => $id]);
@@ -795,7 +793,7 @@ class Banco extends PDO
                     INSERT INTO usuario (username, senha, email, nome, cpf_cnpj, rg, id_endereco, data_nascimento, tipo_usuario) 
                     VALUES(:username, :senha, :email, :nome, :cpf_cnpj, :rg, :endereco, :data_nascimento, :tipo)
                 ";
-            $stmt = $this->db->prepare($sql);
+            $stmt = $this->prepare($sql);
             if ($usuario->getEndereco()) {
                 $endereco = $usuario->getEndereco()->getId();
             } else {
@@ -823,23 +821,23 @@ class Banco extends PDO
                 ':data_nascimento' => $dataNascimento,
                 ':tipo' => $tipo
             ]);
-            $id = $this->db->lastInsertId();
+            $id = $this->lastInsertId();
             if ($usuario->getTelefones()) {
                 foreach ($usuario->getTelefones() as $telefone) {
                     $sqlQuery = " 
                             INSERT INTO telefone (numero) 
                             VALUES(:numero)
                             ";
-                    $stmt = $this->db->prepare($sqlQuery);
+                    $stmt = $this->prepare($sqlQuery);
                     $stmt->execute([
                         ':numero' => $telefone,
                     ]);
-                    $idTelefone = $this->db->lastInsertId();
+                    $idTelefone = $this->lastInsertId();
                     $sqlQuery = " 
                             INSERT INTO telefone_usuario (id_usuario, id_telefone) 
                             VALUES(:id_usuario, :id_telefone)
                             ";
-                    $stmt = $this->db->prepare($sqlQuery);
+                    $stmt = $this->prepare($sqlQuery);
                     $stmt->execute([
                         ':id_usuario' => $id,
                         ':id_telefone' => $idTelefone
@@ -849,7 +847,7 @@ class Banco extends PDO
             $tipoUsuarioObj = $usuario->getTipo();
             $tipoUsuarioValor = $tipoUsuarioObj ? $tipoUsuarioObj->value : NULL;
             if ($tipoUsuarioValor == "CORRETOR") {
-                $stmt = $this->db->prepare("
+                $stmt = $this->prepare("
                                     INSERT INTO corretor (id_usuario, creci)
                                     VALUES(:id_usuario, :creci)
                                 ");
@@ -858,7 +856,7 @@ class Banco extends PDO
                     ':creci' => $usuario->getCreci()
                 ]);
             } else if ($tipoUsuarioValor == "CAPTADOR") {
-                $stmt = $this->db->prepare("
+                $stmt = $this->prepare("
                                     INSERT INTO captador (id_usuario, salario)
                                     VALUES(:id_usuario, :salario)
                                 ");
@@ -867,7 +865,7 @@ class Banco extends PDO
                     ':salario' => $usuario->getSalario()
                 ]);
             } else if ($tipoUsuarioValor == "GERENTE") {
-                $stmt = $this->db->prepare("
+                $stmt = $this->prepare("
                                     INSERT INTO gerente (id_usuario, salario)
                                     VALUES(:id_usuario, :salario)
                                 ");
@@ -876,7 +874,7 @@ class Banco extends PDO
                     ':salario' => $usuario->getSalario()
                 ]);
             } else if ($tipoUsuarioValor == "CLIENTE") {
-                $stmt = $this->db->prepare("
+                $stmt = $this->prepare("
                                     INSERT INTO cliente (id_usuario)
                                     VALUES(:id_usuario)
                                 ");
@@ -901,7 +899,7 @@ class Banco extends PDO
                 DELETE FROM $tabela
                 WHERE $campoDesejado = ?;
                 ";
-            $stmt = $this->db->prepare($sqlDeleteQuery);
+            $stmt = $this->prepare($sqlDeleteQuery);
             $stmt->execute([$valor]);
             return True;
         } catch (Exception $e) {
@@ -917,9 +915,9 @@ class Banco extends PDO
                 UPDATE $tabela
                 SET $campoDesejado = ?
                 ";
-            $stmt = $this->db->prepare($sqlUpdateQuery);
+            $stmt = $this->prepare($sqlUpdateQuery);
             $stmt->execute([$valor]);
-            $this->db->commit();
+            $this->commit();
             return True;
         } catch (Exception $e) {
             error_log("ERRO Banco->atualizar $tabela - $valor: " . $e->getMessage());
@@ -931,7 +929,7 @@ class Banco extends PDO
     {
         try {
 
-            $stmt = $this->db->prepare("
+            $stmt = $this->prepare("
                         SELECT * FROM usuario WHERE cpf_cnpj = ? 
                     ");
             $stmt->execute([$cpf]);
@@ -939,7 +937,7 @@ class Banco extends PDO
             if (!$registro) {
                 throw new Exception("Não existe usuário com CPF/CNPJ $cpf");
             }
-            $idUsuario = $registro['id_usuario'] !== null ? (int)$registro['id_usuario'] : null;
+            $idUsuario = $registro['id'] !== null ? (int)$registro['id'] : null;
             $username = $registro['username'];
             $senha = $registro['senha'];
             $email = $registro['email'];
@@ -971,7 +969,7 @@ class Banco extends PDO
                             SELECT id_telefone FROM telefone_usuario 
                             WHERE id_usuario = ?
                             ";
-            $stmt = $this->db->prepare($sqlQuery);
+            $stmt = $this->prepare($sqlQuery);
             $stmt->execute([$idUsuario]);
             $registros = $stmt->fetch(PDO::FETCH_ASSOC);
             $telefones = [];
@@ -979,16 +977,16 @@ class Banco extends PDO
                 foreach ($registros as $idTelefone) {
                     $sqlQuery = " 
                             SELECT numero FROM telefone 
-                            WHERE id_telefone = ?
+                            WHERE id = ?
                                 ";
-                    $stmt = $this->db->prepare($sqlQuery);
+                    $stmt = $this->prepare($sqlQuery);
                     $stmt->execute([$idTelefone]);
                     $registro = $stmt->fetch(PDO::FETCH_ASSOC);
                 }
             }
             switch ($tipoUsuario) {
                 case (Tipo::CORRETOR):
-                    $stmt = $this->db->prepare("
+                    $stmt = $this->prepare("
                                     SELECT creci FROM corretor 
                                     WHERE id_usuario = ?
                                 ");
@@ -1015,7 +1013,7 @@ class Banco extends PDO
                         $nome,
                         $cpfCnpj
                     );
-                    $stmt = $this->db->prepare("
+                    $stmt = $this->prepare("
                                     SELECT salario FROM captador 
                                     WHERE id_usuario = ?
                                 ");
@@ -1035,7 +1033,7 @@ class Banco extends PDO
                         $nome,
                         $cpfCnpj
                     );
-                    $stmt = $this->db->prepare("
+                    $stmt = $this->prepare("
                                     SELECT salario FROM gerente 
                                     WHERE id_usuario = ?
                                 ");
@@ -1057,7 +1055,7 @@ class Banco extends PDO
                     );
                     break;
 
-                    # $stmt = $this->db->prepare("
+                    # $stmt = $this->prepare("
                     #             SELECT * FROM cliente
                     #             WHERE id_usuario = ?
                     #         ", (idUsuario,))
@@ -1079,7 +1077,7 @@ class Banco extends PDO
     {
         try {
 
-            $stmt = $this->db->prepare("
+            $stmt = $this->prepare("
                         SELECT * FROM filtros_imovel 
                 ");
             $stmt->execute();
@@ -1103,7 +1101,7 @@ class Banco extends PDO
     public function getListaFiltrosCondominio()
     {
         try {
-            $stmt = $this->db->prepare("
+            $stmt = $this->prepare("
                         SELECT * FROM filtros_condominio 
                 ");
             $stmt->execute();
@@ -1132,7 +1130,7 @@ class Banco extends PDO
                             INSERT INTO $tabela (nome) 
                             VALUES(:nome)
                             ";
-                $stmt = $this->db->prepare($sqlQuery);
+                $stmt = $this->prepare($sqlQuery);
                 $stmt->execute([':nome' => $filtro]);
             } catch (Exception $e) {
                 $erro = "ERRO! Banco->cadastrarListaFiltros: " . $e->getMessage();
@@ -1145,7 +1143,7 @@ class Banco extends PDO
     public function getCondominioPorIdImovel($id_imovel)
     {
         try {
-            $stmt = $this->db->prepare("
+            $stmt = $this->prepare("
                         SELECT * FROM condominio 
                         WHERE id_imovel = ?
                     ");
@@ -1169,7 +1167,7 @@ class Banco extends PDO
             $condominio_obj->setId($idCondominio);
             $condominio_obj->setNome($nome);
             $condominio_obj->setEndereco($enderecoObj);
-            $stmt = $this->db->prepare("
+            $stmt = $this->prepare("
                         SELECT * FROM condominio_filtros
                         WHERE id_condominio = ?
                     ");
@@ -1179,7 +1177,7 @@ class Banco extends PDO
             if ($condominio_filtros) {
                 foreach ($condominio_filtros as $registro) {
                     $idCondominio_filtros = (int)($registro);
-                    $stmt = $this->db->prepare("
+                    $stmt = $this->prepare("
                                 SELECT nome FROM filtros_condominio
                                 WHERE id_filtros_condominio = ?
                             ");
@@ -1227,7 +1225,7 @@ class Banco extends PDO
             if ($status) {
                 $status = $status->value;
             }
-            $stmt = $this->db->prepare($sqlQuery);
+            $stmt = $this->prepare($sqlQuery);
             $stmt->execute([
                 ":id_imovel" => $imovelObj,
                 ":id_corretor" => $corretor_obj,
@@ -1249,12 +1247,12 @@ class Banco extends PDO
             $sql = "
             SELECT * FROM atendimento
             ";
-            $stmt = $this->db->prepare($sql);
+            $stmt = $this->prepare($sql);
             $stmt->execute();
             $registros = $stmt->fetchAll(PDO::FETCH_ASSOC);
             $lista = [];
             foreach ($registros as $registro) {
-                $idAtendimento = $registro['id_atendimento'];
+                $idAtendimento = $registro['id'];
                 $imovel = $registro['id_imovel'];
                 $corretor = $registro['id_corretor'];
                 $comprador = $registro['id_cliente'];
@@ -1291,9 +1289,9 @@ class Banco extends PDO
     {
         try {
 
-            $stmt = $this->db->prepare("
+            $stmt = $this->prepare("
                         SELECT * FROM anuncio
-                        WHERE id_anuncio = ?
+                        WHERE id = ?
                     ");
             $stmt->execute([$idAnuncio]);
             $registro = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -1301,7 +1299,7 @@ class Banco extends PDO
                 throw new Exception("Não existe anúncio com id $idAnuncio");
             }
             $anuncioObj = new Anuncio();
-            $idAnuncio = $registro['id_anuncio'];
+            $idAnuncio = $registro['id'];
             if ($idAnuncio) {
                 $idAnuncio = (int)($idAnuncio);
             }
@@ -1335,7 +1333,7 @@ class Banco extends PDO
                     INSERT INTO midia_anuncio (id_anuncio, midia, tipo) 
                     VALUES(:id_anuncio, :midia, :tipo)
                     ";
-            $stmt = $this->db->prepare($sqlQuery);
+            $stmt = $this->prepare($sqlQuery);
             $stmt->execute([
                 ':id_anuncio' => $idAnuncio,
                 ':midia' => $blob,
@@ -1354,7 +1352,7 @@ class Banco extends PDO
         try {
 
 
-            $stmt = $this->db->prepare("
+            $stmt = $this->prepare("
                         SELECT * FROM midia_anuncio 
                         WHERE id_anuncio = :id_anuncio
                     ");
@@ -1365,7 +1363,7 @@ class Banco extends PDO
             $documentos = [];
             foreach ($registros as $registro) {
                 $id = $registro['id_anuncio'];
-                $id = $registro['id_midia'];
+                // $id = $registro['id_midia'];
                 $tipo = $registro['tipo'];
                 if ($tipo == "Imagem") {
                     $imagens[] = $id;
@@ -1390,7 +1388,7 @@ class Banco extends PDO
     public function getCondominioPorIdEndereco($id)
     {
         try {
-            $stmt = $this->db->prepare("
+            $stmt = $this->prepare("
                 SELECT * FROM condominio 
                 WHERE id_endereco = :id_endereco
             ");
@@ -1402,7 +1400,7 @@ class Banco extends PDO
                 throw new Exception("Não existe condominio com idEndereco {$id}");
             }
 
-            $idCondominio = (int)$registro['id_condominio'];
+            $idCondominio = (int)$registro['id'];
             $nome = $registro['nome'];
             $idEndereco = (int)$registro['id_endereco'];
 
@@ -1423,9 +1421,9 @@ class Banco extends PDO
     {
         try {
 
-            $stmt = $this->db->prepare("
+            $stmt = $this->prepare("
                 SELECT * FROM condominio 
-                WHERE id_condominio = :id_condominio
+                WHERE id = :id_condominio
             ");
             $stmt->execute([':id_condominio' => $id]);
 
@@ -1435,7 +1433,7 @@ class Banco extends PDO
                 throw new Exception("Não existe condominio com id {$id}");
             }
 
-            $idCondominio = (int)$registro['id_condominio'];
+            $idCondominio = (int)$registro['id'];
             $nome = $registro['nome'];
             $idEndereco = (int)$registro['id_endereco'];
 
@@ -1463,7 +1461,7 @@ class Banco extends PDO
                 AND numero = :numero
             ";
 
-            $stmt = $this->db->prepare($sql);
+            $stmt = $this->prepare($sql);
             $stmt->execute([
                 ':cep' => $enderecoObj->getCep(),
                 ':numero' => $enderecoObj->getNumero()
@@ -1475,7 +1473,7 @@ class Banco extends PDO
                 throw new Exception("Não existe imóvel com este endereço");
             }
 
-            $idEndereco = (int)$registro['id_endereco'];
+            $idEndereco = (int)$registro['id'];
             $rua = $registro['rua'];
             $numero = $registro['numero'] ? (int)$registro['numero'] : null;
             $bairro = $registro['bairro'];
@@ -1501,7 +1499,7 @@ class Banco extends PDO
     {
         try {
 
-            $stmt = $this->db->prepare("
+            $stmt = $this->prepare("
             SELECT * FROM usuario WHERE username = :username
         ");
             $stmt->execute([':username' => $username]);
@@ -1522,7 +1520,7 @@ class Banco extends PDO
             }
 
 
-            $idUsuario = (int)$registro['id_usuario'];
+            $idUsuario = (int)$registro['id'];
             $username = $registro['username'];
             $email = $registro['email'];
             $nome = $registro['nome'];
@@ -1546,7 +1544,7 @@ class Banco extends PDO
 
             $telefones = [];
 
-            $stmt = $this->db->prepare("
+            $stmt = $this->prepare("
             SELECT id_telefone FROM telefone_usuario 
             WHERE id_usuario = ?
         ");
@@ -1557,9 +1555,9 @@ class Banco extends PDO
             foreach ($registros as $row) {
                 $idTelefone = $row['id_telefone'];
 
-                $stmtTel = $this->db->prepare("
+                $stmtTel = $this->prepare("
                 SELECT numero FROM telefone 
-                WHERE id_telefone = ?
+                WHERE id = ?
             ");
                 $stmtTel->execute([$idTelefone]);
 
@@ -1572,7 +1570,7 @@ class Banco extends PDO
             switch ($tipo) {
 
                 case 'CORRETOR':
-                    $stmt = $this->db->prepare("
+                    $stmt = $this->prepare("
                     SELECT creci FROM corretor 
                     WHERE id_usuario = ?
                 ");
@@ -1600,7 +1598,7 @@ class Banco extends PDO
                         $cpfCnpj
                     );
 
-                    $stmt = $this->db->prepare("
+                    $stmt = $this->prepare("
                     SELECT salario FROM captador 
                     WHERE id_usuario = ?
                 ");
@@ -1621,7 +1619,7 @@ class Banco extends PDO
                         $cpfCnpj
                     );
 
-                    $stmt = $this->db->prepare("
+                    $stmt = $this->prepare("
                     SELECT salario FROM gerente 
                     WHERE id_usuario = ?
                 ");
@@ -1683,7 +1681,7 @@ class Banco extends PDO
             VALUES (?, ?, ?, ?, ?, ?, ?)
         ";
 
-            $stmt = $this->db->prepare($sql);
+            $stmt = $this->prepare($sql);
             $stmt->execute([
                 $endereco->getRua(),
                 $endereco->getNumero(),
@@ -1716,7 +1714,7 @@ class Banco extends PDO
             VALUES (?, ?)
         ";
 
-            $stmt = $this->db->prepare($sql);
+            $stmt = $this->prepare($sql);
             $stmt->execute([
                 $condominio->getNome(),
                 $idEndereco
@@ -1750,7 +1748,7 @@ class Banco extends PDO
             VALUES (?, ?, ?, ?, ?, ?)
         ";
 
-            $stmt = $this->db->prepare($sql);
+            $stmt = $this->prepare($sql);
             $stmt->execute([
                 $proprietario->getEmail(),
                 $proprietario->getNome(),
@@ -1760,20 +1758,20 @@ class Banco extends PDO
                 $data
             ]);
 
-            $id_proprietario = $this->db->lastInsertId();
+            $id_proprietario = $this->lastInsertId();
 
             // Telefones
             if ($proprietario->getTelefones()) {
                 foreach ($proprietario->getTelefones() as $telefone) {
 
-                    $stmtTel = $this->db->prepare("
+                    $stmtTel = $this->prepare("
                     INSERT INTO telefone (numero) VALUES (?)
                 ");
                     $stmtTel->execute([$telefone]);
 
-                    $idTelefone = $this->db->lastInsertId();
+                    $idTelefone = $this->lastInsertId();
 
-                    $stmtRel = $this->db->prepare("
+                    $stmtRel = $this->prepare("
                     INSERT INTO telefone_proprietario 
                     (id_proprietario, id_telefone) 
                     VALUES (?, ?)
@@ -1799,13 +1797,13 @@ class Banco extends PDO
             VALUES (?, ?)
         ";
 
-            $stmt = $this->db->prepare($sql);
+            $stmt = $this->prepare($sql);
             $stmt->execute([
                 $anuncio->getDescricao(),
                 $anuncio->getTitulo()
             ]);
 
-            $idAnuncio = $this->db->lastInsertId();
+            $idAnuncio = $this->lastInsertId();
 
             // Imagens
             if ($anuncio->getImagens()) {
@@ -1840,9 +1838,9 @@ class Banco extends PDO
         try {
 
 
-            $stmt = $this->db->prepare("
+            $stmt = $this->prepare("
             SELECT * FROM endereco 
-            WHERE id_endereco = ?
+            WHERE id = ?
         ");
             $stmt->execute([$id]);
 
@@ -1876,7 +1874,7 @@ class Banco extends PDO
         try {
 
 
-            $stmt = $this->db->prepare("
+            $stmt = $this->prepare("
             SELECT * FROM proprietario 
             WHERE cpf_cnpj = ?
         ");
@@ -1916,7 +1914,7 @@ class Banco extends PDO
         try {
 
 
-            $this->db->beginTransaction();
+            $this->beginTransaction();
 
             $sql = "
             INSERT INTO imovel (
@@ -1972,7 +1970,7 @@ class Banco extends PDO
             }
 
 
-            $stmt = $this->db->prepare($sql);
+            $stmt = $this->prepare($sql);
             $stmt->execute([
                 $imovel->getValorVenda(),
                 $imovel->getValorAluguel(),
@@ -2002,12 +2000,12 @@ class Banco extends PDO
                 $idCondominio
             ]);
 
-            $id_imovel = $this->db->lastInsertId();
+            $id_imovel = $this->lastInsertId();
 
 
             if ($imovel->getProprietarios()) {
                 foreach ($imovel->getProprietarios() as $prop) {
-                    $stmtProp = $this->db->prepare("
+                    $stmtProp = $this->prepare("
                     INSERT INTO proprietario_imovel (cpf_cnpj_proprietario, id_imovel)
                     VALUES (?, ?)
                 ");
@@ -2028,11 +2026,11 @@ class Banco extends PDO
                 }
             }
 
-            $this->db->commit();
+            $this->commit();
 
             return true;
         } catch (Exception $e) {
-            // $this->db->rollBack();
+            // $this->rollBack();
             error_log("ERRO! Banco->cadastrarImovel: " . $e->getMessage());
             return false;
         }
@@ -2047,7 +2045,7 @@ class Banco extends PDO
             SELECT * FROM imovel
             ";
 
-            $stmt = $this->db->prepare($sql);
+            $stmt = $this->prepare($sql);
             $stmt->execute();
 
             $resultados = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -2060,7 +2058,7 @@ class Banco extends PDO
 
             foreach ($resultados as $dados) {
 
-                $id = (int)$dados['id_imovel'];
+                $id = (int)$dados['id'];
                 $imovel = $this->getImovelPorId($id);
 
                 $lista[] = $imovel;
@@ -2083,7 +2081,7 @@ class Banco extends PDO
             WHERE status IN ('Venda', 'Aluguel', 'Venda_Aluguel')
         ";
 
-            $stmt = $this->db->prepare($sql);
+            $stmt = $this->prepare($sql);
             $stmt->execute();
 
             $resultados = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -2096,7 +2094,7 @@ class Banco extends PDO
 
             foreach ($resultados as $dados) {
 
-                $id = (int)$dados['id_imovel'];
+                $id = (int)$dados['id'];
 
                 $imovel = $this->getImovelPorId($id);
                 if ($imovel) {
@@ -2116,7 +2114,7 @@ class Banco extends PDO
 
         try {
 
-            $this->db->beginTransaction();
+            $this->beginTransaction();
 
 
             $categoria = $imovel->getCategoria();
@@ -2167,7 +2165,7 @@ class Banco extends PDO
             foreach ($propsAntigos as $p) {
                 if (!in_array($p, $propsNovos)) {
 
-                    $stmt = $this->db->prepare("
+                    $stmt = $this->prepare("
                     DELETE FROM proprietario_imovel
                     WHERE cpf_cnpj_proprietario = :cpf
                       AND id_imovel = :id
@@ -2182,7 +2180,7 @@ class Banco extends PDO
             foreach ($propsNovos as $p) {
                 if (!in_array($p, $propsAntigos)) {
 
-                    $stmt = $this->db->prepare("
+                    $stmt = $this->prepare("
                     INSERT INTO proprietario_imovel (cpf_cnpj_proprietario, id_imovel)
                     VALUES (:cpf, :id)
                 ");
@@ -2244,10 +2242,10 @@ class Banco extends PDO
                 data_modificacao = :data_modificacao,
                 id_anuncio = :anuncio,
                 id_condominio = :condominio
-            WHERE id_imovel = :id
+            WHERE id = :id
         ";
 
-            $stmt = $this->db->prepare($sql);
+            $stmt = $this->prepare($sql);
             $stmt->execute([
                 ':valor_venda' => $imovel->getValorVenda(),
                 ':valor_aluguel' => $imovel->getValorAluguel(),
@@ -2278,10 +2276,10 @@ class Banco extends PDO
                 ':id' => $imovel->getId()
             ]);
 
-            $this->db->commit();
+            $this->commit();
             return true;
         } catch (Exception $e) {
-            $this->db->rollBack();
+            $this->rollBack();
             error_log("ERRO Banco->atualizarImovel: " . $e->getMessage());
             return false;
         }
@@ -2291,7 +2289,7 @@ class Banco extends PDO
     {
         try {
 
-            $stmt = $this->db->prepare("
+            $stmt = $this->prepare("
                 SELECT id_filtros_imovel 
                 FROM filtros_imovel 
                 WHERE nome = :nome
@@ -2311,7 +2309,7 @@ class Banco extends PDO
     {
         try {
 
-            $stmt = $this->db->prepare("
+            $stmt = $this->prepare("
             INSERT INTO imovel_filtros (id_imovel, id_filtros_imovel)
             VALUES (:id_imovel, :id_filtro)
         ");
@@ -2331,7 +2329,7 @@ class Banco extends PDO
     {
         try {
 
-            $stmt = $this->db->prepare("
+            $stmt = $this->prepare("
             DELETE FROM imovel_filtros
             WHERE id_imovel = :id_imovel 
               AND id_filtros_imovel = :id_filtro
@@ -2352,7 +2350,7 @@ class Banco extends PDO
     {
         try {
 
-            $stmt = $this->db->prepare("
+            $stmt = $this->prepare("
             SELECT id_filtros_condominio 
             FROM filtros_condominio 
             WHERE nome = :nome
@@ -2372,7 +2370,7 @@ class Banco extends PDO
     {
         try {
 
-            $stmt = $this->db->prepare("
+            $stmt = $this->prepare("
             INSERT INTO condominio_filtros (id_filtros_condominio, id_condominio)
             VALUES (:id_filtro, :id_condominio)
         ");
@@ -2392,7 +2390,7 @@ class Banco extends PDO
     {
         try {
 
-            $stmt = $this->db->prepare("
+            $stmt = $this->prepare("
             DELETE FROM condominio_filtros
             WHERE id_condominio = :id_condominio 
               AND id_filtros_condominio = :id_filtro
@@ -2414,17 +2412,17 @@ class Banco extends PDO
 
         try {
 
-            $this->db->beginTransaction();
+            $this->beginTransaction();
 
 
             $sql = "
             UPDATE anuncio
             SET descricao = :descricao,
                 titulo = :titulo
-            WHERE id_anuncio = :id
+            WHERE id = :id
         ";
 
-            $stmt = $this->db->prepare($sql);
+            $stmt = $this->prepare($sql);
             $stmt->execute([
                 ':descricao' => $anuncio->getDescricao(),
                 ':titulo' => $anuncio->getTitulo(),
@@ -2435,10 +2433,10 @@ class Banco extends PDO
             // tratar imagens, vídeos e anexos depois
             // tabela: midia_anuncio
 
-            $this->db->commit();
+            $this->commit();
             return true;
         } catch (Exception $e) {
-            $this->db->rollBack();
+            $this->rollBack();
             error_log("ERRO Banco->atualizarAnuncio: " . $e->getMessage());
             return false;
         }
@@ -2449,16 +2447,16 @@ class Banco extends PDO
 
         try {
 
-            $this->db->beginTransaction();
+            $this->beginTransaction();
 
 
             $sql = "
             UPDATE condominio
             SET nome = :nome
-            WHERE id_condominio = :id
+            WHERE id = :id
         ";
 
-            $stmt = $this->db->prepare($sql);
+            $stmt = $this->prepare($sql);
             $stmt->execute([
                 ':nome' => $condominio->getNome(),
                 ':id' => $condominio->getId()
@@ -2502,10 +2500,10 @@ class Banco extends PDO
                 }
             }
 
-            $this->db->commit();
+            $this->commit();
             return true;
         } catch (Exception $e) {
-            $this->db->rollBack();
+            $this->rollBack();
             error_log("ERRO Banco->atualizarCondominio: " . $e->getMessage());
             return false;
         }
@@ -2515,7 +2513,7 @@ class Banco extends PDO
     {
         try {
 
-            $this->db->beginTransaction();
+            $this->beginTransaction();
 
             $sql = "
                 UPDATE usuario
@@ -2545,7 +2543,7 @@ class Banco extends PDO
 
             $senha_hash = hash('sha256', $usuario->getSenha());
 
-            $stmt = $this->db->prepare($sql);
+            $stmt = $this->prepare($sql);
             $stmt->execute([
                 ':username' => $usuario->getUsername(),
                 ':senha' => $senha_hash,
@@ -2561,20 +2559,20 @@ class Banco extends PDO
             ]);
 
 
-            $usuario_db = $usuario->getCpfCnpj() ? $this->getUsuarioPorCpfCnpj(
+            $usuarioDb = $usuario->getCpfCnpj() ? $this->getUsuarioPorCpfCnpj(
                 $usuario->getCpfCnpj()
             ) : $this->getUsuarioPorId($usuario->getId());
 
-            $telefonesAntigos = $usuario_db ? ($usuario_db->getTelefones() ?? []) : [];
-            $telefonesNovos = $usuario_db ? ($usuario->getTelefones() ?? []) : [];
+            $telefonesAntigos = $usuarioDb ? ($usuarioDb->getTelefones() ?? []) : [];
+            $telefonesNovos = $usuarioDb ? ($usuario->getTelefones() ?? []) : [];
 
 
 
             foreach ($telefonesAntigos as $tel) {
                 if (!in_array($tel, $telefonesNovos)) {
 
-                    $stmt = $this->db->prepare("
-                        SELECT id_telefone FROM telefone WHERE numero = :numero
+                    $stmt = $this->prepare("
+                        SELECT id FROM telefone WHERE numero = :numero
                     ");
                     $stmt->execute([':numero' => $tel]);
                     $row = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -2582,15 +2580,15 @@ class Banco extends PDO
                     if ($row) {
                         $id_tel = $row['id_telefone'];
 
-                        $stmt = $this->db->prepare("
+                        $stmt = $this->prepare("
                             DELETE FROM telefone_usuario
                             WHERE id_telefone = :id
                         ");
                         $stmt->execute([':id' => $id_tel]);
 
-                        $stmt = $this->db->prepare("
+                        $stmt = $this->prepare("
                             DELETE FROM telefone
-                            WHERE id_telefone = :id
+                            WHERE id = :id
                         ");
                         $stmt->execute([':id' => $id_tel]);
                     }
@@ -2601,14 +2599,14 @@ class Banco extends PDO
             foreach ($telefonesNovos as $tel) {
                 if (!in_array($tel, $telefonesAntigos)) {
 
-                    $stmt = $this->db->prepare("
+                    $stmt = $this->prepare("
                         INSERT INTO telefone (numero) VALUES (:numero)
                     ");
                     $stmt->execute([':numero' => $tel]);
 
-                    $id_tel = $this->db->lastInsertId();
+                    $id_tel = $this->lastInsertId();
 
-                    $stmt = $this->db->prepare("
+                    $stmt = $this->prepare("
                         INSERT INTO telefone_usuario (id_usuario, id_telefone)
                         VALUES (:id_usuario, :id_tel)
                     ");
@@ -2622,7 +2620,7 @@ class Banco extends PDO
 
             if ($tipoUsuario === "CORRETOR") {
 
-                $stmt = $this->db->prepare("
+                $stmt = $this->prepare("
                     UPDATE corretor
                     SET creci = :creci
                     WHERE id_usuario = :id
@@ -2633,7 +2631,7 @@ class Banco extends PDO
                 ]);
             } elseif ($tipoUsuario === "CAPTADOR") {
 
-                $stmt = $this->db->prepare("
+                $stmt = $this->prepare("
                     UPDATE captador
                     SET salario = :salario
                     WHERE id_usuario = :id
@@ -2644,7 +2642,7 @@ class Banco extends PDO
                 ]);
             } elseif ($tipoUsuario === "GERENTE") {
 
-                $stmt = $this->db->prepare("
+                $stmt = $this->prepare("
                     UPDATE gerente
                     SET salario = :salario
                     WHERE id_usuario = :id
@@ -2655,10 +2653,10 @@ class Banco extends PDO
                 ]);
             }
 
-            $this->db->commit();
+            $this->commit();
             return true;
         } catch (Exception $e) {
-            $this->db->rollBack();
+            $this->rollBack();
             error_log("ERRO Banco->atualizarUsuario: " . $e->getMessage());
             return false;
         }
@@ -2669,7 +2667,7 @@ class Banco extends PDO
 
         try {
 
-            $this->db->beginTransaction();
+            $this->beginTransaction();
 
             $sql = "
                 UPDATE proprietario
@@ -2690,7 +2688,7 @@ class Banco extends PDO
                 ? $dataNascimento->format("Y-m-d")
                 : null;
 
-            $stmt = $this->db->prepare($sql);
+            $stmt = $this->prepare($sql);
             $stmt->execute([
                 ':email' => $proprietario->getEmail(),
                 ':nome' => $proprietario->getNome(),
@@ -2711,8 +2709,8 @@ class Banco extends PDO
             foreach ($telefonesAntigos as $tel) {
                 if (!in_array($tel, $telefonesNovos)) {
 
-                    $stmt = $this->db->prepare("
-                        SELECT id_telefone FROM telefone WHERE numero = :numero
+                    $stmt = $this->prepare("
+                        SELECT id FROM telefone WHERE numero = :numero
                     ");
                     $stmt->execute([':numero' => $tel]);
                     $row = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -2720,15 +2718,15 @@ class Banco extends PDO
                     if ($row) {
                         $id_tel = $row['id_telefone'];
 
-                        $stmt = $this->db->prepare("
+                        $stmt = $this->prepare("
                             DELETE FROM telefone_proprietario
                             WHERE id_telefone = :id
                         ");
                         $stmt->execute([':id' => $id_tel]);
 
-                        $stmt = $this->db->prepare("
+                        $stmt = $this->prepare("
                             DELETE FROM telefone
-                            WHERE id_telefone = :id
+                            WHERE id = :id
                         ");
                         $stmt->execute([':id' => $id_tel]);
                     }
@@ -2738,14 +2736,14 @@ class Banco extends PDO
             foreach ($telefonesNovos as $tel) {
                 if (!in_array($tel, $telefonesAntigos)) {
 
-                    $stmt = $this->db->prepare("
+                    $stmt = $this->prepare("
                         INSERT INTO telefone (numero) VALUES (:numero)
                     ");
                     $stmt->execute([':numero' => $tel]);
 
-                    $id_tel = $this->db->lastInsertId();
+                    $id_tel = $this->lastInsertId();
 
-                    $stmt = $this->db->prepare("
+                    $stmt = $this->prepare("
                         INSERT INTO telefone_proprietario (id_proprietario, id_telefone)
                         VALUES (:id_prop, :id_tel)
                     ");
@@ -2756,10 +2754,10 @@ class Banco extends PDO
                 }
             }
 
-            $this->db->commit();
+            $this->commit();
             return true;
         } catch (Exception $e) {
-            $this->db->rollBack();
+            $this->rollBack();
             error_log("ERRO Banco->atualizarProprietario: " . $e->getMessage());
             return false;
         }
@@ -2770,8 +2768,8 @@ class Banco extends PDO
 
         try {
 
-            $sql = "SELECT * FROM imovel WHERE id_imovel = :id";
-            $stmt = $this->db->prepare($sql);
+            $sql = "SELECT * FROM imovel WHERE id = :id";
+            $stmt = $this->prepare($sql);
             $stmt->execute([':id' => $id_imovel]);
 
             $dados = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -2825,7 +2823,7 @@ class Banco extends PDO
 
             $imovelObj = new Imovel($endereco, $status, $categoria);
 
-            $imovelObj->setId((int)$dados['id_imovel']);
+            $imovelObj->setId((int)$dados['id']);
             $imovelObj->setValorVenda($valorVenda);
             $imovelObj->setValorAluguel($valorAluguel);
             $imovelObj->setQuantQuartos($quantQuartos);
@@ -2843,7 +2841,7 @@ class Banco extends PDO
             $imovelObj->setAnuncio($anuncio);
             $imovelObj->setCondominio($condominio);
 
-            $stmt = $this->db->prepare("
+            $stmt = $this->prepare("
                 SELECT cpf_cnpj_proprietario 
                 FROM proprietario_imovel 
                 WHERE id_imovel = :id
@@ -2860,7 +2858,7 @@ class Banco extends PDO
             }
             $imovelObj->setProprietarios($proprietarios);
 
-            $stmt = $this->db->prepare("
+            $stmt = $this->prepare("
                 SELECT fi.nome
                 FROM imovel_filtros ifi
                 JOIN filtros_imovel fi 
@@ -2887,7 +2885,7 @@ class Banco extends PDO
     public function getImoveisPorProprietario($cpf)
     {
         try {
-            $stmt = $this->db->prepare("SELECT id_imovel FROM proprietario_imovel WHERE cpf_cnpj_proprietario = ?");
+            $stmt = $this->prepare("SELECT id_imovel FROM proprietario_imovel WHERE cpf_cnpj_proprietario = ?");
             $stmt->execute([$cpf]);
             $dados = $stmt->fetchAll(PDO::FETCH_ASSOC);
             if (empty($dados)) {
@@ -2909,108 +2907,3 @@ class Banco extends PDO
         }
     }
 }
-
-
-//  $valorVenda = $dados['valor_venda'] ? (float)$dados['valor_venda'] : null;
-//                 $valorAluguel = $dados['valor_aluguel'] ? (float)$dados['valor_aluguel'] : null;
-//                 $quartos = $dados['quant_quartos'] ? (int)$dados['quant_quartos'] : null;
-//                 $salas = $dados['quant_salas'] ? (int)$dados['quant_salas'] : null;
-//                 $vagas = $dados['quant_vagas'] ? (int)$dados['quant_vagas'] : null;
-//                 $banheiros = $dados['quant_banheiros'] ? (int)$dados['quant_banheiros'] : null;
-//                 $varandas = $dados['quant_varandas'] ? (int)$dados['quant_varandas'] : null;
-
-//                 $categoria = $dados['categoria'] ?? null;
-//                 $status = $dados['status'] ?? null;
-//                 $estado = $dados['estado'] ?? null;
-//                 $situacao = $dados['situacao'] ?? null;
-//                 $ocupacao = $dados['ocupacao'] ?? null;
-
-//                 $endereco = $dados['id_endereco']
-//                     ? $this->getEnderecoPorId((int)$dados['id_endereco'])
-//                     : null;
-
-//                 $corretor = $dados['id_corretor']
-//                     ? $this->getUsuarioPorId($dados['id_corretor'])
-//                     : null;
-
-//                 $captador = $dados['id_captador']
-//                     ? $this->getUsuarioPorId($dados['id_captador'])
-//                     : null;
-
-//                 $anuncio = $dados['id_anuncio']
-//                     ? $this->getAnuncioPorId((int)$dados['id_anuncio'])
-//                     : null;
-
-//                 $condominio = $dados['id_condominio']
-//                     ? $this->getCondominioPorId((int)$dados['id_condominio'])
-//                     : null;
-
-//                 $dataCadastro = $dados['data_cadastro']
-//                     ? new DateTime($dados['data_cadastro'])
-//                     : null;
-
-//                 $dataModificacao = $dados['data_modificacao']
-//                     ? new DateTime($dados['data_modificacao'])
-//                     : null;
-
-
-//                 $imovel = new Imovel($endereco, $status, $categoria);
-
-//                 $imovel->setId($id);
-//                 $imovel->setValorVenda($valorVenda);
-//                 $imovel->setValorAluguel($valorAluguel);
-//                 $imovel->setQuantQuartos($quartos);
-//                 $imovel->setQuantSalas($salas);
-//                 $imovel->setQuantVagas($vagas);
-//                 $imovel->setQuantBanheiros($banheiros);
-//                 $imovel->setQuantVarandas($varandas);
-//                 $imovel->setIptu($dados['iptu']);
-//                 $imovel->setValorCondominio($dados['valor_condominio']);
-//                 $imovel->setAndar($dados['andar']);
-//                 $imovel->setEstado($estado);
-//                 $imovel->setBloco($dados['bloco']);
-//                 $imovel->setAnoConstrucao($dados['ano_construcao']);
-//                 $imovel->setAreaTotal($dados['area_total']);
-//                 $imovel->setAreaPrivativa($dados['area_privativa']);
-//                 $imovel->setSituacao($situacao);
-//                 $imovel->setOcupacao($ocupacao);
-//                 $imovel->setCorretor($corretor);
-//                 $imovel->setCaptador($captador);
-//                 $imovel->setDataCadastro($dataCadastro);
-//                 $imovel->setDataModificacao($dataModificacao);
-//                 $imovel->setAnuncio($anuncio);
-//                 $imovel->setCondominio($condominio);
-//                 $stmtP = $this->db->prepare("
-//                 SELECT cpf_cnpj_proprietario
-//                 FROM proprietario_imovel
-//                 WHERE id_imovel = :id
-//             ");
-//                 $stmtP->execute([':id' => $id]);
-
-//                 $proprietarios = [];
-
-//                 while ($row = $stmtP->fetch(PDO::FETCH_ASSOC)) {
-//                     $prop = $this->getProprietarioPorCpfCnpj($row['cpf_cnpj_proprietario']);
-//                     if ($prop) {
-//                         $proprietarios[] = $prop;
-//                     }
-//                 }
-
-//                 $imovel->setProprietarios($proprietarios);
-
-
-//                 $stmtF = $this->db->prepare("
-//                 SELECT f.nome
-//                 FROM imovel_filtros i
-//                 JOIN filtros_imovel f ON f.id_filtros_imovel = i.id_filtros_imovel
-//                 WHERE i.id_imovel = :id
-//             ");
-//                 $stmtF->execute([':id' => $id]);
-
-//                 $filtros = [];
-
-//                 while ($row = $stmtF->fetch(PDO::FETCH_ASSOC)) {
-//                     $filtros[] = $row['nome'];
-//                 }
-
-//                 $imovel->setFiltros($filtros);
