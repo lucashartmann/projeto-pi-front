@@ -51,7 +51,8 @@ class Banco extends PDO
     {
 
         $queries = [
-            "CREATE DATABASE IF NOT EXISTS imobiliaria;",
+            "CREATE DATABASE IF NOT EXISTS imobiliaria CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;",
+            "USE imobiliaria;",
 
             "CREATE TABLE IF NOT EXISTS usuario (
                 id INTEGER PRIMARY KEY AUTO_INCREMENT,
@@ -104,7 +105,7 @@ class Banco extends PDO
                 id_telefone INTEGER,
                 id_proprietario INTEGER,
                 FOREIGN KEY (id_telefone) REFERENCES telefone(id) ON DELETE CASCADE,
-                FOREIGN KEY (id_proprietario) REFERENCES proprietario (id) ON DELETE CASCADE
+                FOREIGN KEY (id_proprietario) REFERENCES proprietario(id) ON DELETE CASCADE
             )",
 
             "CREATE TABLE IF NOT EXISTS cliente (
@@ -166,12 +167,11 @@ class Banco extends PDO
                 data_modificacao DATETIME NULL,
                 id_anuncio INT NULL,
                 id_condominio INT NULL,
-                FOREIGN KEY (id_anuncio) REFERENCES anuncio (id),
+                FOREIGN KEY (id_anuncio) REFERENCES anuncio(id),
                 FOREIGN KEY (id_endereco) REFERENCES endereco(id),
-                FOREIGN KEY (id_corretor) REFERENCES corretor(id),
-                FOREIGN KEY (id_captador) REFERENCES captador(id),
-                FOREIGN KEY (id_condominio) REFERENCES condominio (id)
-
+                FOREIGN KEY (id_corretor) REFERENCES corretor(id_usuario),
+                FOREIGN KEY (id_captador) REFERENCES captador(id_usuario),
+                FOREIGN KEY (id_condominio) REFERENCES condominio(id)
             )",
 
             "CREATE TABLE IF NOT EXISTS midia_anuncio (
@@ -185,17 +185,17 @@ class Banco extends PDO
             "CREATE TABLE IF NOT EXISTS venda_aluguel (
                     id INTEGER PRIMARY KEY AUTO_INCREMENT,
                     id_cliente INT NULL,
-                    cpf_cnpj_proprietario VARCHAR(14) NULL, 
+                    id_proprietario INTEGER,
                     id_captador INT NULL,
                     id_corretor INT NULL,
                     data_venda DATE NULL,
                     id_imovel INTEGER  NULL,
                     comissao_captador REAL NULL,
                     comissao_corretor REAL NULL,
-                    FOREIGN KEY (id_imovel) REFERENCES imovel (id),
-                    FOREIGN KEY (id_cliente) REFERENCES cliente (id),
-                    FOREIGN KEY (cpf_cnpj_proprietario) references proprietario (cpf_cnpj),
-                    FOREIGN KEY (id_corretor) references corretor (id)
+                    FOREIGN KEY (id_imovel) REFERENCES imovel(id),
+                    FOREIGN KEY (id_cliente) REFERENCES cliente(id_usuario),
+                    FOREIGN KEY (id_proprietario) REFERENCES proprietario(id),
+                    FOREIGN KEY (id_corretor) references corretor(id_usuario)
                     )",
 
             "CREATE TABLE IF NOT EXISTS gerente (
@@ -210,9 +210,9 @@ class Banco extends PDO
                     id_corretor INT  NULL,
                     id_cliente INT NULL,
                     status VARCHAR(255) NULL,
-                    FOREIGN KEY (id_imovel) REFERENCES imovel (id),
-                    FOREIGN KEY (id_corretor) references corretor (id),
-                    FOREIGN KEY (id_cliente) references cliente (id) ON DELETE CASCADE
+                    FOREIGN KEY (id_imovel) REFERENCES imovel(id),
+                    FOREIGN KEY (id_corretor) references corretor(id_usuario),
+                    FOREIGN KEY (id_cliente) references cliente(id_usuario) ON DELETE CASCADE
                 )",
             "CREATE TABLE IF NOT EXISTS filtros_imovel (
                     id INTEGER PRIMARY KEY AUTO_INCREMENT,
@@ -226,21 +226,21 @@ class Banco extends PDO
             "CREATE TABLE IF NOT EXISTS imovel_filtros (
                     id_filtros_imovel INTEGER,
                     id_imovel INTEGER, 
-                    FOREIGN KEY (id_filtros_imovel) references filtros_imovel (id) ON DELETE CASCADE,
-                    FOREIGN KEY (id_imovel) references imovel (id) ON DELETE CASCADE                
+                    FOREIGN KEY (id_filtros_imovel) references filtros_imovel(id) ON DELETE CASCADE,
+                    FOREIGN KEY (id_imovel) references imovel(id) ON DELETE CASCADE                
                 )",
             "CREATE TABLE IF NOT EXISTS condominio_filtros (
                     id_filtros_condominio INTEGER,
                     id_condominio INTEGER, 
-                    FOREIGN KEY (id_filtros_condominio) references filtros_condominio (id) ON DELETE CASCADE,
-                    FOREIGN KEY (id_condominio) references condominio (id) ON DELETE CASCADE               
+                    FOREIGN KEY (id_filtros_condominio) references filtros_condominio(id) ON DELETE CASCADE,
+                    FOREIGN KEY (id_condominio) references condominio(id) ON DELETE CASCADE               
                 )",
 
             "CREATE TABLE IF NOT EXISTS proprietario_imovel (
-                    cpf_cnpj_proprietario VARCHAR(14) NULL,
+                    id_proprietario INTEGER NULL,
                     id_imovel INTEGER NULL,
-                    FOREIGN KEY (cpf_cnpj_proprietario) references proprietario (cpf_cnpj) ON DELETE CASCADE,
-                    FOREIGN KEY (id_imovel) references imovel (id) ON DELETE CASCADE                
+                    FOREIGN KEY (id_proprietario) REFERENCES proprietario(id) ON DELETE CASCADE,
+                    FOREIGN KEY (id_imovel) REFERENCES imovel(id) ON DELETE CASCADE                
                 )",
 
             "CREATE TABLE IF NOT EXISTS visita (
@@ -250,9 +250,9 @@ class Banco extends PDO
                     id_corretor INTEGER NULL,
                     data_visita DATETIME NULL,
                     status VARCHAR(255) NULL,
-                    FOREIGN KEY (id_cliente) references cliente (id) ON DELETE CASCADE,
-                    FOREIGN KEY (id_imovel) references imovel (id) ON DELETE CASCADE,
-                    FOREIGN KEY (id_corretor) references corretor (id) ON DELETE CASCADE
+                    FOREIGN KEY (id_cliente) references cliente(id_usuario) ON DELETE CASCADE,
+                    FOREIGN KEY (id_imovel) references imovel(id) ON DELETE CASCADE,
+                    FOREIGN KEY (id_corretor) references corretor(id_usuario) ON DELETE CASCADE
                 )",
 
             "CREATE TABLE IF NOT EXISTS vistoria (
@@ -260,18 +260,41 @@ class Banco extends PDO
                     id_imovel INTEGER NULL,
                     data_vistoria DATETIME NULL,
                     status VARCHAR(255) NULL,
-                    FOREIGN KEY (id_imovel) references imovel (id) ON DELETE CASCADE
+                    FOREIGN KEY (id_imovel) references imovel(id) ON DELETE CASCADE
                 )",
             "CREATE TABLE IF NOT EXISTS relatorio_vistoria (
                     id INTEGER PRIMARY KEY AUTO_INCREMENT,
                     id_vistoria INTEGER NULL,
                     descricao TEXT NULL,
-                    FOREIGN KEY (id_vistoria) references vistoria (id) ON DELETE CASCADE
+                    FOREIGN KEY (id_vistoria) references vistoria(id) ON DELETE CASCADE
                 )"
         ];
 
         foreach ($queries as $sql) {
             $this->exec($sql);
+        }
+    }
+
+    public function getProprietarioPorId($id)
+    {
+        try {
+            $sql = "SELECT * FROM proprietario WHERE id = ?";
+            $stmt = $this->prepare($sql);
+            $stmt->execute([$id]);
+            $registro = $stmt->fetch(PDO::FETCH_ASSOC);
+            if (!$registro) {
+                throw new Exception("Não existe proprietário com ID $id");
+            }
+            $proprietario = new Proprietario(
+                $registro['email'],
+                $registro['nome'],
+                $registro['cpf_cnpj']
+            );
+            $proprietario->setId($registro['id']);
+            return $proprietario;
+        } catch (Exception $e) {
+            error_log("ERRO Banco->getProprietarioPorId: " . $e->getMessage());
+            return null;
         }
     }
 
@@ -1758,7 +1781,7 @@ class Banco extends PDO
                 $data
             ]);
 
-            $id_proprietario = $this->lastInsertId();
+            $idProprietario = $this->lastInsertId();
 
             // Telefones
             if ($proprietario->getTelefones()) {
@@ -1776,7 +1799,7 @@ class Banco extends PDO
                     (id_proprietario, id_telefone) 
                     VALUES (?, ?)
                 ");
-                    $stmtRel->execute([$id_proprietario, $idTelefone]);
+                    $stmtRel->execute([$idProprietario, $idTelefone]);
                 }
             }
 
@@ -1858,7 +1881,7 @@ class Banco extends PDO
                 $registro['uf']
             );
 
-            $endereco->setId((int)$registro['id_endereco']);
+            $endereco->setId((int)$registro['id']);
             $endereco->setNumero((int)$registro['numero']);
             $endereco->setComplemento($registro['complemento']);
 
@@ -2006,11 +2029,11 @@ class Banco extends PDO
             if ($imovel->getProprietarios()) {
                 foreach ($imovel->getProprietarios() as $prop) {
                     $stmtProp = $this->prepare("
-                    INSERT INTO proprietario_imovel (cpf_cnpj_proprietario, id_imovel)
+                    INSERT INTO proprietario_imovel (id_proprietario, id_imovel)
                     VALUES (?, ?)
                 ");
                     $stmtProp->execute([
-                        $prop->getCpfCnpj(),
+                        $prop->getId(),
                         $id_imovel
                     ]);
                 }
@@ -2167,11 +2190,11 @@ class Banco extends PDO
 
                     $stmt = $this->prepare("
                     DELETE FROM proprietario_imovel
-                    WHERE cpf_cnpj_proprietario = :cpf
+                    WHERE id_proprietario = :id_proprietario
                       AND id_imovel = :id
                 ");
                     $stmt->execute([
-                        ':cpf' => $p->getCpfCnpj(),
+                        ':id_proprietario' => $p->getId(),
                         ':id' => $imovel->getId()
                     ]);
                 }
@@ -2181,12 +2204,12 @@ class Banco extends PDO
                 if (!in_array($p, $propsAntigos)) {
 
                     $stmt = $this->prepare("
-                    INSERT INTO proprietario_imovel (cpf_cnpj_proprietario, id_imovel)
-                    VALUES (:cpf, :id)
+                    INSERT INTO proprietario_imovel (id_proprietario, id_imovel)
+                    VALUES (:id_proprietario, :id_imovel)
                 ");
                     $stmt->execute([
-                        ':cpf' => $p->getCpfCnpj(),
-                        ':id' => $imovel->getId()
+                        ':id_proprietario' => $p->getId(),
+                        ':id_imovel' => $imovel->getId()
                     ]);
                 }
             }
@@ -2842,7 +2865,7 @@ class Banco extends PDO
             $imovelObj->setCondominio($condominio);
 
             $stmt = $this->prepare("
-                SELECT cpf_cnpj_proprietario 
+                SELECT id_proprietario 
                 FROM proprietario_imovel 
                 WHERE id_imovel = :id
             ");
@@ -2851,7 +2874,7 @@ class Banco extends PDO
             $proprietarios = [];
 
             while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-                $prop = $this->getProprietarioPorCpfCnpj($row['cpf_cnpj_proprietario']);
+                $prop = $this->getProprietarioPorId($row['id_proprietario']);
                 if ($prop) {
                     $proprietarios[] = $prop;
                 }
@@ -2862,7 +2885,7 @@ class Banco extends PDO
                 SELECT fi.nome
                 FROM imovel_filtros ifi
                 JOIN filtros_imovel fi 
-                    ON fi.id_filtros_imovel = ifi.id_filtros_imovel
+                    ON fi.id = ifi.id_filtros_imovel
                 WHERE ifi.id_imovel = :id
             ");
             $stmt->execute([':id' => $id_imovel]);
@@ -2882,11 +2905,11 @@ class Banco extends PDO
         }
     }
 
-    public function getImoveisPorProprietario($cpf)
+    public function getImoveisPorProprietario($id_proprietario)
     {
         try {
-            $stmt = $this->prepare("SELECT id_imovel FROM proprietario_imovel WHERE cpf_cnpj_proprietario = ?");
-            $stmt->execute([$cpf]);
+            $stmt = $this->prepare("SELECT id_imovel FROM proprietario_imovel WHERE id_proprietario = ?");
+            $stmt->execute([$id_proprietario]);
             $dados = $stmt->fetchAll(PDO::FETCH_ASSOC);
             if (empty($dados)) {
                 throw new Exception("Não há imóveis disponíveis");
