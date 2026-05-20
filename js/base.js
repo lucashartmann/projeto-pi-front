@@ -405,3 +405,12 @@ async function setup() {
 
 
 setup();
+
+
+// window.addEventListener("scroll", () => {
+//     const nav = document.querySelector("#top-nav");
+//     if (window.scrollY > 50) {
+//         nav.classList.add("scrolled");
+//     } else {        nav.classList.remove("scrolled");
+//     }
+// });

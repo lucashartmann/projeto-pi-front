@@ -504,4 +504,29 @@ class Imovel
     {
         return $this->anuncio;
     }
+
+    public function getQuantidadeSalas()
+    {
+        return $this->quantSalas;
+    }
+
+    public function getQuantidadeVagas()
+    {
+        return $this->quantVagas;
+    }
+
+    public function getQuantidadeVarandas()
+    {
+        return $this->quantVarandas;
+    }
+
+    public function getQuantidadeBanheiros()
+    {
+        return $this->quantBanheiros;
+    }
+
+    public function getQuantidadeQuartos()
+    {
+        return $this->quantQuartos;
+    }
 }

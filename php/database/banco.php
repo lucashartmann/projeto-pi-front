@@ -329,6 +329,13 @@ class Banco extends PDO
         return $lista;
     }
 
+    public function getMidiaPorId($id)
+    {
+        $stmt = $this->prepare("SELECT midia FROM midia_anuncio WHERE id = ?");
+        $stmt->execute([$id]);
+        return $stmt->fetchColumn();
+    }
+
     public function cadastrarVistoria($vistoria)
     {
         return $this->exec("
@@ -1385,8 +1392,8 @@ class Banco extends PDO
             $videos = [];
             $documentos = [];
             foreach ($registros as $registro) {
-                $id = $registro['id_anuncio'];
-                // $id = $registro['id_midia'];
+                // $id = $registro['id_anuncio'];
+                $id = $registro['id'];
                 $tipo = $registro['tipo'];
                 if ($tipo == "Imagem") {
                     $imagens[] = $id;
@@ -1920,7 +1927,7 @@ class Banco extends PDO
                 $registro['cpf_cnpj']
             );
 
-            $proprietario->setId((int)$registro['id_proprietario']);
+            $proprietario->setId((int)$registro['id']);
             $proprietario->setDataNascimento($data);
             $proprietario->setRg($registro['rg']);
 
@@ -2739,7 +2746,7 @@ class Banco extends PDO
                     $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
                     if ($row) {
-                        $id_tel = $row['id_telefone'];
+                        $id_tel = $row['id'];
 
                         $stmt = $this->prepare("
                             DELETE FROM telefone_proprietario

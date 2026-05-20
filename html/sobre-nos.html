@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sobre Nós</title>
+    <link rel="stylesheet" href="../css/base.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="../css/sobre-nos.css">
+</head>
+
+<body>
+    <main>
+        <h1>Sobre Nós</h1>
+        <p>A Summit Imóveis é uma empresa dedicada a oferecer soluções imobiliárias de qualidade, com foco no
+            atendimento personalizado e na satisfação dos nossos clientes.</p>
+        <p>Fundada em 2024, a Summit Imóveis tem como missão facilitar o processo de compra, venda e aluguel de imóveis,
+            conectando pessoas a seus sonhos e necessidades habitacionais.</p>
+        <p>Nosso compromisso é proporcionar uma experiência transparente, eficiente e confiável, contando com uma equipe
+            de profissionais experientes e apaixonados pelo mercado imobiliário.</p>
+        <p>Na Summit Imóveis, acreditamos que cada cliente é único, e por isso, oferecemos um atendimento personalizado,
+            buscando entender as necessidades e desejos de cada pessoa para encontrar a melhor solução imobiliária.</p>
+        <p>Estamos sempre em busca de inovação e melhorias, utilizando tecnologia de ponta para facilitar o processo de
+            busca e negociação de imóveis, garantindo que nossos clientes tenham acesso às melhores oportunidades do
+            mercado.</p>
+        <p>Na Summit Imóveis, nosso compromisso é transformar sonhos em realidade, ajudando nossos clientes a encontrar
+            o imóvel perfeito para suas vidas, seja para morar, investir ou empreender.</p>
+    </main>
+    <footer>
+        <p>Copyright 2025 - By Lucas Hartmann</p>
+        <a href="https://github.com/lucashartmann" target="_blank"><i class="fab fa-github"></i></a>
+    </footer>
+
+    <div vw class="enabled">
+        <div vw-access-button class="active"></div>
+        <div vw-plugin-wrapper>
+            <div class="vw-plugin-top-wrapper"></div>
+        </div>
+    </div>
+    <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
+    <script>
+        new window.VLibras.Widget('https://vlibras.gov.br/app');
+    </script>
+</body>
+<script type="text/javascript">
+    fetch("nav.html")
+        .then(response => response.text())
+        .then(data => {
+            const inicio = data.lastIndexOf("<div class=");
+            const fim = data.lastIndexOf("</div>");
+            const substring = data.substring(inicio + 20, fim);
+            data = data.replace(substring, "");
+            document.body.insertAdjacentHTML('afterbegin', data);
+        });
+
+</script>
+<script src="../js/base.js"></script>
+
+</html>

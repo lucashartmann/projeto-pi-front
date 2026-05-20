@@ -417,7 +417,7 @@ class controller
                     "id" => $imovelObj->getId(),
                     "valor_venda" => $imovelObj->getValorVenda(),
                     "valor_condominio" => $imovelObj->getValorCondominio(),
-                    "valor_iptu" => $imovelObj->getValorIptu(),
+                    "valor_iptu" => $imovelObj->getIptu(),
                     "valor_aluguel" => $imovelObj->getValorAluguel(),
                     "categoria" => $imovelObj->getCategoria()->value ?? null,
                     "status" => $imovelObj->getStatus()->value ?? null,

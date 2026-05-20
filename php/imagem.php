@@ -2,9 +2,6 @@
 
 require_once(__DIR__ . '/database/banco.php');
 
-$banco = Banco::getInstance();
-$pdo = $banco->getDb();
-
 $id = $_GET['id'] ?? null;
 
 if (!$id) {
@@ -12,10 +9,9 @@ if (!$id) {
     exit;
 }
 
-$stmt = $pdo->prepare("SELECT midia FROM midia_anuncio WHERE id_midia = ?");
-$stmt->execute([$id]);
+$banco = Banco::getInstance();
 
-$img = $stmt->fetchColumn();
+$img = $banco->getMidiaPorId($id);
 
 if (!$img) {
     http_response_code(404);

@@ -108,9 +108,9 @@ async function carregarAnuncios(dados) {
     selectCategoria = document.getElementById("select-categoria");
     selectStatus = document.getElementById("select-status");
 
-    const categorias = [...new Set(dados.map(imovel => imovel.categoria))];
+    const categorias = [...new Set(dados.map(imovel => imovel.categoria.replace("_", " ")))];
     categorias.unshift("");
-    const status = [...new Set(dados.map(imovel => imovel.status))];
+    const status = [...new Set(dados.map(imovel => imovel.status.replace("_", " ")))];
     status.unshift("");
 
     selectCategoria.innerHTML = categorias.map(cat => `<option value="${cat}">${cat}</option>`).join("");
