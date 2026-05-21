@@ -2,8 +2,6 @@ async function carregarAnuncios() {
     const dados = await listarImoveis();
     const section = document.getElementById("container-resultado");
 
-    console.log(dados)
-
     if (!section || !dados) return;
     section.innerHTML = "";
     for (const imovel of dados) {

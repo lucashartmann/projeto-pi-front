@@ -191,7 +191,6 @@ function openTab(evento, tabId) {
 
 async function abrirCadastro(imovelId) {
     imovel = await getDadosImovel(imovelId);
-    console.log("Dados do imóvel para cadastro:", imovel);
     if (imovel) {
         document.getElementById("select-status").value = imovel.status?.toLowerCase()?.trim()?.replace(/\s+/g, "_") || "Selecionar";
         document.getElementById("select-situacao").value = imovel.situacao?.toLowerCase()?.trim()?.replace(/\s+/g, "_") || "Selecionar";

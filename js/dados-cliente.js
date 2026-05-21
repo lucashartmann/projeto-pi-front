@@ -102,7 +102,6 @@ async function salvarDados() {
         }
     }
     data["telefones"] = telefones;
-    console.log("Dados a serem enviados:", data);
     let  dados = await carregarUser();
     if (dados.status == "sucesso" && dados.usuario) {
         if (dados.usuario.tipo == "CLIENTE") {

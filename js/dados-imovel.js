@@ -1,7 +1,6 @@
 function setupDados(dados) {
     var div = document.getElementById("dados-imovel");
     let imagensHtml = "";
-    console.log(dados);
     if (dados.anuncio.imagens && dados.anuncio.imagens.length > 0) {
         swiperhtml = "";
         for (const imagem of dados.anuncio.imagens) {
@@ -100,7 +99,6 @@ function inicializarSwiper() {
             navigation: { nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev' },
             scrollbar: { el: '.swiper-scrollbar' },
         });
-        console.log("Swiper inicializado");
     } else {
         console.warn("Swiper não encontrado");
     }
@@ -109,7 +107,6 @@ function inicializarSwiper() {
 function nextSlide() {
     if (window.swiperInstance && typeof window.swiperInstance.slideNext === "function") {
         window.swiperInstance.slideNext();
-        console.log("Próximo slide");
     } else {
         console.warn("Swiper ainda não inicializado");
     }
