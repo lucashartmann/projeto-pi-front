@@ -14,23 +14,17 @@ function salvarMultiplosForms() {
 }
 
 async function salvar() {
-    var form = document.getElementById("container-cadastro");
-    var formAnuncio = document.getElementById("container-anuncio");
+    var forms = document.querySelectorAll("form");
+
     var data = {};
 
-    for (formulario of form) {
-        var formData = new FormData(form);
-        formData.forEach(function (value, key) {
-            data[key] = value;
-        });
-    };
 
-    for (formulario of formAnuncio) {
+    for (let formulario of forms) {
         var formData = new FormData(formulario);
         formData.forEach(function (value, key) {
             data[key] = value;
         });
-    };
+    }
 
     if (JSON.stringify(data).length > 0) {
         try {
@@ -71,6 +65,7 @@ async function salvar() {
                     }
                     else if (data.mensagem) {
                         alert("Imóvel cadastrado com sucesso: " + data.mensagem);
+                        forms.forEach(form => form.reset());
                     }
 
                 })
@@ -138,7 +133,8 @@ async function excluir() {
         }
     }
     else {
-        alert("Nenhum imóvel selecionado para exclusão!");
+        // alert("Nenhum imóvel selecionado para exclusão!");
+        window.location.href = "estoque.html";
     }
 
 
@@ -290,20 +286,26 @@ window.addEventListener("DOMContentLoaded", function () {
 
 async function preencherEndereco(event) {
     let cep = event.target.value;
+
     if (cep.length > 7) {
-        let inputRua = document.getElementById("ta-rua");
-        let inputBairro = document.getElementById("ta-bairro");
-        let inputCidade = document.getElementById("ta-cidade");
-        let inputEstado = document.getElementById("ta-estado");
-        const response = await fetch(`https://viacep.com.br/ws/${cep}/json`);
-        const data = await response.json();
-        if (data.erro) {
-            alert("CEP não encontrado!");
-            return;
+        try {
+            let inputRua = document.getElementById("ta-rua");
+            let inputBairro = document.getElementById("ta-bairro");
+            let inputCidade = document.getElementById("ta-cidade");
+            let inputEstado = document.getElementById("ta-estado");
+            const response = await fetch(`https://viacep.com.br/ws/${cep}/json`);
+            const data = await response.json();
+            if (data.erro) {
+                alert("CEP não encontrado!");
+                return;
+            }
+            inputRua.value = data.logradouro || "";
+            inputBairro.value = data.bairro || "";
+            inputCidade.value = data.localidade || "";
+            inputEstado.value = data.uf || "";
+        } catch (Exception) {
+            // alert("Erro ao buscar endereço pelo CEP!");
+            console.error("Erro ao buscar endereço:", Exception);
         }
-        inputRua.value = data.logradouro || "";
-        inputBairro.value = data.bairro || "";
-        inputCidade.value = data.localidade || "";
-        inputEstado.value = data.uf || "";
     };
 }

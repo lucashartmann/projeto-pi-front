@@ -6,12 +6,11 @@ async function carregarAnuncios() {
 
     if (!section || !dados) return;
     section.innerHTML = "";
-    for (const imovel of dados) {
-        const b64 = imovel.anuncio?.imagens?.[0] || "";
-
+    for (let imovel of dados) {
+        const b64 = imovel.anuncio?.imagens?.[0] || null;
         section.innerHTML += `
             <div class="resultado" onclick="abrirCadastro(${imovel.id})">
-                <img src="data:image/jpeg;base64,${b64}" alt="">
+                <img src="${b64}" alt="">
                 <div class="dados">
                     <label>${imovel.id}</label>
                     <label for="">${imovel.endereco.rua}</label>
