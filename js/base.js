@@ -44,7 +44,6 @@ async function listarImoveis() {
                     return null;
                 }
                 return data;
-                console.log(data);
             })
             .catch(erro => {
                 console.error("Falha ao conectar com o backend:", erro);
@@ -103,7 +102,6 @@ async function listarImoveisDisponiveis() {
 
 
 async function getDadosImovel(id) {
-    console.log("Buscando dados do imóvel com id:", id);
     try {
         let caminho = window.location.pathname;
         if (caminho.includes("/html/")) {
@@ -240,7 +238,7 @@ async function carregarUser() {
         }
 
         if (dados.status == "erro") {
-            console.log("Erro ao carregar usuário: " + dados.mensagem);
+            console.error("Erro ao carregar usuário: " + dados.mensagem);
             return null;
         }
         return dados;

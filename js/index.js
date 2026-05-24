@@ -32,12 +32,9 @@ function imovelPrincipal(dados) {
 }
 
 function bannerImoveis(dados) {
-    var div = document.querySelector(".swiper-wrapper");
-    var banner = document.createElement("div")
-    banner.className = "swiper-slide";
     var wrapper = document.querySelector(".swiper-wrapper");
     if (!wrapper) return;
-    let html = "";
+    const fragment = document.createDocumentFragment();
     for (var i = 0; i < 5; i++) {
         var imovel = dados[i];
         if (!imovel) continue;
@@ -55,13 +52,15 @@ function bannerImoveis(dados) {
         div.className = "swiper-slide";
         div.style.backgroundImage = `linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), url(${b64})`
         div.innerHTML = `<h2 class="sobrepor">${imovel.anuncio.titulo}${preco.outerHTML}</h2>`
-        html += div.outerHTML;
+        var id = imovel.id;
+        div.addEventListener("click", () => abrirAnuncio(id));
+        fragment.appendChild(div);
     }
-    if (html.length === 0) {
+    if (fragment.childNodes.length === 0) {
         console.warn("Nenhum imóvel com imagem encontrado para o banner");
         return;
     }
-    wrapper.innerHTML = html;
+    wrapper.replaceChildren(fragment);
 
 }
 
@@ -99,11 +98,7 @@ async function carregarAnuncios(dados) {
 
     const section = document.getElementById("anuncios");
 
-    console.log(dados)
-
     if (!section || !dados) return;
-
-    console.log("Carregando anúncios com os dados:", dados);
 
     selectCategoria = document.getElementById("select-categoria");
     selectStatus = document.getElementById("select-status");
@@ -154,7 +149,6 @@ function pesquisarCEP(event) {
     const termo = event.target.value.replace(/\D/g, '');
     const anuncios = document.querySelectorAll(".anuncio-imovel");
     if (dadosImoveis == null) return;
-    console.log(termo);
     const gallery = document.getElementById("gallery");
     gallery.style.display = "none";
     const gallery2 = document.getElementById("gallery2");
@@ -172,8 +166,6 @@ function pesquisarCEP(event) {
     if (imovel) {
 
         anuncios.forEach(anuncio => {
-            console.log(imovel.id, anuncio.dataset.id);
-            console.log(anuncio.event)
             if (imovel.id in anuncio.event) {
                 anuncio.style.display = "block";
                 const swiper = document.querySelector(".swiper");

@@ -41,7 +41,6 @@ async function listarAtendimentos() {
 
 async function carregarAtendimentos() {
     const dados = await listarAtendimentos();
-    console.log(dados);
     const section = document.getElementById("container-horizontal");
 
     if (!section || !dados) return;
