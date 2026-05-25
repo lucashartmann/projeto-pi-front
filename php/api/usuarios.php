@@ -38,6 +38,9 @@ switch ($acao) {
     // case "get_usuario":
     //     // carregarUsuario();
     //     break;
+    case "listar":
+        $resultado = $controller->listarUsuarios();
+        break;
 
     default:
         $resultado = (["status" => "erro", "mensagem" => "Ação inválida"]);

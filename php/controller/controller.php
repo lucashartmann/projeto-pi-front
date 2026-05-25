@@ -17,6 +17,87 @@ require_once __DIR__ . '/../utils/caminho_xamp.php';
 
 class controller
 {
+    function listarProprietarios()
+    {
+        try {
+            $proprietarios = Init::getInstance()->getListaProprietarios();
+            $lista = [];
+            if ($proprietarios) {
+                foreach ($proprietarios as $proprietario) {
+                    $lista[] = [
+                        "id" => $proprietario->getId(),
+                        "email" => $proprietario->getEmail(),
+                        "nome" => $proprietario->getNome(),
+                        "cpf_cnpj" => $proprietario->getCpfCnpj(),
+                        "rg" => $proprietario->getRg(),
+                        "telefones" => [$proprietario->getTelefones()],
+                        "endereco" => $proprietario->getEndereco() ? [
+                            "rua" => $proprietario->getEndereco()->rua ?? null,
+                            "numero" => $proprietario->getEndereco()->numero ?? null,
+                            "bairro" => $proprietario->getEndereco()->bairro ?? null,
+                            "cidade" => $proprietario->getEndereco()->cidade ?? null,
+                            "uf" => $proprietario->getEndereco()->uf ?? null,
+                            "cep" => $proprietario->getEndereco()->cep ?? null,
+                            "complemento" => $proprietario->getEndereco()->complemento ?? null
+                        ] : null,
+                        "data_nascimento" => $proprietario->getDataNascimento() ? $proprietario->getDataNascimento()->format('d-m-Y') : null,
+                        "imoveis" => array_map(function ($imovel) {
+                            return [
+                                "id" => $imovel->getId(),
+                                "valor_venda" => $imovel->getValorVenda(),
+                                "valor_aluguel" => $imovel->getValorAluguel(),
+                                "categoria" => $imovel->getCategoria() ? $imovel->getCategoria()->value : null,
+                                "status" => $imovel->getStatus() ? $imovel->getStatus()->value : null,
+                                "data_cadastro" => $imovel->getDataCadastro(),
+                                "data_modificacao" => $imovel->getDataModificacao()
+                            ];
+                        }, $proprietario->getImoveis()),
+                        "data_cadastro" => $proprietario->getDataCadastro(),
+                        "data_modificacao" => $proprietario->getDataModificacao()
+                    ];
+                }
+            }
+            return (["status" => "sucesso", "dados" => $lista]);
+        } catch (Exception $e) {
+            return (["status" => "erro", "mensagem" => "Erro ao listar proprietários"]);
+        }
+    }
+
+    function listarUsuarios()
+    {
+        try {
+            $usuarios = Init::getInstance()->getListaUsuarios();
+            $lista = [];
+            if ($usuarios) {
+                foreach ($usuarios as $usuario) {
+                    $lista[] = [
+                        "id" => $usuario->getId(),
+                        "email" => $usuario->getEmail(),
+                        "nome" => $usuario->getNome(),
+                        "cpf_cnpj" => $usuario->getCpfCnpj(),
+                        "rg" => $usuario->getRg(),
+                        "telefones" => [$usuario->getTelefones()],
+                        "endereco" => $usuario->getEndereco() ? [
+                            "rua" => $usuario->getEndereco()->rua ?? null,
+                            "numero" => $usuario->getEndereco()->numero ?? null,
+                            "bairro" => $usuario->getEndereco()->bairro ?? null,
+                            "cidade" => $usuario->getEndereco()->cidade ?? null,
+                            "uf" => $usuario->getEndereco()->uf ?? null,
+                            "cep" => $usuario->getEndereco()->cep ?? null,
+                            "complemento" => $usuario->getEndereco()->complemento ?? null
+                        ] : null,
+                        "data_nascimento" => $usuario->getDataNascimento() ? $usuario->getDataNascimento()->format('d-m-Y') : null,
+                        "tipo" => $usuario->getTipo() ?? null,
+                        "data_cadastro" => $usuario->getDataCadastro(),
+                        "data_modificacao" => $usuario->getDataModificacao()
+                    ];
+                }
+            }
+            return (["status" => "sucesso", "dados" => $lista]);
+        } catch (Exception $e) {
+            return (["status" => "erro", "mensagem" => "Erro ao listar usuários"]);
+        }
+    }
 
     function atualizarUsuario($dados)
     {
@@ -313,7 +394,9 @@ class controller
                     "categoria" => $categoria,
                     "status" => $status,
                     "endereco" => $endereco,
-                    "anuncio" => $anuncio
+                    "anuncio" => $anuncio,
+                    "data_modificacao" => $imovel->getDataModificacao(),
+                    "data_cadastro" => $imovel->getDataCadastro()
                 ];
             }
 

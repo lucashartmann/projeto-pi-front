@@ -275,6 +275,7 @@ class Banco extends PDO
         }
     }
 
+
     public function getProprietarioPorId($id)
     {
         try {

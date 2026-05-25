@@ -1,5 +1,170 @@
 Inputmask("99999-999").mask("#ta-cep");
 
+function listarPessoas(tipo) {
+
+    if (tipo !== "proprietario") {
+        try {
+            let caminho = window.location.pathname;
+            if (caminho.includes("/html/")) {
+                caminho = caminho.replace("/html/", "/");
+            }
+            caminho = caminho.replace(
+                caminho.substring(caminho.lastIndexOf("/")),
+                "/php/api/proprietarios.php?acao=listar"
+            );
+            await fetch(caminho, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(data)
+            })
+                .then(async (response) => {
+                    if (response.erro) {
+                        alert("Erro ao listar atendimentos: " + response.erro);
+                        return null;
+                    }
+                    const contentType = response.headers.get("content-type");
+                    if (contentType && contentType.includes("application/json")) {
+                        return await response.json();
+                    } else {
+                        const texto = await response.text();
+                        alert("Resposta inesperada do servidor");
+                        console.error("Resposta não é JSON:", texto);
+                        return null;
+                    }
+                })
+                .then(async (data) => {
+                    if (data.status == "erro") {
+                        alert("Erro ao listar pessoas: " + data.mensagem);
+                        return null;
+                    }
+                    return data;
+
+                })
+                .catch(error => {
+                    console.error("Falha ao conectar com o backend:", erro);
+                    return null;
+                });
+
+        } catch (error) {
+            console.error("Falha ao conectar com o backend:", erro);
+            return null;
+        }
+    } else {
+        try {
+            let caminho = window.location.pathname;
+            if (caminho.includes("/html/")) {
+                caminho = caminho.replace("/html/", "/");
+            }
+            caminho = caminho.replace(
+                caminho.substring(caminho.lastIndexOf("/")),
+                "/php/api/usuarios.php?acao=listar"
+            );
+            await fetch(caminho, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(data)
+            })
+                .then(async (response) => {
+                    if (response.erro) {
+                        alert("Erro ao listar atendimentos: " + response.erro);
+                        return null;
+                    }
+                    const contentType = response.headers.get("content-type");
+                    if (contentType && contentType.includes("application/json")) {
+                        return await response.json();
+                    } else {
+                        const texto = await response.text();
+                        alert("Resposta inesperada do servidor");
+                        console.error("Resposta não é JSON:", texto);
+                        return null;
+                    }
+                })
+                .then(async (data) => {
+                    if (data.status == "erro") {
+                        alert("Erro ao listar pessoas: " + data.mensagem);
+                        return null;
+                    }
+                    return data;
+                })
+                .catch(error => {
+                    console.error("Falha ao conectar com o backend:", erro);
+                    return null;
+                });
+
+        } catch (error) {
+            console.error("Falha ao conectar com o backend:", erro);
+            return null;
+        }
+    }
+}
+
+function editarPessoa(tipo) {
+    if (tipo !== "proprietario" && tipo !== "corretor" && tipo !== "captador") {
+        alert("Tipo de pessoa inválido!");
+        return;
+    }
+
+    const lista = await listarPessoas(tipo);
+
+    if (!lista || lista.length === 0) {
+        alert("Nenhuma pessoa encontrada para editar!");
+        return;
+    }
+
+    const container = document.createElement("div");
+    const pesquisarInput = document.createElement("input");
+    pesquisarInput.type = "text";
+    pesquisarInput.placeholder = "Pesquisar...";
+    pesquisarInput.oninput = function () {
+        const query = pesquisarInput.value.toLowerCase();
+        const resultados = container.querySelectorAll("div");
+        resultados.forEach(resultado => {
+            const nome = resultado.querySelector("label").textContent.toLowerCase();
+            resultado.style.display = nome.includes(query) ? "block" : "none";
+            const creciLabel = resultado.querySelector("label:nth-child(2)");
+            if (creciLabel) {
+                const creci = creciLabel.textContent.toLowerCase();
+                resultado.style.display = (nome.includes(query) || creci.includes(query)) ? "block" : "none";
+            }
+            const emailLabel = resultado.querySelector("label:nth-child(3)");
+            if (emailLabel) {
+                const email = emailLabel.textContent.toLowerCase();
+                resultado.style.display = (nome.includes(query) || email.includes(query)) ? "block" : "none";
+            }
+            const telefoneLabel = resultado.querySelector("label:nth-child(4)");
+            if (telefoneLabel) {
+                const telefone = telefoneLabel.textContent.toLowerCase();
+                resultado.style.display = (nome.includes(query) || email.includes(query) || telefone.includes(query)) ? "block" : "none";
+            }
+        });
+    };
+
+    container.appendChild(pesquisarInput);
+    for (const pessoa of lista) {
+        const div_resultado = document.createElement("div");
+        const nome = document.createElement("label");
+        nome.textContent = pessoa.nome;
+        div_resultado.appendChild(nome);
+        container.appendChild(div_resultado);
+        if (pessoa?.creci) {
+            const creci = document.createElement("label");
+            creci.textContent = "CRECI: " + pessoa.creci;
+            div_resultado.appendChild(creci);
+        }
+        const email = document.createElement("label");
+        email.textContent = "Email: " + pessoa.email;
+        div_resultado.appendChild(email);
+        const telefone = document.createElement("label");
+        telefone.textContent = "Telefone: " + pessoa.telefone;
+        div_resultado.appendChild(telefone);
+    }
+
+}
+
 function salvarMultiplosForms() {
     const form1 = document.getElementById("container-cadastro");
     const form2 = document.getElementById("container-anuncio");
@@ -13,11 +178,32 @@ function salvarMultiplosForms() {
     salvar();
 }
 
+async function getOutrosDados(data) {
+    const containerImagens = document.getElementById("container-imagens");
+    const containerDocumentos = document.getElementById("container-documentos");
+    const containerProprietario = document.getElementById("container-proprietario");
+    const containerCorretor = document.getElementById("container-corretor");
+    const containerCaptador = document.getElementById("container-captador");
+    const imagens = containerImagens.querySelectorAll("img");
+    for (let img of imagens) {
+        const response = await fetch(img.src);
+        const blob = await response.blob();
+        data["imagens"].push(blob);
+    }
+    for (let doc of containerDocumentos.querySelectorAll("a")) {
+        const response = await fetch(doc.href);
+        const blob = await response.blob();
+        data["documentos"].push(blob);
+    }
+    data["proprietario"] = {};
+    data["corretor"] = {};
+    data["captador"] = {};
+}
+
 async function salvar() {
     var forms = document.querySelectorAll("form");
 
     var data = {};
-
 
     for (let formulario of forms) {
         var formData = new FormData(formulario);

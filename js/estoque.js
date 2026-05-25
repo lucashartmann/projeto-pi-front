@@ -1,4 +1,4 @@
-const imoveis_cache = {};
+const imoveis_cache = [];
 
 async function carregarAnuncios() {
     if (!imoveis_cache) {
@@ -7,11 +7,11 @@ async function carregarAnuncios() {
     const dados = imoveis_cache;
     const section = document.getElementById("container-resultado");
     const seta = document.getElementById("seta");
-    seta.textContent = seta.textContent === "⬇️" ? "⬆️" : "⬇️";
     const filtro = document.getElementById("select-filtro").value;
-    const section = document.getElementById("container-resultado");
-    if (!section) return;
-
+    if (!section || !dados) { 
+        console.log("Erro: Elementos não encontrados"); 
+        return; 
+    }
     switch (filtro) {
         case "id":
             if (seta.textContent === "⬇️") {
@@ -27,13 +27,6 @@ async function carregarAnuncios() {
                 dados.sort((a, b) => b.categoria.localeCompare(a.categoria));
             }
             break;
-        case "referencia":
-            if (seta.textContent === "⬇️") {
-                dados.sort((a, b) => a.referencia.localeCompare(b.referencia));
-            } else {
-                dados.sort((a, b) => b.referencia.localeCompare(a.referencia));
-            }
-            break;
         case "status":
             if (seta.textContent === "⬇️") {
                 dados.sort((a, b) => a.status.localeCompare(b.status));
@@ -43,30 +36,30 @@ async function carregarAnuncios() {
             break;
         case "cep":
             if (seta.textContent === "⬇️") {
-                dados.sort((a, b) => a.cep - b.cep);
+                dados.sort((a, b) => a.endereco?.cep - b.endereco?.cep);
             } else {
-                dados.sort((a, b) => b.cep - a.cep);
+                dados.sort((a, b) => b.endereco?.cep - a.endereco?.cep);
             }
             break;
         case "numero":
             if (seta.textContent === "⬇️") {
-                dados.sort((a, b) => a.numero - b.numero);
+                dados.sort((a, b) => a.endereco?.numero - b.endereco?.numero);
             } else {
-                dados.sort((a, b) => b.numero - a.numero);
+                dados.sort((a, b) => b.endereco?.numero - a.endereco?.numero);
             }
             break;
         case "aluguel":
             if (seta.textContent === "⬇️") {
-                dados.sort((a, b) => a.aluguel - b.aluguel);
+                dados.sort((a, b) => a.valor_aluguel - b.valor_aluguel);
             } else {
-                dados.sort((a, b) => b.aluguel - a.aluguel);
+                dados.sort((a, b) => b.valor_aluguel - a.valor_aluguel);
             }
             break;
         case "venda":
             if (seta.textContent === "⬇️") {
-                dados.sort((a, b) => a.venda - b.venda);
+                dados.sort((a, b) => a.valor_venda - b.valor_venda);
             } else {
-                dados.sort((a, b) => b.venda - a.venda);
+                dados.sort((a, b) => b.valor_venda - a.valor_venda);
             }
             break;
         case "data_cadastro":
@@ -84,8 +77,8 @@ async function carregarAnuncios() {
             }
             break;
     }
-    
-    if (!section || !dados) return;
+
+
     section.innerHTML = "";
     for (let imovel of dados) {
         const b64 = imovel.anuncio?.imagens?.[0] || null;
@@ -94,7 +87,7 @@ async function carregarAnuncios() {
                 <img src="${b64}" alt="">
                 <div class="dados">
                     <label>${imovel.id}</label>
-                    <label for="">${imovel.endereco.rua}</label>
+                    <label for="">${imovel.endereco?.rua}</label>
                     <label for="">${imovel.categoria}</label>
                     <label for="">${imovel.status}</label>
                 </div>
@@ -104,6 +97,8 @@ async function carregarAnuncios() {
 }
 
 function mudarOrdem() {
+    const seta = document.getElementById("seta");
+    seta.textContent = seta.textContent === "⬇️" ? "⬆️" : "⬇️";
     carregarAnuncios();
 }
 

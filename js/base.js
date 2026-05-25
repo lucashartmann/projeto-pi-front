@@ -12,7 +12,7 @@ function alterarSrc(event) {
         caminho.substring(caminho.lastIndexOf("/") + 1),
         href
     );
-
+    console.log("Caminho atualizado para:", caminho);
     a.setAttribute("href", caminho);
 }
 
@@ -281,72 +281,72 @@ function carregarTabs(usuario) {
     switch (usuario.tipo) {
         case 'ADMIN':
             tabs = [
-                { text: "Atendimento", href: "../../projeto-pi-front/html/atendimento.html" },
-                { text: "Estoque", href: "../../projeto-pi-front/html/estoque.html" },
-                { text: "Agendar Visita", href: "../../projeto-pi-front/html/agendar-visita.html" }
+                { text: "Atendimento", href: "html/atendimento.html" },
+                { text: "Estoque", href: "html/estoque.html" },
+                { text: "Agendar Visita", href: "html/agendar-visita.html" }
             ];
             cadastros = [
-                { text: "Imóveis", href: "../../projeto-pi-front/html/cadastro-imovel.html" },
-                { text: "Cliente", href: "../../projeto-pi-front/html/cadastro-cliente.html" },
-                { text: "Contratos", href: "../../projeto-pi-front/html/contratos.html" }
+                { text: "Imóveis", href: "html/cadastro-imovel.html" },
+                { text: "Cliente", href: "html/cadastro-cliente.html" },
+                { text: "Contratos", href: "html/contratos.html" }
             ];
             dados = [
-                { text: "Imobiliária", href: "../../projeto-pi-front/html/dados-imobiliaria.html" },
-                { text: "Dados Cliente", href: "../../projeto-pi-front/html/dados-cliente.html" }
+                { text: "Imobiliária", href: "html/dados-imobiliaria.html" },
+                { text: "Dados Cliente", href: "html/dados-cliente.html" }
             ];
             break;
 
         case "FINANCEIRO":
             tabs = [
-                { text: "Contratos", href: "../../projeto-pi-front/html/contratos.html" }
+                { text: "Contratos", href: "html/contratos.html" }
             ];
             break;
 
         case "VISTORIADOR":
             tabs = [
-                { text: "Agendar Vistoria", href: "../../projeto-pi-front/html/agendar-visita.html" },
-                { text: "Relatório", href: "../../projeto-pi-front/html/relatorio.html" }
+                { text: "Agendar Vistoria", href: "html/agendar-visita.html" },
+                { text: "Relatório", href: "html/relatorio.html" }
             ];
             break;
 
         case "CORRETOR":
             tabs = [
-                { text: "Atendimento", href: "../../projeto-pi-front/html/atendimento.html" },
-                { text: "Estoque", href: "../../projeto-pi-front/html/estoque.html" },
-                { text: "Agendar Visita", href: "../../projeto-pi-front/html/agendar-visita.html" }
+                { text: "Atendimento", href: "html/atendimento.html" },
+                { text: "Estoque", href: "html/estoque.html" },
+                { text: "Agendar Visita", href: "html/agendar-visita.html" }
             ];
             cadastros = [
-                { text: "Imóveis", href: "../../projeto-pi-front/html/cadastro-imovel.html" },
-                { text: "Venda/Aluguel", href: "../../projeto-pi-front/html/cadastro-venda-aluguel.html" },
-                { text: "Cliente", href: "../../projeto-pi-front/html/cadastro-cliente.html" },
+                { text: "Imóveis", href: "html/cadastro-imovel.html" },
+                { text: "Venda/Aluguel", href: "html/cadastro-venda-aluguel.html" },
+                { text: "Cliente", href: "html/cadastro-cliente.html" },
             ];
             break;
 
         case "GERENTE":
             tabs = [
-                { text: "Estoque", href: "../../projeto-pi-front/html/estoque.html" }
+                { text: "Estoque", href: "html/estoque.html" }
             ];
             cadastros = [
-                { text: "Imobiliária", href: "../../projeto-pi-front/html/dados-imobiliaria.html" }
+                { text: "Imobiliária", href: "html/dados-imobiliaria.html" }
             ];
             dados = [
-                { text: "Imobiliária", href: "../../projeto-pi-front/html/dados-imobiliaria.html" },
+                { text: "Imobiliária", href: "html/dados-imobiliaria.html" },
             ];
             break;
 
         case "CAPTADOR":
             tabs = [
-                { text: "Estoque", href: "../../projeto-pi-front/html/estoque.html" }
+                { text: "Estoque", href: "html/estoque.html" }
             ];
             cadastros = [
-                { text: "Imóveis", href: "../../projeto-pi-front/html/cadastro-imovel.html" },
-                { text: "Cliente", href: "../../projeto-pi-front/html/cadastro-cliente.html" },
+                { text: "Imóveis", href: "html/cadastro-imovel.html" },
+                { text: "Cliente", href: "html/cadastro-cliente.html" },
             ];
             break;
 
         case "CLIENTE":
             tabs = [
-                { text: "<i class='fas fa-user'></i>", href: "../../projeto-pi-front/html/dados-cliente.html" },
+                { text: "<i class='fas fa-user'></i>", href: "html/dados-cliente.html" },
 
             ];
             break;
@@ -354,7 +354,7 @@ function carregarTabs(usuario) {
 
 
     let html = tabs.map(tab =>
-        `<li><a href="${tab.href}">${tab.text}</a></li>`
+        `<li><a href="${tab.href}" onclick="alterarSrc(event)">${tab.text}</a></li>`
     ).join("");
 
     if (dados.length > 0 && cadastros.length > 0) {
@@ -363,7 +363,7 @@ function carregarTabs(usuario) {
             <a href="#">Cadastro ▾</a>
             <div class="dropdown-content">
                 ${cadastros.map(c =>
-            `<a href="${c.href}">${c.text}</a>`
+            `<a href="${c.href}" onclick="alterarSrc(event)">${c.text}</a>`
         ).join("")}
             </div>
         </li>
@@ -371,7 +371,7 @@ function carregarTabs(usuario) {
             <a href="#">Dados ▾</a>
             <div class="dropdown-content">
                 ${dados.map(d =>
-            `<a href="${d.href}">${d.text}</a>`
+            `<a href="${d.href}" onclick="alterarSrc(event)">${d.text}</a>`
         ).join("")}
             </div>
         </li>
@@ -383,7 +383,7 @@ function carregarTabs(usuario) {
             <a href="#">Cadastro ▾</a>
             <div class="dropdown-content">
                 ${cadastros.map(c =>
-            `<a href="${c.href}">${c.text}</a>`
+            `<a href="${c.href}" onclick="alterarSrc(event)">${c.text}</a>`
         ).join("")}
             </div>
         </li>
@@ -394,7 +394,7 @@ function carregarTabs(usuario) {
             <a href="#">Dados ▾</a>
             <div class="dropdown-content">
                 ${dados.map(d =>
-            `<a href="${d.href}">${d.text}</a>`
+            `<a href="${d.href}" onclick="alterarSrc(event)">${d.text}</a>`
         ).join("")}
             </div>
         </li>

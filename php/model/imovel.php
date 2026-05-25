@@ -255,6 +255,11 @@ class Imovel
         return $this->dataModificacao;
     }
 
+    public function valor_venda()
+    {
+        return $this->valorVenda;
+    }
+
     public function getId()
     {
         return $this->id;
