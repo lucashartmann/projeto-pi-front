@@ -12,49 +12,62 @@
 </head>
 
 <body>
-    <div id="dados-div">
-        <div>
-            <h3>Imóveis: 10</h3>
-            <!-- (para aluguel ou venda, depende do selecionado) -->
-        </div>
-    </div>
-    <input placeholder="pesquise aqui" id="input-pesquisa">
-    <div id="container-filtragem">
-        <label>Categoria</label>
-        <select prompt="Selecionar"></select>
-        <label>Status</label>
-        <select prompt="Selecionar"></select>
-        <label>CEP</label>
-        <input suggester=SuggestFromList(self.ceps, case_sensitive=False)>
-        <label>Número</label>
-        <input>
-    </div>
-    <div id="h-filtro">
-        <select id="select-filtro" onchange="filtrar()"></select>
-        <button id="seta" flat=True onclick="mudarOrdem()">⬇️</button>
-    </div>
-    <section id="container-resultado">
-        <div class="resultado" onclick="abrirCadastro(0)">
-            <img src="../assets/apartament.jpg" alt="">
-            <div class="dados">
-                <label for="">REF: 001</label>
-                <label>Apartamento 2 dormitórios</label>
-                <label for="">Avenida Bento Gonçalves</label>
-                <label for="">Apartamento</label>
-                <label for="">Venda</label>
+    <main>
+        <div id="dados-div">
+            <div>
+                <h3>Imóveis: 10</h3>
+                <!-- (para aluguel ou venda, depende do selecionado) -->
             </div>
         </div>
-        <div class="resultado" onclick="abrirCadastro(1)">
-            <img src="../assets/campo.jpg" alt="">
-            <div class="dados">
-                <label for="">REF: 002</label>
-                <label>Casa no Campo com Jardim</label>
-                <label for="">Rua Joaquim Nabuco</label>
-                <label for="">Casa</label>
-                <label for="">Venda e Aluguel</label>
-            </div>
+
+        <div id="container-filtragem">
+            <input placeholder="Pesquise aqui" id="input-pesquisa">
+            <label>Categoria</label>
+            <select prompt="Selecionar"></select>
+            <label>Status</label>
+            <select prompt="Selecionar"></select>
+            <label>CEP</label>
+            <input>
+            <label>Número</label>
+            <input>
         </div>
-    </section>
+        <div id="h-filtro">
+            <select id="select-filtro" onchange="filtrar()">
+                <option value="referencia">Referência</option>
+                <option value="categoria">Categoria</option>
+                <option value="status">Status</option>
+                <option value="cep">CEP</option>
+                <option value="numero">Número</option>
+                <option value="aluguel">Aluguel</option>
+                <option value="venda">Venda</option>
+                <option value="data_cadastro" selected>Data de Cadastro</option>
+                <option value="data_modificacao">Data de Modificação</option>
+            </select>
+            <button id="seta" flat=True onclick="mudarOrdem()">⬇️</button>
+        </div>
+        <section id="container-resultado">
+            <div class="resultado" onclick="abrirCadastro(0)">
+                <img src="../assets/apartament.jpg" alt="">
+                <div class="dados">
+                    <label for="">REF: 001</label>
+                    <label>Apartamento 2 dormitórios</label>
+                    <label for="">Avenida Bento Gonçalves</label>
+                    <label for="">Apartamento</label>
+                    <label for="">Venda</label>
+                </div>
+            </div>
+            <div class="resultado" onclick="abrirCadastro(1)">
+                <img src="../assets/campo.jpg" alt="">
+                <div class="dados">
+                    <label for="">REF: 002</label>
+                    <label>Casa no Campo com Jardim</label>
+                    <label for="">Rua Joaquim Nabuco</label>
+                    <label for="">Casa</label>
+                    <label for="">Venda e Aluguel</label>
+                </div>
+            </div>
+        </section>
+    </main>
 
     <footer>
         <p>Copyright 2025 - By Lucas Hartmann</p>
@@ -87,6 +100,7 @@
         });
 
 </script>
-<script src="../js/base.js"></script>
-<script src="../js/estoque.js"></script>
+<!-- <script src="../js/base.js"></script>
+<script src="../js/estoque.js"></script> -->
+
 </html>

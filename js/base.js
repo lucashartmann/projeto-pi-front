@@ -1,4 +1,21 @@
 
+function alterarSrc(event) {
+    const a = event.target;
+    const href = a.getAttribute("href");
+
+    let caminho = window.location.pathname;
+    if (caminho.includes("/html/")) {
+        caminho = caminho.replace("/html/", "/");
+    }
+    // caminho += "/";
+    caminho = caminho.replace(
+        caminho.substring(caminho.lastIndexOf("/") + 1),
+        href
+    );
+
+    a.setAttribute("href", caminho);
+}
+
 function mostrarNavLeft() {
     try {
         const nav = document.getElementById("side-nav");
@@ -405,10 +422,10 @@ async function setup() {
 setup();
 
 
-// window.addEventListener("scroll", () => {
-//     const nav = document.querySelector("#top-nav");
-//     if (window.scrollY > 50) {
-//         nav.classList.add("scrolled");
-//     } else {        nav.classList.remove("scrolled");
-//     }
-// });
+window.addEventListener("scroll", () => {
+    const nav = document.querySelector("#top-nav");
+    if (window.scrollY > 50) {
+        nav.classList.add("scrolled");
+    } else {        nav.classList.remove("scrolled");
+    }
+});
