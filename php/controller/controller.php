@@ -13,6 +13,7 @@ require_once __DIR__ . '/../model/gerente.php';
 require_once __DIR__ . '/../model/usuario.php';
 require_once __DIR__ . '/../model/proprietario.php';
 require_once __DIR__ . '/../model/__init__.php';
+require_once __DIR__ . '/../utils/caminho_xamp.php';
 
 class controller
 {
@@ -284,7 +285,7 @@ class controller
                     $imagens = [];
                     if ($anuncioObj->getImagens()) {
                         foreach ($anuncioObj->getImagens() as $idImagem) {
-                            $imagens[] = "/projeto-pi-front/php/imagem.php?id=" . $idImagem;
+                            $imagens[] = CaminhoXampp::getBaseUrl() . "imagem.php?id=" . $idImagem;
                         }
                     }
                     $anuncio = [
@@ -350,7 +351,7 @@ class controller
                     $imagens = [];
                     if ($anuncioObj->getImagens()) {
                         foreach ($anuncioObj->getImagens() as $idImagem) {
-                            $imagens[] = "/projeto-pi-front/php/imagem.php?id=" . $idImagem;
+                            $imagens[] = CaminhoXampp::getBaseUrl() . "imagem.php?id=" . $idImagem;
                         }
                     }
                     $anuncio = [
@@ -403,7 +404,7 @@ class controller
                     $imagens = [];
                     if ($anuncioObj->getImagens()) {
                         foreach ($anuncioObj->getImagens() as $idImagem) {
-                            $imagens[] = "/projeto-pi-front/php/imagem.php?id=" . $idImagem;
+                            $imagens[] = CaminhoXampp::getBaseUrl() . "imagem.php?id=" . $idImagem;
                         }
                     }
                     $anuncio = [

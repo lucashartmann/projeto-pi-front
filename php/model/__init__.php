@@ -21,7 +21,7 @@ error_reporting(E_ALL);
 class Init
 {
 
-
+    public static $caminho_xampp = "C:/xampp/htdocs/PHP/projeto-pi-front/";
 
     public static $imobiliaria;
     public static $usuarioAtual;
