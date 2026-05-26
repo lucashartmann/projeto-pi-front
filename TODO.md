@@ -1,3 +1,3 @@
 Implementar PHP
 
-Arrumar caminhos do JS e HTML
+Arrumar carregarAnuncios, problema com imoveis_cache

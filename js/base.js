@@ -1,18 +1,29 @@
+function getCaminhoRelativo(destino) {
+    let caminho = window.location.pathname;
+        
+        substring = "";
+
+        if (caminho.includes("/html/")) {
+            caminho = caminho.replace(caminho.substring(caminho.lastIndexOf("/html/")), "/");
+        }
+
+        if (caminho.slice(-2) != "//") {
+            caminho += "/";
+        }
+
+        const regex = new RegExp("/" + "$");
+
+        caminho = caminho.replace(regex, destino);
+
+        return caminho;
+}
+
+
 
 function alterarSrc(event) {
     const a = event.target;
     const href = a.getAttribute("href");
-
-    let caminho = window.location.pathname;
-    if (caminho.includes("/html/")) {
-        caminho = caminho.replace("/html/", "/");
-    }
-    // caminho += "/";
-    caminho = caminho.replace(
-        caminho.substring(caminho.lastIndexOf("/") + 1),
-        href
-    );
-    console.log("Caminho atualizado para:", caminho);
+    let caminho = getCaminhoRelativo(href);
     a.setAttribute("href", caminho);
 }
 
@@ -31,14 +42,7 @@ function mostrarNavLeft() {
 
 async function listarImoveis() {
     try {
-        let caminho = window.location.pathname;
-        if (caminho.includes("/html/")) {
-            caminho = caminho.replace("/html/", "/");
-        }
-        caminho = caminho.replace(
-            caminho.substring(caminho.lastIndexOf("/")),
-            "/php/api/imoveis.php?acao=listar_imoveis"
-        );
+        let caminho = getCaminhoRelativo("/php/api/imoveis.php?acao=listar_imoveis");
         const resposta = await fetch(caminho)
             .then(async (res) => {
                 const contentType = res.headers.get("content-type");
@@ -76,14 +80,7 @@ async function listarImoveis() {
 
 async function listarImoveisDisponiveis() {
     try {
-        let caminho = window.location.pathname;
-        if (caminho.includes("/html/")) {
-            caminho = caminho.replace("/html/", "/");
-        }
-        caminho = caminho.replace(
-            caminho.substring(caminho.lastIndexOf("/")),
-            "/php/api/imoveis.php?acao=listar_imoveis_disponiveis"
-        );
+        let caminho = getCaminhoRelativo("/php/api/imoveis.php?acao=listar_imoveis_disponiveis");
         const resposta = await fetch(caminho)
             // .then(res => console.log(res))
             .then(async (res) => {
@@ -96,7 +93,7 @@ async function listarImoveisDisponiveis() {
                     return await res.json();
                 } else {
                     const texto = await res.text();
-                    alert("Resposta inesperada do servidor");
+                    // alert("Resposta inesperada do servidor");
                     console.error("Resposta não é JSON:", texto);
                     return;
                 }
@@ -120,14 +117,7 @@ async function listarImoveisDisponiveis() {
 
 async function getDadosImovel(id) {
     try {
-        let caminho = window.location.pathname;
-        if (caminho.includes("/html/")) {
-            caminho = caminho.replace("/html/", "/");
-        }
-        caminho = caminho.replace(
-            caminho.substring(caminho.lastIndexOf("/")),
-            "/php/api/imoveis.php?acao=get_dados_imovel&id=" + id
-        );
+        let caminho = getCaminhoRelativo("/php/api/imoveis.php?acao=get_dados_imovel&id=" + id);
         const resposta = await fetch(caminho, {
             method: "GET",
             headers: {
@@ -166,14 +156,7 @@ async function getDadosImovel(id) {
 
 async function deslogar() {
     try {
-        let caminho = window.location.pathname;
-        if (caminho.includes("/html/")) {
-            caminho = caminho.replace("/html/", "/");
-        }
-        caminho = caminho.replace(
-            caminho.substring(caminho.lastIndexOf("/")),
-            "/php/api/login.php?acao=deslogar"
-        );
+        let caminho = getCaminhoRelativo("/php/api/login.php?acao=deslogar");
         const resposta = await fetch(caminho, {
             method: "POST"
         });
@@ -226,16 +209,7 @@ async function deslogar() {
 
 async function carregarUser() {
     try {
-        let caminho = window.location.pathname;
-        substring = "";
-
-        if (caminho.includes("/html/")) {
-            caminho = caminho.replace("/html/", "/");
-        }
-
-        caminho = caminho.replace(caminho.substring(caminho.lastIndexOf("/"))
-            , "/php/api/login.php?acao=get_usuario"
-        );
+        let caminho = getCaminhoRelativo("/php/api/login.php?acao=get_usuario");
         const resposta = await fetch(caminho, {
             method: "GET"
         });
@@ -249,7 +223,7 @@ async function carregarUser() {
             dados = await resposta.json();
         } else {
             const texto = await resposta.text();
-            alert("Resposta inesperada do servidor");
+            // alert("Resposta inesperada do servidor");
             console.error("Resposta não é JSON:", texto);
             return;
         }
@@ -422,10 +396,10 @@ async function setup() {
 setup();
 
 
-window.addEventListener("scroll", () => {
-    const nav = document.querySelector("#top-nav");
-    if (window.scrollY > 50) {
-        nav.classList.add("scrolled");
-    } else {        nav.classList.remove("scrolled");
-    }
-});
+// window.addEventListener("scroll", () => {
+//     const nav = document.querySelector("#top-nav");
+//     if (window.scrollY > 50) {
+//         nav.classList.add("scrolled");
+//     } else {        nav.classList.remove("scrolled");
+//     }
+// });

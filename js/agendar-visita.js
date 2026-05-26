@@ -89,13 +89,8 @@ async function salvarEvento(data) {
       return;
   }
 
-  let caminho = window.location.pathname;
-  substring = "";
+  let caminho = getCaminhoRelativo(caminhoPhp);
   try {
-    if (caminho.includes("/html/")) {
-      caminho = caminho.replace("/html/", "/");
-    }
-    caminho = caminho.replace(caminho.substring(caminho.lastIndexOf("/")), caminhoPhp);
     fetch(caminho, {
       method: "POST",
       headers: {

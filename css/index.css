@@ -254,7 +254,7 @@ section#anuncios {
         width: 100%;
         color: black;
         font-weight: 600;
-        height: 100%;
+        height: 3rem;
         font-size: large;
         border-radius: 2% / 30%;
         &::placeholder {
@@ -274,7 +274,7 @@ section#anuncios {
         align-items: center;
         button {
             width: 25%;
-            height: 160%;
+            height: 3rem;
             background-color: rgb(65, 73, 18);
             color: white;
             border: rgb(109, 97, 0) solid 1px;

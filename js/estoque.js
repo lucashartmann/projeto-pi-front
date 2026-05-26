@@ -1,10 +1,13 @@
 const imoveis_cache = [];
 
 async function carregarAnuncios() {
+    const dados = [];
     if (!imoveis_cache) {
         imoveis_cache = await listarImoveis();
+        dados = imoveis_cache;
+    } else {
+        dados = await listarImoveis();
     }
-    const dados = imoveis_cache;
     const section = document.getElementById("container-resultado");
     const seta = document.getElementById("seta");
     const filtro = document.getElementById("select-filtro").value;
@@ -75,6 +78,8 @@ async function carregarAnuncios() {
             } else {
                 dados.sort((a, b) => new Date(b.data_modificacao) - new Date(a.data_modificacao));
             }
+            break;
+        default:
             break;
     }
 

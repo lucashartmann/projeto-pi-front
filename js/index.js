@@ -16,7 +16,7 @@ function imovelPrincipal(dados) {
     if (!banner) return;
     let preco = document.createElement("span");
     if (imovel.valor_aluguel && imovel.valor_venda) {
-        preco.innerHTML = `R$ <p class="preco">${imovel.valor_venda}</p>/ R$ <p class="preco">${imovel.valor_aluguel}</p> / mês`;
+        preco.innerHTML = `R$ <p class="preco">${imovel.valor_venda}</p> / R$ <p class="preco">${imovel.valor_aluguel}</p> / mês`;
     } else if (imovel.valor_venda) {
         preco.innerHTML = `R$ <p class="preco">${imovel.valor_venda}</p>`;
     } else {
@@ -40,18 +40,20 @@ function bannerImoveis(dados) {
         if (!imovel) continue;
         var b64 = imovel.anuncio?.imagens?.[0];
         if (!b64) continue;
-        let preco = document.createElement("span");
+        let precoVenda = document.createElement("span");
+        let precoAluguel = document.createElement("span");
         if (imovel.valor_aluguel && imovel.valor_venda) {
-            preco.innerHTML = `R$ <p class="preco">${imovel.valor_venda}</p>/ R$ <p class="preco">${imovel.valor_aluguel}</p> / mês`;
+            precoVenda.innerHTML = `Venda: R$ <p class="preco">${imovel.valor_venda}</p>`;
+            precoAluguel.innerHTML = `Aluguel: R$ <p class="preco">${imovel.valor_aluguel}</p>/ mês`;
         } else if (imovel.valor_venda) {
-            preco.innerHTML = `R$ <p class="preco">${imovel.valor_venda}</p>`;
+            precoVenda.innerHTML = `Venda: R$ <p class="preco">${imovel.valor_venda}</p>`;
         } else {
-            preco.innerHTML = `R$ <p class="preco">${imovel.valor_aluguel}</p>/ mês`;
+            precoAluguel.innerHTML = `Aluguel: R$ <p class="preco">${imovel.valor_aluguel}</p>/ mês`;
         }
         let div = document.createElement("div");
         div.className = "swiper-slide";
         div.style.backgroundImage = `linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), url(${b64})`
-        div.innerHTML = `<h2 class="sobrepor">${imovel.anuncio.titulo}${preco.outerHTML}</h2>`
+        div.innerHTML = `<h2 class="sobrepor">${imovel.anuncio.titulo}</h2><br>${precoVenda.outerHTML}${precoAluguel.outerHTML}`
         var id = imovel.id;
         div.addEventListener("click", () => abrirAnuncio(id));
         fragment.appendChild(div);

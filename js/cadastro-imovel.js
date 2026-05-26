@@ -1,17 +1,36 @@
 Inputmask("99999-999").mask("#ta-cep");
 
-function listarPessoas(tipo) {
+async function preencherEndereco(event) {
+    let cep = event.target.value;
 
+    if (cep.length > 7) {
+        try {
+            let inputRua = document.getElementById("ta-rua");
+            let inputBairro = document.getElementById("ta-bairro");
+            let inputCidade = document.getElementById("ta-cidade");
+            let inputEstado = document.getElementById("ta-estado");
+            const response = await fetch(`https://viacep.com.br/ws/${cep}/json`);
+            const data = await response.json();
+            if (data.erro) {
+                alert("CEP não encontrado!");
+                return;
+            }
+            inputRua.value = data.logradouro || "";
+            inputBairro.value = data.bairro || "";
+            inputCidade.value = data.localidade || "";
+            inputEstado.value = data.uf || "";
+        } catch (Exception) {
+            // alert("Erro ao buscar endereço pelo CEP!");
+            console.error("Erro ao buscar endereço:", Exception);
+        }
+    };
+}
+
+
+async function listarPessoas(tipo) {
     if (tipo !== "proprietario") {
         try {
-            let caminho = window.location.pathname;
-            if (caminho.includes("/html/")) {
-                caminho = caminho.replace("/html/", "/");
-            }
-            caminho = caminho.replace(
-                caminho.substring(caminho.lastIndexOf("/")),
-                "/php/api/proprietarios.php?acao=listar"
-            );
+            let caminho = getCaminhoRelativo("/php/api/proprietarios.php?acao=listar");
             await fetch(caminho, {
                 method: "POST",
                 headers: {
@@ -53,14 +72,7 @@ function listarPessoas(tipo) {
         }
     } else {
         try {
-            let caminho = window.location.pathname;
-            if (caminho.includes("/html/")) {
-                caminho = caminho.replace("/html/", "/");
-            }
-            caminho = caminho.replace(
-                caminho.substring(caminho.lastIndexOf("/")),
-                "/php/api/usuarios.php?acao=listar"
-            );
+            let caminho = getCaminhoRelativo("/php/api/usuarios.php?acao=listar");
             await fetch(caminho, {
                 method: "POST",
                 headers: {
@@ -102,7 +114,7 @@ function listarPessoas(tipo) {
     }
 }
 
-function editarPessoa(tipo) {
+async function editarPessoa(tipo) {
     if (tipo !== "proprietario" && tipo !== "corretor" && tipo !== "captador") {
         alert("Tipo de pessoa inválido!");
         return;
@@ -214,14 +226,7 @@ async function salvar() {
 
     if (JSON.stringify(data).length > 0) {
         try {
-            let caminho = window.location.pathname;
-            if (caminho.includes("/html/")) {
-                caminho = caminho.replace("/html/", "/");
-            }
-            caminho = caminho.replace(
-                caminho.substring(caminho.lastIndexOf("/")),
-                "/php/api/imoveis.php?acao=cadastrar_imovel"
-            );
+            let caminho = getCaminhoRelativo("/php/api/imoveis.php?acao=cadastrar_imovel");
             await fetch(caminho, {
                 method: "POST",
                 headers: {
@@ -273,14 +278,7 @@ async function salvar() {
 async function excluir() {
     if (imovelId) {
         try {
-            let caminho = window.location.pathname;
-            if (caminho.includes("/html/")) {
-                caminho = caminho.replace("/html/", "/");
-            }
-            caminho = caminho.replace(
-                caminho.substring(caminho.lastIndexOf("/")),
-                "/php/api/imoveis.php?acao=apagar_imovel"
-            );
+            let caminho = getCaminhoRelativo("/php/api/imoveis.php?acao=apagar_imovel");
             const response = await fetch(caminho, {
                 method: "POST",
                 headers: {
@@ -469,28 +467,3 @@ window.addEventListener("DOMContentLoaded", function () {
 });
 
 
-async function preencherEndereco(event) {
-    let cep = event.target.value;
-
-    if (cep.length > 7) {
-        try {
-            let inputRua = document.getElementById("ta-rua");
-            let inputBairro = document.getElementById("ta-bairro");
-            let inputCidade = document.getElementById("ta-cidade");
-            let inputEstado = document.getElementById("ta-estado");
-            const response = await fetch(`https://viacep.com.br/ws/${cep}/json`);
-            const data = await response.json();
-            if (data.erro) {
-                alert("CEP não encontrado!");
-                return;
-            }
-            inputRua.value = data.logradouro || "";
-            inputBairro.value = data.bairro || "";
-            inputCidade.value = data.localidade || "";
-            inputEstado.value = data.uf || "";
-        } catch (Exception) {
-            // alert("Erro ao buscar endereço pelo CEP!");
-            console.error("Erro ao buscar endereço:", Exception);
-        }
-    };
-}

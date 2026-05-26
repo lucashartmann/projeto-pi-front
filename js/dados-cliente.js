@@ -111,14 +111,7 @@ async function salvarDados() {
     }
 
     try {
-        let caminho = window.location.pathname;
-        if (caminho.includes("/html/")) {
-            caminho = caminho.replace("/html/", "/");
-        }
-        caminho = caminho.replace(
-            caminho.substring(caminho.lastIndexOf("/")),
-            "/php/api/usuarios.php?acao=atualizar"
-        );
+        let caminho = getCaminhoRelativo("/php/api/usuarios.php?acao=atualizar");
         const resposta = await fetch(caminho, {
             method: "POST",
             headers: {

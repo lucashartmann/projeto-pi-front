@@ -52,14 +52,7 @@ async function fazerLogin() {
     const senha = document.getElementById("senha").value;
 
     try {
-        let caminho = window.location.pathname;
-        if (caminho.includes("/html/")) {
-            caminho = caminho.replace("/html/", "/");
-        }
-        caminho = caminho.replace(
-            caminho.substring(caminho.lastIndexOf("/")),
-            "/php/api/login.php?acao=login"
-        );
+        let caminho = getCaminhoRelativo("/php/api/login.php?acao=login");
         const resposta = await fetch(caminho, {
             method: "POST",
             headers: {
@@ -142,14 +135,7 @@ async function fazerCadastro() {
     });
 
     try {
-        let caminho = window.location.pathname;
-        if (caminho.includes("/html/")) {
-            caminho = caminho.replace("/html/", "/");
-        }
-        caminho = caminho.replace(
-            caminho.substring(caminho.lastIndexOf("/")),
-            "/php/api/login.php?acao=cadastro"
-        );
+        let caminho = getCaminhoRelativo("/php/api/login.php?acao=cadastro");
         const resposta = await fetch(caminho, {
             method: "POST",
             headers: {
