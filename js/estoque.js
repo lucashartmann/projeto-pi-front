@@ -97,10 +97,10 @@ async function carregarAnuncios() {
                     <label for="">Rua: ${imovel.endereco?.rua}, ${imovel.endereco?.numero}, ${imovel.endereco?.bairro}, ${imovel.endereco?.cep}</label>
                     <label for="">Categoria: ${imovel.categoria}</label>
                     <label for="">Status: ${imovel.status}</label>
-                    <label for="">Aluguel: R$ ${imovel.valor_aluguel}</label>
-                    <label for="">Venda: R$ ${imovel.valor_venda}</label>
+                    <label for="">Aluguel: ${formatarValor(imovel.valor_aluguel)}</label>
+                    <label for="">Venda: ${formatarValor(imovel.valor_venda)}</label>
                     <label for="">Data de Cadastro: ${new Date(imovel.data_cadastro?.date).toLocaleDateString()}</label>
-                    <label for="">Data de Modificação: ${new Date(imovel.data_modificacao?.date).toLocaleDateString() || 'N/A'}</label>
+                    <label for="">Data de Modificação: ${imovel.data_modificacao ? new Date(imovel.data_modificacao?.date).toLocaleDateString() : 'N/A'}</label>
                 </div>
             </div>
         `;

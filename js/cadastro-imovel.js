@@ -1,4 +1,4 @@
-Inputmask("99999-999").mask("#ta-cep");
+
 
 async function preencherEndereco(event) {
     let cep = event.target.value;
@@ -402,7 +402,7 @@ async function abrirCadastro(imovelId) {
         document.getElementById("ta-condominio").value = imovel.valor_condominio || "";
         document.getElementById("ta-iptu").value = imovel.valor_iptu || "";
         document.getElementById("ta-ano-construcao").value = imovel.ano_construcao || "";
-        document.getElementById("ta-cep").value = imovel.endereco?.cep?.substring(0, 5) + "-" + imovel.endereco?.cep?.substring(5, 8) || "";
+        document.getElementById("ta-cep").value = imovel.endereco?.cep;
     } else {
         alert("Imóvel não encontrado!");
         window.location.href = "estoque.html";
@@ -440,7 +440,7 @@ function adicionarAnexo(event) {
 
 let imovelId = null;
 
-window.addEventListener("DOMContentLoaded", function () {
+window.addEventListener("DOMContentLoaded", async function () {
     var tabcontent = document.getElementsByClassName("tabcontent");
 
     for (var i = 0; i < tabcontent.length; i++) {
@@ -465,8 +465,32 @@ window.addEventListener("DOMContentLoaded", function () {
     imovelId = this.sessionStorage.getItem("imovel_id_estoque") || null;
     if (imovelId) {
         sessionStorage.removeItem("imovel_id_estoque");
-        abrirCadastro(imovelId);
+        await abrirCadastro(imovelId);
     }
+
+    Inputmask("99999-999").mask("#ta-cep");
+
+    Inputmask('currency', {
+        prefix: 'R$ ',
+        groupSeparator: '.',
+        radixPoint: ',',
+        digits: 2,
+        autoGroup: true,
+        allowMinus: false,
+        placeholder: '0'
+    }).mask('#ta-aluguel, #ta-venda, #ta-condominio, #ta-iptu');
+
+    Inputmask({
+        alias: 'decimal',
+        rightAlign: false,
+        radixPoint: ',',
+        groupSeparator: '.',
+        autoGroup: true,
+        suffix: ' m²',
+        digits: 2,
+        allowMinus: false,
+        placeholder: '0'
+    }).mask('#ta-area-privativa, #ta-area-total');
 });
 
 

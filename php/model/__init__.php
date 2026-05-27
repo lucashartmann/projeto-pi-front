@@ -358,7 +358,7 @@ class Init
         }
 
         $anuncioUm->setTitulo("Apartamento de 1 quarto, venda ou aluguel");
-        $anuncioUm->setDescricao("Imóvel com uma posição privilegiada, próximo a parques, shoppings e com fácil acesso ao transporte público-> O apartamento possui uma sala aconchegante, cozinha funcional, banheiro moderno e um quarto confortável-> Ideal para quem busca praticidade e qualidade de vida->");
+        $anuncioUm->setDescricao("Imóvel com uma posição privilegiada, próximo a parques, shoppings e com fácil acesso ao transporte público. O apartamento possui uma sala aconchegante, cozinha funcional, banheiro moderno e um quarto confortável. Ideal para quem busca praticidade e qualidade de vida.");
 
         $anuncioDois = new Anuncio();
 
@@ -372,7 +372,7 @@ class Init
         }
 
         $anuncioDois->setTitulo("Apartamento de 2 quartos, venda ou aluguel");
-        $anuncioDois->setDescricao("Imóvel localizado no centro da cidade, próximo a escolas, supermercados e com fácil acesso ao transporte público-> O apartamento possui uma sala ampla, cozinha americana, banheiro social e um quarto espaçoso-> Ideal para quem busca conforto e praticidade->");
+        $anuncioDois->setDescricao("Imóvel localizado no centro da cidade, próximo a escolas, supermercados e com fácil acesso ao transporte público. O apartamento possui uma sala ampla, cozinha americana, banheiro social e um quarto espaçoso. Ideal para quem busca conforto e praticidade.");
 
         $imovelUm = new Imovel(
             endereco: $consultaUm,

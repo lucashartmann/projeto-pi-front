@@ -13,7 +13,10 @@ require_once __DIR__ . '/../model/gerente.php';
 require_once __DIR__ . '/../model/usuario.php';
 require_once __DIR__ . '/../model/proprietario.php';
 require_once __DIR__ . '/../model/__init__.php';
+require_once __DIR__ . '/../model/validacao.php';
+require_once __DIR__ . '/../model/seguranca.php';
 require_once __DIR__ . '/../utils/caminho_xamp.php';
+
 
 class controller
 {
@@ -105,21 +108,21 @@ class controller
             $nome = isset($dados['nome']) ? $dados['nome'] : null;
             // $email = isset($dados['email']) ? $dados['email'] : null;
             // $senha = isset($dados['senha']) ? $dados['senha'] : null;
-            $dataNascimento = isset($dados['data_nascimento']) ? DateTime::createFromFormat('d/m/Y', $dados['data_nascimento']) : null;
-            $cpfCnpj = isset($dados['cpf_cnpj']) ? str_replace(['.', '-', ' '], '', $dados['cpf_cnpj']) : null;
-            $rg = isset($dados['rg']) ? $dados['rg'] : null;
-            $telefones = isset($dados['telefones']) ? $dados['telefones'] : null;
+            $dataNascimento = isset($dados['data_nascimento']) && Validacao::validarDataNascimento($dados['data_nascimento']) ? DateTime::createFromFormat('d/m/Y', $dados['data_nascimento']) : null;
+            $cpfCnpj = isset($dados['cpf_cnpj']) && Validacao::validarCPF($dados['cpf_cnpj']) ? str_replace(['.', '-', ' '], '', $dados['cpf_cnpj']) : null;
+            $rg = isset($dados['rg']) && Validacao::validarRG($dados['rg']) ? $dados['rg'] : null;
+            $telefones = isset($dados['telefones']) && Validacao::validarTelefone($dados['telefones']) ? str_replace(['-', '(', ')'], '', $dados['telefones']) : null;
             $tipo = isset($dados['tipo']) ? $dados['tipo'] : null;
             $usuario = Null;
-            $creci = isset($dados['creci']) ? $dados['creci'] : null;
-            $salario = isset($dados['salario']) ? $dados['salario'] : null;
+            $creci = isset($dados['creci']) && Validacao::validarCreci($dados['creci']) ? $dados['creci'] : null;
+            $salario = isset($dados['salario']) && Validacao::validarSalario($dados['salario']) ? str_replace(['-', 'R$', ' '], '', $dados['salario']) : null;
             $id = isset($dados['id']) ? $dados['id'] : null;
             $rua = isset($dados['rua']) ? $dados['rua'] : null;
             $numero = isset($dados['numero']) ? $dados['numero'] : null;
             $bairro = isset($dados['bairro']) ? $dados['bairro'] : null;
             $cidade = isset($dados['cidade']) ? $dados['cidade'] : null;
             $uf = isset($dados['uf']) ? $dados['uf'] : null;
-            $cep = isset($dados['cep']) ? str_replace('-', '', $dados['cep']) : null;
+            $cep = isset($dados['cep']) && Validacao::validarCEP($dados['cep']) ? str_replace('-', '', $dados['cep']) : null;
             $complemento = isset($dados['complemento']) ? $dados['complemento'] : null;
             if (!$id) {
                 return (["status" => "erro", "mensagem" => "ID do usuário não fornecido"]);
@@ -179,10 +182,10 @@ class controller
         try {
 
             $nome = isset($data['nome']) ? $data['nome'] : '';
-            $email = isset($data['email']) ? $data['email'] : '';
-            $senha = isset($data['senha']) ? $data['senha'] : '';
-            $cpf = isset($data['cpf_cnpj']) ? str_replace(['.', '-', ' '], '', $data['cpf_cnpj']) : null;
-            $dataNascimento = isset($data['data_nascimento']) ? DateTime::createFromFormat('d/m/Y', $data['data_nascimento']) : null;
+            $email = isset($data['email']) && Validacao::validarEmail($data['email']) ? $data['email'] : '';
+            $senha = isset($data['senha']) && Validacao::validarSenha($data['senha']) ? $data['senha'] : null;
+            $cpf = isset($data['cpf_cnpj']) && Validacao::validarCPF($data['cpf_cnpj']) ? str_replace(['.', '-', ' '], '', $data['cpf_cnpj']) : null;
+            $dataNascimento = isset($data['data_nascimento']) && Validacao::validarDataNascimento($data['data_nascimento']) ? DateTime::createFromFormat('d/m/Y', $data['data_nascimento']) : null;
 
             $usuario = new Cliente($email, $senha, $email, $nome, $cpf);
             $usuario->setDataNascimento($dataNascimento);
@@ -439,15 +442,8 @@ class controller
                 }
 
                 $categoria = $imovel->getCategoria();
-                if (is_object($categoria) && isset($categoria)) {
-                    $categoria = $categoria;
-                }
-
                 $status = $imovel->getStatus();
-                if (is_object($status) && isset($status)) {
-                    $status = $status;
-                }
-
+               
                 $lista[] = [
                     "id" => $imovel->getId(),
                     "valor_venda" => $imovel->getValorVenda(),
@@ -583,8 +579,8 @@ class controller
 
             $id =  array_key_exists("ref", $data) ? $data["ref"] : null;
             $nomeCondominio = array_key_exists("nome_condominio", $data) ? $data["nome_condominio"] : null;
-            $valorVenda = array_key_exists("valor_venda", $data) ? (float)($data["valor_venda"] ?? 0) : null;
-            $valorAluguel = array_key_exists("valor_aluguel", $data) ? (float)($data["valor_aluguel"] ?? 0) : null;
+            $valorVenda = array_key_exists("valor_venda", $data) ? (float)(str_replace(['-', 'R$', ' '], '', $data["valor_venda"]) ?? 0) : null;
+            $valorAluguel = array_key_exists("valor_aluguel", $data) ? (float)(str_replace(['-', 'R$', ' '], '', $data["valor_aluguel"]) ?? 0) : null;
             $quantQuartos = array_key_exists("quantidade_quartos", $data) ? (int)($data["quantidade_quartos"] ?? 0) : null;
             $quantSalas = array_key_exists("quantidade_salas", $data) ? (int)($data["quantidade_salas"] ?? 0) : null;
             $quantVagas = array_key_exists("quantidade_vagas", $data) ? (int)($data["quantidade_vagas"] ?? 0) : null;
@@ -597,15 +593,15 @@ class controller
             }
             $status = null;
             isset($data["status"]) ? $status = Status::tryFrom(ucfirst(strtolower($data["status"]))) : null;
-            $iptu = array_key_exists("iptu", $data) ? (float)($data["iptu"] ?? 0) : null;
-            $valorCondominio = array_key_exists("valor_condominio", $data) ? (float)($data["valor_condominio"] ?? 0) : null;
+            $iptu = array_key_exists("iptu", $data) ? (float)(str_replace(['-', 'R$', ' '], '', $data["iptu"]) ?? 0) : null;
+            $valorCondominio = array_key_exists("valor_condominio", $data) ? (float)(str_replace(['-', 'R$', ' '], '', $data["valor_condominio"]) ?? 0) : null;
             $andar = array_key_exists("andar", $data) ? (int)($data["andar"] ?? 0) : null;
             $estado = null;
             isset($data["estado_imovel"]) ? $estado = Estado::tryFrom(ucfirst(strtolower($data["estado_imovel"]))) : null;
             $bloco = array_key_exists("bloco", $data) ? $data["bloco"] : null;
             $anoConstrucao = array_key_exists("ano_construcao", $data) ? (int)($data["ano_construcao"] ?? 0) : null;
-            $areaTotal = array_key_exists("area_total", $data) ? (float)($data["area_total"] ?? 0) : null;
-            $areaPrivativa = array_key_exists("area_privativa", $data) ? (float)($data["area_privativa"] ?? 0) : null;
+            $areaTotal = array_key_exists("area_total", $data) ? (float)(str_replace(['-', 'm2', ' '], '', $data["area_total"]) ?? 0) : null;
+            $areaPrivativa = array_key_exists("area_privativa", $data) ? (float)(str_replace(['-', 'm2', ' '], '', $data["area_privativa"]) ?? 0) : null;
             $situacao = null;
             isset($data["situacao"]) ? $situacao = Situacao::tryFrom(ucfirst(strtolower($data["situacao"]))) : null;
             $ocupacao = null;

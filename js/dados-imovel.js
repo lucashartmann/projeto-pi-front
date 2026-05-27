@@ -24,8 +24,8 @@ function setupDados(dados) {
     divGaleria.innerHTML = imagensHtml;
     pDescricao.innerText = dados.anuncio.descricao;
     try {
-        divContato.getElementById("condominio").querySelector("p").innerText = dados.valor_condominio;
-        divContato.getElementById("iptu").querySelector("p").innerText = dados.valor_iptu;
+        divContato.getElementById("condominio").querySelector("p").innerText = formatarValor(dados.valor_condominio);
+        divContato.getElementById("iptu").querySelector("p").innerText = formatarValor(dados.valor_iptu);
     } catch (e) {
         console.warn("Valores de condomínio e IPTU não encontrados");
     }

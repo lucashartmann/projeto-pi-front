@@ -14,17 +14,19 @@ function imovelPrincipal(dados) {
 
     var banner = document.getElementById("imovel-destaque");
     if (!banner) return;
-    let preco = document.createElement("span");
+    let precoVenda = document.createElement("span");
+    let precoAluguel = document.createElement("span");
     if (imovel.valor_aluguel && imovel.valor_venda) {
-        preco.innerHTML = `R$ <p class="preco">${imovel.valor_venda}</p> / R$ <p class="preco">${imovel.valor_aluguel}</p> / mês`;
+        precoVenda.innerHTML = `Venda: <p class="preco">${formatarValor(imovel.valor_venda)}</p>`;
+        precoAluguel.innerHTML = `Aluguel: <p class="preco">${formatarValor(imovel.valor_aluguel)}</p>`;
     } else if (imovel.valor_venda) {
-        preco.innerHTML = `R$ <p class="preco">${imovel.valor_venda}</p>`;
+        precoVenda.innerHTML = `Venda: <p class="preco">${formatarValor(imovel.valor_venda)}</p>`;
     } else {
-        preco.innerHTML = `R$ <p class="preco">${imovel.valor_aluguel}</p>/ mês`;
+        precoAluguel.innerHTML = `Aluguel: <p class="preco">${formatarValor(imovel.valor_aluguel)}</p>`;
     }
 
     banner.innerHTML = `
-        <h2 class="sobrepor">${imovel.anuncio.titulo}${preco.outerHTML}</h2>
+        <h2 class="sobrepor">${imovel.anuncio.titulo}${precoVenda.outerHTML}${precoAluguel.outerHTML}</h2>
         
     `
     banner.style.backgroundImage = `linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), url(${b64})`
@@ -43,17 +45,17 @@ function bannerImoveis(dados) {
         let precoVenda = document.createElement("span");
         let precoAluguel = document.createElement("span");
         if (imovel.valor_aluguel && imovel.valor_venda) {
-            precoVenda.innerHTML = `Venda: R$ <p class="preco">${imovel.valor_venda}</p>`;
-            precoAluguel.innerHTML = `Aluguel: R$ <p class="preco">${imovel.valor_aluguel}</p>/ mês`;
+            precoVenda.innerHTML = `Venda: <p class="preco">${formatarValor(imovel.valor_venda)}</p>`;
+            precoAluguel.innerHTML = `Aluguel: <p class="preco">${formatarValor(imovel.valor_aluguel)}</p>`;
         } else if (imovel.valor_venda) {
-            precoVenda.innerHTML = `Venda: R$ <p class="preco">${imovel.valor_venda}</p>`;
+            precoVenda.innerHTML = `Venda: <p class="preco">${formatarValor(imovel.valor_venda)}</p>`;
         } else {
-            precoAluguel.innerHTML = `Aluguel: R$ <p class="preco">${imovel.valor_aluguel}</p>/ mês`;
+            precoAluguel.innerHTML = `Aluguel: <p class="preco">${formatarValor(imovel.valor_aluguel)}</p>`;
         }
         let div = document.createElement("div");
         div.className = "swiper-slide";
         div.style.backgroundImage = `linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), url(${b64})`
-        div.innerHTML = `<h2 class="sobrepor">${imovel.anuncio.titulo}</h2><br>${precoVenda.outerHTML}${precoAluguel.outerHTML}`
+        div.innerHTML = `<h2 class="sobrepor">${imovel.anuncio.titulo}<br>${precoVenda.outerHTML}${precoAluguel.outerHTML}</h2>`
         var id = imovel.id;
         div.addEventListener("click", () => abrirAnuncio(id));
         fragment.appendChild(div);
@@ -120,12 +122,12 @@ async function carregarAnuncios(dados) {
         let precoVenda = document.createElement("span");
         let precoAluguel = document.createElement("span");
         if (imovel.valor_aluguel && imovel.valor_venda) {
-            precoVenda.innerHTML = `Venda: R$ <p class="preco">${imovel.valor_venda}</p>`;
-            precoAluguel.innerHTML = `Aluguel: R$ <p class="preco">${imovel.valor_aluguel}</p>/ mês`;
+            precoVenda.innerHTML = `Venda: <p class="preco">${formatarValor(imovel.valor_venda)}</p>`;
+            precoAluguel.innerHTML = `Aluguel: <p class="preco">${formatarValor(imovel.valor_aluguel)}</p>`;
         } else if (imovel.valor_venda) {
-            precoVenda.innerHTML = `Venda: R$ <p class="preco">${imovel.valor_venda}</p>`;
+            precoVenda.innerHTML = `Venda: <p class="preco">${formatarValor(imovel.valor_venda)}</p>`;
         } else {
-            precoAluguel.innerHTML = `Aluguel: R$ <p class="preco">${imovel.valor_aluguel}</p>/ mês`;
+            precoAluguel.innerHTML = `Aluguel: <p class="preco">${formatarValor(imovel.valor_aluguel)}</p>`;
         }
         html += `
             <div class="anuncio-imovel" onclick="abrirAnuncio(${imovel.id})">

@@ -1,3 +1,3 @@
 Implementar PHP
 
-Arrumar carregarAnuncios, problema com imoveis_cache
+Arrumar Inputmask que nao funciona com input type number

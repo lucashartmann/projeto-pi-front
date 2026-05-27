@@ -81,6 +81,10 @@ section#anuncios {
     box-shadow: 2px 1px 19px -13px rgb(43, 33, 33);
     border: solid rgba(47, 45, 45, 0.2) 2px;
 
+    p {
+        margin: 20px;
+    }
+
     p:nth-child(3) {
         text-align: center;
         align-self: center;
@@ -94,6 +98,7 @@ section#anuncios {
     h2 {
         text-align: center;
         align-self: center;
+        margin: 10px 5px;
     }
 
     .descricao {

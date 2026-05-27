@@ -1,25 +1,33 @@
+function formatarValor(valor) {
+    const formatoMoeda = new Intl.NumberFormat('pt-BR', {
+        style: 'currency',
+        currency: 'BRL',
+    }).format(valor);
+    return formatoMoeda;
+}
+
 function getCaminhoRelativo(destino) {
     let caminho = window.location.pathname;
-        
-        substring = "";
 
-        if (caminho.includes("/html/")) {
-            caminho = caminho.replace(caminho.substring(caminho.lastIndexOf("/html/")), "/");
-        }
+    substring = "";
 
-        if (caminho.includes("/index.html")) {
-            caminho = caminho.replace(caminho.substring(caminho.lastIndexOf("/index.html")), "/");
-        }
+    if (caminho.includes("/html/")) {
+        caminho = caminho.replace(caminho.substring(caminho.lastIndexOf("/html/")), "/");
+    }
 
-        if (caminho.slice(-2) != "//") {
-            caminho += "/";
-        }
+    if (caminho.includes("/index.html")) {
+        caminho = caminho.replace(caminho.substring(caminho.lastIndexOf("/index.html")), "/");
+    }
 
-        const regex = new RegExp("/" + "$");
+    if (caminho.slice(-2) != "//") {
+        caminho += "/";
+    }
 
-        caminho = caminho.replace(regex, destino);
+    const regex = new RegExp("/" + "$");
 
-        return caminho;
+    caminho = caminho.replace(regex, destino);
+
+    return caminho;
 }
 
 
@@ -398,6 +406,7 @@ async function setup() {
 
 
 setup();
+document.getElementById("logo").src = getCaminhoRelativo("assets/logo.png");
 
 
 // window.addEventListener("scroll", () => {
