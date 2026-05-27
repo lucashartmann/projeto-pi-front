@@ -1,19 +1,19 @@
 const imoveis_cache = [];
 
 async function carregarAnuncios() {
-    const dados = [];
-    if (!imoveis_cache) {
-        imoveis_cache = await listarImoveis();
-        dados = imoveis_cache;
-    } else {
+    let dados = [];
+    if (imoveis_cache.length === 0) {
         dados = await listarImoveis();
+        imoveis_cache.push(...dados);
+    } else {
+        dados = imoveis_cache;
     }
     const section = document.getElementById("container-resultado");
     const seta = document.getElementById("seta");
     const filtro = document.getElementById("select-filtro").value;
-    if (!section || !dados) { 
-        console.log("Erro: Elementos não encontrados"); 
-        return; 
+    if (!section || !dados) {
+        console.log("Erro: Elementos não encontrados");
+        return;
     }
     switch (filtro) {
         case "id":
@@ -67,16 +67,16 @@ async function carregarAnuncios() {
             break;
         case "data_cadastro":
             if (seta.textContent === "⬇️") {
-                dados.sort((a, b) => new Date(a.data_cadastro) - new Date(b.data_cadastro));
+                dados.sort((a, b) => new Date(a.data_cadastro?.date) - new Date(b.data_cadastro?.date));
             } else {
-                dados.sort((a, b) => new Date(b.data_cadastro) - new Date(a.data_cadastro));
+                dados.sort((a, b) => new Date(b.data_cadastro?.date) - new Date(a.data_cadastro?.date));
             }
             break;
         case "data_modificacao":
             if (seta.textContent === "⬇️") {
-                dados.sort((a, b) => new Date(a.data_modificacao) - new Date(b.data_modificacao));
+                dados.sort((a, b) => new Date(a.data_modificacao?.date) - new Date(b.data_modificacao?.date));
             } else {
-                dados.sort((a, b) => new Date(b.data_modificacao) - new Date(a.data_modificacao));
+                dados.sort((a, b) => new Date(b.data_modificacao?.date) - new Date(a.data_modificacao?.date));
             }
             break;
         default:
@@ -86,15 +86,21 @@ async function carregarAnuncios() {
 
     section.innerHTML = "";
     for (let imovel of dados) {
+        console.log(imovel.data_cadastro);
         const b64 = imovel.anuncio?.imagens?.[0] || null;
         section.innerHTML += `
-            <div class="resultado" onclick="abrirCadastro(${imovel.id})">
+            <div class="resultado">
+                <input type="checkbox" class="checkbox-selecionar" onclick="montarOpcoes()">
                 <img src="${b64}" alt="">
-                <div class="dados">
-                    <label>${imovel.id}</label>
-                    <label for="">${imovel.endereco?.rua}</label>
-                    <label for="">${imovel.categoria}</label>
-                    <label for="">${imovel.status}</label>
+                <div class="dados" onclick="abrirCadastro(${imovel.id})">
+                    <label>Ref: ${imovel.id}</label>
+                    <label for="">Rua: ${imovel.endereco?.rua}, ${imovel.endereco?.numero}, ${imovel.endereco?.bairro}, ${imovel.endereco?.cep}</label>
+                    <label for="">Categoria: ${imovel.categoria}</label>
+                    <label for="">Status: ${imovel.status}</label>
+                    <label for="">Aluguel: R$ ${imovel.valor_aluguel}</label>
+                    <label for="">Venda: R$ ${imovel.valor_venda}</label>
+                    <label for="">Data de Cadastro: ${new Date(imovel.data_cadastro?.date).toLocaleDateString()}</label>
+                    <label for="">Data de Modificação: ${new Date(imovel.data_modificacao?.date).toLocaleDateString() || 'N/A'}</label>
                 </div>
             </div>
         `;
@@ -107,13 +113,52 @@ function mudarOrdem() {
     carregarAnuncios();
 }
 
+function montarOpcoes() {
+    const checkboxes = document.querySelectorAll(".checkbox-selecionar:checked");
+    const botaoApagar = filtro.querySelector("#apagar-multiplos");
+    const botaoAbrir = filtro.querySelector("#abrir-multiplos");
+    if (checkboxes.length > 0) {
+        const filtro = document.getElementById("h-filtro");
+        filtro.innerHTML = "";
+        botaoApagar.style.display = "block";
+        botaoAbrir.style.display = "block";     
+    } else {
+        const filtro = document.getElementById("h-filtro");
+        botaoApagar.style.display = "none";
+        botaoAbrir.style.display = "none";
+    }
+}
+
+function selecionarTodos() {
+    const checkboxes = document.querySelectorAll(".checkbox-selecionar");
+    const todosSelecionados = Array.from(checkboxes).every(checkbox => checkbox.checked);
+    checkboxes.forEach(checkbox => checkbox.checked = !todosSelecionados);
+    montarOpcoes();
+}
+
 function filtrar() {
     carregarAnuncios();
 }
 
 function abrirCadastro(imovel_id) {
-    sessionStorage.setItem("imovel-id-estoque", imovel_id);
+    sessionStorage.setItem("imovel_id_estoque", imovel_id);
     window.location.href = "cadastro-imovel.html";
+}
+
+function pesquisar(event) {
+    const termo = event.target.value.toLowerCase();
+
+    const imoveis = document.querySelectorAll(".resultado");
+    imoveis.forEach(anuncio => {
+        for (const label of document.querySelectorAll(".resultado .dados label")) {
+            if (label.textContent.toLowerCase().includes(termo)) {
+                anuncio.style.display = "flex";
+                return;
+            } else {
+                anuncio.style.display = "none";
+            }
+        }
+    });
 }
 
 window.addEventListener("DOMContentLoaded", () => {

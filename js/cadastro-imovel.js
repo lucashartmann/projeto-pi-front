@@ -372,20 +372,22 @@ function openTab(evento, tabId) {
 async function abrirCadastro(imovelId) {
     imovel = await getDadosImovel(imovelId);
     if (imovel) {
-        document.getElementById("select-status").value = imovel.status?.toLowerCase()?.trim()?.replace(/\s+/g, "_") || "Selecionar";
-        document.getElementById("select-situacao").value = imovel.situacao?.toLowerCase()?.trim()?.replace(/\s+/g, "_") || "Selecionar";
-        document.getElementById("select-estado").value = imovel.estado?.toLowerCase()?.trim()?.replace(/\s+/g, "_") || "Selecionar";
-        document.getElementById("select-ocupacao").value = imovel.ocupacao?.toLowerCase()?.trim()?.replace(/\s+/g, "_") || "Selecionar";
+        document.getElementById("ta-ref").value = imovel.id || "";
+        document.getElementById("select-status").value = imovel.status || "Selecionar";
+        document.getElementById("select-situacao").value = imovel.situacao || "Selecionar";
+        document.getElementById("select-estado").value = imovel.estado || "Selecionar";
+        document.getElementById("select-ocupacao").value = imovel.ocupacao || "Selecionar";
         document.getElementById("ta-nome-condominio").value = imovel.condominio?.nome || "";
         document.getElementById("ta-rua").value = imovel.endereco?.rua || "";
         document.getElementById("ta-bairro").value = imovel.endereco?.bairro || "";
         document.getElementById("ta-cidade").value = imovel.endereco?.cidade || "";
         document.getElementById("ta-estado").value = imovel.endereco?.uf || "";
-        document.getElementById("select-categoria").value = imovel.categoria?.toLowerCase()?.trim()?.replace(/\s+/g, "_") || "Selecionar";
-        // document.getElementById("ta-titulo").value = imovel.anuncio?.titulo || "";
-        // document.getElementById("ta-descricao").value = imovel.anuncio?.descricao || "";
-        document.getElementById("ta-numero").value = imovel.endereco.numero || "";
-        document.getElementById("ta-complemento").value = imovel.complemento || "";
+        console.log(imovel.categoria);
+        document.getElementById("select-categoria").value = imovel.categoria || "Selecionar";
+        document.getElementById("ta-titulo-anuncio").value = imovel.anuncio?.titulo || "";
+        document.getElementById("ta-descricao-anuncio").value = imovel.anuncio?.descricao || "";
+        document.getElementById("ta-numero").value = imovel.endereco?.numero || "";
+        document.getElementById("ta-complemento").value = imovel.endereco?.complemento || "";
         document.getElementById("ta-bloco").value = imovel.bloco || "";
         document.getElementById("ta-andar").value = imovel.andar || "";
         document.getElementById("ta-salas").value = imovel.quantidade_salas || "";
@@ -400,6 +402,7 @@ async function abrirCadastro(imovelId) {
         document.getElementById("ta-condominio").value = imovel.valor_condominio || "";
         document.getElementById("ta-iptu").value = imovel.valor_iptu || "";
         document.getElementById("ta-ano-construcao").value = imovel.ano_construcao || "";
+        document.getElementById("ta-cep").value = imovel.endereco?.cep?.substring(0, 5) + "-" + imovel.endereco?.cep?.substring(5, 8) || "";
     } else {
         alert("Imóvel não encontrado!");
         window.location.href = "estoque.html";

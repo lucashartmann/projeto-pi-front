@@ -46,8 +46,8 @@ class controller
                                 "id" => $imovel->getId(),
                                 "valor_venda" => $imovel->getValorVenda(),
                                 "valor_aluguel" => $imovel->getValorAluguel(),
-                                "categoria" => $imovel->getCategoria() ? $imovel->getCategoria()->value : null,
-                                "status" => $imovel->getStatus() ? $imovel->getStatus()->value : null,
+                                "categoria" => $imovel->getCategoria() ? $imovel->getCategoria() : null,
+                                "status" => $imovel->getStatus() ? $imovel->getStatus() : null,
                                 "data_cadastro" => $imovel->getDataCadastro(),
                                 "data_modificacao" => $imovel->getDataModificacao()
                             ];
@@ -329,7 +329,7 @@ class controller
                             "id" => $atendimento->getImovel()->getid(),
                             "titulo" => $atendimento->getImovel()->getAnuncio()->getTitulo() ?: NULL,
                         ] : NULL,
-                        "status" =>  $atendimento->getStatus() ? $atendimento->getStatus()->value : NULL,
+                        "status" =>  $atendimento->getStatus() ? $atendimento->getStatus() : NULL,
                     ];
                 }
             }
@@ -378,14 +378,7 @@ class controller
                 }
 
                 $categoria = $imovel->getCategoria();
-                if (is_object($categoria) && isset($categoria->value)) {
-                    $categoria = $categoria->value;
-                }
-
                 $status = $imovel->getStatus();
-                if (is_object($status) && isset($status->value)) {
-                    $status = $status->value;
-                }
 
                 $lista[] = [
                     "id" => $imovel->getId(),
@@ -446,13 +439,13 @@ class controller
                 }
 
                 $categoria = $imovel->getCategoria();
-                if (is_object($categoria) && isset($categoria->value)) {
-                    $categoria = $categoria->value;
+                if (is_object($categoria) && isset($categoria)) {
+                    $categoria = $categoria;
                 }
 
                 $status = $imovel->getStatus();
-                if (is_object($status) && isset($status->value)) {
-                    $status = $status->value;
+                if (is_object($status) && isset($status)) {
+                    $status = $status;
                 }
 
                 $lista[] = [
@@ -503,8 +496,8 @@ class controller
                     "valor_condominio" => $imovelObj->getValorCondominio(),
                     "valor_iptu" => $imovelObj->getIptu(),
                     "valor_aluguel" => $imovelObj->getValorAluguel(),
-                    "categoria" => $imovelObj->getCategoria()->value ?? null,
-                    "status" => $imovelObj->getStatus()->value ?? null,
+                    "categoria" => $imovelObj->getCategoria() ?? null,
+                    "status" => $imovelObj->getStatus() ?? null,
                     "endereco" => $imovelObj->getEndereco() ? [
                         "rua" => $imovelObj->getEndereco()->rua ?? null,
                         "numero" => $imovelObj->getEndereco()->numero ?? null,
@@ -521,13 +514,13 @@ class controller
                     "quant_banheiros" => $imovelObj->getQuantidadeBanheiros(),
                     "quant_varandas" => $imovelObj->getQuantidadeVarandas(),
                     "andar" => $imovelObj->getAndar(),
-                    "estado" => $imovelObj->getEstado()->value ?? null,
+                    "estado" => $imovelObj->getEstado() ?? null,
                     "bloco" => $imovelObj->getBloco(),
                     "ano_construcao" => $imovelObj->getAnoConstrucao(),
                     "area_total" => $imovelObj->getAreaTotal(),
                     "area_privativa" => $imovelObj->getAreaPrivativa(),
-                    "situacao" => $imovelObj->getSituacao()->value ?? null,
-                    "ocupacao" => $imovelObj->getOcupacao()->value ?? null,
+                    "situacao" => $imovelObj->getSituacao() ?? null,
+                    "ocupacao" => $imovelObj->getOcupacao() ?? null,
                     "proprietarios" => $imovelObj->getProprietarios() ? array_map(function ($proprietario) {
                         return [
                             "id" => $proprietario->getId(),
@@ -592,11 +585,11 @@ class controller
             $nomeCondominio = array_key_exists("nome_condominio", $data) ? $data["nome_condominio"] : null;
             $valorVenda = array_key_exists("valor_venda", $data) ? (float)($data["valor_venda"] ?? 0) : null;
             $valorAluguel = array_key_exists("valor_aluguel", $data) ? (float)($data["valor_aluguel"] ?? 0) : null;
-            $quantQuartos = array_key_exists("quant_quartos", $data) ? (int)($data["quant_quartos"] ?? 0) : null;
-            $quantSalas = array_key_exists("quant_salas", $data) ? (int)($data["quant_salas"] ?? 0) : null;
-            $quantVagas = array_key_exists("quant_vagas", $data) ? (int)($data["quant_vagas"] ?? 0) : null;
-            $quantBanheiros = array_key_exists("quant_banheiros", $data) ? (int)($data["quant_banheiros"] ?? 0) : null;
-            $quantVarandas = array_key_exists("quant_varandas", $data) ? (int)($data["quant_varandas"] ?? 0) : null;
+            $quantQuartos = array_key_exists("quantidade_quartos", $data) ? (int)($data["quantidade_quartos"] ?? 0) : null;
+            $quantSalas = array_key_exists("quantidade_salas", $data) ? (int)($data["quantidade_salas"] ?? 0) : null;
+            $quantVagas = array_key_exists("quantidade_vagas", $data) ? (int)($data["quantidade_vagas"] ?? 0) : null;
+            $quantBanheiros = array_key_exists("quantidade_banheiros", $data) ? (int)($data["quantidade_banheiros"] ?? 0) : null;
+            $quantVarandas = array_key_exists("quantidade_varandas", $data) ? (int)($data["quantidade_varandas"] ?? 0) : null;
             $categoria = null;
             if (isset($data["categoria"])) {
                 $valor = ucfirst(strtolower($data["categoria"]));
@@ -608,7 +601,7 @@ class controller
             $valorCondominio = array_key_exists("valor_condominio", $data) ? (float)($data["valor_condominio"] ?? 0) : null;
             $andar = array_key_exists("andar", $data) ? (int)($data["andar"] ?? 0) : null;
             $estado = null;
-            isset($data["estado"]) ? $estado = Estado::tryFrom(ucfirst(strtolower($data["estado"]))) : null;
+            isset($data["estado_imovel"]) ? $estado = Estado::tryFrom(ucfirst(strtolower($data["estado_imovel"]))) : null;
             $bloco = array_key_exists("bloco", $data) ? $data["bloco"] : null;
             $anoConstrucao = array_key_exists("ano_construcao", $data) ? (int)($data["ano_construcao"] ?? 0) : null;
             $areaTotal = array_key_exists("area_total", $data) ? (float)($data["area_total"] ?? 0) : null;
@@ -740,7 +733,7 @@ class controller
                 if ($cadastroAnuncio != False) {
                     $imovelObj->getAnuncio()->setId($cadastroAnuncio);
                 }
-                $imovelObj->setDataCadastro(new DateTime());
+                $imovelObj->setDataCadastro(DateTime::createFromFormat('Y-m-d H:i:s', date('Y-m-d H:i:s')));
                 $cadastrado = Init::getInstance()->getEstoque()->cadastrarImovel($imovelObj);
                 if ($cadastrado == True) {
                     return (["status" => "sucesso", "mensagem" => "imovel cadastrado!\n"]);

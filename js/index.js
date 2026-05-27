@@ -130,11 +130,11 @@ async function carregarAnuncios(dados) {
         html += `
             <div class="anuncio-imovel" onclick="abrirAnuncio(${imovel.id})">
                 <img src="${b64}" />
-                <h2>${imovel.anuncio.titulo}</h2>
-                <p>${imovel.endereco.rua}, ${imovel.endereco.numero}, ${imovel.endereco.bairro}</p>
+                <h2>${imovel.anuncio?.titulo}</h2>
+                <p>${imovel.endereco?.rua}, ${imovel.endereco?.numero}, ${imovel.endereco?.bairro}</p>
                 ${precoVenda.outerHTML}
                 ${precoAluguel.outerHTML}
-                <p class="descricao">${imovel.anuncio.descricao}</p>
+                <p class="descricao">${imovel.anuncio?.descricao}</p>
             </div>
         `;
     }

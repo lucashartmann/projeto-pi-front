@@ -7,6 +7,10 @@ function getCaminhoRelativo(destino) {
             caminho = caminho.replace(caminho.substring(caminho.lastIndexOf("/html/")), "/");
         }
 
+        if (caminho.includes("/index.html")) {
+            caminho = caminho.replace(caminho.substring(caminho.lastIndexOf("/index.html")), "/");
+        }
+
         if (caminho.slice(-2) != "//") {
             caminho += "/";
         }
