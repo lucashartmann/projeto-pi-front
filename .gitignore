@@ -1,2 +1,8 @@
 data/
 ERROS.MD
+/vendor/
+/.phpunit.result.cache
+.vscode/
+*.log
+.env
+/.phpunit.cache

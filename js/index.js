@@ -55,7 +55,7 @@ function bannerImoveis(dados) {
         let div = document.createElement("div");
         div.className = "swiper-slide";
         div.style.backgroundImage = `linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), url(${b64})`
-        div.innerHTML = `<h2 class="sobrepor">${imovel.anuncio.titulo}<br>${precoVenda.outerHTML}${precoAluguel.outerHTML}</h2>`
+        div.innerHTML = `<div class="sobrepor"><h2>${imovel.anuncio.titulo}</h2>${precoVenda.outerHTML}${precoAluguel.outerHTML}</div>`
         var id = imovel.id;
         div.addEventListener("click", () => abrirAnuncio(id));
         fragment.appendChild(div);

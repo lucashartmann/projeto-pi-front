@@ -39,17 +39,18 @@ function alterarSrc(event) {
     a.setAttribute("href", caminho);
 }
 
-function mostrarNavLeft() {
-    try {
-        const nav = document.getElementById("side-nav");
-        if (nav.style.display != "") {
-            nav.style.display = "";
-        } else {
-            nav.style.display = "flex";
-        }
-    } catch {
-        return;
-    }
+function openNav() {
+  document.getElementById("mySidenav").style.width = "250px";
+  document.querySelector("main").style.marginLeft = "250px";
+  document.querySelector("#top-nav").style.marginLeft = "250px";
+//   document.body.style.backgroundColor = "rgba(0,0,0,0.4)";
+}
+
+function closeNav() {
+  document.getElementById("mySidenav").style.width = "0";
+  document.querySelector("main").style.marginLeft = "0";
+  document.querySelector("#top-nav").style.marginLeft = "0";
+    // document.body.style.backgroundColor = "white";
 }
 
 async function listarImoveis() {
@@ -397,11 +398,7 @@ async function setup() {
     if (usuario) carregarTabs(usuario);
     const topNav = document.querySelector("#top-nav .fa-bars");
 
-    topNav.addEventListener("mouseover", mostrarNavLeft);
-    const nav = document.getElementById("side-nav");
-    nav.addEventListener("mouseleave", () => {
-        nav.style.display = "none";
-    });
+    topNav.addEventListener("click", mostrarNavLeft);
 }
 
 

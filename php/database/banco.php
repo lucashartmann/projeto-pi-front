@@ -177,7 +177,7 @@ class Banco extends PDO
             "CREATE TABLE IF NOT EXISTS midia_anuncio (
                 id INTEGER PRIMARY KEY AUTO_INCREMENT,
                 id_anuncio INTEGER NULL,
-                midia LONGBLOB NULL,
+                nome_arquivo VARCHAR(255) NULL,
                 tipo VARCHAR(255) NULL,
                 FOREIGN KEY (id_anuncio) REFERENCES anuncio(id) ON DELETE CASCADE
             )",
@@ -1357,17 +1357,17 @@ class Banco extends PDO
         }
     }
 
-    public function cadastrarAnexo($idAnuncio, $blob, $tipo)
+    public function cadastrarAnexo($idAnuncio, $nome_arquivo, $tipo)
     {
         try {
             $sqlQuery = " 
-                    INSERT INTO midia_anuncio (id_anuncio, midia, tipo) 
-                    VALUES(:id_anuncio, :midia, :tipo)
+                    INSERT INTO midia_anuncio (id_anuncio, nome_arquivo, tipo) 
+                    VALUES(:id_anuncio, :nome_arquivo, :tipo)
                     ";
             $stmt = $this->prepare($sqlQuery);
             $stmt->execute([
                 ':id_anuncio' => $idAnuncio,
-                ':midia' => $blob,
+                ':nome_arquivo' => $nome_arquivo,
                 ':tipo' => $tipo
             ]);
             return True;
