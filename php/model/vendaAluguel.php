@@ -1,16 +1,16 @@
 <?php
 class VendaAluguel
 {
-    public $id;
-    public $cliente;
-    public $captador;
-    public $corretor;
-    public $imovel;
-    public $data;
-    public $comissaoCaptador;
-    public $comissaoCorretor;
-    public $dataCadastro;
-    public $dataModificacao;
+    public int $id;
+    public ?Cliente $cliente;
+    public ?Corretor $captador;
+    public ?Corretor $corretor;
+    public ?Imovel $imovel;
+    public ?DateTime $data;
+    public float $comissaoCaptador;
+    public float $comissaoCorretor;
+    public ?DateTime $dataCadastro;
+    public ?DateTime $dataModificacao;
 
     public function __init__()
     {
@@ -20,13 +20,13 @@ class VendaAluguel
         $this->corretor = NULL;
         $this->imovel = NULL;
         $this->data = NULL;
-        $this->comissaoCaptador = NULL;
-        $this->comissaoCorretor = NULL;
+        $this->comissaoCaptador = 0.0;
+        $this->comissaoCorretor = 0.0;
         $this->dataCadastro = NULL;
         $this->dataModificacao = NULL;
     }
 
-    public function setDataCadastro($data)
+    public function setDataCadastro(?DateTime $data)
     {
         $this->dataCadastro = $data;
     }
@@ -36,7 +36,7 @@ class VendaAluguel
         return $this->dataCadastro;
     }
 
-    public function setDataModificacao($data)
+    public function setDataModificacao(?DateTime $data)
     {
         $this->dataModificacao = $data;
     }
@@ -51,7 +51,7 @@ class VendaAluguel
         return $this->id;
     }
 
-    public function setId($value)
+    public function setId(int $value)
     {
         $this->id = $value;
     }
@@ -60,7 +60,7 @@ class VendaAluguel
     //     return $this->$cpf_cliente;
     // }
 
-    // public function set_cpf_cliente($value){
+    // public function set_cpf_cliente(int $value){
     //     $this->cpf_cliente = $value;
     // }
 
@@ -69,7 +69,7 @@ class VendaAluguel
         return $this->cliente;
     }
 
-    public function setCliente($value)
+    public function setCliente(?Cliente $value)
     {
         $this->cliente = $value;
     }
@@ -78,7 +78,7 @@ class VendaAluguel
     //     return $this->proprietario;
     // }
 
-    // public function set_proprietario($value){
+    // public function set_proprietario(?Proprietario $value){
     //     $this->proprietario = $value;
     // }   
 
@@ -87,7 +87,7 @@ class VendaAluguel
         return $this->captador;
     }
 
-    public function setCaptador($value)
+    public function setCaptador(?Corretor $value)
     {
         $this->captador = $value;
     }
@@ -97,7 +97,7 @@ class VendaAluguel
         return $this->corretor;
     }
 
-    public function setCorretor($value)
+    public function setCorretor(?Corretor $value)
     {
         $this->corretor = $value;
     }
@@ -106,7 +106,7 @@ class VendaAluguel
     //     return $this->$imovel;
     // }
 
-    public function setImovel($value)
+    public function setImovel(?Imovel $value)
     {
         $this->imovel = $value;
     }
@@ -116,7 +116,7 @@ class VendaAluguel
         return $this->data;
     }
 
-    public function setData($value)
+    public function setData(?DateTime $value)
     {
         $this->data = $value;
     }
@@ -126,7 +126,7 @@ class VendaAluguel
         return $this->comissaoCaptador;
     }
 
-    public function setComissaoCaptador($value)
+    public function setComissaoCaptador(float $value)
     {
         $this->comissaoCaptador = $value;
     }
@@ -136,7 +136,7 @@ class VendaAluguel
         return $this->comissaoCorretor;
     }
 
-    public function setComissaoCorretor($value)
+    public function setComissaoCorretor(float $value)
     {
         $this->comissaoCorretor = $value;
     }

@@ -1,12 +1,15 @@
 <?php
 
+require_once __DIR__ . '/imovel.php';
+require_once __DIR__ . '/usuario.php';
+
 class Vistoria
 {
-    private $id;
-    private $vistoriador;
-    private $imovel;
-    private $data;
-    private $relatorio;
+    private int $id;
+    private ?Usuario $vistoriador;
+    private ?Imovel $imovel;
+    private ?DateTime $data;
+    private ?string $relatorio;
 
     public function __construct()
     {
@@ -21,7 +24,7 @@ class Vistoria
         return $this->id;
     }
 
-    public function setId($id)
+    public function setId(int $id)
     {
         $this->id = $id;
     }
@@ -34,7 +37,7 @@ class Vistoria
     }
 
 
-    public function setVistoriador($vistoriador): self
+    public function setVistoriador(?Usuario $vistoriador): self
     {
         $this->vistoriador = $vistoriador;
 
@@ -48,7 +51,7 @@ class Vistoria
     }
 
 
-    public function setImovel($imovel): self
+    public function setImovel(?Imovel $imovel): self
     {
         $this->imovel = $imovel;
 
@@ -62,7 +65,7 @@ class Vistoria
     }
 
 
-    public function setData($data): self
+    public function setData(?DateTime $data): self
     {
         $this->data = $data;
 
@@ -76,7 +79,7 @@ class Vistoria
     }
 
 
-    public function setRelatorio($relatorio): self
+    public function setRelatorio(?string $relatorio): self
     {
         $this->relatorio = $relatorio;
 

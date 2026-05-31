@@ -11,12 +11,13 @@ require_once __DIR__ . '/../model/vendaAluguel.php';
 require_once __DIR__ . '/../model/condominio.php';
 require_once __DIR__ . '/../model/gerente.php';
 require_once __DIR__ . '/../model/usuario.php';
+require_once __DIR__ . '/../model/anexo.php';
 require_once __DIR__ . '/../model/proprietario.php';
 require_once __DIR__ . '/../model/__init__.php';
 require_once __DIR__ . '/../model/validacao.php';
 require_once __DIR__ . '/../model/seguranca.php';
 require_once __DIR__ . '/../utils/caminho_xamp.php';
-
+require_once __DIR__ . '/../utils/imagem.php';
 
 class controller
 {
@@ -105,25 +106,25 @@ class controller
     function atualizarUsuario($dados)
     {
         try {
-            $nome = isset($dados['nome']) ? $dados['nome'] : null;
+            $nome = isset($dados['nome']) ? $dados['nome'] : "";
             // $email = isset($dados['email']) ? $dados['email'] : null;
             // $senha = isset($dados['senha']) ? $dados['senha'] : null;
             $dataNascimento = isset($dados['data_nascimento']) && Validacao::validarDataNascimento($dados['data_nascimento']) ? DateTime::createFromFormat('d/m/Y', $dados['data_nascimento']) : null;
-            $cpfCnpj = isset($dados['cpf_cnpj']) && Validacao::validarCPF($dados['cpf_cnpj']) ? str_replace(['.', '-', ' '], '', $dados['cpf_cnpj']) : null;
-            $rg = isset($dados['rg']) && Validacao::validarRG($dados['rg']) ? $dados['rg'] : null;
-            $telefones = isset($dados['telefones']) && Validacao::validarTelefone($dados['telefones']) ? str_replace(['-', '(', ')'], '', $dados['telefones']) : null;
+            $cpfCnpj = isset($dados['cpf_cnpj']) && Validacao::validarCPF($dados['cpf_cnpj']) ? str_replace(['.', '-', ' '], '', $dados['cpf_cnpj']) : "";
+            $rg = isset($dados['rg']) && Validacao::validarRG($dados['rg']) ? $dados['rg'] : "";
+            $telefones = isset($dados['telefones']) && Validacao::validarTelefone($dados['telefones']) ? str_replace(['-', '(', ')'], '', $dados['telefones']) : [];
             $tipo = isset($dados['tipo']) ? $dados['tipo'] : null;
             $usuario = Null;
-            $creci = isset($dados['creci']) && Validacao::validarCreci($dados['creci']) ? $dados['creci'] : null;
-            $salario = isset($dados['salario']) && Validacao::validarSalario($dados['salario']) ? str_replace(['-', 'R$', ' '], '', $dados['salario']) : null;
-            $id = isset($dados['id']) ? $dados['id'] : null;
-            $rua = isset($dados['rua']) ? $dados['rua'] : null;
-            $numero = isset($dados['numero']) ? $dados['numero'] : null;
-            $bairro = isset($dados['bairro']) ? $dados['bairro'] : null;
-            $cidade = isset($dados['cidade']) ? $dados['cidade'] : null;
-            $uf = isset($dados['uf']) ? $dados['uf'] : null;
-            $cep = isset($dados['cep']) && Validacao::validarCEP($dados['cep']) ? str_replace('-', '', $dados['cep']) : null;
-            $complemento = isset($dados['complemento']) ? $dados['complemento'] : null;
+            $creci = isset($dados['creci']) && Validacao::validarCreci($dados['creci']) ? $dados['creci'] : "";
+            $salario = isset($dados['salario']) && Validacao::validarSalario($dados['salario']) ? str_replace(['-', 'R$', ' '], '', $dados['salario']) : 0.0;
+            $id = isset($dados['id']) ? $dados['id'] : 0;
+            $rua = isset($dados['rua']) ? $dados['rua'] : "";
+            $numero = isset($dados['numero']) ? $dados['numero'] : 0;
+            $bairro = isset($dados['bairro']) ? $dados['bairro'] : "";
+            $cidade = isset($dados['cidade']) ? $dados['cidade'] : "";
+            $uf = isset($dados['uf']) ? $dados['uf'] : "";
+            $cep = isset($dados['cep']) && Validacao::validarCEP($dados['cep']) ? str_replace('-', '', $dados['cep']) : "";
+            $complemento = isset($dados['complemento']) ? $dados['complemento'] : "";
             if (!$id) {
                 return (["status" => "erro", "mensagem" => "ID do usuário não fornecido"]);
             }
@@ -183,8 +184,8 @@ class controller
 
             $nome = isset($data['nome']) ? $data['nome'] : '';
             $email = isset($data['email']) && Validacao::validarEmail($data['email']) ? $data['email'] : '';
-            $senha = isset($data['senha']) && Validacao::validarSenha($data['senha']) ? $data['senha'] : null;
-            $cpf = isset($data['cpf_cnpj']) && Validacao::validarCPF($data['cpf_cnpj']) ? str_replace(['.', '-', ' '], '', $data['cpf_cnpj']) : null;
+            $senha = isset($data['senha']) && Validacao::validarSenha($data['senha']) ? $data['senha'] : "";
+            $cpf = isset($data['cpf_cnpj']) && Validacao::validarCPF($data['cpf_cnpj']) ? str_replace(['.', '-', ' '], '', $data['cpf_cnpj']) : "";
             $dataNascimento = isset($data['data_nascimento']) && Validacao::validarDataNascimento($data['data_nascimento']) ? DateTime::createFromFormat('d/m/Y', $data['data_nascimento']) : null;
 
             $usuario = new Cliente($email, $senha, $email, $nome, $cpf);
@@ -299,7 +300,7 @@ class controller
                 return (["status" => "sucesso", "usuario" => [
                     "id" => $consulta->getId(),
                     "nome" => $consulta->getNome(),
-                    "tipo" => $consulta->getTipo(),
+                    "tipo" => $consulta->getTipo() ? $consulta->getTipo()->value : null,
                 ]]);
             } else {
                 return (["status" => "erro", "mensagem" => "Usuário ou senha incorretos"]);
@@ -368,8 +369,8 @@ class controller
                     $anuncioObj = $imovel->getAnuncio();
                     $imagens = [];
                     if ($anuncioObj->getImagens()) {
-                        foreach ($anuncioObj->getImagens() as $idImagem) {
-                            $imagens[] = CaminhoXampp::getBaseUrl() . "imagem.php?id=" . $idImagem;
+                        foreach ($anuncioObj->getImagens() as $imagem) {
+                            $imagens[] = CaminhoXampp::getBaseUrl() . $imagem->getCaminho();
                         }
                     }
                     $anuncio = [
@@ -429,8 +430,9 @@ class controller
                     $anuncioObj = $imovel->getAnuncio();
                     $imagens = [];
                     if ($anuncioObj->getImagens()) {
-                        foreach ($anuncioObj->getImagens() as $idImagem) {
-                            $imagens[] = CaminhoXampp::getBaseUrl() . "imagem.php?id=" . $idImagem;
+                        error_log(serialize($anuncioObj->getImagens()));
+                        foreach ($anuncioObj->getImagens() as $imagem) {
+                            $imagens[] =  rtrim(dirname($_SERVER['SCRIPT_NAME'], 3), '/') . "/assets/" .  $imagem->getCaminho();
                         }
                     }
                     $anuncio = [
@@ -443,7 +445,7 @@ class controller
 
                 $categoria = $imovel->getCategoria();
                 $status = $imovel->getStatus();
-               
+
                 $lista[] = [
                     "id" => $imovel->getId(),
                     "valor_venda" => $imovel->getValorVenda(),
@@ -475,8 +477,8 @@ class controller
                     $anuncioObj = $imovelObj->getAnuncio();
                     $imagens = [];
                     if ($anuncioObj->getImagens()) {
-                        foreach ($anuncioObj->getImagens() as $idImagem) {
-                            $imagens[] = CaminhoXampp::getBaseUrl() . "imagem.php?id=" . $idImagem;
+                        foreach ($anuncioObj->getImagens() as $imagem) {
+                            $imagens[] =  CaminhoXampp::getBaseUrl() . "assets/" . $imagem->getCaminho();
                         }
                     }
                     $anuncio = [
@@ -542,10 +544,8 @@ class controller
                 ];
 
                 return ($resposta);
-                return;
             } else {
                 return (["status" => "erro", "mensagem" => "Imovel nao encontrado"]);
-                return;
             }
         } catch (Exception $e) {
             return (["status" => "erro", "mensagem" => "Erro ao obter imóvel: " . $e->getMessage()]);
@@ -553,7 +553,7 @@ class controller
     }
 
 
-    function apagarImovel($id)
+    function apagarImovel(int $id)
     {
         try {
             $imovel = Init::getInstance()->getImovelPorId($id);
@@ -577,15 +577,15 @@ class controller
     {
         try {
 
-            $id =  array_key_exists("ref", $data) ? $data["ref"] : null;
-            $nomeCondominio = array_key_exists("nome_condominio", $data) ? $data["nome_condominio"] : null;
-            $valorVenda = array_key_exists("valor_venda", $data) ? (float)(str_replace(['-', 'R$', ' '], '', $data["valor_venda"]) ?? 0) : null;
-            $valorAluguel = array_key_exists("valor_aluguel", $data) ? (float)(str_replace(['-', 'R$', ' '], '', $data["valor_aluguel"]) ?? 0) : null;
-            $quantQuartos = array_key_exists("quantidade_quartos", $data) ? (int)($data["quantidade_quartos"] ?? 0) : null;
-            $quantSalas = array_key_exists("quantidade_salas", $data) ? (int)($data["quantidade_salas"] ?? 0) : null;
-            $quantVagas = array_key_exists("quantidade_vagas", $data) ? (int)($data["quantidade_vagas"] ?? 0) : null;
-            $quantBanheiros = array_key_exists("quantidade_banheiros", $data) ? (int)($data["quantidade_banheiros"] ?? 0) : null;
-            $quantVarandas = array_key_exists("quantidade_varandas", $data) ? (int)($data["quantidade_varandas"] ?? 0) : null;
+            $id =  array_key_exists("ref", $data) ? $data["ref"] : 0;
+            $nomeCondominio = array_key_exists("nome_condominio", $data) ? $data["nome_condominio"] : "";
+            $valorVenda = array_key_exists("valor_venda", $data) ? (float)(str_replace(['-', 'R$', ' '], '', $data["valor_venda"]) ?? 0) : 0.0;
+            $valorAluguel = array_key_exists("valor_aluguel", $data) ? (float)(str_replace(['-', 'R$', ' '], '', $data["valor_aluguel"]) ?? 0) : 0.0;
+            $quantQuartos = array_key_exists("quantidade_quartos", $data) ? (int)($data["quantidade_quartos"] ?? 0) : 0;
+            $quantSalas = array_key_exists("quantidade_salas", $data) ? (int)($data["quantidade_salas"] ?? 0) : 0;
+            $quantVagas = array_key_exists("quantidade_vagas", $data) ? (int)($data["quantidade_vagas"] ?? 0) : 0;
+            $quantBanheiros = array_key_exists("quantidade_banheiros", $data) ? (int)($data["quantidade_banheiros"] ?? 0) : 0;
+            $quantVarandas = array_key_exists("quantidade_varandas", $data) ? (int)($data["quantidade_varandas"] ?? 0) : 0;
             $categoria = null;
             if (isset($data["categoria"])) {
                 $valor = ucfirst(strtolower($data["categoria"]));
@@ -593,15 +593,15 @@ class controller
             }
             $status = null;
             isset($data["status"]) ? $status = Status::tryFrom(ucfirst(strtolower($data["status"]))) : null;
-            $iptu = array_key_exists("iptu", $data) ? (float)(str_replace(['-', 'R$', ' '], '', $data["iptu"]) ?? 0) : null;
-            $valorCondominio = array_key_exists("valor_condominio", $data) ? (float)(str_replace(['-', 'R$', ' '], '', $data["valor_condominio"]) ?? 0) : null;
-            $andar = array_key_exists("andar", $data) ? (int)($data["andar"] ?? 0) : null;
+            $iptu = array_key_exists("iptu", $data) ? (float)(str_replace(['-', 'R$', ' '], '', $data["iptu"]) ?? 0) : 0.0;
+            $valorCondominio = array_key_exists("valor_condominio", $data) ? (float)(str_replace(['-', 'R$', ' '], '', $data["valor_condominio"]) ?? 0) : 0.0;
+            $andar = array_key_exists("andar", $data) ? (int)($data["andar"] ?? 0) : 0;
             $estado = null;
             isset($data["estado_imovel"]) ? $estado = Estado::tryFrom(ucfirst(strtolower($data["estado_imovel"]))) : null;
-            $bloco = array_key_exists("bloco", $data) ? $data["bloco"] : null;
-            $anoConstrucao = array_key_exists("ano_construcao", $data) ? (int)($data["ano_construcao"] ?? 0) : null;
-            $areaTotal = array_key_exists("area_total", $data) ? (float)(str_replace(['-', 'm2', ' '], '', $data["area_total"]) ?? 0) : null;
-            $areaPrivativa = array_key_exists("area_privativa", $data) ? (float)(str_replace(['-', 'm2', ' '], '', $data["area_privativa"]) ?? 0) : null;
+            $bloco = array_key_exists("bloco", $data) ? $data["bloco"] : "";
+            $anoConstrucao = array_key_exists("ano_construcao", $data) ? (int)($data["ano_construcao"] ?? 0) : 0;
+            $areaTotal = array_key_exists("area_total", $data) ? (float)(str_replace(['-', 'm2', ' '], '', $data["area_total"]) ?? 0) : 0.0;
+            $areaPrivativa = array_key_exists("area_privativa", $data) ? (float)(str_replace(['-', 'm2', ' '], '', $data["area_privativa"]) ?? 0) : 0.0;
             $situacao = null;
             isset($data["situacao"]) ? $situacao = Situacao::tryFrom(ucfirst(strtolower($data["situacao"]))) : null;
             $ocupacao = null;
@@ -609,22 +609,23 @@ class controller
             # proprietarios = data["proprietarios"]
             # corretor = data["corretor"]
             # captador = data["captador"]
-            $cep = array_key_exists("cep", $data) ? (int)($data["cep"] ?? null) : null;
+            $cep = array_key_exists("cep", $data) ? $data["cep"] : "";
+            $imagens = ($data["imagens"] ?? []);
             if ($cep) {
                 $cep = str_replace("-", "", $cep);
             }
-            $rua = array_key_exists("rua", $data) ? $data["rua"] : null;
-            $bairro = array_key_exists("bairro", $data) ? $data["bairro"] : null;
-            $cidade = array_key_exists("cidade", $data) ? $data["cidade"] : null;
-            $titulo = array_key_exists("titulo", $data) ? $data["titulo"] : null;
-            $descricao = array_key_exists("descricao", $data) ? $data["descricao"] : null;
-            $complemento = array_key_exists("complemento", $data) ? $data["complemento"] : null;
-            $uf = array_key_exists("uf", $data) ? $data["uf"] : null;
+            $rua = array_key_exists("rua", $data) ? $data["rua"] : "";
+            $bairro = array_key_exists("bairro", $data) ? $data["bairro"] : "";
+            $cidade = array_key_exists("cidade", $data) ? $data["cidade"] : "";
+            $titulo = array_key_exists("titulo", $data) ? $data["titulo"] : "";
+            $descricao = array_key_exists("descricao", $data) ? $data["descricao"] : "";
+            $complemento = array_key_exists("complemento", $data) ? $data["complemento"] : "";
+            $uf = array_key_exists("uf", $data) ? $data["uf"] : "";
             $numero = array_key_exists("numero", $data) ? (int)($data["numero"] ?? null) : null;
             $anuncioObj = new Anuncio();
             $anuncioObj->setTitulo($titulo);
             $anuncioObj->setDescricao($descricao);
-            $enderecoObj = new Endereco($rua, $bairro, $cep, $cidade, $estado);
+            $enderecoObj = new Endereco($rua, $bairro, $cep, $cidade, $uf);
             $enderecoObj->setNumero($numero);
             $enderecoObj->setComplemento($complemento);
             $enderecoObj->setUf($uf);
@@ -632,22 +633,28 @@ class controller
                 $nomeCondominio,
                 $enderecoObj
             );
-            # imagens = anuncio->get("imagens", [])
-            # imagensBytes = []
-            # for imagem in imagens =>
-            #     try =>
-            #         imagemBytes = base64->b64decode(imagem)
-            #         imagensBytes->append(imagemBytes)
-            #     catch (base64->binascii->Error, ValueError) =>
-            #         continue
-            # anuncioObj->setImagens(imagensBytes)
-            # condominio = data->get("condominio")
-            # filtros = data->get("filtros", [])
+            //  filtros = data->get("filtros", [])
 
             $imovelObj = NULL;
             if ($id) {
                 $imovelObj = Init::getInstance()->getImovelPorId($id);
                 $imovelObj->setDataModificacao(DateTime::createFromFormat('Y-m-d H:i:s', date('Y-m-d H:i:s')));
+                // $imagensObjetos = [];
+                // for ($i = 0; $i < count($imagens); $i++) {
+                //     $imagem = $imagens[$i];
+                //     try {
+                //         $imagemBytes = base64_decode($imagem);
+                //         $caminho = salvarImagem($imagemBytes, $id);
+                //         if ($caminho != null) {
+                //             continue;
+                //         }
+                //         $imagemObj = new Anexo($caminho, TipoAnexo::IMAGEM);
+                //         $imagensObjetos[] = $imagemObj;
+                //     } catch (Exception $e) {
+                //         continue;
+                //     }
+                // }
+                // $anuncioObj->setImagens($imagensObjetos);
             } else {
                 $imovelObj = new Imovel($enderecoObj, $status, $categoria);
             }
@@ -729,6 +736,7 @@ class controller
                 if ($cadastroAnuncio != False) {
                     $imovelObj->getAnuncio()->setId($cadastroAnuncio);
                 }
+
                 $imovelObj->setDataCadastro(DateTime::createFromFormat('Y-m-d H:i:s', date('Y-m-d H:i:s')));
                 $cadastrado = Init::getInstance()->getEstoque()->cadastrarImovel($imovelObj);
                 if ($cadastrado == True) {
@@ -743,7 +751,7 @@ class controller
     }
 
 
-    public function salvarLogin($username, $senha, $email)
+    public function salvarLogin(string $username, string $senha, string $email)
     {
         $umUsuario = new Cliente(
             $nome = "",

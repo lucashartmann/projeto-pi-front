@@ -1,5 +1,10 @@
 <?php
 
+require_once __DIR__ . '/corretor.php';
+require_once __DIR__ . '/cliente.php';
+require_once __DIR__ . '/imovel.php';
+
+
 enum StatusAtendimento: string
 {
     case EM_ANDAMENTO = 'Em Andamento';
@@ -9,22 +14,22 @@ enum StatusAtendimento: string
 
 class Atendimento
 {
-    public $id;
-    public $corretor;
-    public $cliente;
-    public $imovel;
-    public $status;
+    public int $id;
+    public ?Usuario $corretor;
+    public ?Usuario $cliente;
+    public ?Imovel $imovel;
+    public ?StatusAtendimento $status;
 
     public function __construct()
     {
-        $this->id = NULL;
+        $this->id = 0;
         $this->corretor = NULL;
         $this->cliente = NULL;
         $this->imovel = NULL;
         $this->status = NULL;
     }
 
-    public function setId($id)
+    public function setId(int $id)
     {
         $this->id = $id;
     }
@@ -39,7 +44,7 @@ class Atendimento
         return $this->corretor;
     }
 
-    public function setCorretor($value)
+    public function setCorretor(?Usuario $value)
     {
         $this->corretor = $value;
     }
@@ -49,7 +54,7 @@ class Atendimento
         return $this->cliente;
     }
 
-    public function setCliente($value)
+    public function setCliente(?Usuario $value)
     {
         $this->cliente = $value;
     }
@@ -59,7 +64,7 @@ class Atendimento
         return $this->imovel;
     }
 
-    public function setImovel($value)
+    public function setImovel(?Imovel $value)
     {
         $this->imovel = $value;
     }
@@ -69,7 +74,7 @@ class Atendimento
         return $this->status;
     }
 
-    public function setStatus($value)
+    public function setStatus(?StatusAtendimento $value)
     {
         $this->status = $value;
     }

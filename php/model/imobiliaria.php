@@ -6,17 +6,17 @@ require_once __DIR__ . '/../database/banco.php';
 
 class Imobiliaria
 {
-    public $nome;
-    public $cnpj;
-    public $bancoDados;
-    public $estoque;
-    public $quantidadeFuncionarios;
-    public $quantidadeClientes;
-    public $quantidadeFornecedores;
-    public $faturamento;
+    public string $nome;
+    public string $cnpj;
+    public ?Banco $bancoDados;
+    public ?Estoque $estoque;
+    public int $quantidadeFuncionarios;
+    public int $quantidadeClientes;
+    public int $quantidadeFornecedores;
+    public float $faturamento;
 
 
-    public function __construct($nome, $cnpj)
+    public function __construct(string $nome, string $cnpj)
     {
         $this->bancoDados = Banco::getInstance();
         $this->nome = $nome;
@@ -33,7 +33,7 @@ class Imobiliaria
         return $this->nome;
     }
 
-    public function setNome($value)
+    public function setNome(string $value)
     {
         $this->nome = $value;
     }
@@ -43,7 +43,7 @@ class Imobiliaria
         return $this->cnpj;
     }
 
-    public function setCnpj($value)
+    public function setCnpj(string $value)
     {
         $this->cnpj = $value;
     }
@@ -53,17 +53,17 @@ class Imobiliaria
         return $this->estoque;
     }
 
-    public function setEstoque($value)
+    public function setEstoque(?Estoque $value)
     {
         $this->estoque = $value;
     }
 
-    public function atualizar($campo_desejado, $valor, $tabela)
+    public function atualizar(string $campo_desejado, $valor, string $tabela)
     {
         return $this->bancoDados->atualizar($campo_desejado, $valor, $tabela);
     }
 
-    public function verificarUsuario($username, $senha)
+    public function verificarUsuario(string $username, string $senha)
     {
         return $this->bancoDados->verificarUsuario(
             $username,
@@ -71,17 +71,17 @@ class Imobiliaria
         );
     }
 
-    public function getUsuarioPorId($id)
+    public function getUsuarioPorId(int $id)
     {
         return $this->bancoDados->getUsuarioPorId($id);
     }
 
-    public function cadastrarEndereco($endereco)
+    public function cadastrarEndereco(Endereco $endereco)
     {
         return $this->bancoDados->cadastrarEndereco($endereco);
     }
 
-    public function cadastrarAtendimento($atendimento)
+    public function cadastrarAtendimento(Atendimento $atendimento)
     {
         return $this->bancoDados->cadastrarAtendimento($atendimento);
     }
@@ -91,12 +91,12 @@ class Imobiliaria
         return $this->bancoDados->getListaAtendimentos();
     }
 
-    public function cadastrarUsuario($usuario)
+    public function cadastrarUsuario(Usuario $usuario)
     {
         return $this->bancoDados->cadastrarUsuario($usuario);
     }
 
-    public function cadastrarProprietario($proprietario)
+    public function cadastrarProprietario(Proprietario $proprietario)
     {
         return $this->bancoDados->cadastrarProprietario($proprietario);
     }
@@ -106,12 +106,12 @@ class Imobiliaria
         return $this->bancoDados->getListaUsuarios();
     }
 
-    public function getUsuarioPorCpfCnpj($cpf)
+    public function getUsuarioPorCpfCnpj(string $cpf)
     {
         return $this->bancoDados->getUsuarioPorCpfCnpj($cpf);
     }
 
-    public function getProprietarioPorCpfCnpj($cpf)
+    public function getProprietarioPorCpfCnpj(string $cpf)
     {
         return $this->bancoDados->getProprietarioPorCpfCnpj($cpf);
     }
@@ -121,22 +121,22 @@ class Imobiliaria
         return $this->bancoDados->getListaClientes();
     }
 
-    public function cadastrarListaFiltros($lista_filtros, $tabela)
+    public function cadastrarListaFiltros(array $lista_filtros, string $tabela)
     {
         return $this->bancoDados->cadastrarListaFiltros($lista_filtros, $tabela);
     }
 
-    public function verificarEndereco($endereco)
+    public function verificarEndereco(Endereco $endereco)
     {
         return $this->bancoDados->verificarEndereco($endereco);
     }
 
-    public function getCondominioPorIdEndereco($id)
+    public function getCondominioPorIdEndereco(int $id)
     {
         return $this->bancoDados->getCondominioPorIdEndereco($id);
     }
 
-    public function cadastrarCondominio($condominio)
+    public function cadastrarCondominio(Condominio $condominio)
     {
         return $this->bancoDados->cadastrarCondominio($condominio);
     }
@@ -161,65 +161,70 @@ class Imobiliaria
         return $this->bancoDados->getListaFiltrosCondominio();
     }
 
-    public function atualizarAnuncio($anuncio)
+    public function atualizarAnuncio(Anuncio $anuncio)
     {
         return $this->bancoDados->atualizarAnuncio($anuncio);
     }
 
-    public function atualizarCondominio($condominio)
+    public function atualizarCondominio(Condominio $condominio)
     {
         return $this->bancoDados->atualizarCondominio($condominio);
     }
 
-    public function atualizarUsuario($usuario)
+    public function atualizarUsuario(Usuario $usuario)
     {
         return $this->bancoDados->atualizarUsuario($usuario);
     }
 
-    public function atualizarProprietario($proprietario)
+    public function atualizarProprietario(Proprietario $proprietario)
     {
         return $this->bancoDados->atualizarProprietario($proprietario);
     }
 
-    public function remover($campo_desejado, $valor, $tabela)
+    public function remover(string $campo_desejado, $valor, string $tabela)
     {
         return $this->bancoDados->remover($campo_desejado, $valor, $tabela);
     }
 
-    public function getImoveisPorProprietario($cpf)
+    public function getImoveisPorProprietario(string $cpf)
     {
         return $this->bancoDados->getImoveisPorProprietario($cpf);
     }
 
-    public function getImovelPorId($id_imovel)
+    public function getImovelPorId(int $id_imovel)
     {
         return $this->bancoDados->getImovelPorId($id_imovel);
     }
 
-    public function getAnuncioPorId($id_anuncio)
+    public function getAnuncioPorId(int $id_anuncio)
     {
         return $this->bancoDados->getAnuncioPorId($id_anuncio);
     }
 
-    public function cadastrarVisita($visita)
+    public function cadastrarVisita(Visita $visita)
     {
         return $this->bancoDados->cadastrarVisita($visita);
     }
 
-    public function getListaVisitasPorCorretor($corretor)
+    public function getListaVisitasPorCorretor(string $corretor)
     {
         return $this->bancoDados->getListaVisitasPorCorretor($corretor);
     }
 
 
     public function
-    getListaVistoriasPorVistoriador($vistoriador)
+    getListaVistoriasPorVistoriador(string $vistoriador)
     {
         return $this->bancoDados->getListaVistoriasPorVistoriador($vistoriador);
     }
 
-    public function cadastrarVistoria($vistoria)
+    public function cadastrarVistoria(Vistoria $vistoria)
     {
         return $this->bancoDados->cadastrarVistoria($vistoria);
+    }
+
+    public function cadastrarAnexo(Anexo $anexo)
+    {
+        return $this->bancoDados->cadastrarAnexo($anexo);
     }
 }

@@ -1,16 +1,16 @@
 <?php
 
 require_once __DIR__ . '/usuario.php';
-
+require_once __DIR__ . '/endereco.php';
 
 class Cliente extends Usuario
 {
-    public $tipoImoveisDesejado;
-    public $quantQuartosDesejado;
-    public $quantBanheirosDesejado;
-    public $enderecoDesejado;
+    public array $tipoImoveisDesejado;
+    public int $quantQuartosDesejado;
+    public int $quantBanheirosDesejado;
+    public ?Endereco $enderecoDesejado;
 
-    public function __construct($username, $senha, $email, $nome, $cpfCnpj)
+    public function __construct(string $username, string $senha, string $email, string $nome, string $cpfCnpj)
     {
         parent::__construct($username, $senha, $email, $nome, $cpfCnpj, Tipo::CLIENTE);
         $this->tipoImoveisDesejado = [];
@@ -19,20 +19,20 @@ class Cliente extends Usuario
         $this->enderecoDesejado = NULL;
     }
 
-    public function setTiposImoveisDesejados($tipoImoveis)
+    public function setTiposImoveisDesejados(array $tipoImoveis)
     {
         $this->tipoImoveisDesejado = $tipoImoveis;
     }
 
-    public function setQuantQuartosDesejado($quantQuartosDesejado)
+    public function setQuantQuartosDesejado(int $quantQuartosDesejado)
     {
         $this->quantQuartosDesejado = $quantQuartosDesejado;
     }
-    public function setQuantBanheirosDesejado($quantBanheirosDesejado)
+    public function setQuantBanheirosDesejado(int $quantBanheirosDesejado)
     {
         $this->quantBanheirosDesejado = $quantBanheirosDesejado;
     }
-    public function setEnderecoDesejado($endereco)
+    public function setEnderecoDesejado(?Endereco $endereco)
     {
         $this->enderecoDesejado = $endereco;
     }

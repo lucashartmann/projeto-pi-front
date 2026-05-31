@@ -5,9 +5,9 @@ require_once __DIR__ . '/usuario.php';
 
 class Gerente extends Usuario
 {
-    public $salario;
+    public float $salario;
 
-    public function __construct($username, $senha, $email, $nome, $cpfCnpj)
+    public function __construct(string $username, string $senha, string $email, string $nome, string $cpfCnpj)
     {
         parent::__construct($username, $senha, $email, $nome, $cpfCnpj, Tipo::GERENTE);
         $this->salario = 0.0;
@@ -18,7 +18,7 @@ class Gerente extends Usuario
         return $this->salario;
     }
 
-    public function setSalario($value)
+    public function setSalario(float $value)
     {
         $this->salario = $value;
     }

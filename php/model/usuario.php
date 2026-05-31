@@ -15,29 +15,29 @@ enum Tipo: string
 
 class Usuario
 {
-    public $id;
-    public $username;
-    public $senha;
-    public $email;
-    public $nome;
-    public $cpfCnpj;
-    public $rg;
-    public $telefones;
-    public $endereco;
-    public $dataNascimento;
-    public $tipo;
-    public $dataCadastro;
-    public $dataModificacao;
+    public int $id;
+    public string $username;
+    public string $senha;
+    public string $email;
+    public string $nome;
+    public string $cpfCnpj;
+    public string $rg;
+    public array $telefones;
+    public ?Endereco $endereco;
+    public ?DateTime $dataNascimento;
+    public ?Tipo $tipo;
+    public ?DateTime $dataCadastro;
+    public ?DateTime $dataModificacao;
 
-    public function __construct($username, $senha, $email, $nome, $cpfCnpj, $tipo)
+    public function __construct(string $username, string $senha, string $email, string $nome, string $cpfCnpj, ?Tipo $tipo)
     {
-        $this->id = NULL;
+        $this->id = 0;
         $this->username = $username;
         $this->senha = $senha;
         $this->email = $email;
         $this->nome = $nome;
         $this->cpfCnpj = $cpfCnpj;
-        $this->rg = NULL;
+        $this->rg = "";
         $this->telefones = [];
         $this->endereco = NULL;
         $this->dataNascimento = NULL;
@@ -46,7 +46,7 @@ class Usuario
         $this->dataModificacao = NULL;
     }
 
-    public function setDataCadastro($data)
+    public function setDataCadastro(?DateTime $data)
     {
         $this->dataCadastro = $data;
     }
@@ -56,7 +56,7 @@ class Usuario
         return $this->dataCadastro;
     }
 
-    public function setDataModificacao($data)
+    public function setDataModificacao(?DateTime $data)
     {
         $this->dataModificacao = $data;
     }
@@ -71,7 +71,7 @@ class Usuario
         return $this->id;
     }
 
-    public function setId($value)
+    public function setId(int $value)
     {
         $this->id = $value;
     }
@@ -81,7 +81,7 @@ class Usuario
         return $this->username;
     }
 
-    public function setUsername($value)
+    public function setUsername(string $value)
     {
         $this->username = $value;
     }
@@ -90,7 +90,7 @@ class Usuario
     {
         return $this->senha;
     }
-    public function setSenha($value)
+    public function setSenha(string $value)
     {
         $this->senha = $value;
     }
@@ -98,7 +98,7 @@ class Usuario
     {
         return $this->email;
     }
-    public function setEmail($value)
+    public function setEmail(string $value)
     {
         $this->email = $value;
     }
@@ -108,7 +108,7 @@ class Usuario
         return $this->nome;
     }
 
-    public function setNome($value)
+    public function setNome(string $value)
     {
         $this->nome = $value;
     }
@@ -118,7 +118,7 @@ class Usuario
         return $this->cpfCnpj;
     }
 
-    public function setCpfCnpj($value)
+    public function setCpfCnpj(string $value)
     {
         $this->cpfCnpj = $value;
     }
@@ -128,7 +128,7 @@ class Usuario
         return $this->rg;
     }
 
-    public function setRg($value)
+    public function setRg(string $value)
     {
         $this->rg = $value;
     }
@@ -138,7 +138,7 @@ class Usuario
         return $this->telefones;
     }
 
-    public function setTelefones($value)
+    public function setTelefones(array $value)
     {
         $this->telefones = $value;
     }
@@ -148,7 +148,7 @@ class Usuario
         return $this->endereco;
     }
 
-    public function setEndereco($value)
+    public function setEndereco(?Endereco $value)
     {
         $this->endereco = $value;
     }
@@ -158,7 +158,7 @@ class Usuario
         return $this->dataNascimento;
     }
 
-    public function setDataNascimento($value)
+    public function setDataNascimento(?DateTime $value)
     {
         $this->dataNascimento = $value;
     }
@@ -168,7 +168,7 @@ class Usuario
         return $this->tipo;
     }
 
-    public function setTipo($value)
+    public function setTipo(?Tipo $value)
     {
         $this->tipo = $value;
     }

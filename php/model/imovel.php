@@ -2,6 +2,10 @@
 
 
 require_once __DIR__ . '/endereco.php';
+require_once __DIR__ . '/corretor.php';
+require_once __DIR__ . '/captador.php';
+require_once __DIR__ . '/anuncio.php';
+require_once __DIR__ . '/condominio.php';
 
 $bairros = [
     "Aberta dos Morros",
@@ -140,40 +144,40 @@ enum Status: string
 
 class Imovel
 {
-    public $id;
-    public $valorVenda;
-    public $valorAluguel;
-    public $quantQuartos;
-    public $quantSalas;
-    public $quantVagas;
-    public $quantBanheiros;
-    public $quantVarandas;
-    public $categoria;
-    public $endereco;
-    public $status;
-    public $iptu;
-    public $valorCondominio;
-    public $andar;
-    public $estado;
-    public $bloco;
-    public $anoConstrucao;
-    public $areaTotal;
-    public $areaPrivativa;
-    public $situacao;
-    public $ocupacao;
-    public $proprietarios;
-    public $corretor;
-    public $captador;
-    public $dataCadastro;
-    public $dataModificacao;
-    public $anuncio;
-    public $condominio;
-    public $filtros;
-    public $complemento;
+    public int $id;
+    public float $valorVenda;
+    public float $valorAluguel;
+    public int $quantQuartos;
+    public int $quantSalas;
+    public int $quantVagas;
+    public int $quantBanheiros;
+    public int $quantVarandas;
+    public ?Categoria $categoria;
+    public ?Endereco $endereco;
+    public ?Status $status;
+    public float $iptu;
+    public float $valorCondominio;
+    public int $andar;
+    public ?Estado $estado;
+    public string $bloco;
+    public int $anoConstrucao;
+    public float $areaTotal;
+    public float $areaPrivativa;
+    public ?Situacao $situacao;
+    public ?Ocupacao $ocupacao;
+    public array $proprietarios;
+    public ?Corretor $corretor;
+    public ?Captador $captador;
+    public ?DateTime $dataCadastro;
+    public ?DateTime $dataModificacao;
+    public ?Anuncio $anuncio;
+    public ?Condominio $condominio;
+    public array $filtros;
+    public string $complemento;
 
-    public function __construct($endereco, $status, $categoria)
+    public function __construct(Endereco $endereco, Status $status, Categoria $categoria)
     {
-        $this->id = NULL;
+        $this->id = 0;
         $this->valorVenda = 0;
         $this->valorAluguel = 0;
         $this->quantQuartos = 0;
@@ -188,8 +192,8 @@ class Imovel
         $this->valorCondominio = 0;
         $this->andar = 0;
         $this->estado = NULL;
-        $this->bloco = NULL;
-        $this->anoConstrucao = NULL;
+        $this->bloco = 0;
+        $this->anoConstrucao = 0;
         $this->areaTotal = 0;
         $this->areaPrivativa = 0;
         $this->situacao = NULL;
@@ -202,7 +206,7 @@ class Imovel
         $this->anuncio = NULL;
         $this->condominio = NULL;
         $this->filtros = [];
-        $this->complemento = NULL;
+        $this->complemento = "";
     }
 
     public function getComplemento()
@@ -210,12 +214,12 @@ class Imovel
         return $this->complemento;
     }
 
-    public function setComplemento($complemento)
+    public function setComplemento(string $complemento)
     {
         $this->complemento = $complemento;
     }
 
-    public function setFiltros($filtros)
+    public function setFiltros(array $filtros)
     {
         $this->filtros = $filtros;
     }
@@ -230,12 +234,12 @@ class Imovel
         return $this->condominio;
     }
 
-    public function setCondominio($nome)
+    public function setCondominio(?Condominio $nome)
     {
         $this->condominio = $nome;
     }
 
-    public function setDataCadastro($data)
+    public function setDataCadastro(?DateTime $data)
     {
         $this->dataCadastro = $data;
     }
@@ -245,7 +249,7 @@ class Imovel
         return $this->dataCadastro;
     }
 
-    public function setDataModificacao($data)
+    public function setDataModificacao(?DateTime $data)
     {
         $this->dataModificacao = $data;
     }
@@ -265,7 +269,7 @@ class Imovel
         return $this->id;
     }
 
-    public function setId($value)
+    public function setId(int $value)
     {
         $this->id = $value;
     }
@@ -275,7 +279,7 @@ class Imovel
         return $this->valorVenda;
     }
 
-    public function setValorVenda($value)
+    public function setValorVenda(float $value)
     {
         $this->valorVenda = $value;
     }
@@ -285,7 +289,7 @@ class Imovel
         return $this->valorAluguel;
     }
 
-    public function setValorAluguel($value)
+    public function setValorAluguel(float $value)
     {
         $this->valorAluguel = $value;
     }
@@ -295,7 +299,7 @@ class Imovel
         return $this->quantQuartos;
     }
 
-    public function setQuantQuartos($value)
+    public function setQuantQuartos(int $value)
     {
         $this->quantQuartos = $value;
     }
@@ -305,7 +309,7 @@ class Imovel
         return $this->quantSalas;
     }
 
-    public function setQuantSalas($value)
+    public function setQuantSalas(int $value)
     {
         $this->quantSalas = $value;
     }
@@ -315,7 +319,7 @@ class Imovel
         return $this->quantVagas;
     }
 
-    public function setQuantVagas($value)
+    public function setQuantVagas(int $value)
     {
         $this->quantVagas = $value;
     }
@@ -325,7 +329,7 @@ class Imovel
         return $this->quantBanheiros;
     }
 
-    public function setQuantBanheiros($value)
+    public function setQuantBanheiros(int $value)
     {
         $this->quantBanheiros = $value;
     }
@@ -335,7 +339,7 @@ class Imovel
         return $this->quantVarandas;
     }
 
-    public function setQuantVarandas($value)
+    public function setQuantVarandas(int $value)
     {
         $this->quantVarandas = $value;
     }
@@ -345,7 +349,7 @@ class Imovel
         return $this->categoria;
     }
 
-    public function setCategoria($value)
+    public function setCategoria(?Categoria $value)
     {
         $this->categoria = $value;
     }
@@ -355,7 +359,7 @@ class Imovel
         return $this->endereco;
     }
 
-    public function setEndereco($value)
+    public function setEndereco(?Endereco $value)
     {
         $this->endereco = $value;
     }
@@ -365,7 +369,7 @@ class Imovel
         return $this->status;
     }
 
-    public function setStatus($value)
+    public function setStatus(?Status $value)
     {
         $this->status = $value;
     }
@@ -375,7 +379,7 @@ class Imovel
         return $this->iptu;
     }
 
-    public function setIptu($value)
+    public function setIptu(float $value)
     {
         $this->iptu = $value;
     }
@@ -385,7 +389,7 @@ class Imovel
         return $this->valorCondominio;
     }
 
-    public function setValorCondominio($value)
+    public function setValorCondominio(float $value)
     {
         $this->valorCondominio = $value;
     }
@@ -395,7 +399,7 @@ class Imovel
         return $this->andar;
     }
 
-    public function setAndar($value)
+    public function setAndar(int $value)
     {
         $this->andar = $value;
     }
@@ -405,7 +409,7 @@ class Imovel
         return $this->estado;
     }
 
-    public function setEstado($value)
+    public function setEstado(?Estado $value)
     {
         $this->estado = $value;
     }
@@ -415,7 +419,7 @@ class Imovel
         return $this->bloco;
     }
 
-    public function setBloco($value)
+    public function setBloco(string $value)
     {
         $this->bloco = $value;
     }
@@ -425,7 +429,7 @@ class Imovel
         return $this->anoConstrucao;
     }
 
-    public function setAnoConstrucao($value)
+    public function setAnoConstrucao(int $value)
     {
         $this->anoConstrucao = $value;
     }
@@ -435,7 +439,7 @@ class Imovel
         return $this->areaTotal;
     }
 
-    public function setAreaTotal($value)
+    public function setAreaTotal(float $value)
     {
         $this->areaTotal = $value;
     }
@@ -445,7 +449,7 @@ class Imovel
         return $this->areaPrivativa;
     }
 
-    public function setAreaPrivativa($value)
+    public function setAreaPrivativa(float $value)
     {
         $this->areaPrivativa = $value;
     }
@@ -455,7 +459,7 @@ class Imovel
         return $this->situacao;
     }
 
-    public function setSituacao($value)
+    public function setSituacao(?Situacao $value)
     {
         $this->situacao = $value;
     }
@@ -465,7 +469,7 @@ class Imovel
         return $this->ocupacao;
     }
 
-    public function setOcupacao($value)
+    public function setOcupacao(?Ocupacao $value)
     {
         $this->ocupacao = $value;
     }
@@ -475,7 +479,7 @@ class Imovel
         return $this->proprietarios;
     }
 
-    public function setProprietarios($value)
+    public function setProprietarios(array $value)
     {
         $this->proprietarios = $value;
     }
@@ -485,7 +489,7 @@ class Imovel
         return $this->corretor;
     }
 
-    public function setCorretor($value)
+    public function setCorretor(?Corretor $value)
     {
         $this->corretor = $value;
     }
@@ -495,12 +499,12 @@ class Imovel
         return $this->captador;
     }
 
-    public function setCaptador($value)
+    public function setCaptador(?Captador $value)
     {
         $this->captador = $value;
     }
 
-    public function setAnuncio($value)
+    public function setAnuncio(?Anuncio $value)
     {
         $this->anuncio = $value;
     }

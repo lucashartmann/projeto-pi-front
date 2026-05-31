@@ -19,9 +19,9 @@ ini_set('display_errors', 0);
 error_reporting(E_ALL);
 class Banco extends PDO
 {
-    private static $db = null;
+    private static ?Banco $db = null;
 
-    public function __construct($dsn, $username, $password)
+    public function __construct(?string $dsn, ?string $username, ?string $password)
     {
         parent::__construct($dsn, $username, $password);
         $this->initTabelas();
@@ -387,7 +387,7 @@ class Banco extends PDO
             }
             $tipoUsuario = $registro['tipo_usuario'];
             if ($tipoUsuario) {
-                $tipoUsuario = Tipo::tryFrom($tipoUsuario);
+                $tipoUsuario = Tipo::tryFrom($tipoUsuario) ?? null;
             }
             $usuarioObj = new Usuario(
                 $username,
@@ -1357,7 +1357,7 @@ class Banco extends PDO
         }
     }
 
-    public function cadastrarAnexo($idAnuncio, $nome_arquivo, $tipo)
+    public function cadastrarAnexo($anexo)
     {
         try {
             $sqlQuery = " 
@@ -1366,9 +1366,9 @@ class Banco extends PDO
                     ";
             $stmt = $this->prepare($sqlQuery);
             $stmt->execute([
-                ':id_anuncio' => $idAnuncio,
-                ':nome_arquivo' => $nome_arquivo,
-                ':tipo' => $tipo
+                ':id_anuncio' => $anexo->getId(),
+                ':nome_arquivo' => $anexo->getCaminho(),
+                ':tipo' => $anexo->getTipo() ? $anexo->getTipo()->value : null
             ]);
             return True;
         } catch (Exception $e) {
@@ -1396,12 +1396,16 @@ class Banco extends PDO
                 // $id = $registro['id_anuncio'];
                 $id = $registro['id'];
                 $tipo = $registro['tipo'];
+                $caminho = $registro['nome_arquivo'];
                 if ($tipo == "Imagem") {
-                    $imagens[] = $id;
+                    $anexo = new Anexo($idAnuncio, $caminho, TipoAnexo::IMAGEM);
+                    $imagens[] = $anexo;
                 } else if ($tipo == "Documento") {
-                    $documentos[] = $id;
+                    $anexo = new Anexo($idAnuncio, $caminho, TipoAnexo::DOCUMENTO);
+                    $documentos[] = $anexo;
                 } else if ($tipo == "Video") {
-                    $videos[] = $id;
+                    $anexo = new Anexo($idAnuncio, $caminho, TipoAnexo::VIDEO);
+                    $videos[] = $anexo;
                 }
             }
             $mapa = [];
@@ -1673,6 +1677,7 @@ class Banco extends PDO
                     break;
 
                 case "ADMIN":
+                    $tipo = Tipo::tryFrom($tipo) ?? null;
                     $usuarioObj = new Usuario(
                         $username,
                         $senha_hash_banco,
@@ -1839,21 +1844,21 @@ class Banco extends PDO
             // Imagens
             if ($anuncio->getImagens()) {
                 foreach ($anuncio->getImagens() as $img) {
-                    $this->cadastrarAnexo($idAnuncio, $img, "Imagem");
+                    $this->cadastrarAnexo($img);
                 }
             }
 
             // Vídeos
             if ($anuncio->getVideos()) {
                 foreach ($anuncio->getVideos() as $video) {
-                    $this->cadastrarAnexo($idAnuncio, $video, "Video");
+                    $this->cadastrarAnexo($video);
                 }
             }
 
             // Documentos
             if ($anuncio->getAnexos()) {
                 foreach ($anuncio->getAnexos() as $anexo) {
-                    $this->cadastrarAnexo($idAnuncio, $anexo, "Documento");
+                    $this->cadastrarAnexo($anexo);
                 }
             }
 
@@ -2794,77 +2799,225 @@ class Banco extends PDO
         }
     }
 
-    public function getImovelPorId($id_imovel)
+    public function getImovelPorId($idImovel)
     {
-
         try {
+            $sql = "
+            SELECT
+                i.*,
 
-            $sql = "SELECT * FROM imovel WHERE id = :id";
+                e.id AS endereco_id,
+                e.rua AS endereco_rua,
+                e.numero AS endereco_numero,
+                e.complemento AS endereco_complemento,
+                e.bairro AS endereco_bairro,
+                e.cep AS endereco_cep,
+                e.cidade AS endereco_cidade,
+                e.uf AS endereco_uf,
+
+                c.id AS condominio_id,
+                c.nome AS condominio_nome,
+                ce.id AS condominio_endereco_id,
+                ce.rua AS condominio_endereco_rua,
+                ce.numero AS condominio_endereco_numero,
+                ce.complemento AS condominio_endereco_complemento,
+                ce.bairro AS condominio_endereco_bairro,
+                ce.cep AS condominio_endereco_cep,
+                ce.cidade AS condominio_endereco_cidade,
+                ce.uf AS condominio_endereco_uf,
+
+                u_cor.id AS corretor_id,
+                u_cor.username AS corretor_username,
+                u_cor.senha AS corretor_senha,
+                u_cor.email AS corretor_email,
+                u_cor.nome AS corretor_nome,
+                u_cor.cpf_cnpj AS corretor_cpf_cnpj,
+                u_cor.rg AS corretor_rg,
+                co.creci AS corretor_creci,
+
+                u_cap.id AS captador_id,
+                u_cap.username AS captador_username,
+                u_cap.senha AS captador_senha,
+                u_cap.email AS captador_email,
+                u_cap.nome AS captador_nome,
+                u_cap.cpf_cnpj AS captador_cpf_cnpj,
+                u_cap.rg AS captador_rg,
+                ca.salario AS captador_salario,
+
+                a.id AS anuncio_id,
+                a.descricao AS anuncio_descricao,
+                a.titulo AS anuncio_titulo
+
+            FROM imovel i
+
+            LEFT JOIN endereco e
+                ON e.id = i.id_endereco
+
+            LEFT JOIN condominio c
+                ON c.id = i.id_condominio
+
+            LEFT JOIN endereco ce
+                ON ce.id = c.id_endereco
+
+            LEFT JOIN usuario u_cor
+                ON u_cor.id = i.id_corretor
+
+            LEFT JOIN corretor co
+                ON co.id_usuario = u_cor.id
+
+            LEFT JOIN usuario u_cap
+                ON u_cap.id = i.id_captador
+
+            LEFT JOIN captador ca
+                ON ca.id_usuario = u_cap.id
+
+            LEFT JOIN anuncio a
+                ON a.id = i.id_anuncio
+
+            WHERE i.id = :id
+        ";
+
             $stmt = $this->prepare($sql);
-            $stmt->execute([':id' => $id_imovel]);
+            $stmt->execute([':id' => $idImovel]);
 
             $dados = $stmt->fetch(PDO::FETCH_ASSOC);
 
             if (!$dados) {
-                throw new Exception("Não há imóveis disponíveis");
+                throw new Exception("Imóvel não encontrado");
             }
 
-            $valorVenda = $dados['valor_venda'] !== null ? (float)$dados['valor_venda'] : null;
-            $valorAluguel = $dados['valor_aluguel'] !== null ? (float)$dados['valor_aluguel'] : null;
-
-            $quantQuartos = $dados['quant_quartos'] !== null ? (int)$dados['quant_quartos'] : null;
-            $quantSalas = $dados['quant_salas'] !== null ? (int)$dados['quant_salas'] : null;
-            $quantVagas = $dados['quant_vagas'] !== null ? (int)$dados['quant_vagas'] : null;
-            $quantBanheiros = $dados['quant_banheiros'] !== null ? (int)$dados['quant_banheiros'] : null;
-            $quantVarandas = $dados['quant_varandas'] !== null ? (int)$dados['quant_varandas'] : null;
-
-            $categoria = $dados['categoria'];
-            $status = $dados['status'];
-            $estado = $dados['estado'];
-            $situacao = $dados['situacao'];
-            $ocupacao = $dados['ocupacao'];
-
             $endereco = null;
-            if ($dados['id_endereco']) {
-                $endereco = $this->getEnderecoPorId((int)$dados['id_endereco']);
+            if ($dados['endereco_id']) {
+                $endereco = new Endereco(
+                    $dados['endereco_rua'],
+                    $dados['endereco_bairro'],
+                    $dados['endereco_cep'],
+                    $dados['endereco_cidade'],
+                    $dados['endereco_uf']
+                );
+                $endereco->setId((int)$dados['endereco_id']);
+                $endereco->setNumero($dados['endereco_numero'] !== null ? (int)$dados['endereco_numero'] : null);
+                $endereco->setComplemento($dados['endereco_complemento']);
             }
 
             $corretor = null;
-            if ($dados['id_corretor']) {
-                $corretor = $this->getUsuarioPorCpfCnpj($dados['id_corretor']);
+            if ($dados['corretor_id']) {
+                $corretor = new Corretor(
+                    $dados['corretor_username'],
+                    $dados['corretor_senha'],
+                    $dados['corretor_email'],
+                    $dados['corretor_nome'],
+                    $dados['corretor_cpf_cnpj'],
+                    (string)($dados['corretor_creci'] ?? '')
+                );
+                $corretor->setId((int)$dados['corretor_id']);
+                $corretor->setRg($dados['corretor_rg'] ?? '');
             }
 
             $captador = null;
-            if ($dados['id_captador']) {
-                $captador = $this->getUsuarioPorCpfCnpj($dados['id_captador']);
+            if ($dados['captador_id']) {
+                $captador = new Captador(
+                    $dados['captador_username'],
+                    $dados['captador_senha'],
+                    $dados['captador_email'],
+                    $dados['captador_nome'],
+                    $dados['captador_cpf_cnpj']
+                );
+                $captador->setId((int)$dados['captador_id']);
+                $captador->setRg($dados['captador_rg'] ?? '');
+                if ($dados['captador_salario'] !== null) {
+                    $captador->setSalario((float)$dados['captador_salario']);
+                }
             }
 
-            $dataCadastro = $dados['data_cadastro'] ? new DateTime($dados['data_cadastro']) : null;
-            $dataModificacao = $dados['data_modificacao'] ? new DateTime($dados['data_modificacao']) : null;
-
             $anuncio = null;
-            if ($dados['id_anuncio']) {
-                $anuncio = $this->getAnuncioPorId((int)$dados['id_anuncio']);
+            if ($dados['anuncio_id']) {
+                $anuncio = new Anuncio();
+                $anuncio->setId((int)$dados['anuncio_id']);
+                $anuncio->setDescricao($dados['anuncio_descricao'] ?? '');
+                $anuncio->setTitulo($dados['anuncio_titulo'] ?? '');
+
+                $stmtAnexos = $this->prepare("
+                    SELECT id, nome_arquivo, tipo
+                    FROM midia_anuncio
+                    WHERE id_anuncio = :id_anuncio
+                ");
+                $stmtAnexos->execute([':id_anuncio' => $dados['anuncio_id']]);
+
+                $imagens = [];
+                $videos = [];
+                $documentos = [];
+
+                while ($anexo = $stmtAnexos->fetch(PDO::FETCH_ASSOC)) {
+                    $anexoId = (int)$anexo['id'];
+                    if ($anexo['tipo'] === 'imagem') {
+                        $anexo = new Anexo($dados['anuncio_id'], $anexo['nome_arquivo'], TipoAnexo::IMAGEM);
+                        $imagens[] = $anexo;
+                    } elseif ($anexo['tipo'] === 'video') {
+                        $anexo = new Anexo($dados['anuncio_id'], $anexo['nome_arquivo'], TipoAnexo::VIDEO);
+                        $videos[] = $anexo;
+                    } elseif ($anexo['tipo'] === 'documento') {
+                        $anexo = new Anexo($dados['anuncio_id'], $anexo['nome_arquivo'], TipoAnexo::DOCUMENTO);
+                        $documentos[] = $anexo;
+                    }
+                }
+
+                $anuncio->setImagens($imagens);
+                $anuncio->setVideos($videos);
+                $anuncio->setAnexos($documentos);
             }
 
             $condominio = null;
-            if ($dados['id_condominio']) {
-                $condominio = $this->getCondominioPorId((int)$dados['id_condominio']);
+            if ($dados['condominio_id']) {
+                $enderecoCondominio = null;
+                if ($dados['condominio_endereco_id']) {
+                    $enderecoCondominio = new Endereco(
+                        $dados['condominio_endereco_rua'],
+                        $dados['condominio_endereco_bairro'],
+                        $dados['condominio_endereco_cep'],
+                        $dados['condominio_endereco_cidade'],
+                        $dados['condominio_endereco_uf']
+                    );
+                    $enderecoCondominio->setId((int)$dados['condominio_endereco_id']);
+                    $enderecoCondominio->setNumero($dados['condominio_endereco_numero'] !== null ? (int)$dados['condominio_endereco_numero'] : null);
+                    $enderecoCondominio->setComplemento($dados['condominio_endereco_complemento']);
+                }
+
+                $condominio = new Condominio(
+                    $dados['condominio_nome'],
+                    $enderecoCondominio
+                );
+                $condominio->setId((int)$dados['condominio_id']);
             }
 
-            $imovelObj = new Imovel($endereco, $status, $categoria);
+            $dataCadastro = $dados['data_cadastro']
+                ? new DateTime($dados['data_cadastro'])
+                : null;
+
+            $dataModificacao = $dados['data_modificacao']
+                ? new DateTime($dados['data_modificacao'])
+                : null;
+
+            $imovelObj = new Imovel($endereco, Status::tryFrom($dados['status']), Categoria::tryFrom($dados['categoria']));
 
             $imovelObj->setId((int)$dados['id']);
-            $imovelObj->setValorVenda($valorVenda);
-            $imovelObj->setValorAluguel($valorAluguel);
-            $imovelObj->setQuantQuartos($quantQuartos);
-            $imovelObj->setQuantSalas($quantSalas);
-            $imovelObj->setQuantVagas($quantVagas);
-            $imovelObj->setQuantBanheiros($quantBanheiros);
-            $imovelObj->setQuantVarandas($quantVarandas);
-            $imovelObj->setEstado($estado);
-            $imovelObj->setSituacao($situacao);
-            $imovelObj->setOcupacao($ocupacao);
+            $imovelObj->setValorVenda($dados['valor_venda'] !== null ? (float)$dados['valor_venda'] : 0);
+            $imovelObj->setValorAluguel($dados['valor_aluguel'] !== null ? (float)$dados['valor_aluguel'] : 0);
+            $imovelObj->setQuantQuartos($dados['quant_quartos'] !== null ? (int)$dados['quant_quartos'] : 0);
+            $imovelObj->setQuantSalas($dados['quant_salas'] !== null ? (int)$dados['quant_salas'] : 0);
+            $imovelObj->setQuantVagas($dados['quant_vagas'] !== null ? (int)$dados['quant_vagas'] : 0);
+            $imovelObj->setQuantBanheiros($dados['quant_banheiros'] !== null ? (int)$dados['quant_banheiros'] : 0);
+            $imovelObj->setQuantVarandas($dados['quant_varandas'] !== null ? (int)$dados['quant_varandas'] : 0);
+            $imovelObj->setIptu($dados['iptu'] !== null ? (float)$dados['iptu'] : 0);
+            $imovelObj->setValorCondominio($dados['valor_condominio'] !== null ? (float)$dados['valor_condominio'] : 0);
+            $imovelObj->setAndar($dados['andar'] !== null ? (int)$dados['andar'] : 0);
+            $imovelObj->setEstado($dados['estado'] ? Estado::tryFrom($dados['estado']) : null);
+            $imovelObj->setBloco($dados['bloco']);
+            $imovelObj->setAnoConstrucao($dados['ano_construcao'] !== null ? (int)$dados['ano_construcao'] : 0);
+            $imovelObj->setAreaTotal($dados['area_total'] !== null ? (float)$dados['area_total'] : 0);
+            $imovelObj->setAreaPrivativa($dados['area_privativa'] !== null ? (float)$dados['area_privativa'] : 0);
+            $imovelObj->setSituacao($dados['situacao'] ? Situacao::tryFrom($dados['situacao']) : null);
+            $imovelObj->setOcupacao($dados['ocupacao'] ? Ocupacao::tryFrom($dados['ocupacao']) : null);
             $imovelObj->setCorretor($corretor);
             $imovelObj->setCaptador($captador);
             $imovelObj->setDataCadastro($dataCadastro);
@@ -2873,37 +3026,77 @@ class Banco extends PDO
             $imovelObj->setCondominio($condominio);
 
             $stmt = $this->prepare("
-                SELECT id_proprietario 
-                FROM proprietario_imovel 
-                WHERE id_imovel = :id
+                SELECT
+                    p.id,
+                    p.email,
+                    p.nome,
+                    p.cpf_cnpj,
+                    p.rg,
+                    p.id_endereco,
+                    p.data_nascimento,
+                    e.rua AS endereco_rua,
+                    e.numero AS endereco_numero,
+                    e.complemento AS endereco_complemento,
+                    e.bairro AS endereco_bairro,
+                    e.cep AS endereco_cep,
+                    e.cidade AS endereco_cidade,
+                    e.uf AS endereco_uf
+                FROM proprietario p
+                INNER JOIN proprietario_imovel pi
+                    ON pi.id_proprietario = p.id
+                LEFT JOIN endereco e
+                    ON e.id = p.id_endereco
+                WHERE pi.id_imovel = :id
             ");
-            $stmt->execute([':id' => $id_imovel]);
+            $stmt->execute([':id' => $idImovel]);
 
             $proprietarios = [];
-
             while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-                $prop = $this->getProprietarioPorId($row['id_proprietario']);
-                if ($prop) {
-                    $proprietarios[] = $prop;
+                $dataNascimento = $row['data_nascimento']
+                    ? DateTime::createFromFormat('Y-m-d', $row['data_nascimento'])
+                    : null;
+
+                $prop = new Proprietario(
+                    $row['email'],
+                    $row['nome'],
+                    $row['cpf_cnpj']
+                );
+
+                $prop->setId((int)$row['id']);
+                $prop->setRg($row['rg']);
+                $prop->setDataNascimento($dataNascimento);
+
+                if (!empty($row['id_endereco'])) {
+                    $enderecoProprietario = new Endereco(
+                        $row['endereco_rua'],
+                        $row['endereco_bairro'],
+                        $row['endereco_cep'],
+                        $row['endereco_cidade'],
+                        $row['endereco_uf']
+                    );
+                    $enderecoProprietario->setId((int)$row['id_endereco']);
+                    $enderecoProprietario->setNumero($row['endereco_numero'] !== null ? (int)$row['endereco_numero'] : null);
+                    $enderecoProprietario->setComplemento($row['endereco_complemento']);
+                    $prop->setEndereco($enderecoProprietario);
                 }
+
+                $proprietarios[] = $prop;
             }
             $imovelObj->setProprietarios($proprietarios);
 
             $stmt = $this->prepare("
                 SELECT fi.nome
                 FROM imovel_filtros ifi
-                JOIN filtros_imovel fi 
+                JOIN filtros_imovel fi
                     ON fi.id = ifi.id_filtros_imovel
                 WHERE ifi.id_imovel = :id
             ");
-            $stmt->execute([':id' => $id_imovel]);
+            $stmt->execute([':id' => $idImovel]);
 
             $filtros = [];
-
             while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
                 $filtros[] = $row['nome'];
             }
-
             $imovelObj->setFiltros($filtros);
 
             return $imovelObj;
@@ -2913,11 +3106,11 @@ class Banco extends PDO
         }
     }
 
-    public function getImoveisPorProprietario($id_proprietario)
+    public function getImoveisPorProprietario($idProprietario)
     {
         try {
             $stmt = $this->prepare("SELECT id_imovel FROM proprietario_imovel WHERE id_proprietario = ?");
-            $stmt->execute([$id_proprietario]);
+            $stmt->execute([$idProprietario]);
             $dados = $stmt->fetchAll(PDO::FETCH_ASSOC);
             if (empty($dados)) {
                 throw new Exception("Não há imóveis disponíveis");

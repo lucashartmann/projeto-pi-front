@@ -1,27 +1,29 @@
 <?php
 
+require_once __DIR__ . '/endereco.php';
+
 class Condominio
 {
-    public $id;
-    public $nome;
-    public $endereco;
-    public $filtros;
+    public int $id;
+    public string $nome;
+    public ?Endereco $endereco;
+    public array $filtros;
 
-    public function __construct($nome = null, $endereco = null)
+    public function __construct(string $nome = null, ?Endereco $endereco = null)
     {
-        $this->id = NULL;
+        $this->id = 0;
         $this->nome = $nome;
         $this->endereco = $endereco;
         $this->filtros = [];
     }
 
 
-    public function __init__($nome, $endereco)
+    public function __init__(string $nome, ?Endereco $endereco)
     {
         $this->__construct($nome, $endereco);
     }
 
-    public function setFiltros($filtros)
+    public function setFiltros(array $filtros)
     {
         $this->filtros = $filtros;
     }
@@ -36,7 +38,7 @@ class Condominio
         return $this->id;
     }
 
-    public function setId($id)
+    public function setId(int $id)
     {
         $this->id = $id;
     }
@@ -44,7 +46,7 @@ class Condominio
     {
         return $this->endereco;
     }
-    public function setEndereco($endereco)
+    public function setEndereco(?Endereco $endereco)
     {
         $this->endereco = $endereco;
     }
@@ -52,7 +54,7 @@ class Condominio
     {
         return $this->nome;
     }
-    public function setNome($nome)
+    public function setNome(string $nome)
     {
         $this->nome = $nome;
     }

@@ -3,31 +3,25 @@
 
 class Endereco
 {
-    public $id;
-    public $rua;
-    public $numero;
-    public $bairro;
-    public $cep;
-    public $complemento;
-    public $cidade;
-    public $uf;
+    public int $id;
+    public string $rua;
+    public string $numero;
+    public string $bairro;
+    public string $cep;
+    public string $complemento;
+    public string $cidade;
+    public string $uf;
 
-    public function __construct($rua, $bairro, $cep, $cidade, $uf)
+    public function __construct(string $rua, string $bairro, string $cep, string $cidade, string $uf)
     {
-        $this->id = NULL;
+        $this->id = 0;
         $this->rua = $rua;
-        $this->numero = NULL;
+        $this->numero = "";
         $this->bairro = $bairro;
         $this->cep = $cep;
-        $this->complemento = NULL;
+        $this->complemento = "";
         $this->cidade = $cidade;
         $this->uf = $uf;
-    }
-
-
-    public function __init__($rua, $bairro, $cep, $cidade, $uf)
-    {
-        $this->__construct($rua, $bairro, $cep, $cidade, $uf);
     }
 
     public function getUf()
@@ -35,7 +29,7 @@ class Endereco
         return $this->uf;
     }
 
-    public function setUf($uf)
+    public function setUf(string $uf)
     {
         $this->uf = $uf;
     }
@@ -45,7 +39,7 @@ class Endereco
         return $this->id;
     }
 
-    public function setId($id)
+    public function setId(int $id)
     {
         $this->id = $id;
     }
@@ -55,7 +49,7 @@ class Endereco
         return $this->rua;
     }
 
-    public function setRua($value)
+    public function setRua(string $value)
     {
         $this->rua = $value;
     }
@@ -65,7 +59,7 @@ class Endereco
         return $this->numero;
     }
 
-    public function setNumero($value)
+    public function setNumero(int $value)
     {
         $this->numero = $value;
     }
@@ -75,7 +69,7 @@ class Endereco
         return $this->bairro;
     }
 
-    public function setBairro($value)
+    public function setBairro(string $value)
     {
         $this->bairro = $value;
     }
@@ -85,7 +79,7 @@ class Endereco
         return $this->cep;
     }
 
-    public function setCep($value)
+    public function setCep(string $value)
     {
         $this->cep = $value;
     }
@@ -95,7 +89,7 @@ class Endereco
         return $this->complemento;
     }
 
-    public function setComplemento($value)
+    public function setComplemento(string $value)
     {
         $this->complemento = $value;
     }
@@ -105,7 +99,7 @@ class Endereco
         return $this->cidade;
     }
 
-    public function setCidade($value)
+    public function setCidade(string $value)
     {
         $this->cidade = $value;
     }

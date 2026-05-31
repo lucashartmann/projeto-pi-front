@@ -1,10 +1,10 @@
 <?php
 class Visita
 {
-    private $id;
-    private $cliente;
-    private $imovel;
-    private $corretor;
+    private int $id;
+    private ?Cliente $cliente;
+    private ?Imovel $imovel;
+    private ?Corretor $corretor;
 
     public function __construct()
     {
@@ -20,7 +20,7 @@ class Visita
     }
 
 
-    public function setImovel($imovel): self
+    public function setImovel(?Imovel $imovel): self
     {
         $this->imovel = $imovel;
 
@@ -34,7 +34,7 @@ class Visita
     }
 
 
-    public function setCorretor($corretor): self
+    public function setCorretor(?Corretor $corretor): self
     {
         $this->corretor = $corretor;
 
@@ -48,7 +48,7 @@ class Visita
     }
 
 
-    public function setCliente($cliente): self
+    public function setCliente(?Cliente $cliente): self
     {
         $this->cliente = $cliente;
 
@@ -62,7 +62,7 @@ class Visita
     }
 
 
-    public function setId($id): self
+    public function setId(int $id): self
     {
         $this->id = $id;
 

@@ -1,26 +1,29 @@
 <?php
 
+require_once __DIR__ . '/endereco.php';
+
+
 class Proprietario
 {
-    public $id;
-    public $email;
-    public $nome;
-    public $cpfCnpj;
-    public $rg;
-    public $telefones;
-    public $endereco;
-    public $dataNascimento;
-    public $imoveis;
-    public $dataCadastro;
-    public $dataModificacao;
+    public int $id;
+    public string $email;
+    public string $nome;
+    public string $cpfCnpj;
+    public string $rg;
+    public array $telefones;
+    public ?Endereco $endereco;
+    public ?DateTime $dataNascimento;
+    public array $imoveis;
+    public ?DateTime $dataCadastro;
+    public ?DateTime $dataModificacao;
 
-    public function __construct($email, $nome, $cpfCnpj)
+    public function __construct(string $email, string $nome, string $cpfCnpj)
     {
-        $this->id = NULL;
+        $this->id = 0;
         $this->email = $email;
         $this->nome = $nome;
         $this->cpfCnpj = $cpfCnpj;
-        $this->rg = NULL;
+        $this->rg = "";
         $this->telefones = [];
         $this->endereco = NULL;
         $this->dataNascimento = NULL;
@@ -29,7 +32,7 @@ class Proprietario
         $this->dataModificacao = NULL;
     }
 
-    public function setDataCadastro($data)
+    public function setDataCadastro(?DateTime $data)
     {
         $this->dataCadastro = $data;
     }
@@ -37,7 +40,7 @@ class Proprietario
     {
         return $this->dataCadastro;
     }
-    public function setDataModificacao($data)
+    public function setDataModificacao(?DateTime $data)
     {
         $this->dataModificacao = $data;
     }
@@ -45,7 +48,7 @@ class Proprietario
     {
         return $this->dataModificacao;
     }
-    public function setImoveis($valor)
+    public function setImoveis(array $valor)
     {
         $this->imoveis = $valor;
     }
@@ -57,7 +60,7 @@ class Proprietario
     {
         return $this->id;
     }
-    public function setId($value)
+    public function setId(int $value)
     {
         $this->id = $value;
     }
@@ -65,7 +68,7 @@ class Proprietario
     {
         return $this->email;
     }
-    public function setEmail($value)
+    public function setEmail(string $value)
     {
         $this->email = $value;
     }
@@ -73,7 +76,7 @@ class Proprietario
     {
         return $this->nome;
     }
-    public function setNome($value)
+    public function setNome(string $value)
     {
         $this->nome = $value;
     }
@@ -81,7 +84,7 @@ class Proprietario
     {
         return $this->cpfCnpj;
     }
-    public function setCpfCnpj($value)
+    public function setCpfCnpj(string $value)
     {
         $this->cpfCnpj = $value;
     }
@@ -89,7 +92,7 @@ class Proprietario
     {
         return $this->rg;
     }
-    public function setRg($value)
+    public function setRg(string $value)
     {
         $this->rg = $value;
     }
@@ -97,7 +100,7 @@ class Proprietario
     {
         return $this->telefones;
     }
-    public function setTelefones($value)
+    public function setTelefones(array $value)
     {
         $this->telefones = $value;
     }
@@ -105,7 +108,7 @@ class Proprietario
     {
         return $this->endereco;
     }
-    public function setEndereco($value)
+    public function setEndereco(?Endereco $value)
     {
         $this->endereco = $value;
     }
@@ -114,7 +117,7 @@ class Proprietario
         return $this->dataNascimento;
     }
 
-    public function setDataNascimento($value)
+    public function setDataNascimento(?DateTime $value)
     {
         $this->dataNascimento = $value;
     }

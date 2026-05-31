@@ -2,49 +2,49 @@
 
 class Anuncio
 {
-    public $id;
-    public $descricao;
-    public $titulo;
-    public $imagens;
-    public $videos;
-    public $anexos;
+    public int $id;
+    public string $descricao;
+    public string $titulo;
+    public array $imagens;
+    public array $videos;
+    public array $anexos;
 
     public function __construct()
     {
-        $this->id = null;
-        $this->descricao = null;
-        $this->titulo = null;
+        $this->id = 0;
+        $this->descricao = "";
+        $this->titulo = "";
         $this->imagens = [];
         $this->videos = [];
         $this->anexos = [];
     }
 
-    public function setAnexos($value)
+    public function setAnexos(array $value)
     {
         $this->anexos = $value;
     }
 
-    public function setVideos($value)
+    public function setVideos(array $value)
     {
         $this->videos = $value;
     }
 
-    public function setId($id)
+    public function setId(int $id)
     {
         $this->id = $id;
     }
 
-    public function setDescricao($descricao)
+    public function setDescricao(string $descricao)
     {
         $this->descricao = $descricao;
     }
 
-    public function setImagens($value)
+    public function setImagens(array $value)
     {
         $this->imagens = $value;
     }
 
-    public function setTitulo($titulo)
+    public function setTitulo(string $titulo)
     {
         $this->titulo = $titulo;
     }

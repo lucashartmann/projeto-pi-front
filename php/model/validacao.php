@@ -3,23 +3,23 @@
 class Validacao
 {
 
-    public static function validarRG($rg)
+    public static function validarRG(string $rg)
     {
         $rg = preg_replace('/[^0-9]/', '', $rg);
         return preg_match('/^\d{7,9}$/', $rg);
     }
 
-    public static function validarSenha($senha)
+    public static function validarSenha(string $senha)
     {
         return strlen($senha) >= 6;
     }
 
-    public static function validarCreci($creci)
+    public static function validarCreci(string $creci)
     {
         return preg_match('/^[A-Z]{2}-\d{5}$/', $creci);
     }
 
-    public static function validarCPF($cpf)
+    public static function validarCPF(string $cpf)
     {
         $cpf = preg_replace('/[^0-9]/', '', $cpf);
         if (strlen($cpf) != 11 || preg_match('/(\d)\1{10}/', $cpf)) {
@@ -38,7 +38,7 @@ class Validacao
         return true;
     }
 
-    public static function validarCNPJ($cnpj)
+    public static function validarCNPJ(string $cnpj)
     {
         $cnpj = preg_replace('/[^0-9]/', '', $cnpj);
         if (strlen($cnpj) != 14 || preg_match('/(\d)\1{13}/', $cnpj)) {
@@ -73,13 +73,13 @@ class Validacao
         return ($resultado == $digitos[1]);
     }
 
-    public static function validarTelefone($telefone)
+    public static function validarTelefone(string $telefone)
     {
         $telefone = preg_replace('/[^0-9]/', '', $telefone);
         return preg_match('/^\d{10,11}$/', $telefone);
     }
 
-    public static function validarDataNascimento($data)
+    public static function validarDataNascimento(string $data)
     {
         $data = DateTime::createFromFormat('d/m/Y', $data);
         if (!$data) {
@@ -90,38 +90,38 @@ class Validacao
         return $idade >= 18;
     }
 
-    public static function validarSalario($salario)
+    public static function validarSalario(string $salario)
     {
         $salario = str_replace(['-', 'R$', ' '], '', $salario);
         return is_numeric($salario) && $salario >= 0;
     }
 
-    public static function validarAnoConstrucao($ano)
+    public static function validarAnoConstrucao(string $ano)
     {
         $ano = (int)$ano;
         $anoAtual = (int)date('Y');
         return $ano > 1800 && $ano <= $anoAtual;
     }
 
-    public static function validarCEP($cep)
+    public static function validarCEP(string $cep)
     {
         $cep = preg_replace('/[^0-9]/', '', $cep);
         return preg_match('/^\d{8}$/', $cep);
     }
 
-    public static function validarArea($area)
+    public static function validarArea(string $area)
     {
         $area = str_replace(['-', 'm2', ' '], '', $area);
         return is_numeric($area) && $area > 0;
     }
 
-    public static function validarValor($valor)
+    public static function validarValor(string $valor)
     {
         $valor = str_replace(['-', 'R$', ' '], '', $valor);
         return is_numeric($valor) && $valor >= 0;
     }
 
-    public static function validarEmail($email)
+    public static function validarEmail(string $email)
     {
         return filter_var($email, FILTER_VALIDATE_EMAIL) !== false;
     }

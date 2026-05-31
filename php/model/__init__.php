@@ -13,7 +13,8 @@ require_once __DIR__ . '/condominio.php';
 require_once __DIR__ . '/gerente.php';
 require_once __DIR__ . '/usuario.php';
 require_once __DIR__ . '/proprietario.php';
-require_once __DIR__ . '/../utils/converterImagem.php';
+require_once __DIR__ . '/anexo.php';
+
 
 ini_set('display_errors', 0);
 error_reporting(E_ALL);
@@ -338,23 +339,44 @@ class Init
 
         $anuncioUm = new Anuncio();
 
-        // echo imagemParaWebpBlob("../assets/apartament.jpg");
+        $imagemUm = new Anexo(
+            1,
+            "imoveis/apartament.jpg",
+            TipoAnexo::IMAGEM
+        );
 
-        try {
-            $blob = imagemParaWebpBlob("../../assets/apartament.jpg", 80);
-        } catch (Exception $e) {
-            error_log("Erro ao ler os arquivos de imagem: " . $e->getMessage());
-        }
+        $imagemDois = new Anexo(
+            1,
+            "imoveis/campo.jpg",
+            TipoAnexo::IMAGEM
+        );
+        $imagemTres = new Anexo(
+            1,
+            "imoveis/dentro_apartamento.jpg",
+            TipoAnexo::IMAGEM
+        );
+        $imagemQuatro = new Anexo(
+            2,
+            "imoveis/patio.jpg",
+            TipoAnexo::IMAGEM
+        );
 
-        try {
-            $blob2 = imagemParaWebpBlob("../../assets/campo.jpg", 80);
-        } catch (Exception $e) {
-            error_log("Erro ao ler os arquivos de imagem: " . $e->getMessage());
-        }
+        $cadastroImagemUm = self::$imobiliaria->cadastrarAnexo(
+            $imagemUm,
+        );
 
+        $cadastroImagemDois = self::$imobiliaria->cadastrarAnexo(
+            $imagemDois,
+        );
+        $cadastroImagemTres = self::$imobiliaria->cadastrarAnexo(
+            $imagemTres
+        );
+        $cadastroImagemQuatro = self::$imobiliaria->cadastrarAnexo(
+            $imagemQuatro
+        );
 
-        if ($blob && $blob2) {
-            $anuncioUm->setImagens([$blob, $blob, $blob2, $blob2, $blob]);
+        if ($cadastroImagemUm && $cadastroImagemDois) {
+            $anuncioUm->setImagens([$imagemUm, $imagemDois, $imagemTres, $imagemTres, $imagemUm]);
         }
 
         $anuncioUm->setTitulo("Apartamento de 1 quarto, venda ou aluguel");
@@ -362,13 +384,8 @@ class Init
 
         $anuncioDois = new Anuncio();
 
-        try {
-            $blob3 = imagemParaWebpBlob("../../assets/patio.jpg", 80);
-        } catch (Exception $e) {
-            error_log("Erro ao ler os arquivos de imagem: " . $e->getMessage());
-        }
-        if ($blob3) {
-            $anuncioDois->setImagens([$blob3, $blob3, $blob3, $blob3, $blob3]);
+        if ($cadastroImagemTres) {
+            $anuncioDois->setImagens([$imagemTres, $imagemTres, $imagemTres, $imagemTres, $imagemTres]);
         }
 
         $anuncioDois->setTitulo("Apartamento de 2 quartos, venda ou aluguel");

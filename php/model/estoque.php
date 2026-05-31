@@ -4,23 +4,23 @@ require_once __DIR__ . '/../database/banco.php';
 
 class Estoque
 {
-    public $bancoDados;
+    public ?Banco $bancoDados;
 
     public function __construct()
     {
         $this->bancoDados = Banco::getInstance();
     }
 
-    public function cadastrarAnuncio($anuncio)
+    public function cadastrarAnuncio(Anuncio $anuncio)
     {
         return $this->bancoDados->cadastrarAnuncio($anuncio);
     }
 
-    public function cadastrarImovel($imovel)
+    public function cadastrarImovel(Imovel $imovel)
     {
         return $this->bancoDados->cadastrarImovel($imovel);
     }
-    public function atualizarImovel($imovel)
+    public function atualizarImovel(Imovel $imovel)
     {
         return $this->bancoDados->atualizarImovel($imovel);
     }
@@ -43,7 +43,7 @@ class Estoque
     // }
 
 
-    public function getImovelPorId($id)
+    public function getImovelPorId(int $id)
     {
         return $this->bancoDados->getImovelPorId($id);
     }

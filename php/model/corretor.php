@@ -6,9 +6,9 @@ require_once __DIR__ . '/usuario.php';
 
 class Corretor extends Usuario
 {
-    public $creci;
+    public string $creci;
 
-    public function __construct($username, $senha, $email, $nome, $cpfCnpj, $creci)
+    public function __construct(string $username, string $senha, string $email, string $nome, string $cpfCnpj, string $creci)
     {
         parent::__construct($username, $senha, $email, $nome, $cpfCnpj, Tipo::CORRETOR);
         $this->creci = $creci;
@@ -19,7 +19,7 @@ class Corretor extends Usuario
         return $this->creci;
     }
 
-    public function setCreci($value)
+    public function setCreci(string $value)
     {
         $this->creci = $value;
     }

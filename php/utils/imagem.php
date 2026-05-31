@@ -2,7 +2,7 @@
 
 function imagemParaWebpBlob($caminho, $qualidade = 80, $larguraMax = 1920)
 {
-    try{
+    try {
         $info = getimagesize($caminho);
 
         switch ($info['mime']) {
@@ -70,5 +70,32 @@ function imagemParaWebpBlob($caminho, $qualidade = 80, $larguraMax = 1920)
     } catch (Exception $e) {
         error_log("Erro ao processar a imagem: " . $e->getMessage());
         return false;
+    }
+}
+
+function salvarImagem($blob, $id)
+{
+    $blobConvertido = imagemParaWebpBlob($blob);
+    if (!$blobConvertido) {
+        return false;
+    }
+    $nomeArquivo = uniqid() . '.webp';
+    $caminhoCompleto = rtrim(dirname($_SERVER['SCRIPT_NAME'], 3), '/') . "/assets/imoveis/" . $id . "/" . $nomeArquivo;
+
+    if (file_exists($caminhoCompleto)) {
+        unlink($caminhoCompleto);
+    }
+
+    file_put_contents($caminhoCompleto, base64_decode($blobConvertido));
+
+    return $caminhoCompleto;
+}
+
+function obterImagem($caminho)
+{
+    if (file_exists($caminho)) {
+        return base64_encode(file_get_contents($caminho));
+    } else {
+        return null;
     }
 }
