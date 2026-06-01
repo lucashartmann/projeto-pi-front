@@ -1,3 +1,20 @@
+body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+}
+
+footer {
+    justify-content: center;
+    align-items: center;
+    justify-items: center;
+    i {
+        width: 30px;
+        height: 30px;
+    }
+}
+
 #container-horizontal {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -33,12 +50,14 @@
 .card {
     /* cursor: pointer; */
     /* text-align: left; */
-    background: rgb(149, 122, 122);
+    background: rgba(204, 184, 184, 0.9);
+    backdrop-filter: blur(40px) !important;
+    box-shadow: var(--shadow);
     width: 90%;
     height: auto;
     min-height: 17%;
     margin: 10px 10px 10px 10px;
     color: rgb(0, 0, 0);
-    font-size: 102%;
+    font-size: 1.5rem;
     font-weight: 500;
 }

@@ -86,8 +86,9 @@ async function carregarAnuncios() {
 
     section.innerHTML = "";
     for (let imovel of dados) {
-        // console.log(imovel.data_cadastro);
+        
         const b64 = imovel.anuncio?.imagens?.[0] || null;
+        console.log(b64);
         section.innerHTML += `
             <div class="resultado">
                 <input type="checkbox" class="checkbox-selecionar" onclick="montarOpcoes()">

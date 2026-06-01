@@ -371,7 +371,7 @@ class controller
                     $imagens = [];
                     if ($anuncioObj->getImagens()) {
                         foreach ($anuncioObj->getImagens() as $imagem) {
-                            if ($imagem instanceof Anexo && is_string($imagem->getCaminho() === "string")) {
+                            if ($imagem instanceof Anexo) {
                                 $imagens[] =  rtrim(dirname($_SERVER['SCRIPT_NAME'], 3), '/') . "/assets/" .  $imagem->getCaminho();
                             }
                         }
@@ -480,7 +480,7 @@ class controller
                     $imagens = [];
                     if ($anuncioObj->getImagens()) {
                         foreach ($anuncioObj->getImagens() as $imagem) {
-                            $imagens[] =  CaminhoXampp::getBaseUrl() . "assets/" . $imagem->getCaminho();
+                            $imagens[] =  rtrim(dirname($_SERVER['SCRIPT_NAME'], 3), '/') . "/assets/" .  $imagem->getCaminho();
                         }
                     }
                     $anuncio = [

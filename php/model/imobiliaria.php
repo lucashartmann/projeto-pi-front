@@ -58,6 +58,10 @@ class Imobiliaria
         $this->estoque = $value;
     }
 
+    public function getAnexoPorCaminho($caminho){
+        return $this->bancoDados->getAnexoPorCaminho($caminho);
+    }
+
     public function atualizar(string $campo_desejado, $valor, string $tabela)
     {
         return $this->bancoDados->atualizar($campo_desejado, $valor, $tabela);

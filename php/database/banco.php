@@ -1456,6 +1456,34 @@ class Banco extends PDO
         }
     }
 
+    public function getAnexoPorCaminho($caminho){
+        try {
+            $stmt = $this->prepare("
+                SELECT * FROM midia_anuncio 
+                WHERE nome_arquivo = :caminho
+            ");
+
+            $stmt->execute([':caminho' => $caminho]);
+            $registro = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if (!$registro) {
+                throw new Exception("Não existe anexo com caminho {$caminho}");
+            }
+
+            $idAnuncio = (int)$registro['id_anuncio'];
+            $tipo = $registro['tipo'];
+            $id = (int)$registro['id'];
+
+            $anexoObj = new Anexo($idAnuncio, $caminho, TipoAnexo::tryFrom($tipo));
+
+            return $anexoObj;
+        } catch (Exception $e) {
+            $erro = "ERRO! Banco->getAnexoPorCaminho: "  . $e->getMessage();
+            error_log($erro);
+            return null;
+        }
+    }
+
     public function getCondominioPorId($id)
     {
         try {
@@ -2833,27 +2861,34 @@ class Banco extends PDO
                 $anuncio->setTitulo($dados['anuncio_titulo'] ?? '');
 
                 $stmtAnexos = $this->prepare("
-                    SELECT id, nome_arquivo, tipo
+                    SELECT id, nome_arquivo, tipo, id_anuncio
                     FROM midia_anuncio
                     WHERE id_anuncio = :id_anuncio
                 ");
-                $stmtAnexos->execute([':id_anuncio' => $dados['anuncio_id']]);
-
+                $idAnuncio = (int)$dados['anuncio_id'];
+                $stmtAnexos->execute([':id_anuncio' => $idAnuncio]);
+                // error_log("Id requerido: " . $idAnuncio . "\n");
+                // error_log("Dados dos anexos: " . json_encode($stmtAnexos->fetchAll(PDO::FETCH_ASSOC)));
                 $imagens = [];
                 $videos = [];
                 $documentos = [];
 
-                while ($anexo = $stmtAnexos->fetch(PDO::FETCH_ASSOC)) {
-                    $anexoId = (int)$anexo['id'];
-                    if ($anexo['tipo'] === 'imagem') {
-                        $anexo = new Anexo($dados['anuncio_id'], $anexo['nome_arquivo'], TipoAnexo::IMAGEM);
-                        $imagens[] = $anexo;
-                    } elseif ($anexo['tipo'] === 'video') {
-                        $anexo = new Anexo($dados['anuncio_id'], $anexo['nome_arquivo'], TipoAnexo::VIDEO);
-                        $videos[] = $anexo;
-                    } elseif ($anexo['tipo'] === 'documento') {
-                        $anexo = new Anexo($dados['anuncio_id'], $anexo['nome_arquivo'], TipoAnexo::DOCUMENTO);
-                        $documentos[] = $anexo;
+                foreach ($stmtAnexos->fetchAll(PDO::FETCH_ASSOC) as $anexo) {
+                    if ($anexo['tipo'] === null) {
+                    continue;
+                    }
+
+                    $tipoNormalizado = strtolower($anexo['tipo']);
+
+                    if ($tipoNormalizado === "imagem") {
+                        $anexo_obj = new Anexo($idAnuncio, $anexo['nome_arquivo'], TipoAnexo::IMAGEM);
+                        $imagens[] = $anexo_obj;
+                    } else if ($tipoNormalizado === "documento") {
+                        $anexo_obj = new Anexo($idAnuncio, $anexo['nome_arquivo'], TipoAnexo::DOCUMENTO);
+                        $documentos[] = $anexo_obj;
+                    } else if ($tipoNormalizado === "video") {
+                        $anexo_obj = new Anexo($idAnuncio, $anexo['nome_arquivo'], TipoAnexo::VIDEO);
+                        $videos[] = $anexo_obj;
                     }
                 }
 

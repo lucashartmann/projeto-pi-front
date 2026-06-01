@@ -361,19 +361,32 @@ class Init
             TipoAnexo::IMAGEM
         );
 
-        $cadastroImagemUm = self::$imobiliaria->cadastrarAnexo(
-            $imagemUm,
-        );
+        $cadastroImagemUm = null;
+        $cadastroImagemDois = null;
+        $cadastroImagemTres = null;
+        $cadastroImagemQuatro = null;
 
-        $cadastroImagemDois = self::$imobiliaria->cadastrarAnexo(
-            $imagemDois,
-        );
-        $cadastroImagemTres = self::$imobiliaria->cadastrarAnexo(
-            $imagemTres
-        );
-        $cadastroImagemQuatro = self::$imobiliaria->cadastrarAnexo(
-            $imagemQuatro
-        );
+        if (!self::$imobiliaria->getAnexoPorCaminho($imagemUm->getCaminho())) {
+            $cadastroImagemUm = self::$imobiliaria->cadastrarAnexo(
+                $imagemUm,
+            );
+        }
+
+        if (!self::$imobiliaria->getAnexoPorCaminho($imagemDois->getCaminho())) {
+            $cadastroImagemDois = self::$imobiliaria->cadastrarAnexo(
+                $imagemDois
+            );
+        }
+        if (!self::$imobiliaria->getAnexoPorCaminho($imagemTres->getCaminho())) {
+            $cadastroImagemTres = self::$imobiliaria->cadastrarAnexo(
+                $imagemTres
+            );
+        }
+        if (!self::$imobiliaria->getAnexoPorCaminho($imagemQuatro->getCaminho())) {
+            $cadastroImagemQuatro = self::$imobiliaria->cadastrarAnexo(
+                $imagemQuatro
+            );
+        }
 
         if ($cadastroImagemUm && $cadastroImagemDois) {
             $anuncioUm->setImagens([$imagemUm, $imagemDois, $imagemTres, $imagemTres, $imagemUm]);

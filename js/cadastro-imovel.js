@@ -402,6 +402,9 @@ function openTab(evento, tabId) {
 async function abrirCadastro(imovelId) {
     imovel = await getDadosImovel(imovelId);
     if (imovel) {
+        const containerImagens = document.getElementById("container-imagens");
+        prepararContainerArrastavel(containerImagens);
+
         document.getElementById("ta-ref").value = imovel.id || "";
         document.getElementById("select-status").value = imovel.status || "Selecionar";
         document.getElementById("select-situacao").value = imovel.situacao || "Selecionar";
@@ -433,6 +436,34 @@ async function abrirCadastro(imovelId) {
         document.getElementById("ta-iptu").value = imovel.valor_iptu || "";
         document.getElementById("ta-ano-construcao").value = imovel.ano_construcao || "";
         document.getElementById("ta-cep").value = imovel.endereco?.cep;
+        if(imovel.anuncio?.imagens && imovel.anuncio.imagens.length > 0){
+            for(let imagem of imovel.anuncio.imagens){
+                const imgElement = document.createElement("img");
+                imgElement.src = imagem;
+                imgElement.setAttribute("onclick", "abrirImagem(this.src)");
+                prepararImagemArrastavel(imgElement);
+                containerImagens.appendChild(imgElement);
+            }
+        }
+        if(imovel.anuncio?.documentos && imovel.anuncio.documentos.length > 0){
+            const containerDocumentos = document.getElementById("container-documentos");
+            for(let documento of imovel.anuncio.documentos){
+                const docElement = document.createElement("a");
+                docElement.href = documento;
+                docElement.textContent = "Documento";
+                docElement.target = "_blank";
+                containerDocumentos.appendChild(docElement);
+            }
+        }
+        if(imovel.proprietario){
+            document.getElementById("ta-proprietario").value = imovel.proprietario.nome || "";
+        }
+        if(imovel.corretor){
+            document.getElementById("ta-corretor").value = imovel.corretor.nome || "";
+        }
+        if(imovel.captador){
+            document.getElementById("ta-captador").value = imovel.captador.nome || "";
+        }
     } else {
         alert("Imóvel não encontrado!");
         window.location.href = "estoque.html";
@@ -466,6 +497,130 @@ function abrirImagem(src) {
     });
 }
 
+let imagemArrastadaAtual = null;
+let placeholderArrasteAtual = null;
+
+function obterPlaceholderArraste() {
+    if (!placeholderArrasteAtual) {
+        placeholderArrasteAtual = document.createElement("div");
+        placeholderArrasteAtual.classList.add("drag-placeholder");
+    }
+
+    return placeholderArrasteAtual;
+}
+
+function limparPlaceholderArraste() {
+    if (placeholderArrasteAtual && placeholderArrasteAtual.parentNode) {
+        placeholderArrasteAtual.parentNode.removeChild(placeholderArrasteAtual);
+    }
+}
+
+function atualizarIndicadorPosicaoArraste(event) {
+    const draggedId = event.dataTransfer.getData("text/plain");
+    const draggedImg = document.querySelector(`[data-drag-id="${draggedId}"]`);
+    if (!draggedImg) {
+        return;
+    }
+
+    imagemArrastadaAtual = draggedImg;
+
+    const target = event.target;
+    const container = target.closest("#container-imagens");
+    if (!container) {
+        return;
+    }
+
+    const placeholder = obterPlaceholderArraste();
+
+    if (target.tagName === "IMG" && target !== draggedImg) {
+        if (placeholder.parentNode !== container || placeholder.nextSibling !== target) {
+            container.insertBefore(placeholder, target);
+        }
+    } else {
+        const botaoAdicionar = container.querySelector("button");
+        if (botaoAdicionar) {
+            if (placeholder.parentNode !== container || placeholder.nextSibling !== botaoAdicionar) {
+                container.insertBefore(placeholder, botaoAdicionar);
+            }
+        } else {
+            container.appendChild(placeholder);
+        }
+    }
+}
+
+function prepararContainerArrastavel(container) {
+    if (!container || container.dataset.dropReady === "true") {
+        return;
+    }
+
+    container.dataset.dropReady = "true";
+    container.addEventListener("dragover", function (event) {
+        event.preventDefault();
+        atualizarIndicadorPosicaoArraste(event);
+    });
+    container.addEventListener("dragenter", function (event) {
+        event.preventDefault();
+        atualizarIndicadorPosicaoArraste(event);
+    });
+    container.addEventListener("drop", mudarPosicaoNoContainer);
+}
+
+function prepararImagemArrastavel(imgElement) {
+    const dragId = `drag-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+
+    imgElement.dataset.dragId = dragId;
+    imgElement.setAttribute("draggable", "true");
+    imgElement.addEventListener("dragstart", function (event) {
+        imagemArrastadaAtual = imgElement;
+        imgElement.classList.add("imagem-arrastando");
+        event.dataTransfer.setData("text/plain", dragId);
+        event.dataTransfer.effectAllowed = "move";
+        if (event.dataTransfer.setDragImage) {
+            event.dataTransfer.setDragImage(imgElement, imgElement.width / 2, imgElement.height / 2);
+        }
+    });
+    imgElement.addEventListener("dragend", function () {
+        imgElement.classList.remove("imagem-arrastando");
+        imagemArrastadaAtual = null;
+        limparPlaceholderArraste();
+    });
+    imgElement.addEventListener("dragover", function (event) {
+        event.preventDefault();
+        atualizarIndicadorPosicaoArraste(event);
+    });
+    imgElement.addEventListener("dragenter", function (event) {
+        event.preventDefault();
+        atualizarIndicadorPosicaoArraste(event);
+    });
+    imgElement.addEventListener("drop", mudarPosicaoNoContainer);
+}
+
+function mudarPosicaoNoContainer(event) {
+    event.preventDefault();
+    const draggedId = event.dataTransfer.getData("text/plain");
+    const draggedImg = document.querySelector(`[data-drag-id="${draggedId}"]`);
+    const container = event.target.closest("#container-imagens");
+    const placeholder = obterPlaceholderArraste();
+
+    if (!draggedImg || !container) {
+        limparPlaceholderArraste();
+        return;
+    }
+
+    if (placeholder.parentNode === container) {
+        container.insertBefore(draggedImg, placeholder);
+    } else {
+        const botaoAdicionar = container.querySelector("button");
+        if (botaoAdicionar) {
+            container.insertBefore(draggedImg, botaoAdicionar);
+        } else {
+            container.appendChild(draggedImg);
+        }
+    }
+
+    limparPlaceholderArraste();
+}
+
 function adicionarAnexo(event) {
     var input = document.createElement("input");
     input.type = "file";
@@ -482,6 +637,7 @@ function adicionarAnexo(event) {
                 fileElement = document.createElement("img");
                 fileElement.setAttribute("onclick", "abrirImagem(this.src)");
                 fileElement.src = fileURL;
+                prepararImagemArrastavel(fileElement);
             } else if (file.type === "application/pdf") {
                 fileElement = document.createElement("a");
                 fileElement.href = fileURL;

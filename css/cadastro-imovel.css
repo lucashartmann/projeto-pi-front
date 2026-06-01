@@ -67,9 +67,10 @@ label {
     textarea {
         width: 100%;
         margin: 10px 0;
-        height: 2rem;
+        height: 3rem;
 
     }
+
 
     label {
         font-size: 1.34rem;
@@ -92,7 +93,7 @@ label {
     width: 90%;
 
     textarea {
-        height: 2.2rem;
+        height: 3rem;
 
         &:required {
             border: dashed 2px rgb(195, 174, 14);
@@ -112,7 +113,7 @@ label {
     }
 
     input {
-        height: 2rem;
+        height: 3rem;
 
         &:required {
             border: dashed 2px rgb(195, 174, 14);
@@ -132,7 +133,7 @@ label {
     }
 
     select {
-        height: 2.5rem;
+        height: 3rem;
 
         &:required {
             border: dashed 2px rgb(195, 174, 14);
@@ -185,6 +186,21 @@ label {
         width: 15rem;
         height: 10rem;
         border: solid 3px rgb(195, 174, 14);
+    }
+
+    img.imagem-arrastando {
+        opacity: 0.35;
+        transform: scale(0.97);
+        cursor: grabbing;
+    }
+
+    .drag-placeholder {
+        width: 15rem;
+        height: 10rem;
+        border: 3px dashed rgb(195, 174, 14);
+        border-radius: 6px;
+        background: rgba(195, 174, 14, 0.08);
+        box-sizing: border-box;
     }
 }
 
