@@ -6,3 +6,4 @@ ERROS.MD
 *.log
 .env
 /.phpunit.cache
+erro.md

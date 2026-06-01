@@ -60,7 +60,7 @@ class VendaAluguel
     //     return $this->$cpf_cliente;
     // }
 
-    // public function set_cpf_cliente(int $value){
+    // public function set_cpf_cliente(string $value){
     //     $this->cpf_cliente = $value;
     // }
 

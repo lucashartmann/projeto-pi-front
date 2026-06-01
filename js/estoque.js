@@ -86,7 +86,7 @@ async function carregarAnuncios() {
 
     section.innerHTML = "";
     for (let imovel of dados) {
-        console.log(imovel.data_cadastro);
+        // console.log(imovel.data_cadastro);
         const b64 = imovel.anuncio?.imagens?.[0] || null;
         section.innerHTML += `
             <div class="resultado">

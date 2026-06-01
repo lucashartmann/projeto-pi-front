@@ -25,6 +25,8 @@ function getCaminhoRelativo(destino) {
 
     const regex = new RegExp("/" + "$");
 
+    // console.log(caminho)
+
     caminho = caminho.replace(regex, destino);
 
     return caminho;
@@ -32,11 +34,10 @@ function getCaminhoRelativo(destino) {
 
 
 
-function alterarSrc(event) {
+function alterarSrc(event, caminho) {
     const a = event.target;
-    const href = a.getAttribute("href");
-    let caminho = getCaminhoRelativo(href);
-    a.setAttribute("href", caminho);
+    let caminhoRelativo = getCaminhoRelativo(caminho);
+    a.setAttribute("href", caminhoRelativo);
 }
 
 function openNav() {
@@ -341,7 +342,7 @@ function carregarTabs(usuario) {
 
 
     let html = tabs.map(tab =>
-        `<li><a href="${tab.href}" onclick="alterarSrc(event)">${tab.text}</a></li>`
+        `<li><a href="#" onclick="alterarSrc(event, '${tab.href}')">${tab.text}</a></li>`
     ).join("");
 
     if (dados.length > 0 && cadastros.length > 0) {
@@ -350,7 +351,7 @@ function carregarTabs(usuario) {
             <a href="#">Cadastro ▾</a>
             <div class="dropdown-content">
                 ${cadastros.map(c =>
-            `<a href="${c.href}" onclick="alterarSrc(event)">${c.text}</a>`
+            `<a href="#" onclick="alterarSrc(event, '${c.href}')">${c.text}</a>`
         ).join("")}
             </div>
         </li>
@@ -358,7 +359,7 @@ function carregarTabs(usuario) {
             <a href="#">Dados ▾</a>
             <div class="dropdown-content">
                 ${dados.map(d =>
-            `<a href="${d.href}" onclick="alterarSrc(event)">${d.text}</a>`
+            `<a href="#" onclick="alterarSrc(event, '${d.href}')">${d.text}</a>`
         ).join("")}
             </div>
         </li>
@@ -370,7 +371,7 @@ function carregarTabs(usuario) {
             <a href="#">Cadastro ▾</a>
             <div class="dropdown-content">
                 ${cadastros.map(c =>
-            `<a href="${c.href}" onclick="alterarSrc(event)">${c.text}</a>`
+            `<a href="#" onclick="alterarSrc(event, '${c.href}')">${c.text}</a>`
         ).join("")}
             </div>
         </li>
@@ -381,7 +382,7 @@ function carregarTabs(usuario) {
             <a href="#">Dados ▾</a>
             <div class="dropdown-content">
                 ${dados.map(d =>
-            `<a href="${d.href}" onclick="alterarSrc(event)">${d.text}</a>`
+            `<a href="#" onclick="alterarSrc(event, '${d.href}')">${d.text}</a>`
         ).join("")}
             </div>
         </li>

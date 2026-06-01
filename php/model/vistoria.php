@@ -79,7 +79,7 @@ class Vistoria
     }
 
 
-    public function setRelatorio(?string $relatorio): self
+    public function setRelatorio(string $relatorio): self
     {
         $this->relatorio = $relatorio;
 

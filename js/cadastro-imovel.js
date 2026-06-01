@@ -31,40 +31,33 @@ async function listarPessoas(tipo) {
     if (tipo !== "proprietario") {
         try {
             let caminho = getCaminhoRelativo("/php/api/proprietarios.php?acao=listar");
-            await fetch(caminho, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(data)
-            })
-                .then(async (response) => {
-                    if (response.erro) {
-                        alert("Erro ao listar atendimentos: " + response.erro);
+            const resposta = await fetch(caminho)
+                // .then(res => console.log(res))
+                .then(async (res) => {
+                    if (res.erro) {
+                        alert("Erro ao listar atendimentos: " + res.erro);
                         return null;
                     }
-                    const contentType = response.headers.get("content-type");
+                    const contentType = res.headers.get("content-type");
                     if (contentType && contentType.includes("application/json")) {
-                        return await response.json();
+                        return await res.json();
                     } else {
-                        const texto = await response.text();
-                        alert("Resposta inesperada do servidor");
+                        const texto = await res.text();
+                        // alert("Resposta inesperada do servidor");
                         console.error("Resposta não é JSON:", texto);
-                        return null;
+                        return;
                     }
                 })
                 .then(async (data) => {
-                    if (data.status == "erro") {
-                        alert("Erro ao listar pessoas: " + data.mensagem);
-                        return null;
-                    }
-                    return data;
-
+                    // console.log(data);
+                    return await data;
                 })
-                .catch(error => {
+                .catch(erro => {
                     console.error("Falha ao conectar com o backend:", erro);
                     return null;
                 });
+
+            return resposta;
 
         } catch (error) {
             console.error("Falha ao conectar com o backend:", erro);
@@ -73,39 +66,33 @@ async function listarPessoas(tipo) {
     } else {
         try {
             let caminho = getCaminhoRelativo("/php/api/usuarios.php?acao=listar");
-            await fetch(caminho, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(data)
-            })
-                .then(async (response) => {
-                    if (response.erro) {
-                        alert("Erro ao listar atendimentos: " + response.erro);
+            const resposta = await fetch(caminho)
+                // .then(res => console.log(res))
+                .then(async (res) => {
+                    if (res.erro) {
+                        alert("Erro ao listar atendimentos: " + res.erro);
                         return null;
                     }
-                    const contentType = response.headers.get("content-type");
+                    const contentType = res.headers.get("content-type");
                     if (contentType && contentType.includes("application/json")) {
-                        return await response.json();
+                        return await res.json();
                     } else {
-                        const texto = await response.text();
-                        alert("Resposta inesperada do servidor");
+                        const texto = await res.text();
+                        // alert("Resposta inesperada do servidor");
                         console.error("Resposta não é JSON:", texto);
-                        return null;
+                        return;
                     }
                 })
                 .then(async (data) => {
-                    if (data.status == "erro") {
-                        alert("Erro ao listar pessoas: " + data.mensagem);
-                        return null;
-                    }
-                    return data;
+                    // console.log(data);
+                    return await data;
                 })
-                .catch(error => {
+                .catch(erro => {
                     console.error("Falha ao conectar com o backend:", erro);
                     return null;
                 });
+
+            return resposta;
 
         } catch (error) {
             console.error("Falha ao conectar com o backend:", erro);
@@ -128,6 +115,11 @@ async function editarPessoa(tipo) {
     }
 
     const container = document.createElement("div");
+    document.addEventListener("click", function (event) {
+        if (event.target !== container && document.body.contains(container)) {
+            document.body.removeChild(container);
+        }
+    });
     const pesquisarInput = document.createElement("input");
     pesquisarInput.type = "text";
     pesquisarInput.placeholder = "Pesquisar...";
@@ -135,45 +127,64 @@ async function editarPessoa(tipo) {
         const query = pesquisarInput.value.toLowerCase();
         const resultados = container.querySelectorAll("div");
         resultados.forEach(resultado => {
-            const nome = resultado.querySelector("label").textContent.toLowerCase();
-            resultado.style.display = nome.includes(query) ? "block" : "none";
+            const nome = resultado.querySelector("label")?.textContent.toLowerCase();
+            resultado.style.display = nome.includes(query) ? "flex" : "none";
             const creciLabel = resultado.querySelector("label:nth-child(2)");
             if (creciLabel) {
                 const creci = creciLabel.textContent.toLowerCase();
-                resultado.style.display = (nome.includes(query) || creci.includes(query)) ? "block" : "none";
+                resultado.style.display = (nome.includes(query) || creci.includes(query)) ? "flex" : "none";
             }
             const emailLabel = resultado.querySelector("label:nth-child(3)");
             if (emailLabel) {
                 const email = emailLabel.textContent.toLowerCase();
-                resultado.style.display = (nome.includes(query) || email.includes(query)) ? "block" : "none";
+                resultado.style.display = (nome.includes(query) || email.includes(query)) ? "flex" : "none";
             }
             const telefoneLabel = resultado.querySelector("label:nth-child(4)");
             if (telefoneLabel) {
                 const telefone = telefoneLabel.textContent.toLowerCase();
-                resultado.style.display = (nome.includes(query) || email.includes(query) || telefone.includes(query)) ? "block" : "none";
+                resultado.style.display = (nome.includes(query) || email.includes(query) || telefone.includes(query)) ? "flex" : "none";
             }
         });
     };
 
     container.appendChild(pesquisarInput);
-    for (const pessoa of lista) {
-        const div_resultado = document.createElement("div");
-        const nome = document.createElement("label");
+    for (let pessoa of lista.dados) {
+        let div_resultado = document.createElement("div");
+        div_resultado.classList.add("resultado-pessoa");
+        let checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
+        checkbox.value = pessoa.id;
+        checkbox.name = "pessoa-selecionada";
+
+        div_left = document.createElement("div");
+        div_left.classList.add("div-left");
+        div_left.appendChild(checkbox);
+
+        div_resultado.appendChild(div_left);
+        let nome = document.createElement("label");
         nome.textContent = pessoa.nome;
-        div_resultado.appendChild(nome);
-        container.appendChild(div_resultado);
+
+        div_right = document.createElement("div");
+        div_right.classList.add("div-right");
+        div_right.appendChild(nome);
+
         if (pessoa?.creci) {
-            const creci = document.createElement("label");
+            let creci = document.createElement("label");
             creci.textContent = "CRECI: " + pessoa.creci;
-            div_resultado.appendChild(creci);
+            div_right.appendChild(creci);
         }
-        const email = document.createElement("label");
+        let email = document.createElement("label");
         email.textContent = "Email: " + pessoa.email;
-        div_resultado.appendChild(email);
-        const telefone = document.createElement("label");
+        div_right.appendChild(email);
+        let telefone = document.createElement("label");
         telefone.textContent = "Telefone: " + pessoa.telefone;
-        div_resultado.appendChild(telefone);
+        div_right.appendChild(telefone);
+        div_resultado.appendChild(div_right);
+        container.appendChild(div_resultado);
     }
+
+    container.classList.add('form-container');
+    document.body.appendChild(container);
 
 }
 
@@ -210,6 +221,7 @@ async function getOutrosDados(data) {
     data["proprietario"] = {};
     data["corretor"] = {};
     data["captador"] = {};
+    return data;
 }
 
 async function salvar() {
@@ -223,6 +235,8 @@ async function salvar() {
             data[key] = value;
         });
     }
+
+    data = await getOutrosDados(data);
 
     if (JSON.stringify(data).length > 0) {
         try {
@@ -409,6 +423,33 @@ async function abrirCadastro(imovelId) {
     }
 }
 
+function abrirImagem(src) {
+    var modal = document.createElement("div");
+    modal.style.position = "fixed";
+    modal.style.top = "0";
+    modal.style.left = "0";
+    modal.style.width = "100%";
+    modal.style.height = "100%";
+    modal.style.backgroundColor = "rgba(0, 0, 0, 0.8)";
+    modal.style.display = "flex";
+    modal.style.justifyContent = "center";
+    modal.style.alignItems = "center";
+    modal.style.zIndex = "1000";
+    var img = document.createElement("img");
+    img.src = src;
+    img.style.maxWidth = "90%";
+    img.style.maxHeight = "90%";
+    modal.appendChild(img);
+    document.body.appendChild(modal);
+    modal.addEventListener("click", function () {
+        document.body.removeChild(modal);
+    });
+    img.addEventListener("click", function (event) {
+        event.stopPropagation();
+        document.body.removeChild(modal);
+    });
+}
+
 function adicionarAnexo(event) {
     var input = document.createElement("input");
     input.type = "file";
@@ -423,6 +464,7 @@ function adicionarAnexo(event) {
             var fileElement;
             if (file.type.startsWith("image/")) {
                 fileElement = document.createElement("img");
+                fileElement.setAttribute("onclick", "abrirImagem(this.src)");
                 fileElement.src = fileURL;
             } else if (file.type === "application/pdf") {
                 fileElement = document.createElement("a");

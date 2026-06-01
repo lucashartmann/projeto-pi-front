@@ -721,6 +721,10 @@ class Banco extends PDO
                     $telefones[] = $row['numero'];
                 }
 
+                if (!$tipo) {
+                    continue;
+                }
+
                 switch ($tipo) {
 
                     case 'CORRETOR':
@@ -756,7 +760,7 @@ class Banco extends PDO
                             $nome,
                             $cpf
                         );
-                        $usuario->setSalario($salario ? (float)$salario : null);
+                        $usuario->setSalario($salario ? (float)$salario : 0.0);
                         break;
 
                     case 'GERENTE':
@@ -774,7 +778,7 @@ class Banco extends PDO
                             $nome,
                             $cpf
                         );
-                        $usuario->setSalario($salario ? (float)$salario : null);
+                        $usuario->setSalario($salario ? (float)$salario : 0.0);
                         break;
 
                     case 'CLIENTE':
@@ -796,7 +800,7 @@ class Banco extends PDO
                             $email,
                             $nome,
                             $cpf,
-                            $tipo
+                            Tipo::tryFrom($tipo)
                         );
                         break;
                 }
@@ -1457,8 +1461,24 @@ class Banco extends PDO
         try {
 
             $stmt = $this->prepare("
-                SELECT * FROM condominio 
-                WHERE id = :id_condominio
+                SELECT 
+
+                condominio.id as condominio_id,
+                condominio.nome,
+                condominio.id_endereco,
+               
+                endereco.id as endereco_id,
+                endereco.rua,
+                endereco.numero,
+                endereco.bairro,
+                endereco.cep,
+                endereco.complemento,
+                endereco.cidade,
+                endereco.uf 
+                
+                FROM condominio 
+                LEFT JOIN endereco  ON condominio.id_endereco = endereco.id
+                WHERE condominio.id = :id_condominio
             ");
             $stmt->execute([':id_condominio' => $id]);
 
@@ -1468,11 +1488,16 @@ class Banco extends PDO
                 throw new Exception("Não existe condominio com id {$id}");
             }
 
-            $idCondominio = (int)$registro['id'];
+            $idCondominio = (int)$registro['condominio_id'];
             $nome = $registro['nome'];
-            $idEndereco = (int)$registro['id_endereco'];
-
-            $enderecoObj = $this->getEnderecoPorId($idEndereco);
+            $enderecoObj = new Endereco(
+                $registro['rua'],
+                $registro['bairro'],
+                $registro['cep'],
+                $registro['cidade'],
+                $registro['uf']
+            );
+            $enderecoObj->setId($registro['endereco_id']);
 
             $condominio_obj = new Condominio($nome, $enderecoObj);
             $condominio_obj->setId($idCondominio);
@@ -2072,78 +2097,7 @@ class Banco extends PDO
         }
     }
 
-    public function getListaImoveis()
-    {
 
-        try {
-
-            $sql = "
-            SELECT * FROM imovel
-            ";
-
-            $stmt = $this->prepare($sql);
-            $stmt->execute();
-
-            $resultados = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-            if (empty($resultados)) {
-                throw new Exception("Não há imóveis disponíveis");
-            }
-
-            $lista = [];
-
-            foreach ($resultados as $dados) {
-
-                $id = (int)$dados['id'];
-                $imovel = $this->getImovelPorId($id);
-
-                $lista[] = $imovel;
-            }
-
-            return $lista;
-        } catch (Exception $e) {
-            error_log("ERRO Banco->getListaImoveis: " . $e->getMessage());
-            return [];
-        }
-    }
-
-    public function getListaImoveisDisponiveis()
-    {
-
-        try {
-
-            $sql = "
-            SELECT * FROM imovel
-            WHERE status IN ('Venda', 'Aluguel', 'Venda_Aluguel')
-        ";
-
-            $stmt = $this->prepare($sql);
-            $stmt->execute();
-
-            $resultados = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-            if (empty($resultados)) {
-                throw new Exception("Não há imóveis disponíveis");
-            }
-
-            $lista = [];
-
-            foreach ($resultados as $dados) {
-
-                $id = (int)$dados['id'];
-
-                $imovel = $this->getImovelPorId($id);
-                if ($imovel) {
-                    $lista[] = $imovel;
-                }
-            }
-
-            return $lista;
-        } catch (Exception $e) {
-            error_log("ERRO Banco->getListaImoveisDisponiveis: " . $e->getMessage());
-            return [];
-        }
-    }
 
     public function atualizarImovel($imovel)
     {
@@ -2799,93 +2753,9 @@ class Banco extends PDO
         }
     }
 
-    public function getImovelPorId($idImovel)
+    public function montarImovel($dados, $idImovel)
     {
         try {
-            $sql = "
-            SELECT
-                i.*,
-
-                e.id AS endereco_id,
-                e.rua AS endereco_rua,
-                e.numero AS endereco_numero,
-                e.complemento AS endereco_complemento,
-                e.bairro AS endereco_bairro,
-                e.cep AS endereco_cep,
-                e.cidade AS endereco_cidade,
-                e.uf AS endereco_uf,
-
-                c.id AS condominio_id,
-                c.nome AS condominio_nome,
-                ce.id AS condominio_endereco_id,
-                ce.rua AS condominio_endereco_rua,
-                ce.numero AS condominio_endereco_numero,
-                ce.complemento AS condominio_endereco_complemento,
-                ce.bairro AS condominio_endereco_bairro,
-                ce.cep AS condominio_endereco_cep,
-                ce.cidade AS condominio_endereco_cidade,
-                ce.uf AS condominio_endereco_uf,
-
-                u_cor.id AS corretor_id,
-                u_cor.username AS corretor_username,
-                u_cor.senha AS corretor_senha,
-                u_cor.email AS corretor_email,
-                u_cor.nome AS corretor_nome,
-                u_cor.cpf_cnpj AS corretor_cpf_cnpj,
-                u_cor.rg AS corretor_rg,
-                co.creci AS corretor_creci,
-
-                u_cap.id AS captador_id,
-                u_cap.username AS captador_username,
-                u_cap.senha AS captador_senha,
-                u_cap.email AS captador_email,
-                u_cap.nome AS captador_nome,
-                u_cap.cpf_cnpj AS captador_cpf_cnpj,
-                u_cap.rg AS captador_rg,
-                ca.salario AS captador_salario,
-
-                a.id AS anuncio_id,
-                a.descricao AS anuncio_descricao,
-                a.titulo AS anuncio_titulo
-
-            FROM imovel i
-
-            LEFT JOIN endereco e
-                ON e.id = i.id_endereco
-
-            LEFT JOIN condominio c
-                ON c.id = i.id_condominio
-
-            LEFT JOIN endereco ce
-                ON ce.id = c.id_endereco
-
-            LEFT JOIN usuario u_cor
-                ON u_cor.id = i.id_corretor
-
-            LEFT JOIN corretor co
-                ON co.id_usuario = u_cor.id
-
-            LEFT JOIN usuario u_cap
-                ON u_cap.id = i.id_captador
-
-            LEFT JOIN captador ca
-                ON ca.id_usuario = u_cap.id
-
-            LEFT JOIN anuncio a
-                ON a.id = i.id_anuncio
-
-            WHERE i.id = :id
-        ";
-
-            $stmt = $this->prepare($sql);
-            $stmt->execute([':id' => $idImovel]);
-
-            $dados = $stmt->fetch(PDO::FETCH_ASSOC);
-
-            if (!$dados) {
-                throw new Exception("Imóvel não encontrado");
-            }
-
             $endereco = null;
             if ($dados['endereco_id']) {
                 $endereco = new Endereco(
@@ -3101,10 +2971,319 @@ class Banco extends PDO
 
             return $imovelObj;
         } catch (Exception $e) {
+            error_log("ERRO! Banco-> montarImovel: " . $e->getMessage());
+            return null;
+        }
+    }
+
+    public function getListaImoveis()
+    {
+
+        try {
+
+            $sql = "
+            SELECT
+                i.*,
+
+                e.id AS endereco_id,
+                e.rua AS endereco_rua,
+                e.numero AS endereco_numero,
+                e.complemento AS endereco_complemento,
+                e.bairro AS endereco_bairro,
+                e.cep AS endereco_cep,
+                e.cidade AS endereco_cidade,
+                e.uf AS endereco_uf,
+
+                c.id AS condominio_id,
+                c.nome AS condominio_nome,
+                ce.id AS condominio_endereco_id,
+                ce.rua AS condominio_endereco_rua,
+                ce.numero AS condominio_endereco_numero,
+                ce.complemento AS condominio_endereco_complemento,
+                ce.bairro AS condominio_endereco_bairro,
+                ce.cep AS condominio_endereco_cep,
+                ce.cidade AS condominio_endereco_cidade,
+                ce.uf AS condominio_endereco_uf,
+
+                u_cor.id AS corretor_id,
+                u_cor.username AS corretor_username,
+                u_cor.senha AS corretor_senha,
+                u_cor.email AS corretor_email,
+                u_cor.nome AS corretor_nome,
+                u_cor.cpf_cnpj AS corretor_cpf_cnpj,
+                u_cor.rg AS corretor_rg,
+                co.creci AS corretor_creci,
+
+                u_cap.id AS captador_id,
+                u_cap.username AS captador_username,
+                u_cap.senha AS captador_senha,
+                u_cap.email AS captador_email,
+                u_cap.nome AS captador_nome,
+                u_cap.cpf_cnpj AS captador_cpf_cnpj,
+                u_cap.rg AS captador_rg,
+                ca.salario AS captador_salario,
+
+                a.id AS anuncio_id,
+                a.descricao AS anuncio_descricao,
+                a.titulo AS anuncio_titulo
+
+            FROM imovel i
+
+            LEFT JOIN endereco e
+                ON e.id = i.id_endereco
+
+            LEFT JOIN condominio c
+                ON c.id = i.id_condominio
+
+            LEFT JOIN endereco ce
+                ON ce.id = c.id_endereco
+
+            LEFT JOIN usuario u_cor
+                ON u_cor.id = i.id_corretor
+
+            LEFT JOIN corretor co
+                ON co.id_usuario = u_cor.id
+
+            LEFT JOIN usuario u_cap
+                ON u_cap.id = i.id_captador
+
+            LEFT JOIN captador ca
+                ON ca.id_usuario = u_cap.id
+
+            LEFT JOIN anuncio a
+                ON a.id = i.id_anuncio
+
+            ";
+
+            $stmt = $this->prepare($sql);
+            $stmt->execute();
+
+            $resultados = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            if (empty($resultados)) {
+                throw new Exception("Não há imóveis disponíveis");
+            }
+
+            $lista = [];
+
+            foreach ($resultados as $dados) {
+
+                $id = (int)$dados['id'];
+                $imovel = $this->montarImovel($dados, $id);
+                if ($imovel) {
+                    $lista[] = $imovel;
+                }
+            }
+
+            return $lista;
+        } catch (Exception $e) {
+            error_log("ERRO Banco->getListaImoveis: " . $e->getMessage());
+            return [];
+        }
+    }
+
+    public function getListaImoveisDisponiveis()
+    {
+
+        try {
+
+            $sql = "
+            SELECT
+                i.*,
+
+                e.id AS endereco_id,
+                e.rua AS endereco_rua,
+                e.numero AS endereco_numero,
+                e.complemento AS endereco_complemento,
+                e.bairro AS endereco_bairro,
+                e.cep AS endereco_cep,
+                e.cidade AS endereco_cidade,
+                e.uf AS endereco_uf,
+
+                c.id AS condominio_id,
+                c.nome AS condominio_nome,
+                ce.id AS condominio_endereco_id,
+                ce.rua AS condominio_endereco_rua,
+                ce.numero AS condominio_endereco_numero,
+                ce.complemento AS condominio_endereco_complemento,
+                ce.bairro AS condominio_endereco_bairro,
+                ce.cep AS condominio_endereco_cep,
+                ce.cidade AS condominio_endereco_cidade,
+                ce.uf AS condominio_endereco_uf,
+
+                u_cor.id AS corretor_id,
+                u_cor.username AS corretor_username,
+                u_cor.senha AS corretor_senha,
+                u_cor.email AS corretor_email,
+                u_cor.nome AS corretor_nome,
+                u_cor.cpf_cnpj AS corretor_cpf_cnpj,
+                u_cor.rg AS corretor_rg,
+                co.creci AS corretor_creci,
+
+                u_cap.id AS captador_id,
+                u_cap.username AS captador_username,
+                u_cap.senha AS captador_senha,
+                u_cap.email AS captador_email,
+                u_cap.nome AS captador_nome,
+                u_cap.cpf_cnpj AS captador_cpf_cnpj,
+                u_cap.rg AS captador_rg,
+                ca.salario AS captador_salario,
+
+                a.id AS anuncio_id,
+                a.descricao AS anuncio_descricao,
+                a.titulo AS anuncio_titulo
+
+            FROM imovel i
+
+            LEFT JOIN endereco e
+                ON e.id = i.id_endereco
+
+            LEFT JOIN condominio c
+                ON c.id = i.id_condominio
+
+            LEFT JOIN endereco ce
+                ON ce.id = c.id_endereco
+
+            LEFT JOIN usuario u_cor
+                ON u_cor.id = i.id_corretor
+
+            LEFT JOIN corretor co
+                ON co.id_usuario = u_cor.id
+
+            LEFT JOIN usuario u_cap
+                ON u_cap.id = i.id_captador
+
+            LEFT JOIN captador ca
+                ON ca.id_usuario = u_cap.id
+
+            LEFT JOIN anuncio a
+                ON a.id = i.id_anuncio
+
+            WHERE i.status IN ('Venda', 'Aluguel', 'Venda_Aluguel')
+        ";
+
+            $stmt = $this->prepare($sql);
+            $stmt->execute();
+
+            $resultados = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            if (empty($resultados)) {
+                throw new Exception("Não há imóveis disponíveis");
+            }
+
+            $lista = [];
+
+            foreach ($resultados as $dados) {
+
+                $id = (int)$dados['id'];
+
+                $imovel = $this->montarImovel($dados, $id);
+                if ($imovel) {
+                    $lista[] = $imovel;
+                }
+            }
+
+            return $lista;
+        } catch (Exception $e) {
+            error_log("ERRO Banco->getListaImoveisDisponiveis: " . $e->getMessage());
+            return [];
+        }
+    }
+    public function getImovelPorId($idImovel)
+    {
+        try {
+            $sql = "
+            SELECT
+                i.*,
+
+                e.id AS endereco_id,
+                e.rua AS endereco_rua,
+                e.numero AS endereco_numero,
+                e.complemento AS endereco_complemento,
+                e.bairro AS endereco_bairro,
+                e.cep AS endereco_cep,
+                e.cidade AS endereco_cidade,
+                e.uf AS endereco_uf,
+
+                c.id AS condominio_id,
+                c.nome AS condominio_nome,
+                ce.id AS condominio_endereco_id,
+                ce.rua AS condominio_endereco_rua,
+                ce.numero AS condominio_endereco_numero,
+                ce.complemento AS condominio_endereco_complemento,
+                ce.bairro AS condominio_endereco_bairro,
+                ce.cep AS condominio_endereco_cep,
+                ce.cidade AS condominio_endereco_cidade,
+                ce.uf AS condominio_endereco_uf,
+
+                u_cor.id AS corretor_id,
+                u_cor.username AS corretor_username,
+                u_cor.senha AS corretor_senha,
+                u_cor.email AS corretor_email,
+                u_cor.nome AS corretor_nome,
+                u_cor.cpf_cnpj AS corretor_cpf_cnpj,
+                u_cor.rg AS corretor_rg,
+                co.creci AS corretor_creci,
+
+                u_cap.id AS captador_id,
+                u_cap.username AS captador_username,
+                u_cap.senha AS captador_senha,
+                u_cap.email AS captador_email,
+                u_cap.nome AS captador_nome,
+                u_cap.cpf_cnpj AS captador_cpf_cnpj,
+                u_cap.rg AS captador_rg,
+                ca.salario AS captador_salario,
+
+                a.id AS anuncio_id,
+                a.descricao AS anuncio_descricao,
+                a.titulo AS anuncio_titulo
+
+            FROM imovel i
+
+            LEFT JOIN endereco e
+                ON e.id = i.id_endereco
+
+            LEFT JOIN condominio c
+                ON c.id = i.id_condominio
+
+            LEFT JOIN endereco ce
+                ON ce.id = c.id_endereco
+
+            LEFT JOIN usuario u_cor
+                ON u_cor.id = i.id_corretor
+
+            LEFT JOIN corretor co
+                ON co.id_usuario = u_cor.id
+
+            LEFT JOIN usuario u_cap
+                ON u_cap.id = i.id_captador
+
+            LEFT JOIN captador ca
+                ON ca.id_usuario = u_cap.id
+
+            LEFT JOIN anuncio a
+                ON a.id = i.id_anuncio
+
+            WHERE i.id = :id
+        ";
+
+            $stmt = $this->prepare($sql);
+            $stmt->execute([':id' => $idImovel]);
+
+            $dados = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if (!$dados) {
+                throw new Exception("Imóvel não encontrado");
+            }
+
+            return $this->montarImovel($dados, $idImovel);
+        } catch (Exception $e) {
             error_log("ERRO! Banco->getImovelPorId: " . $e->getMessage());
             return null;
         }
     }
+
+
 
     public function getImoveisPorProprietario($idProprietario)
     {

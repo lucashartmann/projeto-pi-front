@@ -97,6 +97,7 @@ class controller
                     ];
                 }
             }
+            // error_log("". json_encode($lista));
             return (["status" => "sucesso", "dados" => $lista]);
         } catch (Exception $e) {
             return (["status" => "erro", "mensagem" => "Erro ao listar usuários"]);
@@ -370,7 +371,7 @@ class controller
                     $imagens = [];
                     if ($anuncioObj->getImagens()) {
                         foreach ($anuncioObj->getImagens() as $imagem) {
-                            $imagens[] = CaminhoXampp::getBaseUrl() . $imagem->getCaminho();
+                            $imagens[] =  rtrim(dirname($_SERVER['SCRIPT_NAME'], 3), '/') . "/assets/" .  $imagem->getCaminho();
                         }
                     }
                     $anuncio = [
@@ -430,7 +431,6 @@ class controller
                     $anuncioObj = $imovel->getAnuncio();
                     $imagens = [];
                     if ($anuncioObj->getImagens()) {
-                        error_log(serialize($anuncioObj->getImagens()));
                         foreach ($anuncioObj->getImagens() as $imagem) {
                             $imagens[] =  rtrim(dirname($_SERVER['SCRIPT_NAME'], 3), '/') . "/assets/" .  $imagem->getCaminho();
                         }
