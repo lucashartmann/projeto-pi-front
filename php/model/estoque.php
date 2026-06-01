@@ -42,6 +42,10 @@ class Estoque
     //     }        
     // }
 
+   public function atualizarAnuncio(Anuncio $anuncio)
+    {
+        return $this->bancoDados->atualizarAnuncio($anuncio);
+    }
 
     public function getImovelPorId(int $id)
     {

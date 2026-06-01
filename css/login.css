@@ -40,6 +40,11 @@ form {
     align-items: center;
     width: 100%;
     height: auto;
+
+    h3 {
+        margin: 30px;
+    }
+
     select {
         width: 90%;
         height: 30px;

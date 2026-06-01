@@ -175,7 +175,7 @@ class Imovel
     public array $filtros;
     public string $complemento;
 
-    public function __construct(Endereco $endereco, Status $status, Categoria $categoria)
+    public function __construct(?Endereco $endereco, Status $status, Categoria $categoria)
     {
         $this->id = 0;
         $this->valorVenda = 0;

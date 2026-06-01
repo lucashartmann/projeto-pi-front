@@ -41,16 +41,16 @@ function alterarSrc(event, caminho) {
 }
 
 function openNav() {
-  document.getElementById("mySidenav").style.width = "250px";
-  document.querySelector("main").style.marginLeft = "250px";
-  document.querySelector("#top-nav").style.marginLeft = "250px";
-//   document.body.style.backgroundColor = "rgba(0,0,0,0.4)";
+    document.getElementById("mySidenav").style.width = "250px";
+    document.querySelector("main").style.marginLeft = "250px";
+    document.querySelector("#top-nav").style.marginLeft = "250px";
+    //   document.body.style.backgroundColor = "rgba(0,0,0,0.4)";
 }
 
 function closeNav() {
-  document.getElementById("mySidenav").style.width = "0";
-  document.querySelector("main").style.marginLeft = "0";
-  document.querySelector("#top-nav").style.marginLeft = "0";
+    document.getElementById("mySidenav").style.width = "0";
+    document.querySelector("main").style.marginLeft = "0";
+    document.querySelector("#top-nav").style.marginLeft = "0";
     // document.body.style.backgroundColor = "white";
 }
 
@@ -397,14 +397,18 @@ function carregarTabs(usuario) {
 async function setup() {
     const usuario = await carregarUser();
     if (usuario) carregarTabs(usuario);
-    const topNav = document.querySelector("#top-nav .fa-bars");
-
-    topNav.addEventListener("click", mostrarNavLeft);
+    // const topNav = document.querySelector("#top-nav .fa-bars");
+    // if (topNav){
+    //     topNav.addEventListener("click", mostrarNavLeft);
+    // }
+    if (document.getElementById("logo")) {
+        document.getElementById("logo").src = getCaminhoRelativo("assets/logo.png");
+    }
 }
 
 
 setup();
-document.getElementById("logo").src = getCaminhoRelativo("assets/logo.png");
+
 
 
 // window.addEventListener("scroll", () => {

@@ -1,29 +1,39 @@
 
 
 async function preencherEndereco(event) {
-    let cep = event.target.value;
+    const cep = event.target.value.replace(/\D/g, "");
 
-    if (cep.length > 7) {
-        try {
-            let inputRua = document.getElementById("ta-rua");
-            let inputBairro = document.getElementById("ta-bairro");
-            let inputCidade = document.getElementById("ta-cidade");
-            let inputEstado = document.getElementById("ta-estado");
-            const response = await fetch(`https://viacep.com.br/ws/${cep}/json`);
-            const data = await response.json();
-            if (data.erro) {
-                alert("CEP não encontrado!");
-                return;
-            }
-            inputRua.value = data.logradouro || "";
-            inputBairro.value = data.bairro || "";
-            inputCidade.value = data.localidade || "";
-            inputEstado.value = data.uf || "";
-        } catch (Exception) {
-            // alert("Erro ao buscar endereço pelo CEP!");
-            console.error("Erro ao buscar endereço:", Exception);
+    if (cep.length !== 8) {
+        return;
+    }
+
+    try {
+        const inputRua = document.getElementById("ta-rua");
+        const inputBairro = document.getElementById("ta-bairro");
+        const inputCidade = document.getElementById("ta-cidade");
+        const inputEstado = document.getElementById("ta-estado");
+
+        const response = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
+
+        if (!response.ok) {
+            console.log("CEP inválido ou não encontrado");
+            return;
         }
-    };
+
+        const data = await response.json();
+
+        if (data.erro) {
+            alert("CEP não encontrado!");
+            return;
+        }
+
+        inputRua.value = data.logradouro || "";
+        inputBairro.value = data.bairro || "";
+        inputCidade.value = data.localidade || "";
+        inputEstado.value = data.uf || "";
+    } catch (error) {
+        console.error("Erro ao buscar endereço:", error);
+    }
 }
 
 
@@ -208,15 +218,19 @@ async function getOutrosDados(data) {
     const containerCorretor = document.getElementById("container-corretor");
     const containerCaptador = document.getElementById("container-captador");
     const imagens = containerImagens.querySelectorAll("img");
-    for (let img of imagens) {
-        const response = await fetch(img.src);
-        const blob = await response.blob();
-        data["imagens"].push(blob);
+    if (imagens) {
+        for (let img of imagens) {
+            const response = await fetch(img.src);
+            const blob = await response.blob();
+            data["imagens"].push(blob);
+        }
     }
-    for (let doc of containerDocumentos.querySelectorAll("a")) {
-        const response = await fetch(doc.href);
-        const blob = await response.blob();
-        data["documentos"].push(blob);
+    if (containerDocumentos && containerDocumentos.querySelectorAll("a").length > 0) {
+        for (let doc of containerDocumentos.querySelectorAll("a")) {
+            const response = await fetch(doc.href);
+            const blob = await response.blob();
+            data["documentos"].push(blob);
+        }
     }
     data["proprietario"] = {};
     data["corretor"] = {};
@@ -237,6 +251,8 @@ async function salvar() {
     }
 
     data = await getOutrosDados(data);
+
+    console.log("Dados do imóvel a serem enviados:", data);
 
     if (JSON.stringify(data).length > 0) {
         try {

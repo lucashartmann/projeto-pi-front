@@ -79,16 +79,40 @@ function salvarImagem($blob, $id)
     if (!$blobConvertido) {
         return false;
     }
-    $nomeArquivo = uniqid() . '.webp';
+    $nomeArquivo = uniqid(more_entropy: true) . '.webp';
     $caminhoCompleto = rtrim(dirname($_SERVER['SCRIPT_NAME'], 3), '/') . "/assets/imoveis/" . $id . "/" . $nomeArquivo;
 
     if (file_exists($caminhoCompleto)) {
         unlink($caminhoCompleto);
+    } else {
+        $diretorio = rtrim(dirname($_SERVER['SCRIPT_NAME'], 3), '/') . "/assets/imoveis/" . $id;
+        if (!is_dir($diretorio)) {
+            mkdir($diretorio, 0755, true);
+        }
     }
 
     file_put_contents($caminhoCompleto, base64_decode($blobConvertido));
 
     return $caminhoCompleto;
+}
+
+function limparPasta($listaImagens, $id)
+{
+    $listaCaminhos = array_map(function ($anexo) {
+        return $anexo->getCaminho();
+    }, $listaImagens);
+    $diretorio = rtrim(dirname($_SERVER['SCRIPT_NAME'], 3), '/') . "/assets/imoveis/" . $id;
+    if (file_exists($diretorio)) {
+        $arquivos = scandir($diretorio);
+        foreach ($arquivos as $arquivo) {
+            if ($arquivo !== '.' && $arquivo !== '..') {
+                $caminhoCompleto = $diretorio . '/' . $arquivo;
+                if (is_file($caminhoCompleto) && !in_array($caminhoCompleto, $listaCaminhos)) {
+                    unlink($caminhoCompleto);
+                }
+            }
+        }
+    }
 }
 
 function obterImagem($caminho)

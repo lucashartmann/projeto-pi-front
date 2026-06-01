@@ -371,7 +371,9 @@ class controller
                     $imagens = [];
                     if ($anuncioObj->getImagens()) {
                         foreach ($anuncioObj->getImagens() as $imagem) {
-                            $imagens[] =  rtrim(dirname($_SERVER['SCRIPT_NAME'], 3), '/') . "/assets/" .  $imagem->getCaminho();
+                            if ($imagem instanceof Anexo && is_string($imagem->getCaminho() === "string")) {
+                                $imagens[] =  rtrim(dirname($_SERVER['SCRIPT_NAME'], 3), '/') . "/assets/" .  $imagem->getCaminho();
+                            }
                         }
                     }
                     $anuncio = [
@@ -639,27 +641,10 @@ class controller
             if ($id) {
                 $imovelObj = Init::getInstance()->getImovelPorId($id);
                 $imovelObj->setDataModificacao(DateTime::createFromFormat('Y-m-d H:i:s', date('Y-m-d H:i:s')));
-                // $imagensObjetos = [];
-                // for ($i = 0; $i < count($imagens); $i++) {
-                //     $imagem = $imagens[$i];
-                //     try {
-                //         $imagemBytes = base64_decode($imagem);
-                //         $caminho = salvarImagem($imagemBytes, $id);
-                //         if ($caminho != null) {
-                //             continue;
-                //         }
-                //         $imagemObj = new Anexo($caminho, TipoAnexo::IMAGEM);
-                //         $imagensObjetos[] = $imagemObj;
-                //     } catch (Exception $e) {
-                //         continue;
-                //     }
-                // }
-                // $anuncioObj->setImagens($imagensObjetos);
             } else {
                 $imovelObj = new Imovel($enderecoObj, $status, $categoria);
             }
 
-            $imovelObj->setId($id);
             $imovelObj->setValorVenda($valorVenda);
             $imovelObj->setValorAluguel($valorAluguel);
             $imovelObj->setQuantQuartos($quantQuartos);
@@ -704,7 +689,7 @@ class controller
                 }
             }
 
-            if (! $endereco) {
+            if (!$endereco) {
                 return (["status" => "erro", "mensagem" => "ERRO ao cadastrar imóvel! Problema com o endereço"]);
             } else {
                 $imovelObj->getEndereco()->setId($endereco->getId());
@@ -712,7 +697,7 @@ class controller
                     $endereco->getId()
                 );
 
-                if (! $consultarCondominio) {
+                if (!$consultarCondominio) {
                     $cadastrar = Init::getInstance()->cadastrarCondominio(
                         $imovelObj->getCondominio()
                     );
@@ -733,13 +718,37 @@ class controller
                 $cadastroAnuncio = Init::getInstance()->getEstoque()->cadastrarAnuncio(
                     $imovelObj->getAnuncio()
                 );
-                if ($cadastroAnuncio != False) {
+                if ($cadastroAnuncio) {
                     $imovelObj->getAnuncio()->setId($cadastroAnuncio);
                 }
 
                 $imovelObj->setDataCadastro(DateTime::createFromFormat('Y-m-d H:i:s', date('Y-m-d H:i:s')));
-                $cadastrado = Init::getInstance()->getEstoque()->cadastrarImovel($imovelObj);
-                if ($cadastrado == True) {
+                if ($id) {
+                    $cadastrado = Init::getInstance()->getEstoque()->atualizarImovel($imovelObj);
+                    limparPasta($imovelObj->getAnuncio()->getImagens(), $imovelObj->getId());
+                } else {
+                    $cadastrado = Init::getInstance()->getEstoque()->cadastrarImovel($imovelObj);
+                }
+                if ($cadastrado) {
+                    if ($cadastroAnuncio) {
+                        $imagensObjetos = [];
+                        for ($i = 0; $i < count($imagens); $i++) {
+                            $imagem = $imagens[$i];
+                            try {
+                                $imagemBytes = base64_decode($imagem);
+                                $caminho = salvarImagem($imagemBytes, $cadastrado);
+                                if ($caminho != null) {
+                                    continue;
+                                }
+                                $imagemObj = new Anexo($cadastroAnuncio, $caminho, TipoAnexo::IMAGEM);
+                                $imagensObjetos[] = $imagemObj;
+                            } catch (Exception $e) {
+                                continue;
+                            }
+                        }
+                        $anuncioObj->setImagens($imagensObjetos);
+                        Init::getInstance()->getEstoque()->atualizarAnuncio($anuncioObj);
+                    }
                     return (["status" => "sucesso", "mensagem" => "imovel cadastrado!\n"]);
                 } else {
                     return (["status" => "erro", "mensagem" => "ERRO ao cadastrar imóvel"]);
@@ -749,7 +758,6 @@ class controller
             return (["status" => "erro", "mensagem" => "Erro interno"]);
         }
     }
-
 
     public function salvarLogin(string $username, string $senha, string $email)
     {

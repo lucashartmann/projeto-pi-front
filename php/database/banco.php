@@ -935,8 +935,8 @@ class Banco extends PDO
                 WHERE $campoDesejado = ?;
                 ";
             $stmt = $this->prepare($sqlDeleteQuery);
-            $stmt->execute([$valor]);
-            return True;
+
+            return $stmt->execute([$valor]);
         } catch (Exception $e) {
             error_log("ERRO Banco->remover $tabela - $valor: " . $e->getMessage());
             return False;
@@ -952,8 +952,8 @@ class Banco extends PDO
                 ";
             $stmt = $this->prepare($sqlUpdateQuery);
             $stmt->execute([$valor]);
-            $this->commit();
-            return True;
+
+            return $this->commit();
         } catch (Exception $e) {
             error_log("ERRO Banco->atualizar $tabela - $valor: " . $e->getMessage());
             return False;
@@ -1261,13 +1261,13 @@ class Banco extends PDO
                 $status = $status->value;
             }
             $stmt = $this->prepare($sqlQuery);
-            $stmt->execute([
+
+            return $stmt->execute([
                 ":id_imovel" => $imovelObj,
                 ":id_corretor" => $corretor_obj,
                 ":id_cliente" => $cliente_obj,
                 ":status" => $status
             ]);
-            return True;
         } catch (Exception $e) {
             $erro = "ERRO! Banco->cadastrarAtendimento: " . $e->getMessage();
             error_log($erro);
@@ -1369,12 +1369,12 @@ class Banco extends PDO
                     VALUES(:id_anuncio, :nome_arquivo, :tipo)
                     ";
             $stmt = $this->prepare($sqlQuery);
-            $stmt->execute([
+
+            return $stmt->execute([
                 ':id_anuncio' => $anexo->getId(),
                 ':nome_arquivo' => $anexo->getCaminho(),
                 ':tipo' => $anexo->getTipo() ? $anexo->getTipo()->value : null
             ]);
-            return True;
         } catch (Exception $e) {
             $erro = "ERRO! Banco->cadastrarAnexo: " . $e->getMessage();
             error_log($erro);
@@ -1743,7 +1743,9 @@ class Banco extends PDO
         ";
 
             $stmt = $this->prepare($sql);
-            $stmt->execute([
+
+
+            return $stmt->execute([
                 $endereco->getRua(),
                 $endereco->getNumero(),
                 $endereco->getBairro(),
@@ -1752,8 +1754,6 @@ class Banco extends PDO
                 $endereco->getCidade(),
                 $endereco->getUf()
             ]);
-
-            return true;
         } catch (Exception $e) {
             error_log("ERRO! Banco->cadastrarEndereco: " . $e->getMessage());
             return false;
@@ -1776,12 +1776,12 @@ class Banco extends PDO
         ";
 
             $stmt = $this->prepare($sql);
-            $stmt->execute([
+
+
+            return $stmt->execute([
                 $condominio->getNome(),
                 $idEndereco
             ]);
-
-            return true;
         } catch (Exception $e) {
             error_log("ERRO! Banco->cadastrarCondominio: " . $e->getMessage());
             return false;
@@ -2061,7 +2061,7 @@ class Banco extends PDO
                 $idCondominio
             ]);
 
-            $id_imovel = $this->lastInsertId();
+            $idImovel = $this->lastInsertId();
 
 
             if ($imovel->getProprietarios()) {
@@ -2072,7 +2072,7 @@ class Banco extends PDO
                 ");
                     $stmtProp->execute([
                         $prop->getId(),
-                        $id_imovel
+                        $idImovel
                     ]);
                 }
             }
@@ -2082,14 +2082,14 @@ class Banco extends PDO
                 foreach ($imovel->getFiltros() as $filtro) {
                     $idFiltro = $this->getIdFiltroImovelPorNome($filtro);
                     if ($idFiltro) {
-                        $this->cadastrarFiltroImovel($id_imovel, $filtro);
+                        $this->cadastrarFiltroImovel($idImovel, $filtro);
                     }
                 }
             }
 
-            $this->commit();
 
-            return true;
+
+            return $this->commit();
         } catch (Exception $e) {
             // $this->rollBack();
             error_log("ERRO! Banco->cadastrarImovel: " . $e->getMessage());
@@ -2265,9 +2265,7 @@ class Banco extends PDO
                 ':condominio' => $condominio,
                 ':id' => $imovel->getId()
             ]);
-
-            $this->commit();
-            return true;
+            return  $this->commit();
         } catch (Exception $e) {
             $this->rollBack();
             error_log("ERRO Banco->atualizarImovel: " . $e->getMessage());
@@ -2303,12 +2301,11 @@ class Banco extends PDO
             INSERT INTO imovel_filtros (id_imovel, id_filtros_imovel)
             VALUES (:id_imovel, :id_filtro)
         ");
-            $stmt->execute([
+
+            return $stmt->execute([
                 ':id_imovel' => $idImovel,
                 ':id_filtro' => $idFiltro
-            ]);
-
-            return true;
+            ]);;
         } catch (Exception $e) {
             error_log("ERRO Banco->cadastrarFiltroImovel: " . $e->getMessage());
             return false;
@@ -2324,12 +2321,10 @@ class Banco extends PDO
             WHERE id_imovel = :id_imovel 
               AND id_filtros_imovel = :id_filtro
         ");
-            $stmt->execute([
+            return $stmt->execute([
                 ':id_imovel' => $idImovel,
                 ':id_filtro' => $idFiltro
             ]);
-
-            return true;
         } catch (Exception $e) {
             error_log("ERRO Banco->removerFiltroDoImovel: " . $e->getMessage());
             return false;
@@ -2364,12 +2359,12 @@ class Banco extends PDO
             INSERT INTO condominio_filtros (id_filtros_condominio, id_condominio)
             VALUES (:id_filtro, :id_condominio)
         ");
-            $stmt->execute([
+
+
+            return $stmt->execute([
                 ':id_filtro' => $idFiltro,
                 ':id_condominio' => $idCondominio
             ]);
-
-            return true;
         } catch (Exception $e) {
             error_log("ERRO Banco->cadastrarFiltroCondominio: " . $e->getMessage());
             return false;
@@ -2385,12 +2380,12 @@ class Banco extends PDO
             WHERE id_condominio = :id_condominio 
               AND id_filtros_condominio = :id_filtro
         ");
-            $stmt->execute([
+
+
+            return $stmt->execute([
                 ':id_condominio' => $idCondominio,
                 ':id_filtro' => $idFiltro
             ]);
-
-            return true;
         } catch (Exception $e) {
             error_log("ERRO Banco->removerFiltroDoCondominio: " . $e->getMessage());
             return false;
@@ -2409,6 +2404,8 @@ class Banco extends PDO
             UPDATE anuncio
             SET descricao = :descricao,
                 titulo = :titulo
+                nome_arquivo = :nome_arquivo,
+                tipo = :tipo
             WHERE id = :id
         ";
 
@@ -2419,12 +2416,44 @@ class Banco extends PDO
                 ':id' => $anuncio->getId()
             ]);
 
-            // mídias
-            // tratar imagens, vídeos e anexos depois
-            // tabela: midia_anuncio
+            $sql = "
+            INSERT INTO midia_anuncio (id, id_anuncio, nome_arquivo, tipo) 
+            VALUES (:id, :id_anuncio, :nome_arquivo, :tipo)
+            ON DUPLICATE KEY UPDATE 
+                nome_arquivo = VALUES(:nome_arquivo), 
+                tipo = VALUES(:tipo);
+        ";
 
-            $this->commit();
-            return true;
+            $stmt = $this->prepare($sql);
+            foreach ($anuncio->getImagens() as $img) {
+                $stmt->execute([
+                    ':tipo' => 'imagem',
+                    ':nome_arquivo' => $img->getCaminho(),
+                    ':id_anuncio' => $anuncio->getId(),
+                    ':id' => $img->getId()
+                ]);
+            }
+
+            foreach ($anuncio->getVideos() as $video) {
+                $stmt->execute([
+                    ':tipo' => 'video',
+                    ':nome_arquivo' => $video->getCaminho(),
+                    ':id_anuncio' => $anuncio->getId(),
+                    ':id' => $video->getId()
+                ]);
+            }
+
+            foreach ($anuncio->getAnexos() as $anexo) {
+                $stmt->execute([
+                    ':tipo' => 'anexo',
+                    ':nome_arquivo' => $anexo->getCaminho(),
+                    ':id_anuncio' => $anuncio->getId(),
+                    ':id' => $anexo->getId()
+                ]);
+            }
+
+
+            return $this->commit();
         } catch (Exception $e) {
             $this->rollBack();
             error_log("ERRO Banco->atualizarAnuncio: " . $e->getMessage());
@@ -2489,9 +2518,7 @@ class Banco extends PDO
                     }
                 }
             }
-
-            $this->commit();
-            return true;
+            return $this->commit();
         } catch (Exception $e) {
             $this->rollBack();
             error_log("ERRO Banco->atualizarCondominio: " . $e->getMessage());
@@ -2642,9 +2669,7 @@ class Banco extends PDO
                     ':id' => $usuario->getId()
                 ]);
             }
-
-            $this->commit();
-            return true;
+            return $this->commit();
         } catch (Exception $e) {
             $this->rollBack();
             error_log("ERRO Banco->atualizarUsuario: " . $e->getMessage());
@@ -2744,8 +2769,8 @@ class Banco extends PDO
                 }
             }
 
-            $this->commit();
-            return true;
+
+            return $this->commit();
         } catch (Exception $e) {
             $this->rollBack();
             error_log("ERRO Banco->atualizarProprietario: " . $e->getMessage());

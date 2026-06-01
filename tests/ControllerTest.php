@@ -39,7 +39,7 @@ class ControllerTest extends TestCase
         $prop = new Proprietario('p@e.com', 'Prop', '00011122233');
         $prop->setId(5);
         $prop->setRg('RG1');
-        $prop->setTelefones('1199999');
+        $prop->setTelefones([]);
         $prop->setEndereco($end);
         $prop->setImoveis([$imovel]);
 
