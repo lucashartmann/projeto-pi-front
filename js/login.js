@@ -1,4 +1,5 @@
-Inputmask("999.999.999-99").mask("#cpf");
+Inputmask("999.999.999-99").mask("#cpf_cnpj");
+
 
 function togglePasswordVisibility(event) {
     const senhaInput = event.target.previousElementSibling;

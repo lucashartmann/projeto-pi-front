@@ -35,23 +35,22 @@ function getCaminhoRelativo(destino) {
 
 
 function alterarSrc(event, caminho) {
-    const a = event.target;
+    let a = event.target;
+    if (a.tagName !== "a") {
+       a = a.closest("a"); 
+    }
     let caminhoRelativo = getCaminhoRelativo(caminho);
     a.setAttribute("href", caminhoRelativo);
 }
 
 function openNav() {
     document.getElementById("mySidenav").style.width = "250px";
-    document.querySelector("main").style.marginLeft = "250px";
-    document.querySelector("#top-nav").style.marginLeft = "250px";
-    //   document.body.style.backgroundColor = "rgba(0,0,0,0.4)";
+    document.querySelector("main").style.opacity = "0.7";
 }
 
 function closeNav() {
     document.getElementById("mySidenav").style.width = "0";
-    document.querySelector("main").style.marginLeft = "0";
-    document.querySelector("#top-nav").style.marginLeft = "0";
-    // document.body.style.backgroundColor = "white";
+    document.querySelector("main").style.opacity = "1";
 }
 
 async function listarImoveis() {

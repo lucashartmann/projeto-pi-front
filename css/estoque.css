@@ -1,45 +1,62 @@
-#input-pesquisa {
-    width: 100%;
-    grid-column: 1 / -1;
-    height: 4vh !important;
-}
+
 
 #container-filtragem {
     display: grid;
     align-items: center;
-    gap: 30px;
-    /* overflow-x: hidden; */
+    gap: 50px;
     grid-template-columns: repeat(auto-fit, minmax(20%, 2fr));
-    margin: 20px 20px;
+    /* margin: 40px 20px; */
     height: auto;
-    width: auto;
-    /* box-shadow: 0px 1px 12px 0px black; */
-    /* background: rgba(36, 30, 30, 0.5); */
-    backdrop-filter: blur(40px) !important;
+    width: 70rem;
 
     input {
-        width: 100%;
+        width: 14rem;
         height: 3.5vh;
-        margin-top: 20px;
+        /* margin-top: 20px; */
         border-radius: 1% / 30%;
     }
 
-    select {
+    #input-pesquisa {
         width: 100%;
+        grid-column: 1 / -1;
+        height: 5vh !important;
+    }
+
+    select {
+        width: 14rem;
         height: 3.5vh;
     }
 
 }
 
+#container-pai {
+    align-items: center;
+    justify-content: center;
+    justify-items: center;
+    align-content: center;
+    height: auto;
+    background: rgba(36, 30, 30, 0.5);
+    backdrop-filter: blur(40px) !important;
+    width: 100%;
+    padding: 20px;
+}
+
+#contador-imoveis {
+    font-size: 1.2rem;
+    /* color: var(--cor-texto); */
+    margin-left: auto;
+}
+
 #h-filtro {
+    /* justify-content: space-between; */
     display: flex;
     gap: 10px;
     margin: 70px 20px 20px 20px;
     /* background: var(--background-nav); */
-    width: 30%;
+    width: 98%;
 
     select {
-        width: 80%;
+        width: 10rem;
     }
 
     #seta {

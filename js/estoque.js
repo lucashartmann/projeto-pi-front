@@ -85,6 +85,7 @@ async function carregarAnuncios() {
 
 
     section.innerHTML = "";
+    document.getElementById("contador-imoveis").textContent = `${dados.length} ${dados.length === 1 ? 'imóvel' : 'imóveis'}`;
     for (let imovel of dados) {
         
         const b64 = imovel.anuncio?.imagens?.[0] || null;
@@ -148,18 +149,21 @@ function abrirCadastro(imovel_id) {
 
 function pesquisar(event) {
     const termo = event.target.value.toLowerCase();
-
+    let contador = 0;
     const imoveis = document.querySelectorAll(".resultado");
     imoveis.forEach(anuncio => {
         for (const label of document.querySelectorAll(".resultado .dados label")) {
             if (label.textContent.toLowerCase().includes(termo)) {
                 anuncio.style.display = "flex";
+                contador++;
                 return;
             } else {
                 anuncio.style.display = "none";
+                // contador =- 1;
             }
         }
     });
+    document.getElementById("contador-imoveis").textContent = `${contador} ${contador === 1 ? 'imóvel' : 'imóveis'}`;
 }
 
 window.addEventListener("DOMContentLoaded", () => {

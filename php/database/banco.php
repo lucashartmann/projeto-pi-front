@@ -34,8 +34,7 @@ class Banco extends PDO
                 $servername = "127.0.0.1";
                 $username = "root";
                 $password = "";
-                $dbname = "imobiliaria";
-                self::$db = new Banco("mysql:host=$servername;dbname=$dbname", $username, $password);
+                self::$db = new Banco("mysql:host=$servername", $username, $password);
                 self::$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
                 // error_log("Connected successfully");
                 return self::$db;
