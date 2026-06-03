@@ -123,9 +123,9 @@
         <label for="" id="stt-area-privativa">Área Privativa</label>
         <input type="text" id="ta-area-privativa" name="area_privativa" placeholder="0.00">
         <label for="" id="stt-venda">Valor Venda:</label>
-        <input type="text" id="ta-venda"  name="valor_venda" placeholder="0.00">
+        <input type="text" id="ta-venda" name="valor_venda" placeholder="0.00">
         <label for="" id="stt-aluguel">Valor Aluguel:</label>
-        <input type="text" id="ta-aluguel"  name="valor_aluguel" placeholder="0.00">
+        <input type="text" id="ta-aluguel" name="valor_aluguel" placeholder="0.00">
         <label for="" id="stt-condominio">Valor Condomínio:</label>
         <input type="text" id="ta-condominio" name="valor_condominio" placeholder="0.00">
         <label for="" id="stt-iptu">Valor IPTU:</label>
@@ -145,29 +145,47 @@
         </div>
     </form>
     <div id="container-imagens" class="container">
-        <label for="">Imagens:</label>
-        <button id="bt-adicionar-imagens" onclick="adicionarAnexo(event)">Adicionar</button>
+        <header><label for="">Imagens:</label>
+            <button id="bt-adicionar-imagens" onclick="adicionarAnexo(event)">Adicionar</button>
+            <button class="selecionar-todos" onclick="selecionarTodos(event)">Selecionar Todos</button>
+            <button class="abrir-multiplos" style="display: none;" onclick="abrirMultiplos(event)">Abrir</button>
+            <button class="apagar-multiplos" style="display: none;" onclick="apagarMultiplos(event)">Apagar</button>
+            <p id="contador-imagens">0 imagens</p>
+        </header>
+
     </div>
     <div id="container-anexos" class="container">
-        <label for="">Anexos:</label>
-        <button id="bt-adicionar-anexos" onclick="adicionarAnexo(event)">Adicionar</button>
+        <header><label for="">Anexos:</label>
+            <button class="bt-adicionar-anexos" onclick="adicionarAnexo(event)">Adicionar</button>
+            <button class="selecionar-todos" onclick="selecionarTodos(event)">Selecionar Todos</button>
+            <button class="abrir-multiplos" style="display: none;" onclick="abrirMultiplos(event)">Abrir</button>
+            <button class="apagar-multiplos" style="display: none;" onclick="apagarMultiplos(event)">Apagar</button>
+            <p id="contador-anexos">0 anexos</p>
+        </header>
     </div>
     <div id="container-proprietario" class="container">
-        <label for="" classes="stt-container-titulo">Proprietário: </label>
-        <button classes="bt-editar-pessoa" id="br-editar-proprietario"
-            onclick="editarPessoa('proprietario')">Editar</button>
+        <header><label for="" classes="stt-container-titulo">Proprietário: </label>
+            <button classes="bt-editar-pessoa" id="br-editar-proprietario"
+                onclick="editarPessoa('proprietario')">Editar</button>
+                
+        </header>
     </div>
     <div id="container-corretor" class="container">
-        <label for="" classes="stt-container-titulo">Corretor: </label>
-        <button id="br-editar-corretor" classes="bt-editar-pessoa" onclick="editarPessoa('corretor')">Editar</button>
+        <header><label for="" classes="stt-container-titulo">Corretor: </label>
+            <button id="br-editar-corretor" classes="bt-editar-pessoa"
+                onclick="editarPessoa('corretor')">Editar</button>
+        </header>
     </div>
     <div id="container-captador" class="container">
-        <label for="" classes="stt-container-titulo">Captador: </label>
-        <button classes="bt-editar-pessoa" id="br-editar-captador" onclick="editarPessoa('captador')">Editar</button>
+        <header><label for="" classes="stt-container-titulo">Captador: </label>
+            <button classes="bt-editar-pessoa" id="br-editar-captador"
+                onclick="editarPessoa('captador')">Editar</button>
+        </header>
     </div>
     <div id="container-portais" class="container">
-        <label for="" classes="stt-container-titulo">Portais: </label>
-        <button>Cadastrar Portal</button>
+        <header><label for="" classes="stt-container-titulo">Portais: </label>
+            <button>Cadastrar Portal</button>
+        </header>
     </div>
     <!-- <div id="container-mapa" class="container">
         <gmp-map center="41.027748173921374, -92.41852445367961" zoom="13" map-id="DEMO_MAP_ID"

@@ -2115,8 +2115,9 @@ class Banco extends PDO
             }
 
 
+            $this->commit();
 
-            return $this->commit();
+            return  $this->lastInsertId();
         } catch (Exception $e) {
             // $this->rollBack();
             error_log("ERRO! Banco->cadastrarImovel: " . $e->getMessage());
@@ -2153,8 +2154,12 @@ class Banco extends PDO
             $endereco = $imovel->getEndereco();
             $endereco = ($endereco && $endereco->getId()) ? $endereco->getId() : null;
 
+            
+
             $anuncio = $imovel->getAnuncio();
             $anuncio = ($anuncio && $anuncio->getId()) ? $anuncio->getId() : null;
+
+            // error_log("ID ANUNCIO: " . $anuncio);
 
             $condominio = $imovel->getCondominio();
             $condominio = $condominio ? $condominio->getId() : null;

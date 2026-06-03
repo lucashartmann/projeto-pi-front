@@ -560,8 +560,11 @@ class controller
         try {
             $imovel = Init::getInstance()->getImovelPorId($id);
             if ($imovel) {
-                $remocao = Init::getInstance()->remover("id_imovel", $id, "imovel");
+                $remocao = Init::getInstance()->remover("id", $id, "imovel");
                 if ($remocao) {
+                    if ($imovel->getAnuncio() && $imovel->getAnuncio()->getImagens()) {
+                        limparPasta($imovel->getAnuncio()->getImagens(), $imovel->getId());
+                    }
                     return (["status" => "sucesso", "mensagem" => "Imóvel removido com sucesso"]);
                 } else {
                     return (["status" => "erro", "mensagem" => "Erro ao remover imóvel"]);
@@ -590,7 +593,7 @@ class controller
             $quantVarandas = array_key_exists("quantidade_varandas", $data) ? (int)($data["quantidade_varandas"] ?? 0) : 0;
             $categoria = null;
             if (isset($data["categoria"])) {
-                $valor = ucfirst(strtolower($data["categoria"]));
+                $valor = $data["categoria"];
                 $categoria = Categoria::tryFrom($valor);
             }
             $status = null;
@@ -639,6 +642,7 @@ class controller
             if ($id) {
                 $imovelObj = Init::getInstance()->getImovelPorId($id);
                 $imovelObj->setDataModificacao(DateTime::createFromFormat('Y-m-d H:i:s', date('Y-m-d H:i:s')));
+                error_log("Imóvel encontrado para atualização: " . json_encode($imovelObj));
             } else {
                 $imovelObj = new Imovel($enderecoObj, $status, $categoria);
             }
@@ -667,6 +671,12 @@ class controller
             $imovelObj->setOcupacao($ocupacao);
             # imovelObj->setCorretor(corretor)
             # imovelObj->setCaptador(captador)
+            if ($imovelObj->getAnuncio()->getId() === null || $imovelObj->getAnuncio()->getId() === 0) {
+                $imovelObj->setAnuncio($anuncioObj);
+            } else {
+                $anuncioObj->setId($imovelObj->getAnuncio()->getId());
+                $imovelObj->setAnuncio($anuncioObj);
+            }
             $imovelObj->setAnuncio($anuncioObj);
             $imovelObj->setCondominio($condominioObj);
 
@@ -715,16 +725,30 @@ class controller
                     $imovelObj->setCondominio($consultarCondominio);
                 }
 
-                $cadastroAnuncio = Init::getInstance()->getEstoque()->cadastrarAnuncio(
-                    $imovelObj->getAnuncio()
-                );
-                if ($cadastroAnuncio) {
-                    $imovelObj->getAnuncio()->setId($cadastroAnuncio);
+
+                if ($imovelObj->getAnuncio()->getId() === null || $imovelObj->getAnuncio()->getId() === 0) {
+                    $cadastroAnuncio = Init::getInstance()->getEstoque()->cadastrarAnuncio(
+                        $imovelObj->getAnuncio()
+                    );
+                    if ($cadastroAnuncio) {
+                        $imovelObj->getAnuncio()->setId($cadastroAnuncio);
+                    }
+                }  else {
+                    
+                    $cadastroAnuncio = Init::getInstance()
+                        ->getEstoque()
+                        ->atualizarAnuncio($anuncioObj);
                 }
 
                 $imovelObj->setDataCadastro(DateTime::createFromFormat('Y-m-d H:i:s', date('Y-m-d H:i:s')));
                 if ($id) {
-                    $cadastrado = Init::getInstance()->getEstoque()->atualizarImovel($imovelObj);
+                    $atualizado = Init::getInstance()->getEstoque()->atualizarImovel($imovelObj);
+                    if ($atualizado) {
+                        $cadastrado = $id;
+                    }else {
+                        $cadastrado = null;
+                    }
+                    
                     limparPasta($imovelObj->getAnuncio()->getImagens(), $imovelObj->getId());
                 } else {
                     $cadastrado = Init::getInstance()->getEstoque()->cadastrarImovel($imovelObj);

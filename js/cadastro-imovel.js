@@ -218,25 +218,48 @@ async function getOutrosDados(formData) {
     const containerProprietario = document.getElementById("container-proprietario");
     const containerCorretor = document.getElementById("container-corretor");
     const containerCaptador = document.getElementById("container-captador");
-    const imagens = containerImagens.querySelectorAll("img");
+
+    const divImagens = containerImagens.querySelectorAll("div.imagem-anuncio");
+
+    const imagens = Array.from(divImagens).map(div => {
+        const bg = div.style.backgroundImage;
+        const match = bg.match(/url\((['"]?)(.*?)\1\)/);
+        return match ? match[2] : null;
+    }).filter(url => url !== null);
+
     formData.append("imagens", []);
     formData.append("documentos", []);
-    if (imagens) {
+    console.log("Imagens a serem enviadas:", imagens);
+
+    if (imagens.length > 0) {
         for (let img of imagens) {
-            if (!imovel || !imovel.anuncio || !imovel.anuncio.imagens || !imovel.anuncio.imagens.includes(img.src)) {
-                const response = await fetch(img.src);
-                const blob = await response.blob();
-                formData.append("imagens[]", blob, "imagem.webp");
+            if (!imovel || !imovel.anuncio || !imovel.anuncio.imagens || !imovel.anuncio.imagens.includes(img)) {
+                try {
+                    const response = await fetch(img);
+                    if (!response.ok) throw new Error("Falha ao buscar o blob");
+                    const blob = await response.blob();
+                    const extensao = blob.type.split("/")[1] || "webp";
+                    formData.append("imagens[]", blob, `imagem.${extensao}`);
+                } catch (error) {
+                    console.error("Erro ao processar imagem:", img, error);
+                }
             }
         }
     }
+
     if (containerDocumentos && containerDocumentos.querySelectorAll("a").length > 0) {
         for (let doc of containerDocumentos.querySelectorAll("a")) {
-            const response = await fetch(doc.href);
-            const blob = await response.blob();
-            formData.append("documentos[]", blob, "documento.pdf");
+            try {
+                const response = await fetch(doc.href);
+                if (!response.ok) throw new Error("Falha ao buscar o documento");
+                const blob = await response.blob();
+                formData.append("documentos[]", blob, "documento.pdf");
+            } catch (error) {
+                console.error("Erro ao processar documento:", doc.href, error);
+            }
         }
     }
+
     formData.append("proprietario", []);
     formData.append("corretor", []);
     formData.append("captador", []);
@@ -260,8 +283,8 @@ async function salvar() {
     const data = {};
 
     formData.forEach((value, key) => {
-            data[key] = value;
-        });
+        data[key] = value;
+    });
 
 
     console.log("Dados do imóvel a serem enviados:", data);
@@ -319,17 +342,17 @@ async function salvar() {
 async function excluir() {
     if (imovelId) {
         try {
-            let caminho = getCaminhoRelativo("/php/api/imoveis.php?acao=apagar_imovel");
+            let caminho = getCaminhoRelativo("/php/api/imoveis.php?acao=apagar_imovel&id=" + imovelId);
             const response = await fetch(caminho, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
                 },
-                body: JSON.stringify({ ref: imovelId })
+
             })
                 .then(async (response) => {
                     if (response.erro) {
-                        alert("Erro ao listar atendimentos: " + response.erro);
+                        alert("Erro ao remover imóvel: " + response.erro);
                         return null;
                     }
                     const contentType = response.headers.get("content-type");
@@ -450,12 +473,24 @@ async function abrirCadastro(imovelId) {
         document.getElementById("ta-cep").value = imovel.endereco?.cep;
         if (imovel.anuncio?.imagens && imovel.anuncio.imagens.length > 0) {
             for (let imagem of imovel.anuncio.imagens) {
-                const imgElement = document.createElement("img");
-                imgElement.src = imagem;
-                imgElement.setAttribute("onclick", "abrirImagem(this.src)");
-                prepararImagemArrastavel(imgElement);
-                containerImagens.appendChild(imgElement);
+                const divImagem = document.createElement("div");
+                divImagem.classList.add("imagem-anuncio");
+                divImagem.style.backgroundImage = `linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), url(${imagem})`
+                console.log(imagem);
+                divImagem.setAttribute("onclick", `abrirImagem(${imagem})`);
+                const checkbox = document.createElement("input");
+                checkbox.type = "checkbox";
+                checkbox.classList.add("checkbox-imagem");
+                checkbox.value = imagem;
+                checkbox.name = "imagens-selecionadas";
+                divImagem.appendChild(checkbox);
+                // divImagem.appendChild()
+                prepararImagemArrastavel(divImagem);
+                containerImagens.appendChild(divImagem);
+                console.log(divImagem.style.backgroundImage.split("url(")[1].slice(0, -1))
             }
+            containerImagens.querySelector(".abrir-multiplos").style.display = "inline-block";
+            containerImagens.querySelector(".apagar-multiplos").style.display = "inline-block";
         }
         if (imovel.anuncio?.documentos && imovel.anuncio.documentos.length > 0) {
             const containerDocumentos = document.getElementById("container-documentos");
@@ -466,6 +501,8 @@ async function abrirCadastro(imovelId) {
                 docElement.target = "_blank";
                 containerDocumentos.appendChild(docElement);
             }
+            containerDocumentos.querySelector(".abrir-multiplos").style.display = "inline-block";
+            containerDocumentos.querySelector(".apagar-multiplos").style.display = "inline-block";
         }
         if (imovel.proprietario) {
             document.getElementById("ta-proprietario").value = imovel.proprietario.nome || "";
@@ -633,6 +670,34 @@ function mudarPosicaoNoContainer(event) {
     limparPlaceholderArraste();
 }
 
+function abrirMultiplos(event) {
+    
+}
+
+function apagarMultiplos(event) {
+    const container = event.target.closest(".container");
+    const checkboxes = container.querySelectorAll("input[type='checkbox']:checked");
+    if (checkboxes.length === 0) {
+        alert("Nenhum item selecionado para exclusão!");
+        return;
+    }
+    // if (confirm(`Tem certeza que deseja excluir os ${checkboxes.length} itens selecionados?`)) {}
+    checkboxes.forEach(checkbox => {
+            const item = checkbox.closest(".imagem-anuncio, a");
+            if (item) {
+                item.parentNode.removeChild(item);
+            }
+    });
+
+}
+
+function selecionarTodos(event) {
+    const container = event.target.closest(".container");
+    const checkboxes = container.querySelectorAll("input[type='checkbox']");
+    const todosSelecionados = Array.from(checkboxes).every(checkbox => checkbox.checked);
+    checkboxes.forEach(checkbox => checkbox.checked = !todosSelecionados);
+}
+
 function adicionarAnexo(event) {
     var input = document.createElement("input");
     input.type = "file";
@@ -646,10 +711,22 @@ function adicionarAnexo(event) {
             var fileURL = URL.createObjectURL(file);
             var fileElement;
             if (file.type.startsWith("image/")) {
-                fileElement = document.createElement("img");
-                fileElement.setAttribute("onclick", "abrirImagem(this.src)");
-                fileElement.src = fileURL;
+                fileElement = document.createElement("div");
+                fileElement.classList.add("imagem-anuncio");
+                fileElement.style.backgroundImage = `linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), url("${fileURL}")`;
+                fileElement.onclick = (function (url) {
+                    return function () {
+                        abrirImagem(url);
+                    };
+                })(fileURL);
+                const checkbox = document.createElement("input");
+                checkbox.type = "checkbox";
+                checkbox.classList.add("checkbox-imagem");
+                checkbox.value = fileURL;
+                checkbox.name = "imagens-selecionadas";
+                fileElement.appendChild(checkbox);
                 prepararImagemArrastavel(fileElement);
+                console.log(fileURL);
             } else if (file.type === "application/pdf") {
                 fileElement = document.createElement("a");
                 fileElement.href = fileURL;
@@ -658,6 +735,8 @@ function adicionarAnexo(event) {
             }
             if (fileElement) {
                 container.appendChild(fileElement);
+                container.querySelector(".abrir-multiplos").style.display = "inline-block";
+                container.querySelector(".apagar-multiplos").style.display = "inline-block";
             }
         }
     }
