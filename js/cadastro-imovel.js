@@ -1,3 +1,4 @@
+let imovel = null;
 
 
 async function preencherEndereco(event) {
@@ -211,58 +212,66 @@ function salvarMultiplosForms() {
     salvar();
 }
 
-async function getOutrosDados(data) {
+async function getOutrosDados(formData) {
     const containerImagens = document.getElementById("container-imagens");
     const containerDocumentos = document.getElementById("container-documentos");
     const containerProprietario = document.getElementById("container-proprietario");
     const containerCorretor = document.getElementById("container-corretor");
     const containerCaptador = document.getElementById("container-captador");
     const imagens = containerImagens.querySelectorAll("img");
+    formData.append("imagens", []);
+    formData.append("documentos", []);
     if (imagens) {
         for (let img of imagens) {
-            const response = await fetch(img.src);
-            const blob = await response.blob();
-            data["imagens"].push(blob);
+            if (!imovel || !imovel.anuncio || !imovel.anuncio.imagens || !imovel.anuncio.imagens.includes(img.src)) {
+                const response = await fetch(img.src);
+                const blob = await response.blob();
+                formData.append("imagens[]", blob, "imagem.webp");
+            }
         }
     }
     if (containerDocumentos && containerDocumentos.querySelectorAll("a").length > 0) {
         for (let doc of containerDocumentos.querySelectorAll("a")) {
             const response = await fetch(doc.href);
             const blob = await response.blob();
-            data["documentos"].push(blob);
+            formData.append("documentos[]", blob, "documento.pdf");
         }
     }
-    data["proprietario"] = {};
-    data["corretor"] = {};
-    data["captador"] = {};
-    return data;
+    formData.append("proprietario", []);
+    formData.append("corretor", []);
+    formData.append("captador", []);
+    return formData;
 }
 
 async function salvar() {
     var forms = document.querySelectorAll("form");
 
-    var data = {};
+    let formData = new FormData();
 
     for (let formulario of forms) {
-        var formData = new FormData(formulario);
-        formData.forEach(function (value, key) {
-            data[key] = value;
+        let dados = new FormData(formulario);
+
+        dados.forEach((value, key) => {
+            formData.append(key, value);
         });
     }
 
-    data = await getOutrosDados(data);
+    formData = await getOutrosDados(formData);
+    const data = {};
+
+    formData.forEach((value, key) => {
+            data[key] = value;
+        });
+
 
     console.log("Dados do imóvel a serem enviados:", data);
 
-    if (JSON.stringify(data).length > 0) {
+    if (JSON.stringify(formData).length > 0) {
         try {
             let caminho = getCaminhoRelativo("/php/api/imoveis.php?acao=cadastrar_imovel");
             await fetch(caminho, {
                 method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(data)
+                body: formData
             })
                 .then(async (response) => {
                     if (response.erro) {
@@ -286,7 +295,9 @@ async function salvar() {
                     }
                     else if (data.mensagem) {
                         alert("Imóvel cadastrado com sucesso: " + data.mensagem);
-                        forms.forEach(form => form.reset());
+                        if (!imovel) {
+                            forms.forEach(form => form.reset());
+                        }
                     }
 
                 })
@@ -399,6 +410,7 @@ function openTab(evento, tabId) {
     activateTab(tabId, evento?.currentTarget || evento?.target || null);
 }
 
+
 async function abrirCadastro(imovelId) {
     imovel = await getDadosImovel(imovelId);
     if (imovel) {
@@ -436,8 +448,8 @@ async function abrirCadastro(imovelId) {
         document.getElementById("ta-iptu").value = imovel.valor_iptu || "";
         document.getElementById("ta-ano-construcao").value = imovel.ano_construcao || "";
         document.getElementById("ta-cep").value = imovel.endereco?.cep;
-        if(imovel.anuncio?.imagens && imovel.anuncio.imagens.length > 0){
-            for(let imagem of imovel.anuncio.imagens){
+        if (imovel.anuncio?.imagens && imovel.anuncio.imagens.length > 0) {
+            for (let imagem of imovel.anuncio.imagens) {
                 const imgElement = document.createElement("img");
                 imgElement.src = imagem;
                 imgElement.setAttribute("onclick", "abrirImagem(this.src)");
@@ -445,9 +457,9 @@ async function abrirCadastro(imovelId) {
                 containerImagens.appendChild(imgElement);
             }
         }
-        if(imovel.anuncio?.documentos && imovel.anuncio.documentos.length > 0){
+        if (imovel.anuncio?.documentos && imovel.anuncio.documentos.length > 0) {
             const containerDocumentos = document.getElementById("container-documentos");
-            for(let documento of imovel.anuncio.documentos){
+            for (let documento of imovel.anuncio.documentos) {
                 const docElement = document.createElement("a");
                 docElement.href = documento;
                 docElement.textContent = "Documento";
@@ -455,13 +467,13 @@ async function abrirCadastro(imovelId) {
                 containerDocumentos.appendChild(docElement);
             }
         }
-        if(imovel.proprietario){
+        if (imovel.proprietario) {
             document.getElementById("ta-proprietario").value = imovel.proprietario.nome || "";
         }
-        if(imovel.corretor){
+        if (imovel.corretor) {
             document.getElementById("ta-corretor").value = imovel.corretor.nome || "";
         }
-        if(imovel.captador){
+        if (imovel.captador) {
             document.getElementById("ta-captador").value = imovel.captador.nome || "";
         }
     } else {

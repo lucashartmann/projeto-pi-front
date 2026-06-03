@@ -80,20 +80,28 @@ function salvarImagem($blob, $id)
         return false;
     }
     $nomeArquivo = uniqid(more_entropy: true) . '.webp';
-    $caminhoCompleto = rtrim(dirname($_SERVER['SCRIPT_NAME'], 3), '/') . "/assets/imoveis/" . $id . "/" . $nomeArquivo;
+    $caminhoCompleto = str_replace("\\php\\utils", "\\assets\\imoveis\\", __DIR__) . $id . "/" . $nomeArquivo;
+
+    $diretorio = str_replace("\\php\\utils", "\\assets\\imoveis\\", __DIR__) . $id;
+    error_log("Diretório para salvar a imagem: " . $diretorio);
+    if (!is_dir($diretorio)) {
+            mkdir($diretorio, 0755, true);
+    }
 
     if (file_exists($caminhoCompleto)) {
         unlink($caminhoCompleto);
-    } else {
-        $diretorio = rtrim(dirname($_SERVER['SCRIPT_NAME'], 3), '/') . "/assets/imoveis/" . $id;
-        if (!is_dir($diretorio)) {
-            mkdir($diretorio, 0755, true);
-        }
     }
 
-    file_put_contents($caminhoCompleto, base64_decode($blobConvertido));
+    $caminhoParaSalvar = "imoveis/" . $id . "/" . $nomeArquivo;
 
-    return $caminhoCompleto;
+    $is_save = file_put_contents($caminhoCompleto, $blobConvertido);
+            
+    if ($is_save === false) {
+        error_log("Erro ao salvar a imagem: " . $caminhoCompleto);
+        return false;
+    }
+
+    return $caminhoParaSalvar;
 }
 
 function limparPasta($listaImagens, $id)

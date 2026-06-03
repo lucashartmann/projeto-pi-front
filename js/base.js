@@ -37,7 +37,7 @@ function getCaminhoRelativo(destino) {
 function alterarSrc(event, caminho) {
     let a = event.target;
     if (a.tagName !== "a") {
-       a = a.closest("a"); 
+        a = a.closest("a");
     }
     let caminhoRelativo = getCaminhoRelativo(caminho);
     a.setAttribute("href", caminhoRelativo);
@@ -393,6 +393,35 @@ function carregarTabs(usuario) {
     }
 
 }
+
+
+// function colide(el1, el2) {
+//   const r1 = el1.getBoundingClientRect();
+//   const r2 = el2.getBoundingClientRect();
+
+//   return !(
+//     r1.right < r2.left ||
+//     r1.left > r2.right ||
+//     r1.bottom < r2.top ||
+//     r1.top > r2.bottom
+//   );
+// }
+
+// function reorganizarMenu() {
+//   const logo = document.getElementById("logo");
+//   const elementoA = document.querySelector(".item-a");
+//   const menuSecundario = document.querySelector(".menu-secundario");
+
+//   if (!logo || !elementoA) return;
+
+//   if (colide(elementoA, logo)) {
+//   } else {
+//   }
+// }
+
+// window.addEventListener("resize", reorganizarMenu);
+// window.addEventListener("load", reorganizarMenu);
+
 async function setup() {
     const usuario = await carregarUser();
     if (usuario) carregarTabs(usuario);

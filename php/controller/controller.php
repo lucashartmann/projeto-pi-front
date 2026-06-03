@@ -578,7 +578,7 @@ class controller
     public function cadastrarImovel($data)
     {
         try {
-
+            // error_log("Dados recebidos para cadastro de imóvel: " . json_encode($data));
             $id =  array_key_exists("ref", $data) ? $data["ref"] : 0;
             $nomeCondominio = array_key_exists("nome_condominio", $data) ? $data["nome_condominio"] : "";
             $valorVenda = array_key_exists("valor_venda", $data) ? (float)(str_replace(['-', 'R$', ' '], '', $data["valor_venda"]) ?? 0) : 0.0;
@@ -612,7 +612,7 @@ class controller
             # corretor = data["corretor"]
             # captador = data["captador"]
             $cep = array_key_exists("cep", $data) ? $data["cep"] : "";
-            $imagens = ($data["imagens"] ?? []);
+            $imagens = $_FILES["imagens"] ?? [];
             if ($cep) {
                 $cep = str_replace("-", "", $cep);
             }
@@ -624,9 +624,7 @@ class controller
             $complemento = array_key_exists("complemento", $data) ? $data["complemento"] : "";
             $uf = array_key_exists("uf", $data) ? $data["uf"] : "";
             $numero = array_key_exists("numero", $data) ? (int)($data["numero"] ?? null) : null;
-            $anuncioObj = new Anuncio();
-            $anuncioObj->setTitulo($titulo);
-            $anuncioObj->setDescricao($descricao);
+
             $enderecoObj = new Endereco($rua, $bairro, $cep, $cidade, $uf);
             $enderecoObj->setNumero($numero);
             $enderecoObj->setComplemento($complemento);
@@ -644,7 +642,9 @@ class controller
             } else {
                 $imovelObj = new Imovel($enderecoObj, $status, $categoria);
             }
-
+            $anuncioObj = new Anuncio();
+            $anuncioObj->setTitulo($titulo);
+            $anuncioObj->setDescricao($descricao);
             $imovelObj->setValorVenda($valorVenda);
             $imovelObj->setValorAluguel($valorAluguel);
             $imovelObj->setQuantQuartos($quantQuartos);
@@ -729,27 +729,37 @@ class controller
                 } else {
                     $cadastrado = Init::getInstance()->getEstoque()->cadastrarImovel($imovelObj);
                 }
-                if ($cadastrado) {
-                    if ($cadastroAnuncio) {
-                        $imagensObjetos = [];
-                        for ($i = 0; $i < count($imagens); $i++) {
-                            $imagem = $imagens[$i];
-                            try {
-                                $imagemBytes = base64_decode($imagem);
-                                $caminho = salvarImagem($imagemBytes, $cadastrado);
-                                if ($caminho != null) {
-                                    continue;
-                                }
-                                $imagemObj = new Anexo($cadastroAnuncio, $caminho, TipoAnexo::IMAGEM);
-                                $imagensObjetos[] = $imagemObj;
-                            } catch (Exception $e) {
+                if ($cadastrado && $cadastroAnuncio && $imagens) {
+                    $imagensObjetos = [];
+                    foreach ($imagens['tmp_name'] as $i => $tmpName) {
+                        try {
+                            if ($imagens['error'][$i] !== UPLOAD_ERR_OK) {
                                 continue;
                             }
+                            $caminho = salvarImagem($tmpName, $cadastrado);
+                            if ($caminho === null) {
+                                continue;
+                            }
+                            $imagemObj = new Anexo(
+                                $cadastroAnuncio,
+                                $caminho,
+                                TipoAnexo::IMAGEM
+                            );
+                            $imagensObjetos[] = $imagemObj;
+                        } catch (Exception $e) {
+                            continue;
                         }
-                        $anuncioObj->setImagens($imagensObjetos);
-                        Init::getInstance()->getEstoque()->atualizarAnuncio($anuncioObj);
                     }
-                    return (["status" => "sucesso", "mensagem" => "imovel cadastrado!\n"]);
+                    $anuncioObj->setImagens($imagensObjetos);
+                    Init::getInstance()
+                        ->getEstoque()
+                        ->atualizarAnuncio($anuncioObj);
+                }
+                if($cadastrado){
+                    if ($id) {
+                            return (["status" => "sucesso", "mensagem" => "imovel atualizado!\n"]);
+                    }
+                        return (["status" => "sucesso", "mensagem" => "imovel cadastrado!\n"]);
                 } else {
                     return (["status" => "erro", "mensagem" => "ERRO ao cadastrar imóvel"]);
                 }

@@ -25,13 +25,13 @@ $controller = new controller();
 switch ($acao) {
 
     case "cadastrar_imovel":
-        $body = file_get_contents("php://input");
-        $data = json_decode($body, true);
+        // $body = file_get_contents("php://input");
+        $data = $_POST;
 
-        if (json_last_error() !== JSON_ERROR_NONE) {
-            $resultado = (["status" => "erro", "mensagem" => "JSON inválido"]);
-            return;
-        }
+        // if (json_last_error() !== JSON_ERROR_NONE) {
+        //     $resultado = (["status" => "erro", "mensagem" => "JSON inválido"]);
+        //     return;
+        // }
 
         $resultado = $controller->cadastrarImovel($data);
 

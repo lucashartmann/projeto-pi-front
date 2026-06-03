@@ -2431,8 +2431,6 @@ class Banco extends PDO
             UPDATE anuncio
             SET descricao = :descricao,
                 titulo = :titulo
-                nome_arquivo = :nome_arquivo,
-                tipo = :tipo
             WHERE id = :id
         ";
 
@@ -2444,12 +2442,19 @@ class Banco extends PDO
             ]);
 
             $sql = "
-            INSERT INTO midia_anuncio (id, id_anuncio, nome_arquivo, tipo) 
-            VALUES (:id, :id_anuncio, :nome_arquivo, :tipo)
-            ON DUPLICATE KEY UPDATE 
-                nome_arquivo = VALUES(:nome_arquivo), 
-                tipo = VALUES(:tipo);
-        ";
+                INSERT INTO midia_anuncio (
+                    id_anuncio,
+                    nome_arquivo,
+                    tipo
+                ) VALUES (
+                    :id_anuncio,
+                    :nome_arquivo,
+                    :tipo
+                )
+                ON DUPLICATE KEY UPDATE
+                    nome_arquivo = VALUES(nome_arquivo),
+                    tipo = VALUES(tipo)
+            ";
 
             $stmt = $this->prepare($sql);
             foreach ($anuncio->getImagens() as $img) {
@@ -2457,7 +2462,6 @@ class Banco extends PDO
                     ':tipo' => 'imagem',
                     ':nome_arquivo' => $img->getCaminho(),
                     ':id_anuncio' => $anuncio->getId(),
-                    ':id' => $img->getId()
                 ]);
             }
 
@@ -2466,7 +2470,6 @@ class Banco extends PDO
                     ':tipo' => 'video',
                     ':nome_arquivo' => $video->getCaminho(),
                     ':id_anuncio' => $anuncio->getId(),
-                    ':id' => $video->getId()
                 ]);
             }
 
@@ -2475,7 +2478,6 @@ class Banco extends PDO
                     ':tipo' => 'anexo',
                     ':nome_arquivo' => $anexo->getCaminho(),
                     ':id_anuncio' => $anuncio->getId(),
-                    ':id' => $anexo->getId()
                 ]);
             }
 
