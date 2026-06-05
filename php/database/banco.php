@@ -127,7 +127,7 @@ class Banco extends PDO
 
             "CREATE TABLE IF NOT EXISTS anuncio (
                 id INTEGER PRIMARY KEY AUTO_INCREMENT,
-                descricao VARCHAR(255) NULL,
+                descricao TEXT NULL,
                 titulo VARCHAR(255) NULL
             )",
 

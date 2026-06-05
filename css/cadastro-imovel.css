@@ -84,22 +84,43 @@ label {
     justify-self: center;
     align-self: center;
     margin: 50px 10px 20px 10px;
-    /* width: 80%; */
+    width: 80%;
     justify-items: center;
     justify-content: center;
     text-align: center;
+    display: flex;
+    flex-direction: column !important;
 
     textarea {
         width: 100%;
         margin: 10px 0;
         height: 3rem;
-
+        border-radius: 2% / 1%;
+        text-align: justify;
+        text-indent: 1.2em;
     }
-
 
     label {
         font-size: 1.34rem;
-        font-weight: 500;
+        font-weight: bold !important;
+        margin: 100px 0 !important;
+    }
+
+    #container-info-condominio, #container-info-imovel {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(30%, 1fr));
+        gap: 2px;
+        width: 100%;
+        height: auto;
+        input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+        }
+        label{
+            font-size: 1.34rem !important;
+            font-weight: 500 !important;
+            margin: 0 !important;
+        }
     }
 
     #ta-descricao-anuncio {

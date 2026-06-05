@@ -472,6 +472,7 @@ async function abrirCadastro(imovelId) {
         document.getElementById("ta-ano-construcao").value = imovel.ano_construcao || "";
         document.getElementById("ta-cep").value = imovel.endereco?.cep;
         if (imovel.anuncio?.imagens && imovel.anuncio.imagens.length > 0) {
+            let contadorImgens = 0;
             for (let imagem of imovel.anuncio.imagens) {
                 const divImagem = document.createElement("div");
                 divImagem.classList.add("imagem-anuncio");
@@ -487,12 +488,15 @@ async function abrirCadastro(imovelId) {
                 // divImagem.appendChild()
                 prepararImagemArrastavel(divImagem);
                 containerImagens.appendChild(divImagem);
-                console.log(divImagem.style.backgroundImage.split("url(")[1].slice(0, -1))
+                // console.log(divImagem.style.backgroundImage.split("url(")[1].slice(0, -1))
+                contadorImgens++;
             }
+            document.getElementById("contador-imagens").textContent = contadorImgens + " imagem(s)";
             containerImagens.querySelector(".abrir-multiplos").style.display = "inline-block";
             containerImagens.querySelector(".apagar-multiplos").style.display = "inline-block";
         }
         if (imovel.anuncio?.documentos && imovel.anuncio.documentos.length > 0) {
+            let contadorDocumentos = 0;
             const containerDocumentos = document.getElementById("container-documentos");
             for (let documento of imovel.anuncio.documentos) {
                 const docElement = document.createElement("a");
@@ -500,9 +504,11 @@ async function abrirCadastro(imovelId) {
                 docElement.textContent = "Documento";
                 docElement.target = "_blank";
                 containerDocumentos.appendChild(docElement);
+                contadorDocumentos++;
             }
             containerDocumentos.querySelector(".abrir-multiplos").style.display = "inline-block";
             containerDocumentos.querySelector(".apagar-multiplos").style.display = "inline-block";
+            document.getElementById("contador-documentos").textContent = contadorDocumentos + " documento(s)";
         }
         if (imovel.proprietario) {
             document.getElementById("ta-proprietario").value = imovel.proprietario.nome || "";
@@ -581,7 +587,7 @@ function atualizarIndicadorPosicaoArraste(event) {
 
     const placeholder = obterPlaceholderArraste();
 
-    if (target.tagName === "IMG" && target !== draggedImg) {
+    if (target.tagName === "DIV" && target !== draggedImg) {
         if (placeholder.parentNode !== container || placeholder.nextSibling !== target) {
             container.insertBefore(placeholder, target);
         }
@@ -659,12 +665,9 @@ function mudarPosicaoNoContainer(event) {
     if (placeholder.parentNode === container) {
         container.insertBefore(draggedImg, placeholder);
     } else {
-        const botaoAdicionar = container.querySelector("button");
-        if (botaoAdicionar) {
-            container.insertBefore(draggedImg, botaoAdicionar);
-        } else {
+        
             container.appendChild(draggedImg);
-        }
+        
     }
 
     limparPlaceholderArraste();
@@ -689,6 +692,9 @@ function apagarMultiplos(event) {
             }
     });
 
+    document.getElementById("contador-imagens").textContent = container.querySelectorAll(".imagem-anuncio").length + " imagem(s)";
+    document.getElementById("contador-documentos").textContent = container.querySelectorAll("a").length + " documento(s)";
+
 }
 
 function selecionarTodos(event) {
@@ -703,6 +709,8 @@ function adicionarAnexo(event) {
     input.type = "file";
     input.accept = "image/*,application/pdf";
     input.multiple = true;
+    let contadorImagens = 0;
+    let contadorDocumentos = 0;
     input.onchange = function () {
         var files = input.files;
         var container = event.target.closest(".container");
@@ -726,12 +734,14 @@ function adicionarAnexo(event) {
                 checkbox.name = "imagens-selecionadas";
                 fileElement.appendChild(checkbox);
                 prepararImagemArrastavel(fileElement);
-                console.log(fileURL);
+                contadorImagens++;
+                // console.log(fileURL);
             } else if (file.type === "application/pdf") {
                 fileElement = document.createElement("a");
                 fileElement.href = fileURL;
                 fileElement.textContent = file.name;
                 fileElement.target = "_blank";
+                contadorDocumentos++;
             }
             if (fileElement) {
                 container.appendChild(fileElement);
@@ -740,6 +750,8 @@ function adicionarAnexo(event) {
             }
         }
     }
+    document.getElementById("contador-imagens").textContent = contadorImagens + " imagem(s)";
+    document.getElementById("contador-documentos").textContent = contadorDocumentos + " documento(s)";
     input.click();
 }
 
