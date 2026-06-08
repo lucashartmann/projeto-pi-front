@@ -1,5 +1,12 @@
 Inputmask("999.999.999-99").mask("#cpf_cnpj");
 
+async function novaSenha() {
+    let caminho = "";
+
+    const resposta = await fetch("");
+    
+}
+
 
 function togglePasswordVisibility(event) {
     const senhaInput = event.target.previousElementSibling;
