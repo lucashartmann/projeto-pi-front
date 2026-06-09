@@ -1,6 +1,8 @@
 # PHP Unit (já incluído via composer neste projeto)
 composer install
 
+composer require phpmailer/phpmailer
+
 # Node / JS (para rodar testes frontend)
 # - Instale Node.js.
 

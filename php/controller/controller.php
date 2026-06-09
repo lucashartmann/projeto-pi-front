@@ -19,35 +19,57 @@ require_once __DIR__ . '/../model/seguranca.php';
 require_once __DIR__ . '/../utils/caminho_xamp.php';
 require_once __DIR__ . '/../utils/imagem.php';
 require_once __DIR__ . '/../utils/email.php';
+require_once __DIR__ . '/../../vendor/autoload.php';
+
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
 
 class controller
 {
 
 
-    function recuperarSenha($data) {
+
+    function recuperarSenha($data)
+    {
         try {
+
             $email = $data['email'] ?? '';
+
             if (!$email || !Validacao::validarEmail($email)) {
-                return (["status" => "erro", "mensagem" => "Email inválido ou não fornecido"]);
+                return [
+                    "status" => "erro",
+                    "mensagem" => "Email inválido ou não fornecido"
+                ];
             }
-            
-            $origem = "lucas.a111@hotmail.com"; 
-            $destino = $email;
-            $assunto = "Recuperação de Senha";
 
-            $headers  = 'MIME-Version: 1.0' . "\r\n";
-            $headers .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
-            $headers .= 'From: Summit <$origem>' . "\r\n";
+            $mail = new PHPMailer(true);
 
-            $resultado = mail($destino, $assunto, getArquivo(), $headers);
-           
-            if ($resultado) {
-                return (["status" => "sucesso", "mensagem" => "Instruções para recuperação de senha enviadas para o email"]);
-            } else {
-                return (["status" => "erro", "mensagem" => "Erro ao recuperar senha"]);
-            }
+            $mail->isSMTP();
+            $mail->Host = 'smtp.office365.com';
+            $mail->SMTPAuth = true;
+            $mail->Username = 'seuemail@outlook.com';
+            $mail->Password = 'suasenha';
+            $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+            $mail->Port = 587;
+
+            $mail->setFrom('seuemail@outlook.com', 'Summit');
+            $mail->addAddress($email);
+
+            $mail->isHTML(true);
+            $mail->Subject = 'Recuperação de Senha';
+            $mail->Body = getArquivo();
+
+            $mail->send();
+
+            return [
+                "status" => "sucesso",
+                "mensagem" => "Instruções enviadas para o email"
+            ];
         } catch (Exception $e) {
-            return (["status" => "erro", "mensagem" => "Erro ao recuperar senha: " . $e->getMessage()]);
+            return [
+                "status" => "erro",
+                "mensagem" => $e->getMessage()
+            ];
         }
     }
 
@@ -763,8 +785,8 @@ class controller
                     if ($cadastroAnuncio) {
                         $imovelObj->getAnuncio()->setId($cadastroAnuncio);
                     }
-                }  else {
-                    
+                } else {
+
                     $cadastroAnuncio = Init::getInstance()
                         ->getEstoque()
                         ->atualizarAnuncio($anuncioObj);
@@ -775,10 +797,10 @@ class controller
                     $atualizado = Init::getInstance()->getEstoque()->atualizarImovel($imovelObj);
                     if ($atualizado) {
                         $cadastrado = $id;
-                    }else {
+                    } else {
                         $cadastrado = null;
                     }
-                    
+
                     limparPasta($imovelObj->getAnuncio()->getImagens(), $imovelObj->getId());
                 } else {
                     $cadastrado = Init::getInstance()->getEstoque()->cadastrarImovel($imovelObj);
@@ -809,11 +831,11 @@ class controller
                         ->getEstoque()
                         ->atualizarAnuncio($anuncioObj);
                 }
-                if($cadastrado){
+                if ($cadastrado) {
                     if ($id) {
-                            return (["status" => "sucesso", "mensagem" => "imovel atualizado!\n"]);
+                        return (["status" => "sucesso", "mensagem" => "imovel atualizado!\n"]);
                     }
-                        return (["status" => "sucesso", "mensagem" => "imovel cadastrado!\n"]);
+                    return (["status" => "sucesso", "mensagem" => "imovel cadastrado!\n"]);
                 } else {
                     return (["status" => "erro", "mensagem" => "ERRO ao cadastrar imóvel"]);
                 }
