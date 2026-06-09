@@ -60,6 +60,17 @@ switch ($acao) {
         $resultado = $controller->carregarUsuario();
         break;
 
+    case "recuperar_senha":
+        $body = file_get_contents("php://input");
+        $data = json_decode($body, true);
+
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            $resultado = (["status" => "erro", "mensagem" => "JSON inválido"]);
+            return;
+        }
+        $resultado = $controller->recuperarSenha($data);
+        break;
+
     default:
         $resultado = (["status" => "erro", "mensagem" => "Ação inválida"]);
         break;

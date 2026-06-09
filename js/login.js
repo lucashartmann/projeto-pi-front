@@ -1,27 +1,79 @@
 Inputmask("999.999.999-99").mask("#cpf_cnpj");
 
-async function novaSenha() {
-    let caminho = "";
 
-    const resposta = await fetch("");
-    
+async function enviarNovaSenha() {
+    event.preventDefault();
+    const email = document.getElementById("email").value;
+    try {
+        let caminho = getCaminhoRelativo("/php/api/login.php?acao=recuperar_senha");
+        const resposta = await fetch(caminho, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                email: email
+            })
+        });
+        if (resposta.erro) {
+            alert("Erro ao recuperar senha: " + resposta.erro);
+            return null;
+        }
+        const contentType = resposta.headers.get("content-type");
+        if (contentType && contentType.includes("application/json")) {
+            dados = await resposta.json();
+        } else {
+            const texto = await resposta.text();
+            // alert("Resposta inesperada do servidor");
+            console.error("Resposta não é JSON:", texto);
+            return;
+        }
+
+        if (dados.status == "erro") {
+            alert(dados.mensagem);
+            return;
+        }
+
+        if (resposta.ok && dados.status == "sucesso") {
+           alert(dados.mensagem);
+           window.location.href = "../index.html";
+        }
+
+    } catch (erro) {
+        console.error("Falha ao conectar com o backend:", erro);
+    }
 }
 
+
+function onSignIn(googleUser) {
+    var profile = googleUser.getBasicProfile();
+    console.log('ID: ' + profile.getId());
+    console.log('Name: ' + profile.getName());
+    console.log('Image URL: ' + profile.getImageUrl());
+    console.log('Email: ' + profile.getEmail());
+}
+
+function signOut() {
+    var auth2 = gapi.auth2.getAuthInstance();
+    auth2.signOut().then(function () {
+        console.log('User signed out.');
+    });
+}
 
 function togglePasswordVisibility(event) {
     const senhaInput = event.target.previousElementSibling;
     const toggleIcons = event.target;
 
     if (senhaInput.type === "password") {
-            senhaInput.type = "text";
-            toggleIcons.classList.remove("fa-eye-slash");
-            toggleIcons.classList.add("fa-eye");
+        senhaInput.type = "text";
+        toggleIcons.classList.remove("fa-eye-slash");
+        toggleIcons.classList.add("fa-eye");
     } else {
-            senhaInput.type = "password";
-            toggleIcons.classList.remove("fa-eye");
-            toggleIcons.classList.add("fa-eye-slash");
+        senhaInput.type = "password";
+        toggleIcons.classList.remove("fa-eye");
+        toggleIcons.classList.add("fa-eye-slash");
     }
-    
+
 }
 
 function verificaDataNascimento() {
@@ -189,4 +241,20 @@ async function fazerCadastro() {
     } catch (erro) {
         console.error("Falha ao conectar com o backend:", erro);
     }
+}
+
+function novaSenha() {
+    event.preventDefault();
+    const formLogin = document.getElementById("form-login");
+    formLogin.style.display = "none";
+    const formNovaSenha = document.getElementById("form-nova-senha");
+    formNovaSenha.style.display = "flex";
+}
+
+function voltarLogin() {
+    event.preventDefault();
+    const formLogin = document.getElementById("form-login");
+    formLogin.style.display = "flex";
+    const formNovaSenha = document.getElementById("form-nova-senha");
+    formNovaSenha.style.display = "none";
 }
