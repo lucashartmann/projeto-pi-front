@@ -91,6 +91,35 @@ async function listarImoveis() {
     }
 }
 
+function removerCardPessoa(container, event) {
+    if (document.body.contains(container) && !container.contains(event.target)) {
+            const checkboxes = container.querySelectorAll("input[type='checkbox']");
+            const selecionados = Array.from(checkboxes).filter(checkbox => checkbox.checked);
+            if (selecionados.length > 0) {
+                for (let checkbox of selecionados) {
+                    let containerPessoa = checkbox.closest(".resultado-pessoa");
+                    switch (tipo) {
+                        case "proprietario":
+                            containerPessoa.classList.add("pessoa-selecionada");
+                            document.getElementById("container-proprietario").appendChild(containerPessoa.cloneNode(true));
+                            break;
+                        case "corretor":
+                            document.getElementById("container-corretor").appendChild(containerPessoa.cloneNode(true));
+                            break;
+                        case "captador":
+                            document.getElementById("container-captador").appendChild(containerPessoa.cloneNode(true));
+                            break;
+                    }
+
+                }
+            }
+            document.body.removeChild(container);
+            document.removeEventListener("click", removerCardPessoa);
+            console.log("Card removido");
+        }
+
+}
+
 async function listarImoveisDisponiveis() {
     try {
         let caminho = getCaminhoRelativo("/php/api/imoveis.php?acao=listar_imoveis_disponiveis");
@@ -108,7 +137,7 @@ async function listarImoveisDisponiveis() {
                     const texto = await res.text();
                     // alert("Resposta inesperada do servidor");
                     console.error("Resposta não é JSON:", texto);
-                    return;
+                    return null;
                 }
             })
             .then(async (data) => {

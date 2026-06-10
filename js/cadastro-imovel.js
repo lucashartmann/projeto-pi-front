@@ -68,7 +68,7 @@ async function listarPessoas(tipo) {
                     return null;
                 });
 
-            return resposta;
+            return null;
 
         } catch (error) {
             console.error("Falha ao conectar com o backend:", erro);
@@ -91,7 +91,7 @@ async function listarPessoas(tipo) {
                         const texto = await res.text();
                         // alert("Resposta inesperada do servidor");
                         console.error("Resposta não é JSON:", texto);
-                        return;
+                        return null;
                     }
                 })
                 .then(async (data) => {
@@ -112,7 +112,7 @@ async function listarPessoas(tipo) {
     }
 }
 
-let listaPessoas = [];
+let lista = null;
 
 async function editarPessoa(tipo) {
     if (tipo !== "proprietario" && tipo !== "corretor" && tipo !== "captador") {
@@ -120,21 +120,19 @@ async function editarPessoa(tipo) {
         return;
     }
 
-    if (listaPessoas.length === 0) {
-        listaPessoas = [];
-        let listaConsulta = await listarPessoas(tipo);
-        listaPessoas = listaConsulta;
+    if (!lista) {
+        console.log("Carregando lista de pessoas...");
+        lista = await listarPessoas(tipo);
     }
 
-    let lista = listaPessoas;
-
-    if (!lista || lista.length === 0) {
+    if (!lista || lista.length === 0 || !lista.dados || lista.dados.length === 0) {
         alert("Nenhuma pessoa encontrada para editar!");
         return;
     }
 
+
     const container = document.createElement("div");
-    document.addEventListener("click", function (event) {
+    const click = function (event) {
         if (document.body.contains(container) && !container.contains(event.target)) {
             const checkboxes = container.querySelectorAll("input[type='checkbox']");
             const selecionados = Array.from(checkboxes).filter(checkbox => checkbox.checked);
@@ -158,7 +156,14 @@ async function editarPessoa(tipo) {
             }
             document.body.removeChild(container);
         }
-    });
+        document.removeEventListener("click", click);
+        console.log("É para o evento ser removido")
+    };
+    if (!document.eventListenerList || !document.eventListenerList.some(listener => listener.type === "click" && listener.listener === click)) {
+        setTimeout(() => {
+            document.addEventListener("click", click, { once: true });
+        }, 0);
+    }
     const pesquisarInput = document.createElement("input");
     pesquisarInput.type = "text";
     pesquisarInput.placeholder = "Pesquisar...";
