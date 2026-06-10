@@ -112,13 +112,21 @@ async function listarPessoas(tipo) {
     }
 }
 
+let listaPessoas = [];
+
 async function editarPessoa(tipo) {
     if (tipo !== "proprietario" && tipo !== "corretor" && tipo !== "captador") {
         alert("Tipo de pessoa inválido!");
         return;
     }
 
-    const lista = await listarPessoas(tipo);
+    if (listaPessoas.length === 0) {
+        listaPessoas = [];
+        let listaConsulta = await listarPessoas(tipo);
+        listaPessoas = listaConsulta;
+    }
+
+    let lista = listaPessoas;
 
     if (!lista || lista.length === 0) {
         alert("Nenhuma pessoa encontrada para editar!");
@@ -127,7 +135,27 @@ async function editarPessoa(tipo) {
 
     const container = document.createElement("div");
     document.addEventListener("click", function (event) {
-        if (event.target !== container && document.body.contains(container)) {
+        if (document.body.contains(container) && !container.contains(event.target)) {
+            const checkboxes = container.querySelectorAll("input[type='checkbox']");
+            const selecionados = Array.from(checkboxes).filter(checkbox => checkbox.checked);
+            if (selecionados.length > 0) {
+                for (let checkbox of selecionados) {
+                    let containerPessoa = checkbox.closest(".resultado-pessoa");
+                    switch (tipo) {
+                        case "proprietario":
+                            containerPessoa.classList.add("pessoa-selecionada");
+                            document.getElementById("container-proprietario").appendChild(containerPessoa.cloneNode(true));
+                            break;
+                        case "corretor":
+                            document.getElementById("container-corretor").appendChild(containerPessoa.cloneNode(true));
+                            break;
+                        case "captador":
+                            document.getElementById("container-captador").appendChild(containerPessoa.cloneNode(true));
+                            break;
+                    }
+
+                }
+            }
             document.body.removeChild(container);
         }
     });
@@ -158,13 +186,27 @@ async function editarPessoa(tipo) {
         });
     };
 
+    idsExistentes = [];
+
+    switch (tipo) {
+        case "proprietario":
+            idsExistentes = document.getElementById("container-proprietario").querySelectorAll(".resultado-pessoa .id-pessoa");
+            break;
+        case "corretor":
+            idsExistentes = document.getElementById("container-corretor").querySelectorAll(".resultado-pessoa .id-pessoa");
+            break;
+        case "captador":
+            idsExistentes = document.getElementById("container-captador").querySelectorAll(".resultado-pessoa .id-pessoa");
+            break;
+    }
+
     container.appendChild(pesquisarInput);
     for (let pessoa of lista.dados) {
         let div_resultado = document.createElement("div");
         div_resultado.classList.add("resultado-pessoa");
         let checkbox = document.createElement("input");
         checkbox.type = "checkbox";
-        checkbox.value = pessoa.id;
+        checkbox.value = (pessoa.id in idsExistentes) ? true : false;
         checkbox.name = "pessoa-selecionada";
 
         div_left = document.createElement("div");
@@ -174,14 +216,22 @@ async function editarPessoa(tipo) {
         div_resultado.appendChild(div_left);
         let nome = document.createElement("label");
         nome.textContent = pessoa.nome;
+        nome.classList.add("nome-pessoa");
 
         div_right = document.createElement("div");
         div_right.classList.add("div-right");
         div_right.appendChild(nome);
 
+        let inputHidden = document.createElement("input");
+        inputHidden.type = "hidden";
+        inputHidden.value = pessoa.id;
+        inputHidden.classList.add("id-pessoa");
+        div_right.appendChild(inputHidden);
+
         if (pessoa?.creci) {
             let creci = document.createElement("label");
             creci.textContent = "CRECI: " + pessoa.creci;
+            creci.classList.add("creci-pessoa");
             div_right.appendChild(creci);
         }
         let email = document.createElement("label");
@@ -260,9 +310,33 @@ async function getOutrosDados(formData) {
         }
     }
 
-    formData.append("proprietario", []);
-    formData.append("corretor", []);
-    formData.append("captador", []);
+    if (containerProprietario && containerProprietario.querySelectorAll(".resultado-pessoa").length > 0) {
+        const idProprietario = containerProprietario.querySelector(".resultado-pessoa .id-pessoa")?.value;
+        if (idProprietario) {
+            formData.append("proprietarios[]", idProprietario);
+        }
+    } else {
+        formData.append("proprietarios", []);
+    }
+
+    if (containerCorretor && containerCorretor.querySelectorAll(".resultado-pessoa").length > 0) {
+        const idCorretor = containerCorretor.querySelector(".resultado-pessoa .id-pessoa")?.value;
+        if (idCorretor) {
+            formData.append("corretor", idCorretor);
+        }
+    } else {
+        formData.append("captador", null);
+    }
+
+    if (containerCaptador && containerCaptador.querySelectorAll(".resultado-pessoa").length > 0) {
+        const idCaptador = containerCaptador.querySelector(".resultado-pessoa .id-pessoa")?.value;
+        if (idCaptador) {
+            formData.append("captador", idCaptador);
+        }
+    } else {
+        formData.append("corretor", null);
+    }
+
     return formData;
 }
 
@@ -510,15 +584,78 @@ async function abrirCadastro(imovelId) {
             containerDocumentos.querySelector(".apagar-multiplos").style.display = "inline-block";
             document.getElementById("contador-documentos").textContent = contadorDocumentos + " documento(s)";
         }
-        if (imovel.proprietario) {
-            document.getElementById("ta-proprietario").value = imovel.proprietario.nome || "";
+        pessoas = {};
+        if (imovel.proprietarios) {
+            pessoas["proprietarios"] = imovel.proprietarios;
         }
         if (imovel.corretor) {
-            document.getElementById("ta-corretor").value = imovel.corretor.nome || "";
+            pessoas["corretor"] = imovel.corretor;
         }
         if (imovel.captador) {
-            document.getElementById("ta-captador").value = imovel.captador.nome || "";
+            pessoas["captador"] = imovel.captador;
         }
+
+        if (Object.keys(pessoas).length > 0) {
+            for (let chave in pessoas) {
+                const container = null;
+                switch (chave) {
+                    case "proprietarios":
+                        container = document.getElementById("container-proprietario");
+                        break;
+                    case "corretor":
+                        container = document.getElementById("container-corretor");
+                        break;
+                    case "captador":
+                        container = document.getElementById("container-captador");
+                        break;
+                }
+                for (let pessoa of pessoas[chave]) {
+                    let div_resultado = document.createElement("div");
+                    div_resultado.classList.add("resultado-pessoa");
+                    let checkbox = document.createElement("input");
+                    checkbox.type = "checkbox";
+                    checkbox.value = pessoa.id;
+                    checkbox.name = "pessoa-selecionada";
+
+                    div_left = document.createElement("div");
+                    div_left.classList.add("div-left");
+                    div_left.appendChild(checkbox);
+
+                    div_resultado.appendChild(div_left);
+                    let nome = document.createElement("label");
+                    nome.textContent = pessoa.nome;
+                    nome.classList.add("nome-pessoa");
+
+                    div_right = document.createElement("div");
+                    div_right.classList.add("div-right");
+                    div_right.appendChild(nome);
+
+                    let inputHidden = document.createElement("input");
+                    inputHidden.type = "hidden";
+                    inputHidden.value = pessoa.id;
+                    inputHidden.classList.add("id-pessoa");
+                    div_right.appendChild(inputHidden);
+
+                    if (pessoa?.creci) {
+                        let creci = document.createElement("label");
+                        creci.textContent = "CRECI: " + pessoa.creci;
+                        creci.classList.add("creci-pessoa");
+                        div_right.appendChild(creci);
+                    }
+                    let email = document.createElement("label");
+                    email.textContent = "Email: " + pessoa.email;
+                    div_right.appendChild(email);
+                    let telefone = document.createElement("label");
+                    telefone.textContent = "Telefone: " + pessoa.telefone;
+                    div_right.appendChild(telefone);
+                    div_resultado.appendChild(div_right);
+                    container.appendChild(div_resultado);
+                }
+            }
+        }
+
+
+
     } else {
         alert("Imóvel não encontrado!");
         window.location.href = "estoque.html";
@@ -665,16 +802,16 @@ function mudarPosicaoNoContainer(event) {
     if (placeholder.parentNode === container) {
         container.insertBefore(draggedImg, placeholder);
     } else {
-        
-            container.appendChild(draggedImg);
-        
+
+        container.appendChild(draggedImg);
+
     }
 
     limparPlaceholderArraste();
 }
 
 function abrirMultiplos(event) {
-    
+
 }
 
 function apagarMultiplos(event) {
@@ -686,10 +823,10 @@ function apagarMultiplos(event) {
     }
     // if (confirm(`Tem certeza que deseja excluir os ${checkboxes.length} itens selecionados?`)) {}
     checkboxes.forEach(checkbox => {
-            const item = checkbox.closest(".imagem-anuncio, a");
-            if (item) {
-                item.parentNode.removeChild(item);
-            }
+        const item = checkbox.closest(".imagem-anuncio, a");
+        if (item) {
+            item.parentNode.removeChild(item);
+        }
     });
 
     document.getElementById("contador-imagens").textContent = container.querySelectorAll(".imagem-anuncio").length + " imagem(s)";

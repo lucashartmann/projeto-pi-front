@@ -321,44 +321,23 @@ label {
     align-items: center;
     overflow-y: auto;
     overflow-x: hidden;
+    max-height: 70vh;
 
-    .form-header {
-        font-size: 1.5em;
-        margin: 2rem;
-        display: flex;
-        width: 100%;
-        justify-content: space-between;
-
-
-        h2 {
-            justify-self: center;
-            align-self: center;
-            text-align: center;
-            margin-left: 10px;
-            width: auto;
-            height: auto;
-        }
-
-        #close-btn {
-            color: red;
-            border: black solid 1px;
-            background: transparent;
-            margin-left: 0;
-            width: auto;
-            height: 1.8rem;
-        }
-    }
-
-    input {
-        height: 4rem;
+    input[type=checkbox] {
+        height: 3rem;
         width: 100%;
         margin: 5px;
+    }
+
+    input[type=text] {
+        height: 2.8rem !important;
+        width: 100%;
+        margin: 10px;
     }
 
     .resultado-pessoa {
         margin: 10px 0px;
         display: flex;
-
         .div-left {
             margin-right: 20px;
         }
@@ -370,34 +349,22 @@ label {
         }
     }
 
-    form {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        height: auto;
-        width: 100%;
-
-        label {
-            margin-bottom: 0.5em;
-            font-size: 1.2em;
-            margin: 1rem 0rem;
-        }
-
-        input {
-            padding: 0.5em;
-            margin-bottom: 1em;
-            width: 80%;
-            font-size: 1em;
-            margin: 1rem 0rem;
-        }
-
-        button {
-            padding: 0.5em 1em;
-            font-size: 1em;
-            cursor: pointer;
-            margin: 1rem 0rem 2rem 0rem;
-        }
-    }
+    
+  
 }
 
+
+.pessoa-selecionada {
+        display: flex;
+        justify-content: space-between;
+        background: rgba(36, 30, 30, 0.5);
+        backdrop-filter: blur(40px) !important;
+        box-shadow: var(--shadow);
+        margin: 0;
+        display: flex;
+        .div-right {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+    }

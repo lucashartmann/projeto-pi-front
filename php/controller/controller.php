@@ -439,6 +439,81 @@ class controller
                 $categoria = $imovel->getCategoria();
                 $status = $imovel->getStatus();
 
+                if ($imovel->getProprietarios()) {
+                    $proprietarios = [];
+                    foreach ($imovel->getProprietarios() as $proprietario) {
+                        $proprietarios[] = [
+                            "id" => $proprietario->getId(),
+                            "email" => $proprietario->getEmail(),
+                            "nome" => $proprietario->getNome(),
+                            "cpf_cnpj" => $proprietario->getCpfCnpj(),
+                            "rg" => $proprietario->getRg(),
+                            "telefones" => $proprietario->getTelefones() ?? [],
+                            "endereco" => $proprietario->getEndereco() ? [
+                                "rua" => $proprietario->getEndereco()->rua ?? null,
+                                "numero" => $proprietario->getEndereco()->numero ?? null,
+                                "bairro" => $proprietario->getEndereco()->bairro ?? null,
+                                "cidade" => $proprietario->getEndereco()->cidade ?? null,
+                                "uf" => $proprietario->getEndereco()->uf ?? null,
+                                "cep" => $proprietario->getEndereco()->cep ?? null,
+                                "complemento" => $proprietario->getEndereco()->complemento ?? null
+                            ] : null,
+                            "data_nascimento" => $proprietario->getDataNascimento() ? $proprietario->getDataNascimento()->format('d-m-Y') : null,
+                            "data_cadastro" => $proprietario->getDataCadastro(),
+                            "data_modificacao" => $proprietario->getDataModificacao()
+                        ];
+                    }
+                }
+
+                if ($imovel->getCorretor()) {
+                    $corretor = [
+                        "id" => $imovel->getCorretor()->getId(),
+                        "email" => $imovel->getCorretor()->getEmail(),
+                        "nome" => $imovel->getCorretor()->getNome(),
+                        "cpf_cnpj" => $imovel->getCorretor()->getCpfCnpj(),
+                        "rg" => $imovel->getCorretor()->getRg(),
+                        "telefones" => $imovel->getCorretor()->getTelefones() ?? [],
+                        "creci" => $imovel->getCorretor()->getCreci() ?? null,
+                        "endereco" => $imovel->getCorretor()->getEndereco() ? [
+                            "rua" => $imovel->getCorretor()->getEndereco()->rua ?? null,
+                            "numero" => $imovel->getCorretor()->getEndereco()->numero ?? null,
+                            "bairro" => $imovel->getCorretor()->getEndereco()->bairro ?? null,
+                            "cidade" => $imovel->getCorretor()->getEndereco()->cidade ?? null,
+                            "uf" => $imovel->getCorretor()->getEndereco()->uf ?? null,
+                            "cep" => $imovel->getCorretor()->getEndereco()->cep ?? null,
+                            "complemento" => $imovel->getCorretor()->getEndereco()->complemento ?? null
+                        ] : null,
+                        "data_nascimento" => $imovel->getCorretor()->getDataNascimento() ? $imovel->getCorretor()->getDataNascimento()->format('d-m-Y') : null,
+                        "data_cadastro" => $imovel->getCorretor()->getDataCadastro(),
+                        "data_modificacao" => $imovel->getCorretor()->getDataModificacao()
+                    ];
+                }
+
+                if ($imovel->getCaptador()) {
+                    $captador = [
+                        "id" => $imovel->getCaptador()->getId(),
+                        "email" => $imovel->getCaptador()->getEmail(),
+                        "nome" => $imovel->getCaptador()->getNome(),
+                        "cpf_cnpj" => $imovel->getCaptador()->getCpfCnpj(),
+                        "rg" => $imovel->getCaptador()->getRg(),
+                        "telefones" => $imovel->getCaptador()->getTelefones() ?? [],
+                        "salario" => $imovel->getCaptador()->getSalario() ?? null,
+                        "endereco" => $imovel->getCaptador()->getEndereco() ? [
+                            "rua" => $imovel->getCaptador()->getEndereco()->rua ?? null,
+                            "numero" => $imovel->getCaptador()->getEndereco()->numero ?? null,
+                            "bairro" => $imovel->getCaptador()->getEndereco()->bairro ?? null,
+                            "cidade" => $imovel->getCaptador()->getEndereco()->cidade ?? null,
+                            "uf" => $imovel->getCaptador()->getEndereco()->uf ?? null,
+                            "cep" => $imovel->getCaptador()->getEndereco()->cep ?? null,
+                            "complemento" => $imovel->getCaptador()->getEndereco()->complemento ?? null
+                        ] : null,
+                        "data_nascimento" => $imovel->getCaptador()->getDataNascimento() ? $imovel->getCaptador()->getDataNascimento()->format('d-m-Y') : null,
+                        "data_cadastro" => $imovel->getCaptador()->getDataCadastro(),
+                        "data_modificacao" => $imovel->getCaptador()->getDataModificacao()
+                    ];
+                }
+
+
                 $lista[] = [
                     "id" => $imovel->getId(),
                     "valor_venda" => $imovel->getValorVenda(),
@@ -448,7 +523,10 @@ class controller
                     "endereco" => $endereco,
                     "anuncio" => $anuncio,
                     "data_modificacao" => $imovel->getDataModificacao(),
-                    "data_cadastro" => $imovel->getDataCadastro()
+                    "data_cadastro" => $imovel->getDataCadastro(),
+                    "proprietarios" => $proprietarios ?? [],
+                    "corretor" => $corretor ?? null,
+                    "captador" => $captador ?? null,
                 ];
             }
 
@@ -663,9 +741,9 @@ class controller
             isset($data["situacao"]) ? $situacao = Situacao::tryFrom(ucfirst(strtolower($data["situacao"]))) : null;
             $ocupacao = null;
             isset($data["ocupacao"]) ? $ocupacao = Ocupacao::tryFrom(ucfirst(strtolower($data["ocupacao"]))) : null;
-            # proprietarios = data["proprietarios"]
-            # corretor = data["corretor"]
-            # captador = data["captador"]
+            $proprietarios = array_key_exists("proprietarios", $data) ? $data["proprietarios"] : [];
+            $corretor = array_key_exists("corretor", $data) ? $data["corretor"] : null;
+            $captador = array_key_exists("captador", $data) ? $data["captador"] : null;
             $cep = array_key_exists("cep", $data) ? $data["cep"] : "";
             $imagens = $_FILES["imagens"] ?? [];
             if ($cep) {
@@ -688,6 +766,27 @@ class controller
                 $nomeCondominio,
                 $enderecoObj
             );
+
+            if ($corretor) {
+                $corretor = Init::getInstance()->getUsuarioPorId($id) ?? null;
+            }
+
+            if ($captador) {
+                $captador = Init::getInstance()->getUsuarioPorId($id) ?? null;
+            }
+
+            if ($proprietarios) {
+                $proprietariosObjs = [];
+                foreach ($proprietarios as $proprietario) {
+                    if (isset($proprietario["id"])) {
+                        $proprietarioObj = Init::getInstance()->getProprietarioPorId($proprietario["id"]);
+                        if ($proprietarioObj) {
+                            $proprietariosObjs[] = $proprietarioObj;
+                        }
+                    }
+                }
+                $proprietarios = $proprietariosObjs;
+            }
             //  filtros = data->get("filtros", [])
 
             $imovelObj = NULL;

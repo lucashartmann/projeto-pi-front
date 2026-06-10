@@ -120,6 +120,11 @@ class Imobiliaria
         return $this->bancoDados->getProprietarioPorCpfCnpj($cpf);
     }
 
+    public function getProprietarioPorId(int $id)
+    {
+        return $this->bancoDados->getProprietarioPorId($id);
+    }
+
     public function getListaClientes()
     {
         return $this->bancoDados->getListaClientes();
