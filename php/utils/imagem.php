@@ -73,19 +73,30 @@ function imagemParaWebpBlob($caminho, $qualidade = 80, $larguraMax = 1920)
     }
 }
 
-function salvarImagem($blob, $id)
+function salvarArquivo($blob, $id, $tipo)
 {
-    $blobConvertido = imagemParaWebpBlob($blob);
-    if (!$blobConvertido) {
-        return false;
+
+    $nomeArquivo = "";
+    $blobConvertido = null;
+    if ($tipo == 'imagem') {
+        $blobConvertido = imagemParaWebpBlob($blob);
+        if (!$blobConvertido) {
+            return false;
+        }
+        $nomeArquivo = uniqid(more_entropy: true) . '.webp';
     }
-    $nomeArquivo = uniqid(more_entropy: true) . '.webp';
+    else if ($tipo == 'documento') {
+        $nomeArquivo = uniqid(more_entropy: true) . '_' . basename($blob);
+        $blobConvertido = file_get_contents($blob);
+    }
+
+    
     $caminhoCompleto = str_replace("\\php\\utils", "\\assets\\imoveis\\", __DIR__) . $id . "/" . $nomeArquivo;
 
     $diretorio = str_replace("\\php\\utils", "\\assets\\imoveis\\", __DIR__) . $id;
     error_log("Diretório para salvar a imagem: " . $diretorio);
     if (!is_dir($diretorio)) {
-            mkdir($diretorio, 0755, true);
+        mkdir($diretorio, 0755, true);
     }
 
     if (file_exists($caminhoCompleto)) {
@@ -95,7 +106,7 @@ function salvarImagem($blob, $id)
     $caminhoParaSalvar = "imoveis/" . $id . "/" . $nomeArquivo;
 
     $is_save = file_put_contents($caminhoCompleto, $blobConvertido);
-            
+
     if ($is_save === false) {
         error_log("Erro ao salvar a imagem: " . $caminhoCompleto);
         return false;

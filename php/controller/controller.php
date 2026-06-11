@@ -746,6 +746,8 @@ class controller
             $captador = array_key_exists("captador", $data) ? $data["captador"] : null;
             $cep = array_key_exists("cep", $data) ? $data["cep"] : "";
             $imagens = $_FILES["imagens"] ?? [];
+            $documentos = $_FILES["documentos"] ?? [];
+            // $video = $_FILES["videos"] ?? [];
             if ($cep) {
                 $cep = str_replace("-", "", $cep);
             }
@@ -911,7 +913,7 @@ class controller
                             if ($imagens['error'][$i] !== UPLOAD_ERR_OK) {
                                 continue;
                             }
-                            $caminho = salvarImagem($tmpName, $cadastrado);
+                            $caminho = salvarArquivo($tmpName, $cadastrado, 'imagem');
                             if ($caminho === null) {
                                 continue;
                             }
@@ -926,6 +928,32 @@ class controller
                         }
                     }
                     $anuncioObj->setImagens($imagensObjetos);
+                    Init::getInstance()
+                        ->getEstoque()
+                        ->atualizarAnuncio($anuncioObj);
+                }
+                if ($cadastrado && $cadastroAnuncio && $documentos) {
+                    $documentosObjetos = [];
+                    foreach ($documentos['tmp_name'] as $i => $tmpName) {
+                        try {
+                            if ($documentos['error'][$i] !== UPLOAD_ERR_OK) {
+                                continue;
+                            }
+                            $caminho = salvarArquivo($tmpName, $cadastrado, 'documento');
+                            if ($caminho === null) {
+                                continue;
+                            }
+                            $documentoObj = new Anexo(
+                                $cadastroAnuncio,
+                                $caminho,
+                                TipoAnexo::DOCUMENTO
+                            );
+                            $documentosObjetos[] = $documentoObj;
+                        } catch (Exception $e) {
+                            continue;
+                        }
+                    }
+                    $anuncioObj->setAnexos($documentosObjetos);
                     Init::getInstance()
                         ->getEstoque()
                         ->atualizarAnuncio($anuncioObj);

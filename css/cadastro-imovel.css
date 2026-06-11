@@ -354,6 +354,35 @@ label {
 }
 
 
+#container-anexos {
+
+        grid-template-columns: repeat(auto-fit, minmax(30%, 1fr));
+        row-gap: 0px;
+        column-gap: 0px;
+    
+        a {
+            background: rgba(36, 30, 30, 0.5);
+            backdrop-filter: blur(40px) !important;
+            box-shadow: var(--shadow);
+            color: white;
+            text-decoration: none;
+            margin: 0;
+            padding: 0;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 4px;
+            width: 10rem;
+            height: 5rem;
+            text-align: center;
+            justify-content: center;
+            align-items: center;
+            justify-self: center;
+            &:hover {
+                background: rgba(255, 255, 255, 0.1);
+            }
+        }
+}
+
+
 .pessoa-selecionada {
         display: flex;
         justify-content: space-between;
