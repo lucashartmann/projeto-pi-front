@@ -428,11 +428,30 @@ class controller
                             }
                         }
                     }
+                    $documentos = [];
+                    error_log(serialize($anuncioObj->getAnexos()));
+                    if ($anuncioObj->getAnexos()) {
+                        foreach ($anuncioObj->getAnexos() as $documento) {
+                            if ($documento instanceof Anexo) {
+                                $documentos[] =  rtrim(dirname($_SERVER['SCRIPT_NAME'], 3), '/') . "/assets/" .  $documento->getCaminho();
+                            }
+                        }
+                    }
+                    $videos = [];
+                    if ($anuncioObj->getVideos()) {
+                        foreach ($anuncioObj->getVideos() as $video) {
+                            if ($video instanceof Anexo) {
+                                $videos[] =  rtrim(dirname($_SERVER['SCRIPT_NAME'], 3), '/') . "/assets/" .  $video->getCaminho();
+                            }
+                        }
+                    }
                     $anuncio = [
                         "id" => $anuncioObj->getId(),
                         "descricao" => $anuncioObj->getDescricao(),
                         "titulo" => $anuncioObj->getTitulo(),
-                        "imagens" => $imagens
+                        "imagens" => $imagens,
+                        "documentos" => $documentos,
+                        "videos" => $videos,
                     ];
                 }
 
@@ -613,11 +632,30 @@ class controller
                             $imagens[] =  rtrim(dirname($_SERVER['SCRIPT_NAME'], 3), '/') . "/assets/" .  $imagem->getCaminho();
                         }
                     }
+                    $documentos = [];
+                    error_log(serialize($anuncioObj->getAnexos()));
+                    if ($anuncioObj->getAnexos()) {
+                        foreach ($anuncioObj->getAnexos() as $documento) {
+                            if ($documento instanceof Anexo) {
+                                $documentos[] =  rtrim(dirname($_SERVER['SCRIPT_NAME'], 3), '/') . "/assets/" .  $documento->getCaminho();
+                            }
+                        }
+                    }
+                    $videos = [];
+                    if ($anuncioObj->getVideos()) {
+                        foreach ($anuncioObj->getVideos() as $video) {
+                            if ($video instanceof Anexo) {
+                                $videos[] =  rtrim(dirname($_SERVER['SCRIPT_NAME'], 3), '/') . "/assets/" .  $video->getCaminho();
+                            }
+                        }
+                    }
                     $anuncio = [
                         "id" => $anuncioObj->getId(),
                         "descricao" => $anuncioObj->getDescricao(),
                         "titulo" => $anuncioObj->getTitulo(),
-                        "imagens" => $imagens
+                        "imagens" => $imagens,
+                        "documentos" => $documentos,
+                        "videos" => $videos,
                     ];
                 }
                 $resposta = [
@@ -727,7 +765,18 @@ class controller
                 $categoria = Categoria::tryFrom($valor);
             }
             $status = null;
-            isset($data["status"]) ? $status = Status::tryFrom(ucfirst(strtolower($data["status"]))) : null;
+            error_log("Status recebido: " . ($data["status"] ?? ""));
+            if (isset($data["status"]) && str_contains($data["status"], "_")) {
+                $lista = explode("_", $data["status"]);
+                $status_formatado = ucfirst($lista[0]) . "_" . ucfirst(end($lista));
+                $status = Status::tryFrom($status_formatado) ?? null;
+            } else {
+                isset($data["status"]) ? $status = Status::tryFrom(ucfirst(strtolower($data["status"]))) : null;
+            }
+            if (!$status) {
+                error_log("Status inválido recebido: " . $data["status"]);
+                return (["status" => "erro", "mensagem" => "Status inválido"]);
+            }
             $iptu = array_key_exists("iptu", $data) ? (float)(str_replace(['-', 'R$', ' '], '', $data["iptu"]) ?? 0) : 0.0;
             $valorCondominio = array_key_exists("valor_condominio", $data) ? (float)(str_replace(['-', 'R$', ' '], '', $data["valor_condominio"]) ?? 0) : 0.0;
             $andar = array_key_exists("andar", $data) ? (int)($data["andar"] ?? 0) : 0;
@@ -742,8 +791,8 @@ class controller
             $ocupacao = null;
             isset($data["ocupacao"]) ? $ocupacao = Ocupacao::tryFrom(ucfirst(strtolower($data["ocupacao"]))) : null;
             $proprietarios = array_key_exists("proprietarios", $data) ? $data["proprietarios"] : [];
-            $corretor = array_key_exists("corretor", $data) ? $data["corretor"] : null;
-            $captador = array_key_exists("captador", $data) ? $data["captador"] : null;
+            $corretor = array_key_exists("corretor", $data) ? (int)$data["corretor"] : null;
+            $captador = array_key_exists("captador", $data) ? (int)$data["captador"] : null;
             $cep = array_key_exists("cep", $data) ? $data["cep"] : "";
             $imagens = $_FILES["imagens"] ?? [];
             $documentos = $_FILES["documentos"] ?? [];
@@ -770,11 +819,11 @@ class controller
             );
 
             if ($corretor) {
-                $corretor = Init::getInstance()->getUsuarioPorId($id) ?? null;
+                $corretor = Init::getInstance()->getUsuarioPorId($corretor) ?? null;
             }
 
             if ($captador) {
-                $captador = Init::getInstance()->getUsuarioPorId($id) ?? null;
+                $captador = Init::getInstance()->getUsuarioPorId($captador) ?? null;
             }
 
             if ($proprietarios) {
@@ -824,7 +873,7 @@ class controller
             $imovelObj->setOcupacao($ocupacao);
             # imovelObj->setCorretor(corretor)
             # imovelObj->setCaptador(captador)
-            if ($imovelObj->getAnuncio()->getId() === null || $imovelObj->getAnuncio()->getId() === 0) {
+            if (!$imovelObj->getAnuncio() || $imovelObj->getAnuncio() && ($imovelObj->getAnuncio()->getId() === null || $imovelObj->getAnuncio()->getId() === 0)) {
                 $imovelObj->setAnuncio($anuncioObj);
             } else {
                 $anuncioObj->setId($imovelObj->getAnuncio()->getId());
@@ -903,6 +952,7 @@ class controller
                     }
 
                     limparPasta($imovelObj->getAnuncio()->getImagens(), $imovelObj->getId());
+                    limparPasta($imovelObj->getAnuncio()->getAnexos(), $imovelObj->getId());
                 } else {
                     $cadastrado = Init::getInstance()->getEstoque()->cadastrarImovel($imovelObj);
                 }
@@ -934,7 +984,7 @@ class controller
                 }
                 if ($cadastrado && $cadastroAnuncio && $documentos) {
                     $documentosObjetos = [];
-                    foreach ($documentos['tmp_name'] as $i => $tmpName) {
+                    foreach ($documentos['name'] as $i => $tmpName) {
                         try {
                             if ($documentos['error'][$i] !== UPLOAD_ERR_OK) {
                                 continue;

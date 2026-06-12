@@ -1400,13 +1400,13 @@ class Banco extends PDO
                 $id = $registro['id'];
                 $tipo = $registro['tipo'];
                 $caminho = $registro['nome_arquivo'];
-                if ($tipo == "Imagem") {
+                if ($tipo == "imagem") {
                     $anexo = new Anexo($idAnuncio, $caminho, TipoAnexo::IMAGEM);
                     $imagens[] = $anexo;
-                } else if ($tipo == "Documento") {
+                } else if ($tipo == "anexo") {
                     $anexo = new Anexo($idAnuncio, $caminho, TipoAnexo::DOCUMENTO);
                     $documentos[] = $anexo;
-                } else if ($tipo == "Video") {
+                } else if ($tipo == "video") {
                     $anexo = new Anexo($idAnuncio, $caminho, TipoAnexo::VIDEO);
                     $videos[] = $anexo;
                 }
@@ -2889,7 +2889,7 @@ class Banco extends PDO
                     if ($tipoNormalizado === "imagem") {
                         $anexo_obj = new Anexo($idAnuncio, $anexo['nome_arquivo'], TipoAnexo::IMAGEM);
                         $imagens[] = $anexo_obj;
-                    } else if ($tipoNormalizado === "documento") {
+                    } else if ($tipoNormalizado === "anexo") {
                         $anexo_obj = new Anexo($idAnuncio, $anexo['nome_arquivo'], TipoAnexo::DOCUMENTO);
                         $documentos[] = $anexo_obj;
                     } else if ($tipoNormalizado === "video") {

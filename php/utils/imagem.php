@@ -73,21 +73,21 @@ function imagemParaWebpBlob($caminho, $qualidade = 80, $larguraMax = 1920)
     }
 }
 
-function salvarArquivo($blob, $id, $tipo)
+function salvarArquivo($tmpName, $id, $tipo)
 {
 
     $nomeArquivo = "";
-    $blobConvertido = null;
+    $blob = null;
     if ($tipo == 'imagem') {
-        $blobConvertido = imagemParaWebpBlob($blob);
-        if (!$blobConvertido) {
+        $blob = imagemParaWebpBlob($tmpName);
+        if (!$blob) {
             return false;
         }
         $nomeArquivo = uniqid(more_entropy: true) . '.webp';
     }
     else if ($tipo == 'documento') {
-        $nomeArquivo = uniqid(more_entropy: true) . '_' . basename($blob);
-        $blobConvertido = file_get_contents($blob);
+        $nomeArquivo = uniqid(more_entropy: true) . "_" . $tmpName;
+        $blob = file_get_contents($tmpName);
     }
 
     
@@ -105,7 +105,7 @@ function salvarArquivo($blob, $id, $tipo)
 
     $caminhoParaSalvar = "imoveis/" . $id . "/" . $nomeArquivo;
 
-    $is_save = file_put_contents($caminhoCompleto, $blobConvertido);
+    $is_save = file_put_contents($caminhoCompleto, $blob);
 
     if ($is_save === false) {
         error_log("Erro ao salvar a imagem: " . $caminhoCompleto);

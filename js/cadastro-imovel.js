@@ -269,7 +269,7 @@ function salvarMultiplosForms() {
 
 async function getOutrosDados(formData) {
     const containerImagens = document.getElementById("container-imagens");
-    const containerDocumentos = document.getElementById("container-documentos");
+    const containerDocumentos = document.getElementById("container-anexos");
     const containerProprietario = document.getElementById("container-proprietario");
     const containerCorretor = document.getElementById("container-corretor");
     const containerCaptador = document.getElementById("container-captador");
@@ -308,7 +308,8 @@ async function getOutrosDados(formData) {
                 const response = await fetch(doc.href);
                 if (!response.ok) throw new Error("Falha ao buscar o documento");
                 const blob = await response.blob();
-                formData.append("documentos[]", blob, "documento.pdf");
+                const extensao = blob.type.split("/")[1] || "pdf";
+                formData.append("documentos[]", blob, `documento.${extensao}`);
             } catch (error) {
                 console.error("Erro ao processar documento:", doc.href, error);
             }
@@ -529,7 +530,7 @@ async function abrirCadastro(imovelId) {
         document.getElementById("ta-bairro").value = imovel.endereco?.bairro || "";
         document.getElementById("ta-cidade").value = imovel.endereco?.cidade || "";
         document.getElementById("ta-estado").value = imovel.endereco?.uf || "";
-        console.log(imovel.categoria);
+        // console.log(imovel.categoria);
         document.getElementById("select-categoria").value = imovel.categoria || "Selecionar";
         document.getElementById("ta-titulo-anuncio").value = imovel.anuncio?.titulo || "";
         document.getElementById("ta-descricao-anuncio").value = imovel.anuncio?.descricao || "";
@@ -574,13 +575,14 @@ async function abrirCadastro(imovelId) {
             containerImagens.querySelector(".abrir-multiplos").style.display = "inline-block";
             containerImagens.querySelector(".apagar-multiplos").style.display = "inline-block";
         }
+        // console.log(imovel.anuncio);
         if (imovel.anuncio?.documentos && imovel.anuncio.documentos.length > 0) {
             let contadorDocumentos = 0;
-            const containerDocumentos = document.getElementById("container-documentos");
+            const containerDocumentos = document.getElementById("container-anexos");
             for (let documento of imovel.anuncio.documentos) {
                 const docElement = document.createElement("a");
                 docElement.href = documento;
-                docElement.textContent = "Documento";
+                docElement.textContent = documento.split("_").slice(1);
                 docElement.target = "_blank";
                 containerDocumentos.appendChild(docElement);
                 contadorDocumentos++;

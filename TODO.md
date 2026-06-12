@@ -1,3 +1,5 @@
-Entrar com google
-Esqueceu senha: montar input de senha e mandar para o php q vai mandar o email
-Arrumar tela de cadastro de imóvel. Menu de funcionário não abre após selecionar um 
+- [ ] Entrar com google
+- [ ] Esqueceu senha: mandar o email
+- [ ] Implementar botões de aumentar e diminuir a fonte de <p>
+- [ ] Documentos estão salvando mais de uma vez no banco
+- [ ] Imagens estão salvando mais de uma vez no banco
