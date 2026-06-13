@@ -18,53 +18,124 @@
         <button id="bt-salvar-alteracoes" class="bt-success">Salvar</button>
     </div>
     <form id="campo-dados">
-        <label id="stt-nome">Nome</label>
-        <input placeholder="nome aqui" id="inpt-nome" type="text">
-        <label id="stt-email">Email</label>
-        <input type="email" placeholder="email aqui" id="inpt-email">
-        <label id="stt-telefone">Telefone</label>
-        <div id="container-telefones">
-            <input placeholder="(00) 00000-0000" id="inpt-telefone" type="text">
-            <button id="bt-mais-numero">+</button>
-            <button id="bt-remover-numero">X</button>
+        <div class="vertical-separator">
+            <label id="stt-tipo">Tipo</label>
+            <select name="tipo" id="select-tipo" required>
+                <option value="" selected>Selecione uma opção...</option>
+                <option value="Proprietário">Proprietário</option>
+                <option value="Financeiro">Financeiro</option>
+                <option value="Captador">Captador</option>
+                <option value="Corretor">Corretor</option>
+                <option value="Cliente">Cliente</option>
+                <option value="Vistoriador">Vistoriador</option>
+                <option value="Gerente">Gerente</option>
+                <option value="Administrador">Administrador</option>
+            </select>
         </div>
-        <label id="stt-cep">CEP</label>
-        <input type="text" id="ta-cep" maxlength="9" minlength="9" required placeholder="00000-000">
-        <label id="stt-rua">Rua</label>
-        <textarea disabled=True id="ta-rua"></textarea>
-        <label id="stt-numero">Número do endereço</label>
-        <input id="ta-numero" type="number">
-        <label id="stt-complemento">Complemento do endereço</label>
-        <textarea id="ta-complemento"></textarea>
-        <label id="stt-bloco">Bloco do endereço</label>
-        <textarea id="ta-bloco"></textarea>
-        <label id="stt-bairro">Bairro</label>
-        <textarea id="ta-bairro" disabled=True></textarea>
-        <label id="stt-cidade">Cidade</label>
-        <textarea id="ta-cidade" disabled=True></textarea>
-        <label id="stt-estado">Estado</label>
-        <input disabled=True placeholder="XX" id="ta-estado" maxlength="2" minlength="2" type="text">
-        <label id="stt-data-nascimento">Data de nascimento</label>
-        <input placeholder="00/00/0000" type="date" id="inpt-data-nascimento" maxlength="10" minlength="10">
-        <label id="stt-cpf">CPF</label>
-        <input placeholder="000.000.000-00" type="text" id="inpt-cpf" maxlength="14" minlength="14">
-        <label id="stt-rg">RG</label>
-        <input id="inpt-rg" placeholder="RG aqui" max="9" min="7" type="number">
+        <div class="vertical-separator">
+            <label id="stt-nome">Nome</label>
+            <input placeholder="nome aqui" id="inpt-nome" type="text">
+        </div>
+        <div class="vertical-separator">
+            <label id="stt-email">Email</label>
+            <input type="email" placeholder="email aqui" id="inpt-email">
+        </div>
+        <div class="vertical-separator">
+            <label id="stt-telefone">Telefone</label>
+            <div id="container-telefones">
+                <input placeholder="(00) 00000-0000" id="inpt-telefone" type="text">
+                <button id="bt-mais-numero">+</button>
+                <button id="bt-remover-numero">X</button>
+            </div>
+        </div>
+        <div class="vertical-separator">
+            <label id="stt-cep">CEP</label>
+            <input type="text" id="ta-cep" maxlength="9" minlength="9" required placeholder="00000-000">
+        </div>
+        <div class="vertical-separator">
+            <label id="stt-rua">Rua</label>
+            <textarea disabled=True id="ta-rua"></textarea>
+        </div>
+        <div class="vertical-separator">
+            <label id="stt-numero">Número do endereço</label>
+            <input id="ta-numero" type="number">
+        </div>
+        <div class="vertical-separator">
+            <label id="stt-complemento">Complemento do endereço</label>
+            <textarea id="ta-complemento"></textarea>
+        </div>
+        <div class="vertical-separator">
+            <label id="stt-bloco">Bloco do endereço</label>
+            <textarea id="ta-bloco"></textarea>
+        </div>
+        <div class="vertical-separator">
+            <label id="stt-bairro">Bairro</label>
+            <textarea id="ta-bairro" disabled=True></textarea>
+        </div>
+        <div class="vertical-separator">
+            <label id="stt-cidade">Cidade</label>
+            <textarea id="ta-cidade" disabled=True></textarea>
+        </div>
+        <div class="vertical-separator">
+            <label id="stt-estado">Estado</label>
+            <input disabled=True placeholder="XX" id="ta-estado" maxlength="2" minlength="2" type="text">
+        </div>
+        <div class="vertical-separator">
+            <label id="stt-data-nascimento">Data de nascimento</label>
+            <input placeholder="00/00/0000" type="date" id="inpt-data-nascimento" maxlength="10" minlength="10">
+        </div>
+        <div class="vertical-separator">
+            <label id="stt-cpf">CPF</label>
+            <input placeholder="000.000.000-00" type="text" id="inpt-cpf" maxlength="14" minlength="14">
+        </div>
+        <div class="vertical-separator">
+            <label id="stt-rg">RG</label>
+            <input id="inpt-rg" placeholder="RG aqui" max="9" min="7" type="number">
+        </div>
         <!-- <label>Senha</label>
         <input type="password" name="senha" placeholder="alterar senha" id="inpt-senha"> -->
-        <label id="stt-salario">Salário</label>
-        <input id="inpt-salario" type="number">
-        <label id="stt-creci">Creci</label>
-        <input id="inpt-creci" placeholder="000000" max="6" min="6" type="number">
+        <div class="vertical-separator">
+            <label id="stt-salario">Salário</label>
+            <input id="inpt-salario" type="number">
+        </div>
+        <div class="vertical-separator">
+            <label id="stt-creci">Creci</label>
+            <input id="inpt-creci" placeholder="000000" max="6" min="6" type="number">
+        </div>
+        <div class="vertical-separator">
+            <label id="stt-status">Interessado em</label>
+            <select name="status" id="select-status">
+                <option value="" selected>Selecione uma opção...</option>
+                <option value="Venda">Comprar</option>
+                <option value="Aluguel">Alugar</option>
+                <option value="Venda_Aluguel">Comprar e Alugar</option>
+            </select>
+        </div>
+    
     </form>
-    <div id="container-selects">
-        <select allow_blank=False, id="select-tabelas"></select>
-        <select allow_blank=False id="select-tabelas"></select>
-        <select allow_blank=False id="select-tabelas"></select>
-    </div>
-    <div id="container-executar">
-        <button id="bt-executar">Executar</button>
-    </div>
+    <h3 class="titulo">Imóveis do cliente</h3> <!-- Caso seja do tipo proprietário -->
+    <section id="container-resultado">
+            <div class="resultado" onclick="abrirCadastro(0)">
+                <img src="../assets/apartament.jpg" alt="">
+                <div class="dados">
+                    <label for="">REF: 001</label>
+                    <label>Apartamento 2 dormitórios</label>
+                    <label for="">Avenida Bento Gonçalves</label>
+                    <label for="">Apartamento</label>
+                    <label for="">Venda</label>
+                </div>
+            </div>
+            <div class="resultado" onclick="abrirCadastro(1)">
+                <img src="../assets/campo.jpg" alt="">
+                <div class="dados">
+                    <label for="">REF: 002</label>
+                    <label>Casa no Campo com Jardim</label>
+                    <label for="">Rua Joaquim Nabuco</label>
+                    <label for="">Casa</label>
+                    <label for="">Venda e Aluguel</label>
+                </div>
+            </div>
+        </section>
     <footer>
         <p>Copyright 2025 - By Lucas Hartmann</p>
         <a href="https://github.com/lucashartmann" target="_blank"><i class="fab fa-github"></i></a>
@@ -87,11 +158,6 @@
         .then(response => response.text())
         .then(data => {
             document.body.insertAdjacentHTML('afterbegin', data);
-            var script = document.createElement('script');
-            script.src = '../js/base.js';
-            script.type = 'text/javascript';
-            script.async = false;
-            document.body.appendChild(script);
         });
 </script>
 <script src="../js/base.js"></script>

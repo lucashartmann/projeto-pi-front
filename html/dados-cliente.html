@@ -18,25 +18,41 @@
         <form class="grid-container">
             <!-- <label>Username</label>
             <input name="username" type="text" id="inpt-username"> -->
-            <label id="stt-nome">Nome</label>
-            <input placeholder="nome aqui" id="inpt-nome" type="text" name="nome">
-            <label id="stt-email">Email</label>
-            <input type="email" placeholder="email aqui"  id="inpt-email" name="email">
-            <label id="stt-telefone">Telefone</label>
-            <div id="container-telefones">
-                <input placeholder="(00) 00000-0000" id="inpt-telefone" type="text" class="telefone" maxlength="15">
-                <button id="bt-mais-numero" onclick="adicionarNumeroTelefone()">+</button>
-                <button id="bt-remover-numero" onclick="removerNumeroTelefone()">X</button>
+            <div class="vertical-separator">
+                <label id="stt-nome">Nome</label>
+                <input placeholder="nome aqui" id="inpt-nome" type="text" name="nome">
             </div>
-           
-            <label id="stt-data-nascimento">Data de nascimento</label>
-            <input placeholder="00/00/0000" type="date" id="inpt-data-nascimento" maxlength="10" minlength="10" name="data_nascimento">
-            <label id="stt-cpf">CPF</label>
-            <input placeholder="000.000.000-00" type="text" id="inpt-cpf" maxlength="14" minlength="14" name="cpf_cnpj">
-            <label id="stt-rg">RG</label>
-            <input id="inpt-rg" placeholder="RG aqui" max="9" min="7" type="number" name="rg">
-            <label>Senha</label>
-            <input type="password" name="senha" placeholder="alterar senha" id="inpt-senha" minlength="8" maxlength="255">
+            <div id="container-telefones">
+                <label id="stt-email">Email</label>
+                <input type="email" placeholder="email aqui" id="inpt-email" name="email">
+            </div>
+            <div id="container-telefones">
+                <label id="stt-telefone">Telefone</label>
+                <div id="container-telefones">
+                    <input placeholder="(00) 00000-0000" id="inpt-telefone" type="text" class="telefone" maxlength="15">
+                    <button id="bt-mais-numero" onclick="adicionarNumeroTelefone()">+</button>
+                    <button id="bt-remover-numero" onclick="removerNumeroTelefone()">X</button>
+                </div>
+            </div>
+            <div id="container-telefones">
+                <label id="stt-data-nascimento">Data de nascimento</label>
+                <input placeholder="00/00/0000" type="date" id="inpt-data-nascimento" maxlength="10" minlength="10"
+                    name="data_nascimento">
+            </div>
+            <div id="container-telefones">
+                <label id="stt-cpf">CPF</label>
+                <input placeholder="000.000.000-00" type="text" id="inpt-cpf" maxlength="14" minlength="14"
+                    name="cpf_cnpj">
+            </div>
+            <div id="container-telefones">
+                <label id="stt-rg">RG</label>
+                <input id="inpt-rg" placeholder="RG aqui" max="9" min="7" type="number" name="rg">
+            </div>
+            <div id="container-telefones">
+                <label>Senha</label>
+                <input type="password" name="senha" placeholder="alterar senha" id="inpt-senha" minlength="8"
+                    maxlength="255">
+            </div>
         </form>
         <h3 id="stt-detalhes">Detalhes do imóvel desejado:</h3>
         <form id="detalhes">
@@ -83,11 +99,6 @@
         .then(response => response.text())
         .then(data => {
             document.body.insertAdjacentHTML('afterbegin', data);
-            var script = document.createElement('script');
-            script.src = '../js/base.js';
-            script.type = 'text/javascript';
-            script.async = false;
-            document.body.appendChild(script);
         });
 </script>
 <script src="../js/base.js"></script>

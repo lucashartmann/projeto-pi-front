@@ -32,11 +32,42 @@
             </div>
             <div id="container-filtragem">
                 <label>Categoria</label>
-                <select prompt="Selecionar" id="select-categoria"></select>
+                <select name="categoria" id="select-categoria" required>
+                    <option value="" selected>Selecione uma opção...</option>
+                    <option value="Sala Comercial">Sala Comercial</option>
+                    <option value="Apartamento">Apartamento</option>
+                    <option value="Casa">Casa</option>
+                    <option value="Chácara">Chácara</option>
+                    <option value="Fazenda">Fazenda</option>
+                    <option value="Casa em Condomínio">Casa em Condomínio</option>
+                    <option value="Empreendimento">Empreendimento</option>
+                    <option value="Ponto Comercial">Ponto Comercial</option>
+                    <option value="Prédio Comercial">Prédio Comercial</option>
+                    <option value="Galpão">Galpão</option>
+                    <option value="Depósito">Depósito</option>
+                    <option value="Apartamento">Apartamento</option>
+                    <option value="Loja">Loja</option>
+                    <option value="Cobertura">Cobertura</option>
+                    <option value="Loft">Loft</option>
+                    <option value="Terreno">Terreno</option>
+                    <option value="Kitnet">Kitnet</option>
+                    <option value="Sobrado">Sobrado</option>
+                    <option value="Pavilhão">Pavilhão</option>
+                    <option value="Depósito">Depósito</option>
+                    <option value="Studio">Studio</option>
+                </select>
                 <label>Status</label>
-                <select prompt="Selecionar" id="select-status"></select>
+                <select name="status" id="select-status" required>
+                    <option value="" selected>Selecione uma opção...</option>
+                    <option value="Venda">Venda</option>
+                    <option value="Aluguel">Aluguel</option>
+                    <option value="Venda_Aluguel">Venda e Aluguel</option>
+                    <option value="Alugado">Alugado</option>
+                    <option value="Vendido">Vendido</option>
+                    <option value="Pendente">Pendente</option>
+                </select>
                 <label>CEP</label>
-                <input oninput="pesquisarCEP(event)">
+                <input type="text" id="input-cep" oninput="pesquisarCEP(event)">
             </div>
         </div>
 

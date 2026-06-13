@@ -964,7 +964,7 @@ class controller
                                 continue;
                             }
                             $caminho = salvarArquivo($tmpName, $cadastrado, 'imagem');
-                            if ($caminho === null) {
+                            if (!$caminho) {
                                 continue;
                             }
                             $imagemObj = new Anexo(
@@ -990,7 +990,7 @@ class controller
                                 continue;
                             }
                             $caminho = salvarArquivo($tmpName, $cadastrado, 'documento');
-                            if ($caminho === null) {
+                            if (!$caminho) {
                                 continue;
                             }
                             $documentoObj = new Anexo(

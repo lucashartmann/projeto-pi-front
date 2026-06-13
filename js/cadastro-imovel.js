@@ -580,11 +580,19 @@ async function abrirCadastro(imovelId) {
             let contadorDocumentos = 0;
             const containerDocumentos = document.getElementById("container-anexos");
             for (let documento of imovel.anuncio.documentos) {
+                const fileElement = document.createElement("div");
                 const docElement = document.createElement("a");
                 docElement.href = documento;
                 docElement.textContent = documento.split("_").slice(1);
                 docElement.target = "_blank";
-                containerDocumentos.appendChild(docElement);
+                const checkbox = document.createElement("input");
+                checkbox.type = "checkbox";
+                checkbox.classList.add("checkbox-documento");
+                checkbox.value = fileURL;
+                checkbox.name = "documentos-selecionados";
+                fileElement.appendChild(checkbox);
+                fileElement.appendChild(a);
+                containerDocumentos.appendChild(fileElement);
                 contadorDocumentos++;
             }
             containerDocumentos.querySelector(".abrir-multiplos").style.display = "inline-block";
@@ -880,11 +888,20 @@ function adicionarAnexo(event) {
                 prepararImagemArrastavel(fileElement);
                 contadorImagens++;
                 // console.log(fileURL);
-            } else if (file.type === "application/pdf") {
-                fileElement = document.createElement("a");
-                fileElement.href = fileURL;
-                fileElement.textContent = file.name;
-                fileElement.target = "_blank";
+            } else if (file.type === "application/pdf") {                
+                fileElement = document.createElement("div");
+                fileElement.classList.add("anexo-documento");
+                let a = document.createElement("a");
+                a.href = fileURL;
+                a.textContent = file.name;
+                a.target = "_blank";
+                const checkbox = document.createElement("input");
+                checkbox.type = "checkbox";
+                checkbox.classList.add("checkbox-documento");
+                checkbox.value = fileURL;
+                checkbox.name = "documentos-selecionados";
+                fileElement.appendChild(checkbox);
+                fileElement.appendChild(a);
                 contadorDocumentos++;
             }
             if (fileElement) {

@@ -74,11 +74,7 @@
         .then(response => response.text())
         .then(data => {
             document.body.insertAdjacentHTML('afterbegin', data);
-            var script = document.createElement('script');
-            script.src = '../js/base.js';
-            script.type = 'text/javascript';
-            script.async = false;
-            document.body.appendChild(script);
+
         });
 </script>
 <script src="../js/base.js"></script>

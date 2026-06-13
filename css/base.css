@@ -243,7 +243,8 @@ nav {
         transform: translateY(10px);
         transition: all 0.25s ease;
         min-width: 120%;
-
+        top: 100%;
+        left: 0;
         li {
             width: 100%;
         }
@@ -462,4 +463,10 @@ main {
     .sidenav a {
         font-size: 18px;
     }
+}
+
+.vertical-separator {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }

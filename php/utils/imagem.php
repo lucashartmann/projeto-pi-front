@@ -94,7 +94,7 @@ function salvarArquivo($tmpName, $id, $tipo)
     $caminhoCompleto = str_replace("\\php\\utils", "\\assets\\imoveis\\", __DIR__) . $id . "/" . $nomeArquivo;
 
     $diretorio = str_replace("\\php\\utils", "\\assets\\imoveis\\", __DIR__) . $id;
-    error_log("Diretório para salvar a imagem: " . $diretorio);
+    // error_log("Diretório para salvar anexo: " . $diretorio);
     if (!is_dir($diretorio)) {
         mkdir($diretorio, 0755, true);
     }

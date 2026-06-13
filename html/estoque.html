@@ -13,13 +13,6 @@
 
 <body>
     <main>
-        <div id="dados-div">
-            <div>
-                <h3>Imóveis: 10</h3>
-                <!-- (para aluguel ou venda, depende do selecionado) -->
-            </div>
-        </div>
-
         <div id="container-pai">
             <div id="container-filtragem">
                 <input placeholder="Pesquise aqui" id="input-pesquisa" oninput="pesquisar(event)">
@@ -74,7 +67,7 @@
                     <option value="" selected>Selecione uma opção...</option>
                     <option value="Venda">Venda</option>
                     <option value="Aluguel">Aluguel</option>
-                    <option value="Venda_Aluguel">Venda_Aluguel</option>
+                    <option value="Venda_Aluguel">Venda e Aluguel</option>
                     <option value="Alugado">Alugado</option>
                     <option value="Vendido">Vendido</option>
                     <option value="Pendente">Pendente</option>
@@ -150,13 +143,7 @@
         .then(response => response.text())
         .then(data => {
             document.body.insertAdjacentHTML('afterbegin', data);
-            var script = document.createElement('script');
-            script.src = '../js/base.js';
-            script.type = 'text/javascript';
-            script.async = false;
-            document.body.appendChild(script);
         });
-
 </script>
 <script src="../js/base.js"></script>
 <script src="../js/estoque.js"></script>

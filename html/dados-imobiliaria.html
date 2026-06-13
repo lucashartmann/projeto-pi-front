@@ -12,8 +12,15 @@
 </head>
 
 <body>
-    <div>
-
+    <div id="container-pai-graficos">
+        <!--  Gráfico com os dados da imobiliária, como número de imóveis cadastrados, número de clientes, etc. Quantos imoveis cadas funcionario cadastratou, quantos clientes cadastrou, etc., quantos imoveis o corretor alugou, vendeu, quantos estao para alugar/venda, se teve crerscimento de clientes com base no ultimos meses, quanto foi gasto em comissao com cada funcionario, etc. -->
+        <div class="container-graficos">
+            <canvas id="meuGrafico"></canvas>
+        </div>
+        <div class="container-graficos">
+            <canvas id="myHorizontalBarChart"></canvas>
+        </div>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     </div>
     <footer>
         <p>Copyright 2025 - By Lucas Hartmann</p>
@@ -32,20 +39,16 @@
     </script>
 
 </body>
-<!-- <script src="../js/login.js"></script> -->
 <script type="text/javascript">
     fetch("nav.html")
         .then(response => response.text())
         .then(data => {
             document.body.insertAdjacentHTML('afterbegin', data);
-            var script = document.createElement('script');
-            script.src = '../js/base.js';
-            script.type = 'text/javascript';
-            script.async = false;
-            document.body.appendChild(script);
+
         });
 
 </script>
 <script src="../js/base.js"></script>
+<script src="../js/dados-imobiliaria.js"></script>
 
 </html>

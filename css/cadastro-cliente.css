@@ -1,24 +1,23 @@
-html,
 body {
-    margin: 0;
-    padding: 0;
-}
-
-body {
-    align-items: center;
     min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    align-items: center;
+    justify-content: center;
+    align-content: center;
+    justify-items: center;
 }
 
 #campo-dados {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(20%, 1fr));
-    grid-template-rows: repeat(auto-fit, minmax(30px, 1fr));
-    row-gap: 50px;
-    column-gap: 52px;
     justify-self: center;
+    align-self: center;
+    margin: 50px 10px 20px 10px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(14%, 2fr));
+    row-gap: 30px;
+    column-gap: 20px;
     width: 90%;
-    position: relative;
-    margin-bottom: 40px;
 }
 
 input {
@@ -26,36 +25,8 @@ input {
     font-size: 100%;
 }
 
-#container-selects {
-    display: inline-flex;
-    position: relative;
-    margin: 50px 0px 25px 0px;
-    justify-content: center;
-    justify-items: center;
-    justify-self: center;
-    height: 35px;
-    width: 100%;
-
-    select {
-        width: 25%;
-        margin: 0px 0px 7px 10px;
-        height: 100%;
-    }
-}
-
-#container-executar {
-    margin: 0;
-    justify-self: center;
-    margin: 20px 0px;
-    #bt-executar {
-        font-size: 1.1rem;
-        background-color: var(--background);
-        border: solid 2px;
-    }
-}
-
 #h-buttons {
-    margin: 30px 0px 42px 95px;
+    margin: 30px 0px 0px 0px;
 
     button {
         font-size: 110%;
@@ -73,7 +44,11 @@ label {
     font-weight: 500;
 }
 
-
+.titulo {
+    margin: 30px 0px 0px 0px;
+    font-size: 1.5rem;
+    font-weight: bold;
+}
 
 
 #container-telefones {
@@ -87,8 +62,45 @@ label {
 
     input {
         width: 86%;
-        
+
     }
+}
+
+#container-resultado {
+    display: block;
+    margin-top: 20px;
+
+    img {
+        height: 10%;
+        width: 30%;
+    }
+
+    .dados {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    #dados-div {
+        display: none;
+        /* display: grid; */
+    }
+
+    .resultado {
+        display: flex;
+        gap: 20px;
+        background-color: rgba(186, 174, 174, 0.5);
+        /* border: solid 2px rgba(46, 30, 30, 0.4); */
+        padding: 10px;
+        margin: 10px 20px;
+        cursor: pointer;
+
+        &:hover {
+            background-color: rgba(186, 174, 174, 0.8);
+            cursor: pointer;
+        }
+    }
+
 }
 
 
@@ -97,4 +109,3 @@ label {
         grid-template-columns: repeat(auto-fit, minmax(32%, 1fr));
     }
 }
-
