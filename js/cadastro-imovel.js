@@ -308,8 +308,8 @@ async function getOutrosDados(formData) {
                 const response = await fetch(doc.href);
                 if (!response.ok) throw new Error("Falha ao buscar o documento");
                 const blob = await response.blob();
-                const extensao = blob.type.split("/")[1] || "pdf";
-                formData.append("documentos[]", blob, `documento.${extensao}`);
+                const nomeArquivo = doc.textContent.trim().split(" ").join("_");
+                formData.append("documentos[]", blob, `${nomeArquivo}`);
             } catch (error) {
                 console.error("Erro ao processar documento:", doc.href, error);
             }
@@ -517,7 +517,7 @@ function openTab(evento, tabId) {
 async function abrirCadastro(imovelId) {
     imovel = await getDadosImovel(imovelId);
     if (imovel) {
-        const containerImagens = document.getElementById("container-imagens");
+        let containerImagens = document.getElementById("container-imagens");
         prepararContainerArrastavel(containerImagens);
 
         document.getElementById("ta-ref").value = imovel.id || "";
@@ -554,12 +554,13 @@ async function abrirCadastro(imovelId) {
         if (imovel.anuncio?.imagens && imovel.anuncio.imagens.length > 0) {
             let contadorImgens = 0;
             for (let imagem of imovel.anuncio.imagens) {
-                const divImagem = document.createElement("div");
+                console.log(imagem);
+                let divImagem = document.createElement("div");
                 divImagem.classList.add("imagem-anuncio");
                 divImagem.style.backgroundImage = `linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), url(${imagem})`
                 console.log(imagem);
-                divImagem.setAttribute("onclick", `abrirImagem(${imagem})`);
-                const checkbox = document.createElement("input");
+                divImagem.setAttribute("onclick", `abrirImagem('${imagem}')`);
+                let checkbox = document.createElement("input");
                 checkbox.type = "checkbox";
                 checkbox.classList.add("checkbox-imagem");
                 checkbox.value = imagem;
@@ -578,20 +579,22 @@ async function abrirCadastro(imovelId) {
         // console.log(imovel.anuncio);
         if (imovel.anuncio?.documentos && imovel.anuncio.documentos.length > 0) {
             let contadorDocumentos = 0;
-            const containerDocumentos = document.getElementById("container-anexos");
+            let containerDocumentos = document.getElementById("container-anexos");
             for (let documento of imovel.anuncio.documentos) {
-                const fileElement = document.createElement("div");
-                const docElement = document.createElement("a");
+                let fileElement = document.createElement("div");
+                fileElement.classList.add("anexo-documento");
+                let docElement = document.createElement("a");
+                console.log(documento);
                 docElement.href = documento;
                 docElement.textContent = documento.split("_").slice(1);
                 docElement.target = "_blank";
-                const checkbox = document.createElement("input");
+                let checkbox = document.createElement("input");
                 checkbox.type = "checkbox";
                 checkbox.classList.add("checkbox-documento");
-                checkbox.value = fileURL;
+                checkbox.value = false;
                 checkbox.name = "documentos-selecionados";
                 fileElement.appendChild(checkbox);
-                fileElement.appendChild(a);
+                fileElement.appendChild(docElement);
                 containerDocumentos.appendChild(fileElement);
                 contadorDocumentos++;
             }
@@ -612,7 +615,7 @@ async function abrirCadastro(imovelId) {
 
         if (Object.keys(pessoas).length > 0) {
             for (let chave in pessoas) {
-                const container = null;
+                let container = null;
                 switch (chave) {
                     case "proprietarios":
                         container = document.getElementById("container-proprietario");

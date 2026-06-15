@@ -1,5 +1,5 @@
 - [ ] Entrar com google
 - [ ] Esqueceu senha: mandar o email
 - [ ] Implementar botões de aumentar e diminuir a fonte de <p>
-- [ ] Documentos estão salvando mais de uma vez no banco
-- [ ] Imagens estão salvando mais de uma vez no banco
+- [ ] continuar a tela de contato
+- [ ] Cópia de dados, ou de cadastro de imóvel para outro, muitas vezes imóveis do mesmo condominio tem o mesmo iptu ou condominio 

@@ -629,7 +629,7 @@ class controller
                     $imagens = [];
                     if ($anuncioObj->getImagens()) {
                         foreach ($anuncioObj->getImagens() as $imagem) {
-                            $imagens[] =  rtrim(dirname($_SERVER['SCRIPT_NAME'], 3), '/') . "/assets/" .  $imagem->getCaminho();
+                            $imagens[] =  "../assets/" .  $imagem->getCaminho();
                         }
                     }
                     $documentos = [];
@@ -645,7 +645,7 @@ class controller
                     if ($anuncioObj->getVideos()) {
                         foreach ($anuncioObj->getVideos() as $video) {
                             if ($video instanceof Anexo) {
-                                $videos[] =  rtrim(dirname($_SERVER['SCRIPT_NAME'], 3), '/') . "/assets/" .  $video->getCaminho();
+                                "/assets/" .  $video->getCaminho();
                             }
                         }
                     }
@@ -958,12 +958,13 @@ class controller
                 }
                 if ($cadastrado && $cadastroAnuncio && $imagens) {
                     $imagensObjetos = [];
-                    foreach ($imagens['tmp_name'] as $i => $tmpName) {
+                    error_log('quantidade de imagens recebidas: ' . count($imagens['tmp_name']));
+                    foreach ($imagens['tmp_name'] as $i => $nomeTemporario) {
                         try {
                             if ($imagens['error'][$i] !== UPLOAD_ERR_OK) {
                                 continue;
                             }
-                            $caminho = salvarArquivo($tmpName, $cadastrado, 'imagem');
+                            $caminho = salvarArquivo($nomeTemporario, $imagens['name'][$i], $cadastrado, 'imagem');
                             if (!$caminho) {
                                 continue;
                             }
@@ -984,12 +985,15 @@ class controller
                 }
                 if ($cadastrado && $cadastroAnuncio && $documentos) {
                     $documentosObjetos = [];
-                    foreach ($documentos['name'] as $i => $tmpName) {
+                    error_log('quantidade de documentos recebidos: ' . count($documentos['tmp_name']));
+                    foreach ($documentos['tmp_name'] as $i => $nomeTemporario) {
                         try {
+                            $nomeArquivo = $documentos['name'][$i];
+                            error_log('tamanho do arquivo ' . $nomeArquivo . ': ' . filesize($documentos['tmp_name'][$i]) . ' bytes');
                             if ($documentos['error'][$i] !== UPLOAD_ERR_OK) {
                                 continue;
                             }
-                            $caminho = salvarArquivo($tmpName, $cadastrado, 'documento');
+                            $caminho = salvarArquivo($nomeTemporario, $nomeArquivo, $cadastrado, 'documento');
                             if (!$caminho) {
                                 continue;
                             }

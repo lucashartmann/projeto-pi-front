@@ -7,6 +7,10 @@
     box-sizing: border-box;
 }
 
+#whatsapp {
+    background-color: rgb(20, 126, 32, 0.7);
+}
+
 :root {
     --cor-texto: #ffffff;
     --background-nav: rgba(36, 30, 30, 0.92);

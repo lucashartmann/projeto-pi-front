@@ -73,25 +73,27 @@ function imagemParaWebpBlob($caminho, $qualidade = 80, $larguraMax = 1920)
     }
 }
 
-function salvarArquivo($tmpName, $id, $tipo)
+function salvarArquivo($nomeTemporario, $nomeArquivo, $id, $tipo)
 {
-
-    $nomeArquivo = "";
     $blob = null;
+    $novoNomeArquivo = "";
     if ($tipo == 'imagem') {
-        $blob = imagemParaWebpBlob($tmpName);
-        if (!$blob) {
-            return false;
-        }
-        $nomeArquivo = uniqid(more_entropy: true) . '.webp';
+        $blob = imagemParaWebpBlob($nomeTemporario);
+        $novoNomeArquivo = uniqid(more_entropy: true) . '.webp';
     }
     else if ($tipo == 'documento') {
-        $nomeArquivo = uniqid(more_entropy: true) . "_" . $tmpName;
-        $blob = file_get_contents($tmpName);
+        error_log("Processando documento: " . $nomeArquivo);
+        $novoNomeArquivo = uniqid(more_entropy: true) . "_" . $nomeArquivo;
+        error_log("Novo nome do arquivo: " . $novoNomeArquivo);
+        $blob = file_get_contents($nomeTemporario);
+    }
+
+    if (!$blob || !$novoNomeArquivo) {
+        return false;
     }
 
     
-    $caminhoCompleto = str_replace("\\php\\utils", "\\assets\\imoveis\\", __DIR__) . $id . "/" . $nomeArquivo;
+    $caminhoCompleto = str_replace("\\php\\utils", "\\assets\\imoveis\\", __DIR__) . $id . "/" . $novoNomeArquivo;
 
     $diretorio = str_replace("\\php\\utils", "\\assets\\imoveis\\", __DIR__) . $id;
     // error_log("Diretório para salvar anexo: " . $diretorio);
@@ -103,7 +105,7 @@ function salvarArquivo($tmpName, $id, $tipo)
         unlink($caminhoCompleto);
     }
 
-    $caminhoParaSalvar = "imoveis/" . $id . "/" . $nomeArquivo;
+    $caminhoParaSalvar = "imoveis/" . $id . "/" . $novoNomeArquivo;
 
     $is_save = file_put_contents($caminhoCompleto, $blob);
 
