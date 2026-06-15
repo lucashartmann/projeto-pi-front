@@ -420,7 +420,8 @@ async function salvar() {
 }
 
 async function excluir() {
-    if (imovelId) {
+    confirmar = confirm("Tem certeza que deseja excluir este imóvel?");
+    if (imovelId && confirmar) {
         try {
             let caminho = getCaminhoRelativo("/php/api/imoveis.php?acao=apagar_imovel&id=" + imovelId);
             const response = await fetch(caminho, {
@@ -514,8 +515,8 @@ function openTab(evento, tabId) {
 }
 
 
-async function abrirCadastro(imovelId) {
-    imovel = await getDadosImovel(imovelId);
+async function abrirCadastro(imovel) {
+    imovel = JSON.parse(imovel);
     if (imovel) {
         let containerImagens = document.getElementById("container-imagens");
         prepararContainerArrastavel(containerImagens);
@@ -891,7 +892,7 @@ function adicionarAnexo(event) {
                 prepararImagemArrastavel(fileElement);
                 contadorImagens++;
                 // console.log(fileURL);
-            } else if (file.type === "application/pdf") {                
+            } else if (file.type === "application/pdf") {
                 fileElement = document.createElement("div");
                 fileElement.classList.add("anexo-documento");
                 let a = document.createElement("a");
@@ -943,10 +944,10 @@ window.addEventListener("DOMContentLoaded", async function () {
         activateTab(initialTabId, null);
     }
 
-    imovelId = this.sessionStorage.getItem("imovel_id_estoque") || null;
-    if (imovelId) {
-        sessionStorage.removeItem("imovel_id_estoque");
-        await abrirCadastro(imovelId);
+    imovel = this.sessionStorage.getItem("imovel") || null;
+    if (imovel) {
+        sessionStorage.removeItem("imovel");
+        await abrirCadastro(imovel);
     }
 
     Inputmask("99999-999").mask("#ta-cep");

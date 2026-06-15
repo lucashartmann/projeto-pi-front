@@ -94,7 +94,7 @@ async function carregarAnuncios() {
             <div class="resultado">
                 <input type="checkbox" class="checkbox-selecionar" onclick="montarOpcoes()">
                 <img src="${b64}" alt="">
-                <div class="dados" onclick="abrirCadastro(${imovel.id})">
+                <div class="dados" onclick="abrirCadastro(null, ${imovel.id})">
                     <label>Ref: ${imovel.id}</label>
                     <label for="">Rua: ${imovel.endereco?.rua}, ${imovel.endereco?.numero}, ${imovel.endereco?.bairro}, ${imovel.endereco?.cep}</label>
                     <label for="">Categoria: ${imovel.categoria}</label>
@@ -104,9 +104,109 @@ async function carregarAnuncios() {
                     <label for="">Data de Cadastro: ${new Date(imovel.data_cadastro?.date).toLocaleDateString()}</label>
                     <label for="">Data de Modificação: ${imovel.data_modificacao ? new Date(imovel.data_modificacao?.date).toLocaleDateString() : 'N/A'}</label>
                 </div>
+                <li style="list-style: none;">
+                    <i class="fas fa-bars" onclick="openMenu(this)"></i>
+                </li>
             </div>
         `;
     }
+}
+
+let barra = null;
+
+function openMenu(element) {
+    if (document.querySelector(".menu-opcoes")) {
+        document.querySelector(".menu-opcoes").remove();
+    }
+
+    if (barra === element) {
+        barra = null;
+        document.querySelector(".menu-opcoes").remove();
+        return;
+    }
+
+    barra = element;
+    const menu = document.createElement("div");
+    menu.classList.add("menu-opcoes");
+    menu.innerHTML = `
+        <button onclick="abrirCadastro(null, ${element.closest('.resultado').querySelector('.dados label').textContent.split('Ref: ')[1]})">Editar</button>
+        <button onclick="apagarImovel(${element.closest('.resultado').querySelector('.dados label').textContent.split('Ref: ')[1]})">Apagar</button>
+        <button onclick="duplicarImovel(${element.closest('.resultado').querySelector('.dados label').textContent.split('Ref: ')[1]})">Duplicar</button>
+    `;
+    document.body.appendChild(menu);
+    let posicao = element.getBoundingClientRect();
+    menu.style.top = `${posicao.bottom}px`;
+    menu.style.left = `${posicao.left - 320}px`;
+    // menu.style.top = `${rect.bottom + window.scrollY}px`;
+    // menu.style.left = `${rect.left + window.scrollX}px`;
+    document.addEventListener("click", function handler(event) {
+        if (!menu.contains(event.target) && event.target !== element) {
+            menu.remove();
+            document.removeEventListener("click", handler);
+        }
+    });
+}
+
+async function duplicarImovel(imovelId) {
+    const imovel = imoveis_cache.find(imovel => imovel.id == imovelId);
+    imovel.id = null;
+    imovel.data_cadastro = null;
+    imovel.data_modificacao = null;
+    imovel.endereco.complemento = null;
+    // imovel.anuncio.imagens = [];
+    imovel.anuncio.documentos = [];
+    // imovel.anuncio.videos = [];
+    abrirCadastro(imovel, null);
+}
+
+async function apagarImovel(imovelId) {
+    confirmar = confirm("Tem certeza que deseja excluir este imóvel?");
+    if (imovelId && confirmar) {
+        try {
+            let caminho = getCaminhoRelativo("/php/api/imoveis.php?acao=apagar_imovel&id=" + imovelId);
+            const response = await fetch(caminho, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+
+            })
+                .then(async (response) => {
+                    if (response.erro) {
+                        alert("Erro ao remover imóvel: " + response.erro);
+                        return null;
+                    }
+                    const contentType = response.headers.get("content-type");
+                    if (contentType && contentType.includes("application/json")) {
+                        return await response.json();
+                    } else {
+                        const texto = await response.text();
+                        alert("Resposta inesperada do servidor");
+                        console.error("Resposta não é JSON:", texto);
+                        return null;
+                    }
+                })
+                .then(async (data) => {
+                    if (data.status == "erro") {
+                        alert("Erro ao excluir imóvel: " + data.mensagem);
+                    } else {
+                        console.log("Imóvel excluído com sucesso:", data);
+                        window.location.href = "estoque.html";
+                    }
+                })
+                .catch(error => {
+                    console.error("Erro ao excluir imóvel:", error);
+                });
+        } catch (error) {
+            console.error("Erro ao enviar dados para exclusão do imóvel:", error);
+        }
+    }
+    else {
+        // alert("Nenhum imóvel selecionado para exclusão!");
+        window.location.href = "estoque.html";
+    }
+
+
 }
 
 function mudarOrdem() {
@@ -142,8 +242,14 @@ function filtrar() {
     carregarAnuncios();
 }
 
-function abrirCadastro(imovel_id) {
-    sessionStorage.setItem("imovel_id_estoque", imovel_id);
+function abrirCadastro(imovel = null, id = null) {
+    if (id && !imovel) {
+        imovel = imoveis_cache.find(imovel => imovel.id == id);
+    } else if (!imovel && !id) {
+        imovel = null;
+        return
+    }
+    sessionStorage.setItem("imovel", JSON.stringify(imovel));
     window.location.href = "cadastro-imovel.html";
 }
 

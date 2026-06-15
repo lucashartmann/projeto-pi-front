@@ -112,6 +112,10 @@ function nextSlide() {
     }
 }
 
+function calcularPrecoMedio(){
+   return;
+}
+
 function prevSlide() {
     if (window.swiperInstance) {
         window.swiperInstance.slidePrev();
