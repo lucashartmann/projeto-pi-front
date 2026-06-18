@@ -55,7 +55,6 @@ img {
     align-content: center;
     justify-content: center;
 
-    /* background-color: rgb(241, 233, 233); */
     li {
         margin: 0px 0px;
         list-style-type: none;
@@ -87,8 +86,6 @@ img {
         cursor: pointer;
         background: rgb(135, 126, 126, 0.2);
         width: 90%;
-        /* margin: 30px 6px 0px 6px; */
-        /* border: solid rgba(47, 45, 45, 0.2) 2px; */
         border-radius: 2px;
         box-shadow: 0.1px 0.1px 3px black;
         display: flex;

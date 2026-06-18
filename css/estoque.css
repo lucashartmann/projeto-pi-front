@@ -1,18 +1,14 @@
-
-
 #container-filtragem {
     display: grid;
     align-items: center;
     gap: 50px;
     grid-template-columns: repeat(auto-fit, minmax(20%, 2fr));
-    /* margin: 40px 20px; */
     height: auto;
-    width: 70rem;
+    width: 99%;
 
     input {
         width: 14rem;
         height: 3.5vh;
-        /* margin-top: 20px; */
         border-radius: 1% / 30%;
     }
 
@@ -43,16 +39,13 @@
 
 #contador-imoveis {
     font-size: 1.2rem;
-    /* color: var(--cor-texto); */
     margin-left: auto;
 }
 
 #h-filtro {
-    /* justify-content: space-between; */
     display: flex;
     gap: 10px;
     margin: 70px 20px 20px 20px;
-    /* background: var(--background-nav); */
     width: 98%;
 
     select {
@@ -77,7 +70,6 @@
         display: flex;
         gap: 20px;
         background-color: rgba(186, 174, 174, 0.5);
-        /* border: solid 2px rgba(46, 30, 30, 0.4); */
         padding: 10px;
         margin: 10px 20px;
         cursor: pointer;
@@ -94,7 +86,7 @@
 
         }
 
-        .fa-bars{
+        .fa-bars {
             font-size: 1.8em;
             cursor: pointer;
         }
@@ -113,21 +105,14 @@
 
     #dados-div {
         display: none;
-        /* display: grid; */
     }
 }
-
-
 
 body {
     min-height: 100vh;
     display: flex;
     flex-direction: column;
 }
-
-/* footer {
-    height: 30vh !important;
-} */
 
 .menu-opcoes {
     position: fixed;
@@ -141,6 +126,7 @@ body {
     padding: 10px;
     box-shadow: var(--shadow);
     z-index: 1000;
+
     button {
         background: transparent;
         border: 1px solid rgba(255, 255, 255, 0.15);

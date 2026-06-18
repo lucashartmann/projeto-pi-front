@@ -31,7 +31,6 @@ input {
     button {
         font-size: 110%;
     }
-
 }
 
 textarea {
@@ -83,14 +82,12 @@ label {
 
     #dados-div {
         display: none;
-        /* display: grid; */
     }
 
     .resultado {
         display: flex;
         gap: 20px;
         background-color: rgba(186, 174, 174, 0.5);
-        /* border: solid 2px rgba(46, 30, 30, 0.4); */
         padding: 10px;
         margin: 10px 20px;
         cursor: pointer;

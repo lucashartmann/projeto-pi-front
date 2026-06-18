@@ -765,14 +765,7 @@ class controller
                 $categoria = Categoria::tryFrom($valor);
             }
             $status = null;
-            error_log("Status recebido: " . ($data["status"] ?? ""));
-            if (isset($data["status"]) && str_contains($data["status"], "_")) {
-                $lista = explode("_", $data["status"]);
-                $status_formatado = ucfirst($lista[0]) . "_" . ucfirst(end($lista));
-                $status = Status::tryFrom($status_formatado) ?? null;
-            } else {
-                isset($data["status"]) ? $status = Status::tryFrom(ucfirst(strtolower($data["status"]))) : null;
-            }
+            $status = Status::tryFrom($data["status"]) ?? null;
             if (!$status) {
                 error_log("Status inválido recebido: " . $data["status"]);
                 return (["status" => "erro", "mensagem" => "Status inválido"]);
@@ -781,15 +774,15 @@ class controller
             $valorCondominio = array_key_exists("valor_condominio", $data) ? (float)(str_replace(['-', 'R$', ' '], '', $data["valor_condominio"]) ?? 0) : 0.0;
             $andar = array_key_exists("andar", $data) ? (int)($data["andar"] ?? 0) : 0;
             $estado = null;
-            isset($data["estado_imovel"]) ? $estado = Estado::tryFrom(ucfirst(strtolower($data["estado_imovel"]))) : null;
+            isset($data["estado_imovel"]) ? $estado = Estado::tryFrom($data["estado_imovel"]) : null;
             $bloco = array_key_exists("bloco", $data) ? $data["bloco"] : "";
             $anoConstrucao = array_key_exists("ano_construcao", $data) ? (int)($data["ano_construcao"] ?? 0) : 0;
             $areaTotal = array_key_exists("area_total", $data) ? (float)(str_replace(['-', 'm2', ' '], '', $data["area_total"]) ?? 0) : 0.0;
             $areaPrivativa = array_key_exists("area_privativa", $data) ? (float)(str_replace(['-', 'm2', ' '], '', $data["area_privativa"]) ?? 0) : 0.0;
             $situacao = null;
-            isset($data["situacao"]) ? $situacao = Situacao::tryFrom(ucfirst(strtolower($data["situacao"]))) : null;
+            isset($data["situacao"]) ? $situacao = Situacao::tryFrom($data["situacao"]) : null;
             $ocupacao = null;
-            isset($data["ocupacao"]) ? $ocupacao = Ocupacao::tryFrom(ucfirst(strtolower($data["ocupacao"]))) : null;
+            isset($data["ocupacao"]) ? $ocupacao = Ocupacao::tryFrom($data["ocupacao"]) : null;
             $proprietarios = array_key_exists("proprietarios", $data) ? $data["proprietarios"] : [];
             $corretor = array_key_exists("corretor", $data) ? (int)$data["corretor"] : null;
             $captador = array_key_exists("captador", $data) ? (int)$data["captador"] : null;

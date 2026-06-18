@@ -9,6 +9,7 @@ footer {
     justify-content: center;
     align-items: center;
     justify-items: center;
+
     i {
         width: 30px;
         height: 30px;
@@ -48,8 +49,6 @@ footer {
 }
 
 .card {
-    /* cursor: pointer; */
-    /* text-align: left; */
     background: rgba(204, 184, 184, 0.9);
     backdrop-filter: blur(40px) !important;
     box-shadow: var(--shadow);

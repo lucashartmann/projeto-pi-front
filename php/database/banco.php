@@ -3225,7 +3225,7 @@ class Banco extends PDO
             LEFT JOIN anuncio a
                 ON a.id = i.id_anuncio
 
-            WHERE i.status IN ('Venda', 'Aluguel', 'Venda_Aluguel')
+            WHERE i.status IN ('Venda', 'Aluguel', 'Venda e Aluguel')
         ";
 
             $stmt = $this->prepare($sql);

@@ -83,19 +83,6 @@ class Init
 
     public static function initialize()
     {
-
-        $consultarCondominio = NULL;
-        $consultaUm = NULL;
-        $consultaDois = NULL;
-        $cadastroCondominio = NULL;
-        $consultarCondominio = NULL;
-        $blob = NULL;
-        $blob2 = NULL;
-        $blob3 = NULL;
-        $condominioDois = NULL;
-        $cadastroAnuncio = NULL;
-        $cadastroAnuncio2 = NULL;
-
         self::$imobiliaria = new Imobiliaria("GameStart", "00000000000");
 
         if (empty(self::$imobiliaria->getListaFiltrosApartamento())) {
@@ -105,424 +92,379 @@ class Init
             self::$imobiliaria->cadastrarListaFiltros(self::$filtrosCondominio, "filtros_condominio");
         }
 
-        $vistoriadorUm = new Usuario(
-            username: "vistoriador",
-            senha: "123",
-            email: "vistoriador@example.com",
-            nome: "Carlos",
-            cpfCnpj: "54624242424",
-            tipo: Tipo::VISTORIADOR
-        );
+        $emails = [
+            "hotmail.com",
+            "gmail.com",
+            "outlook.com",
+        ];
 
-        $vistoriadorDois = new Usuario(
-            username: "vistoriador2",
-            senha: "123",
-            email: "vistoriador2@example.com",
-            nome: "Carlos Dois",
-            cpfCnpj: "12323232323",
-            tipo: Tipo::VISTORIADOR
-        );
+        $dds = [
+            "11",
+            "21",
+            "31",
+            "41",
+            "51",
+            "61",
+            "71",
+            "81",
+            "91",
+        ];
 
-        $financeiroUm = new Usuario(
-            username: "financeiro",
-            senha: "123",
-            email: "financeiro@example.com",
-            nome: "Fernanda",
-            cpfCnpj: "42424242424",
-            tipo: Tipo::FINANCEIRO
-        );
+        $nomes = [
+            "Carlos",
+            "Maria",
+            "João",
+            "Ana",
+            "Pedro",
+            "Julia",
+            "Lucas",
+            "Mariana",
+            "Gabriel",
+            "Beatriz",
+            "Rafael",
+            "Larissa",
+            "Felipe",
+            "Camila",
+            "Bruno",
+            "Diego",
+            "Fernanda",
+            "Gustavo",
+        ];
 
-        $financeiroDois = new Usuario(
-            username: "financeiro2",
-            senha: "123",
-            email: "financeiro2@example.com",
-            nome: "Fernanda Dois",
-            cpfCnpj: "34543345345",
-            tipo: Tipo::FINANCEIRO
-        );
+        $sobrenomes = [
+            "Silva",
+            "Santos",
+            "Oliveira",
+            "Souza",
+            "Rodrigues",
+            "Ferreira",
+            "Almeida",
+            "Costa",
+            "Gomes",
+            "Martins",
+            "Lima",
+            "Carvalho",
+            "Pereira",
+            "Barbosa",
+            "Rocha",
+            "Dias",
+            "Mendes",
+        ];
 
-        $administrador = new Usuario(
-            username: "administrador",
-            senha: "123",
-            email: "admin@example.com",
-            nome: "Lucas",
-            cpfCnpj: "00000000000",
-            tipo: Tipo::ADMINISTRADOR
-        );
-        $administradorDois = new Usuario(
-            username: "admin2",
-            senha: "123",
-            email: "admin2@example.com",
-            nome: "Felipe",
-            cpfCnpj: "11111111111",
-            tipo: Tipo::ADMINISTRADOR
-        );
-        $gerenteUm = new Gerente(
-            username: "gerente",
-            senha: "123",
-            email: "gerente@example.com",
-            nome: "Pedro",
-            cpfCnpj: "22222222222"
-        );
-        $gerenteDois = new Gerente(
-            username: "gerente2",
-            senha: "123",
-            email: "gerente2@example.com",
-            nome: "Rosangela",
-            cpfCnpj: "33333333333"
-        );
-        $comprador = new Cliente(
-            username: "cliente",
-            senha: "123",
-            email: "cliente@example.com",
-            nome: "Marcela",
-            cpfCnpj: "44444444444"
-        );
-        $compradorDois = new Cliente(
-            username: "cliente2",
-            senha: "123",
-            email: "cliente2@example.com",
-            nome: "Rute Dois",
-            cpfCnpj: "77777777777"
-        );
-        $captadorUm = new Captador(
-            username: "captador",
-            senha: "123",
-            email: "captador@example.com",
-            nome: "Ana",
-            cpfCnpj: "55555555555"
-        );
-        $captadorDois = new Captador(
-            username: "captador2",
-            senha: "123",
-            email: "captador2@example.com",
-            nome: "Ana Dois",
-            cpfCnpj: "88888888888"
-        );
-        $corretorUm = new Corretor(
-            username: "corretor",
-            senha: "123",
-            email: "corretor@example.com",
-            nome: "João",
-            cpfCnpj: "66666666666",
-            creci: "123456"
-        );
-        $corretorDois = new Corretor(
-            username: "corretor2",
-            senha: "123",
-            email: "corretor2@example.com",
-            nome: "Elisabeth",
-            cpfCnpj: "99999999999",
-            creci: "654321"
-        );
+        $segundoNomes = [
+            "Alves",
+            "Ribeiro",
+            "Moura",
+            "Cardoso",
+            "Araújo",
+            "Correia",
+            "Castro",
+            "Freitas",
+            "Teixeira",
+            "Moreira",
+            "Melo",
+            "Cavalcante",
+            "Barros",
+            "Farias",
+            "Pinto",
+        ];
 
-        if (!self::$imobiliaria->getUsuarioPorCpfCnpj('99999999999')) {
-            self::$imobiliaria->cadastrarUsuario($corretorDois);
-        }
-        if (!self::$imobiliaria->getUsuarioPorCpfCnpj('66666666666')) {
-            self::$imobiliaria->cadastrarUsuario($corretorUm);
-        }
-        if (!self::$imobiliaria->getUsuarioPorCpfCnpj('00000000000')) {
-            self::$imobiliaria->cadastrarUsuario($administrador);
-        }
-        if (!self::$imobiliaria->getUsuarioPorCpfCnpj('22222222222')) {
-            self::$imobiliaria->cadastrarUsuario($gerenteUm);
-        }
-        if (!self::$imobiliaria->getUsuarioPorCpfCnpj('44444444444')) {
-            self::$imobiliaria->cadastrarUsuario($comprador);
-        }
-        if (!self::$imobiliaria->getUsuarioPorCpfCnpj('55555555555')) {
-            self::$imobiliaria->cadastrarUsuario($captadorUm);
-        }
-        if (!self::$imobiliaria->getUsuarioPorCpfCnpj('66666666666')) {
-            self::$imobiliaria->cadastrarUsuario($corretorUm);
-        }
-        if (!self::$imobiliaria->getUsuarioPorCpfCnpj('11111111111')) {
-            self::$imobiliaria->cadastrarUsuario($administradorDois);
-        }
-        if (!self::$imobiliaria->getUsuarioPorCpfCnpj('33333333333')) {
-            self::$imobiliaria->cadastrarUsuario($gerenteDois);
-        }
-        if (!self::$imobiliaria->getUsuarioPorCpfCnpj('77777777777')) {
-            self::$imobiliaria->cadastrarUsuario($compradorDois);
-        }
-        if (!self::$imobiliaria->getUsuarioPorCpfCnpj('88888888888')) {
-            self::$imobiliaria->cadastrarUsuario($captadorDois);
-        }
-        if (!self::$imobiliaria->getUsuarioPorCpfCnpj('99999999999')) {
-            self::$imobiliaria->cadastrarUsuario($corretorDois);
-        }
-        if (!self::$imobiliaria->getUsuarioPorCpfCnpj('54624242424')) {
-            self::$imobiliaria->cadastrarUsuario($vistoriadorUm);
-        }
-        if (!self::$imobiliaria->getUsuarioPorCpfCnpj('12323232323')) {
-            self::$imobiliaria->cadastrarUsuario($vistoriadorDois);
-        }
-        if (!self::$imobiliaria->getUsuarioPorCpfCnpj('42424242424')) {
-            self::$imobiliaria->cadastrarUsuario($financeiroUm);
-        }
-        if (!self::$imobiliaria->getUsuarioPorCpfCnpj('34543345345')) {
-            self::$imobiliaria->cadastrarUsuario($financeiroDois);
-        }
+        $enderecos = [
+            [
+                "Rua" => "Av. Bento Gonçalves",
+                "Bairro" => "Partenon",
+                "Cidade" => "Porto Alegre",
+                "Estado" => "RS",
+                "CEP" => "90650-001"
+            ],
+            [
+                "Rua" => "Rua dos Andradas",
+                "Bairro" => "Centro",
+                "Cidade" => "Porto Alegre",
+                "Estado" => "RS",
+                "CEP" => "90020-007"
+            ],
+            [
+                "Rua" => "Av. Ipiranga",
+                "Bairro" => "Centro Histórico",
+                "Cidade" => "Porto Alegre",
+                "Estado" => "RS",
+                "CEP" => "90010-000"
+            ],
+            [
+                "Rua" => "Rua Zélia Maria Dutra Abichequer",
+                "Bairro" => "Florestal",
+                "Cidade" => "Lajeado",
+                "Estado" => "RS",
+                "CEP" => "95900-708"
+            ],
+            [
+                "Rua" => "Rua Monsenhor Scalabrini",
+                "Bairro" => "Centro",
+                "Cidade" => "Encantado",
+                "Estado" => "RS",
+                "CEP" => "95960-000"
+            ],
+            [
+                "Rua" => "Rua Padre Chagas",
+                "Bairro" => "Moinhos de Vento",
+                "Cidade" => "Porto Alegre",
+                "Estado" => "RS",
+                "CEP" => "90570-080"
+            ],
+            [
+                "Rua" => "Av. Getúlio Vargas",
+                "Bairro" => "Menino Deus",
+                "Cidade" => "Porto Alegre",
+                "Estado" => "RS",
+                "CEP" => "90150-000"
+            ],
+            [
+                "Rua" => "Rua Vicente da Fontoura",
+                "Bairro" => "Rio Branco",
+                "Cidade" => "Porto Alegre",
+                "Estado" => "RS",
+                "CEP" => "90640-000"
+            ],
+            [
+                "Rua" => "Rua Domingos Crescêncio",
+                "Bairro" => "Santana",
+                "Cidade" => "Porto Alegre",
+                "Estado" => "RS",
+                "CEP" => "90650-090"
+            ],
+            [
+                "Rua" => "Av. Assis Brasil",
+                "Bairro" => "Sarandi",
+                "Cidade" => "Porto Alegre",
+                "Estado" => "RS",
+                "CEP" => "91110-000"
+            ],
+            [
+                "Rua" => "Rua Coronel Bordini",
+                "Bairro" => "Auxiliadora",
+                "Cidade" => "Porto Alegre",
+                "Estado" => "RS",
+                "CEP" => "90440-001"
+            ],
+            [
+                "Rua" => "Av. Nilo Peçanha",
+                "Bairro" => "Boa Vista",
+                "Cidade" => "Porto Alegre",
+                "Estado" => "RS",
+                "CEP" => "91330-000"
+            ],
+            [
+                "Rua" => "Rua Mariante",
+                "Bairro" => "Independência",
+                "Cidade" => "Porto Alegre",
+                "Estado" => "RS",
+                "CEP" => "90035-110"
+            ],
+            [
+                "Rua" => "Av. Cristóvão Colombo",
+                "Bairro" => "Floresta",
+                "Cidade" => "Porto Alegre",
+                "Estado" => "RS",
+                "CEP" => "90560-000"
+            ],
+            [
+                "Rua" => "Rua Félix da Cunha",
+                "Bairro" => "Higienópolis",
+                "Cidade" => "Porto Alegre",
+                "Estado" => "RS",
+                "CEP" => "90570-000"
+            ],
+            [
+                "Rua" => "Av. Wenceslau Escobar",
+                "Bairro" => "Tristeza",
+                "Cidade" => "Porto Alegre",
+                "Estado" => "RS",
+                "CEP" => "91900-000"
+            ],
+            [
+                "Rua" => "Rua José de Alencar",
+                "Bairro" => "Azenha",
+                "Cidade" => "Porto Alegre",
+                "Estado" => "RS",
+                "CEP" => "90880-480"
+            ],
+            [
+                "Rua" => "Av. Cavalhada",
+                "Bairro" => "Cavalhada",
+                "Cidade" => "Porto Alegre",
+                "Estado" => "RS",
+                "CEP" => "91740-000"
+            ],
+            [
+                "Rua" => "Rua Anita Garibaldi",
+                "Bairro" => "Mont'Serrat",
+                "Cidade" => "Porto Alegre",
+                "Estado" => "RS",
+                "CEP" => "90450-000"
+            ],
+            [
+                "Rua" => "Av. Carlos Gomes",
+                "Bairro" => "Três Figueiras",
+                "Cidade" => "Porto Alegre",
+                "Estado" => "RS",
+                "CEP" => "90480-000"
+            ]
+        ];
 
-        $proprietarioUm = new Proprietario(
-            email: "proprietario@example.com",
-            nome: "Maria",
-            cpfCnpj: "00000000000"
-        );
+        $status = ["Venda", "Aluguel", "Venda e Aluguel", "Alugado", "Vendido", "Pendente"];
 
-        $proprietarioDois = new Proprietario(
-            email: "proprietario2@example.com",
-            nome: "Joaquim",
-            cpfCnpj: "11111111111"
-        );
+        $categorias = [
+            "Sala Comercial",
+            "Apartamento",
+            "Loja",
+            "Casa",
+            "Cobertura",
+            "Loft",
+            "Studio",
+            "Depósito",
+            "Galpão",
+            "Pavilhão",
+            "Prédio Comercial",
+            "Ponto Comercial",
+            "Empreendimento",
+            "Casa em Condomínio",
+            "Sobrado",
+            "Sítio",
+            "Terreno",
+            "Kitnet",
+            "Chácara",
+            "Fazenda"
+        ];
 
-        if (!self::$imobiliaria->getProprietarioPorCpfCnpj('00000000000')) {
-            self::$imobiliaria->cadastrarProprietario($proprietarioUm);
-        }
+        $complementos = [
+            "A",
+            "B",
+            "C",
+            "D",
+            "E",
+            "F",
+        ];
 
-        if (!self::$imobiliaria->getProprietarioPorCpfCnpj('11111111111')) {
-            self::$imobiliaria->cadastrarProprietario($proprietarioDois);
-        }
+        if (!self::$imobiliaria->getEstoque()->getListaImoveis() < 50) {
+            for ($i = 0; $i < 50; $i++) {
 
-
-        $enderecoUm = new Endereco(
-            "Rua A",
-            "Centro",
-            12345678,
-            "Cidade X",
-            "Estado Y"
-        );
-        $enderecoUm->setNumero("123");
-
-        $enderecoDois = new Endereco(
-            "Rua B",
-            "Bairro Z",
-            87654321,
-            "Cidade W",
-            "Estado V"
-        );
-        $enderecoDois->setNumero("456");
-
-        $consultaUm = self::$imobiliaria->verificarEndereco($enderecoUm);
-        $consultaDois = self::$imobiliaria->verificarEndereco($enderecoDois);
-
-        if (!$consultaUm) {
-            self::$imobiliaria->cadastrarEndereco($enderecoUm);
-            $consultaUm = self::$imobiliaria->verificarEndereco($enderecoUm);
-        }
-        if (!$consultaDois) {
-            self::$imobiliaria->cadastrarEndereco($enderecoDois);
-            $consultaDois = self::$imobiliaria->verificarEndereco($enderecoDois);
-        }
-
-
-        $condominioUm = new Condominio("Way", $consultaUm);
-        if ($consultaUm && !self::$imobiliaria->getCondominioPorIdEndereco($consultaUm->getId())) {
-            $cadastroCondominio = self::$imobiliaria->cadastrarCondominio($condominioUm);
-
-            if ($cadastroCondominio) {
-                $consultarCondominio = self::$imobiliaria->getCondominioPorIdEndereco(
-                    $consultaUm->getId()
+                $vistoriador = new Usuario(
+                    username: "vistoriador$i",
+                    senha: "Vistoriador$i#",
+                    email: "vistoriador$i@{$emails[array_rand($emails)]}",
+                    nome: "{$nomes[array_rand($nomes)]} {$segundoNomes[array_rand($segundoNomes)]} {$sobrenomes[array_rand($sobrenomes)]}",
+                    cpfCnpj: str_repeat($i, 11),
+                    tipo: Tipo::VISTORIADOR
                 );
-            }
-        } else if ($consultaUm && self::$imobiliaria->getCondominioPorIdEndereco($consultaUm->getId())) {
-            $consultarCondominio = self::$imobiliaria->getCondominioPorIdEndereco(
-                $consultaUm->getId()
-            );
-        } else {
-            $consultarCondominio = NULL;
-        }
 
-
-        $anuncioUm = new Anuncio();
-
-        $imagemUm = new Anexo(
-            1,
-            "imoveis/apartament.jpg",
-            TipoAnexo::IMAGEM
-        );
-
-        $imagemDois = new Anexo(
-            1,
-            "imoveis/campo.jpg",
-            TipoAnexo::IMAGEM
-        );
-        $imagemTres = new Anexo(
-            1,
-            "imoveis/dentro_apartamento.jpg",
-            TipoAnexo::IMAGEM
-        );
-        $imagemQuatro = new Anexo(
-            2,
-            "imoveis/patio.jpg",
-            TipoAnexo::IMAGEM
-        );
-
-        $cadastroImagemUm = null;
-        $cadastroImagemDois = null;
-        $cadastroImagemTres = null;
-        $cadastroImagemQuatro = null;
-
-        if (!self::$imobiliaria->getAnexoPorCaminho($imagemUm->getCaminho())) {
-            $cadastroImagemUm = self::$imobiliaria->cadastrarAnexo(
-                $imagemUm,
-            );
-        }
-
-        if (!self::$imobiliaria->getAnexoPorCaminho($imagemDois->getCaminho())) {
-            $cadastroImagemDois = self::$imobiliaria->cadastrarAnexo(
-                $imagemDois
-            );
-        }
-        if (!self::$imobiliaria->getAnexoPorCaminho($imagemTres->getCaminho())) {
-            $cadastroImagemTres = self::$imobiliaria->cadastrarAnexo(
-                $imagemTres
-            );
-        }
-        if (!self::$imobiliaria->getAnexoPorCaminho($imagemQuatro->getCaminho())) {
-            $cadastroImagemQuatro = self::$imobiliaria->cadastrarAnexo(
-                $imagemQuatro
-            );
-        }
-
-        if ($cadastroImagemUm && $cadastroImagemDois) {
-            $anuncioUm->setImagens([$imagemUm, $imagemDois, $imagemTres, $imagemTres, $imagemUm]);
-        }
-
-        $anuncioUm->setTitulo("Apartamento de 1 quarto, venda ou aluguel");
-        $anuncioUm->setDescricao("Imóvel com uma posição privilegiada, próximo a parques, shoppings e com fácil acesso ao transporte público. O apartamento possui uma sala aconchegante, cozinha funcional, banheiro moderno e um quarto confortável. Ideal para quem busca praticidade e qualidade de vida.");
-
-        $anuncioDois = new Anuncio();
-
-        if ($cadastroImagemTres) {
-            $anuncioDois->setImagens([$imagemTres, $imagemTres, $imagemTres, $imagemTres, $imagemTres]);
-        }
-
-        $anuncioDois->setTitulo("Apartamento de 2 quartos, venda ou aluguel");
-        $anuncioDois->setDescricao("Imóvel localizado no centro da cidade, próximo a escolas, supermercados e com fácil acesso ao transporte público. O apartamento possui uma sala ampla, cozinha americana, banheiro social e um quarto espaçoso. Ideal para quem busca conforto e praticidade.");
-
-        $imovelUm = new Imovel(
-            endereco: $consultaUm,
-            status: Status::VENDA_ALUGUEL,
-            categoria: Categoria::APARTAMENTO
-        );
-        $imovelUm->setValorAluguel(1500);
-        $imovelUm->setValorVenda(300000);
-        $imovelDois = new Imovel(
-            endereco: $consultaUm,
-            status: Status::ALUGUEL,
-            categoria: Categoria::APARTAMENTO
-        );
-        $imovelDois->setValorAluguel(2000);
-        $imovelTres = new Imovel(
-            endereco: $consultaUm,
-            status: Status::VENDIDO,
-            categoria: Categoria::LOFT
-        );
-
-        if (!self::$imobiliaria->getAnuncioPorId(1)) {
-            $cadastroAnuncio = self::$imobiliaria->getEstoque()->cadastrarAnuncio($anuncioUm);
-        }
-
-        if (!self::$imobiliaria->getAnuncioPorId(2)) {
-            $cadastroAnuncio2 = self::$imobiliaria->getEstoque()->cadastrarAnuncio($anuncioDois);
-        }
-
-        if ($cadastroAnuncio && !self::$imobiliaria->getImovelPorId(1)) {
-            $anuncioUm->setId($cadastroAnuncio);
-            $imovelUm->setAnuncio($anuncioUm);
-            if ($consultarCondominio) {
-                $imovelUm->setCondominio($consultarCondominio);
-            }
-            self::$imobiliaria->getEstoque()->cadastrarImovel($imovelUm);
-        }
-
-        if ($cadastroAnuncio2 && !self::$imobiliaria->getImovelPorId(2)) {
-            $anuncioDois->setId($cadastroAnuncio2);
-            $imovelDois->setAnuncio($anuncioDois);
-            if ($consultarCondominio) {
-                $imovelDois->setCondominio($consultarCondominio);
-            }
-            self::$imobiliaria->getEstoque()->cadastrarImovel($imovelDois);
-        }
-
-        if ($cadastroAnuncio && !self::$imobiliaria->getImovelPorId(3)) {
-            $anuncioUm->setId($cadastroAnuncio);
-            $imovelTres->setAnuncio($anuncioUm);
-            if ($consultarCondominio) {
-                $imovelTres->setCondominio($consultarCondominio);
-            }
-            self::$imobiliaria->getEstoque()->cadastrarImovel($imovelTres);
-        }
-
-        $condominioDois = new Condominio("Premium", $consultaDois);
-
-        if ($consultaDois && !self::$imobiliaria->getCondominioPorIdEndereco($consultaDois->getId())) {
-            $cadastroCondominio2 = self::$imobiliaria->cadastrarCondominio($condominioDois);
-
-            if ($cadastroCondominio2) {
-                $condominioDois = self::$imobiliaria->getCondominioPorIdEndereco(
-                    $consultaDois->getId()
+                $financeiro = new Usuario(
+                    username: "financeiro$i",
+                    senha: "Financeiro$i#",
+                    email: "financeiro$i@{$emails[array_rand($emails)]}",
+                    nome: "{$nomes[array_rand($nomes)]} {$segundoNomes[array_rand($segundoNomes)]} {$sobrenomes[array_rand($sobrenomes)]}",
+                    cpfCnpj: str_repeat($i, 11),
+                    tipo: Tipo::FINANCEIRO
                 );
+
+                $corretor = new Corretor(
+                    username: "corretor$i",
+                    senha: "Corretor$i#",
+                    email: "corretor$i@{$emails[array_rand($emails)]}",
+                    nome: "{$nomes[array_rand($nomes)]} {$segundoNomes[array_rand($segundoNomes)]} {$sobrenomes[array_rand($sobrenomes)]}",
+                    cpfCnpj: str_repeat($i, 11),
+                    creci: str_repeat($i, 6)
+                );
+
+                $captador = new Captador(
+                    username: "captador$i",
+                    senha: "Captador$i#",
+                    email: "captador$i@{$emails[array_rand($emails)]}",
+                    nome: "{$nomes[array_rand($nomes)]} {$segundoNomes[array_rand($segundoNomes)]} {$sobrenomes[array_rand($sobrenomes)]}",
+                    cpfCnpj: str_repeat($i, 11)
+                );
+
+                $gerente = new Gerente(
+                    username: "gerente$i",
+                    senha: "Gerente$i#",
+                    email: "gerente$i@{$emails[array_rand($emails)]}",
+                    nome: "{$nomes[array_rand($nomes)]} {$segundoNomes[array_rand($segundoNomes)]} {$sobrenomes[array_rand($sobrenomes)]}",
+                    cpfCnpj: str_repeat($i, 11)
+                );
+
+                $administrador = new Usuario(
+                    username: "administrador$i",
+                    senha: "Administrador$i#",
+                    email: "administrador$i@{$emails[array_rand($emails)]}",
+                    nome: "{$nomes[array_rand($nomes)]} {$segundoNomes[array_rand($segundoNomes)]} {$sobrenomes[array_rand($sobrenomes)]}",
+                    cpfCnpj: str_repeat($i, 11),
+                    tipo: Tipo::ADMINISTRADOR
+                );
+
+                $cliente = new Cliente(
+                    username: "cliente$i",
+                    senha: "Cliente$i#",
+                    email: "cliente$i@{$emails[array_rand($emails)]}",
+                    nome: "{$nomes[array_rand($nomes)]} {$segundoNomes[array_rand($segundoNomes)]} {$sobrenomes[array_rand($sobrenomes)]}",
+                    cpfCnpj: str_repeat($i, 11)
+                );
+
+                $proprietario = new Proprietario(
+                    email: "proprietario$i@{$emails[array_rand($emails)]}",
+                    nome: "{$nomes[array_rand($nomes)]} {$segundoNomes[array_rand($segundoNomes)]} {$sobrenomes[array_rand($sobrenomes)]}",
+                    cpfCnpj: str_repeat($i, 11)
+                );
+
+                self::$imobiliaria->cadastrarUsuario($corretor);
+                self::$imobiliaria->cadastrarUsuario($captador);
+                self::$imobiliaria->cadastrarUsuario($gerente);
+                self::$imobiliaria->cadastrarUsuario($cliente);
+                self::$imobiliaria->cadastrarUsuario($administrador);
+                self::$imobiliaria->cadastrarUsuario($vistoriador);
+                self::$imobiliaria->cadastrarUsuario($financeiro);
+                self::$imobiliaria->cadastrarProprietario($proprietario);
+
+                $numeroAleatorioEndereco = rand(0, count($enderecos) - 1);
+
+                $endereco = new Endereco(
+                    rua: $enderecos[$numeroAleatorioEndereco]["Rua"],
+                    bairro: $enderecos[$numeroAleatorioEndereco]["Bairro"],
+                    cidade: $enderecos[$numeroAleatorioEndereco]["Cidade"],
+                    cep: $enderecos[$numeroAleatorioEndereco]["CEP"],
+                    uf: $enderecos[$numeroAleatorioEndereco]["Estado"],
+                );
+
+                $endereco->setNumero($i);
+
+                $anuncio = new Anuncio();
+
+                $condominio = new Condominio();
+
+                $venda = floatval(rand(0, 1000000) / 1000000) * 1000000;
+                $aluguel = floatval(rand(0, 10000) / 10000) * 10000;
+
+
+                $imovel = new Imovel($endereco, Status::tryFrom(array_rand($status)), Categoria::tryFrom(array_rand($categorias)));
+                $numeroComplemento = rand(1, 100);
+                $imovel->setComplemento($numeroComplemento ? $numeroComplemento . " " . $complementos[array_rand($complementos)] : null);
+                $imovel->setValorVenda($venda);
+                $imovel->setValorAluguel($aluguel);
+                $imovel->setAndar((((string)$numeroComplemento)[0]) ?? 0);
+                $imovel->setAnoConstrucao(rand(1950, 2024));
+                $imovel->setAreaPrivativa(rand(0, 500));
+                $imovel->setAreaTotal(rand(0, 1000));
+                $imovel->setQuantBanheiros(rand(0, 5));
+                $imovel->setQuantSalas(rand(0, 5));
+                $imovel->setQuantVagas(rand(0, 5));
+                $imovel->setQuantVarandas(rand(0, 5));
+
+                if ($venda && $aluguel) {
+                    $imovel->setStatus(Status::VENDA_ALUGUEL);
+                }
+
+                self::$imobiliaria->getEstoque()->cadastrarImovel($imovel);
+                
             }
-        } else if ($consultaDois && self::$imobiliaria->getCondominioPorIdEndereco($consultaDois->getId())) {
-            $condominioDois = self::$imobiliaria->getCondominioPorIdEndereco(
-                $consultaDois->getId()
-            );
-        } else {
-            $condominioDois = NULL;
-        }
-
-        $imovelQuatro = new Imovel(
-            endereco: $consultaDois,
-            status: Status::PENDENTE,
-            categoria: Categoria::TERRENO
-        );
-        $imovelCinco = new Imovel(
-            endereco: $consultaDois,
-            status: Status::VENDA_ALUGUEL,
-            categoria: Categoria::CASA
-        );
-
-        if ($cadastroAnuncio && !self::$imobiliaria->getImovelPorId(4)) {
-            $anuncioUm->setId($cadastroAnuncio);
-            $imovelQuatro->setAnuncio($anuncioUm);
-            if ($condominioDois) {
-                $imovelQuatro->setCondominio($condominioDois);
-            }
-            self::$imobiliaria->getEstoque()->cadastrarImovel($imovelQuatro);
-        }
-
-        if ($cadastroAnuncio && !self::$imobiliaria->getImovelPorId(5)) {
-            $anuncioUm->setId($cadastroAnuncio);
-            $imovelCinco->setAnuncio($anuncioUm);
-            if ($condominioDois) {
-                $imovelCinco->setCondominio($condominioDois);
-            }
-            self::$imobiliaria->getEstoque()->cadastrarImovel($imovelCinco);
-        }
-
-        $atendimentoUm = new Atendimento();
-        $atendimentoDois = new Atendimento();
-        $atendimentoUm->setStatus(StatusAtendimento::EM_ANDAMENTO);
-        $atendimentoDois->setStatus(StatusAtendimento::PENDENTE);
-
-        if (empty(self::$imobiliaria->getListaAtendimentos())) {
-            $compradorAtendimento = self::$imobiliaria->getUsuarioPorCpfCnpj("44444444444");
-            $corretorAtendimento = self::$imobiliaria->getUsuarioPorCpfCnpj("66666666666");
-            $imovelAtendimento = self::$imobiliaria->getEstoque()->getListaImoveis()[0];
-            $compradorAtendimentoDois = self::$imobiliaria->getUsuarioPorCpfCnpj("77777777777");
-            $corretorAtendimentoDois = self::$imobiliaria->getUsuarioPorCpfCnpj("99999999999");
-            $imovelAtendimentoDois = self::$imobiliaria->getEstoque()->getListaImoveis()[1];
-            $atendimentoUm->setCliente($compradorAtendimento);
-            $atendimentoUm->setCorretor($corretorAtendimento);
-            $atendimentoUm->setImovel($imovelAtendimento);
-            $atendimentoDois->setCliente($compradorAtendimentoDois);
-            $atendimentoDois->setCorretor($corretorAtendimentoDois);
-            $atendimentoDois->setImovel($imovelAtendimentoDois);
-            self::$imobiliaria->cadastrarAtendimento($atendimentoUm);
-            self::$imobiliaria->cadastrarAtendimento($atendimentoDois);
         }
     }
 }

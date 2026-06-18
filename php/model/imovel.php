@@ -136,7 +136,7 @@ enum Status: string
 {
     case VENDA = "Venda";
     case ALUGUEL = "Aluguel";
-    case VENDA_ALUGUEL = "Venda_Aluguel";
+    case VENDA_ALUGUEL = "Venda e Aluguel";
     case ALUGADO = "Alugado";
     case VENDIDO = "Vendido";
     case PENDENTE = "Pendente";

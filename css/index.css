@@ -1,22 +1,23 @@
 section#anuncios {
-    justify-items: center;
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(23%, 100fr));
     row-gap: 30px;
     column-gap: 0px;
     margin: 50px 10px 90px 10px;
     width: 100%;
-
-    /* background-color: rgba(235, 224, 224, 0.853);  */
     justify-self: center;
+    justify-items: center;
+    justify-content: center;
     height: auto;
 }
 
 .anuncio-imovel {
+    display: flex;
+    flex-direction: column;
     background: rgba(203, 199, 199, 0.2);
     width: 90%;
-    justify-items: center;
-    justify-content: center;
+    /* justify-items: center; */
+    /* justify-content: center; */
     height: auto;
     color: rgb(0, 0, 0);
     font-weight: 400;
@@ -24,9 +25,63 @@ section#anuncios {
     border-radius: 2%;
     box-shadow: 2px 1px 19px -13px rgb(43, 33, 33);
     border: solid rgba(47, 45, 45, 0.2) 2px;
+    max-width: 500px;
+    max-height: 550px;
+
+    .swiper {
+        width: 100%;
+        margin: 0 auto;
+        /* max-height: 40rem; */
+        /* margin-top: 50px; */
+        /* height: 24rem;
+        min-height: 18rem;
+        overflow-y: hidden;
+        margin: 10px auto;
+        display: flex; */
+        /* border: rgb(123, 102, 102) solid 2px; */
+        /* border-radius: 3%; */
+        /* object-fit: cover; */
+
+        .swiper-button-prev {
+            color: #000 !important;
+        }
+
+        .swiper-button-next {
+            color: #000 !important;
+        }
+
+        .swiper-slide {
+            cursor: pointer;
+            background: rgb(135, 126, 126, 0.2);
+            width: 90%;
+            border-radius: 2px;
+            box-shadow: 0.1px 0.1px 3px black;
+            display: flex;
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-position: center;
+            height: 100%;
+        }
+    }
+
+
+    .fa-heart {
+        position: absolute;
+        z-index: 1;
+        color: white;
+        background: transparent;
+        backdrop-filter: blur(40px) !important;
+        font-size: 1.5rem;
+        margin: 10px;
+        right: 0px;
+        &:hover {
+            color: rgb(255, 0, 0);
+            cursor: pointer;
+        }
+    }
 
     p {
-        margin: 20px;
+        margin: 10px;
     }
 
     p:nth-child(3) {
@@ -43,30 +98,25 @@ section#anuncios {
         text-align: center;
         align-self: center;
         margin: 10px 5px;
+        margin-bottom: 0px;
     }
 
     .descricao {
-        /* text-indent: 5%; */
-        /* margin: 20px 20px 0px 20px; */
         width: 85%;
         justify-self: center;
         align-self: center;
         text-align: center;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        /* white-space: collapse; */
+        /* min-height: 7rem; */
+        font-size: 100%;
+        /* max-height: 4rem; */
     }
 
     &:hover {
         box-shadow: 2px 1px 19px -13px rgb(43, 33, 33), 0px 0px 10px 2px rgb(51, 63, 70);
         cursor: pointer;
-    }
-
-    img {
-        width: 85%;
-        height: 24rem;
-        margin: 10px 2px 1px 2px;
-        display: flex;
-        border: rgb(123, 102, 102) solid 2px;
-        border-radius: 3%;
-        object-fit: cover;
     }
 
     .preco {
@@ -80,7 +130,7 @@ section#anuncios {
         width: auto;
         height: auto;
         font-weight: normal;
-        margin-left: 5px;
+        /* margin-left: 5px; */
     }
 
     span {
@@ -88,17 +138,28 @@ section#anuncios {
         text-align: center;
         width: auto;
         height: auto;
-        /* margin-left: 10px; */
         justify-self: center;
         align-self: center;
         text-align: center;
         font-weight: bolder;
     }
 
+    .emojis {
+        display: flex;
+        /* justify-content: space-between; */
+        .fa-whatsapp {
+            margin-left: auto;
+            color: rgb(37, 150, 37);
+        }
+        gap: 10px;
+        margin: 10px 3px 0px 3px;
+
+        i {
+            font-size: 1.2rem;
+            color: black;
+        }
+    }
 }
-
-
-
 
 #img-destaque {
     width: 100%;
@@ -116,40 +177,33 @@ section#anuncios {
     &:nth-child(1+n) {
         display: none;
     }
-
-
 }
 
-
 #section-footer {
-    /* background-color: rgba(177, 149, 149, 0.173); */
     background: rgba(203, 199, 199, 0.2);
     border-top: solid rgba(47, 45, 45, 0.2) 2px;
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: space-around;
     margin-top: 50px;
-    /* margin-bottom: 46px; */
-    height: 11rem;
+    height: 8rem;
     width: 100%;
     color: black;
 
-    /* -webkit-text-stroke-color: rgba(14, 11, 11, 0.9);
-    -webkit-text-fill-color: rgba(14, 11, 11, 0.9); */
+    #sobre {
+        display: block;
+        margin: 0px;
+        margin-left: 9px;
+        width: 50%;
+    }
+
     div {
         display: block;
         margin: 10px;
 
-        &:nth-child(1) {
-            display: block;
-            margin: 0px;
-            width: 80%;
-        }
-
         p {
             font-size: 0.9rem;
             font-weight: 400;
-            text-indent: 2%;
         }
 
         a {
@@ -164,20 +218,9 @@ section#anuncios {
     }
 }
 
-@keyframes placeholderBlink {
-
-    0%,
-    100% {
-        text-opacity: 1;
-    }
-
-    50% {
-        text-opacity: 0;
-    }
-}
-
 #pesquisa {
-    display: block;
+    display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     justify-items: center;
@@ -210,11 +253,8 @@ section#anuncios {
 
         &::placeholder {
             color: rgba(65, 73, 18, 0.9);
-            animation: placeholderBlink 10s;
         }
     }
-
-
 
     #pesquisa-container {
         width: 60%;
@@ -230,7 +270,6 @@ section#anuncios {
             background-color: rgb(65, 73, 18);
             color: white;
             border: rgb(109, 97, 0) solid 1px;
-            /* border-radius: 0%; */
             margin-left: 5px;
             border-radius: 2% / 30%;
 
@@ -257,7 +296,6 @@ section#anuncios {
         width: 100%;
         padding: 10px;
         border: solid rgba(47, 45, 45, 0.2) 2px;
-        /* border-radius: 3px; */
         box-shadow: 0.1px 0.1px 3px black;
         border-radius: 2% / 30%;
     }
@@ -285,8 +323,6 @@ section#anuncios {
         cursor: pointer;
         background: rgb(135, 126, 126, 0.2);
         width: 90%;
-        /* margin: 30px 6px 0px 6px; */
-        /* border: solid rgba(47, 45, 45, 0.2) 2px; */
         border-radius: 2px;
         box-shadow: 0.1px 0.1px 3px black;
         display: flex;
@@ -321,7 +357,6 @@ section#anuncios {
             text-align: center;
             width: auto;
             height: auto;
-            /* margin-left: 10px; */
         }
 
         .sobrepor {
@@ -338,14 +373,11 @@ section#anuncios {
     }
 }
 
-
-
 #gallery {
     display: flex;
     justify-content: center;
     width: 80%;
-    /* border-radius: 50%; */
-    margin-top: 10px;
+    margin: 10px auto;
     align-items: center;
     justify-self: center;
 
@@ -364,17 +396,12 @@ section#anuncios {
     }
 }
 
-
 #gallery2 {
-
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(40%, 10fr));
-    justify-content: center;
+    grid-template-columns: repeat(2, 1fr);
     width: 80%;
-    /* border-radius: 50%; */
-    margin-top: 10px;
+    margin: 10px auto;
     align-items: center;
-    justify-self: center;
 
     img {
         width: 100%;
@@ -397,15 +424,11 @@ section#anuncios {
             border-radius: 0% 2% 2% 0%;
         }
     }
-
-
 }
 
 #gallery3 {
     width: 100%;
     display: flex;
-
-    /* border-radius: 50%; */
     margin-top: 10px;
 
     img {
@@ -419,8 +442,6 @@ section#anuncios {
             object-fit: cover;
         }
     }
-
-
 }
 
 @media screen and (max-width: 900px) {
@@ -428,7 +449,6 @@ section#anuncios {
         justify-items: center;
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(42%, 1fr));
-        /* row-gap: 30px; */
         column-gap: 2px;
     }
 
@@ -436,7 +456,6 @@ section#anuncios {
     #gallery2,
     #gallery3 {
         img {
-
             height: 20rem;
 
             &:nth-child(2) {

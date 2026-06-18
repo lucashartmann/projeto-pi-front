@@ -6,7 +6,6 @@ body {
     display: flex;
     flex-direction: column;
     overflow-y: auto;
-
     align-items: center;
     justify-content: center;
     align-content: center;
@@ -77,15 +76,12 @@ form {
 
 }
 
-
 #btn-ad {
     width: auto;
     height: auto;
     margin: 0;
     padding: 0;
 }
-
-
 
 #login-header {
     display: flex;

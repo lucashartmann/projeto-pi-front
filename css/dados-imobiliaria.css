@@ -3,7 +3,6 @@ body {
     display: flex;
     flex-direction: column;
     overflow-y: auto;
-    /* align-items: center; */
     justify-content: center;
     align-content: center;
     justify-items: center;

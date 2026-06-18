@@ -45,7 +45,6 @@ body {
     background: rgb(37, 39, 39);
 }
 
-
 button {
     background: rgb(37, 39, 39) !important;
     color: white !important;
@@ -69,7 +68,6 @@ button {
     color: white;
     display: flex;
     flex-direction: column;
-    /* justify-content: center; */
     align-items: center;
 
     .form-header {
@@ -78,7 +76,7 @@ button {
         display: flex;
         width: 100%;
         justify-content: space-between;
-       
+
 
         h2 {
             justify-self: center;
@@ -135,12 +133,14 @@ button {
     align-items: center;
     margin-bottom: 1em;
     margin-top: 1rem;
+
     input[type="checkbox"] {
         margin-right: 0.5em;
     }
 }
 
-#calendar, .ui.container {
+#calendar,
+.ui.container {
     z-index: 1;
     position: relative;
 }
@@ -152,6 +152,7 @@ footer {
     align-self: center;
     text-align: center;
     height: 6vh;
+
     p {
         height: auto;
         width: auto;

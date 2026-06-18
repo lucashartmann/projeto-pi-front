@@ -77,9 +77,7 @@ function inicializarSwiper() {
         if (window.swiperInstance) window.swiperInstance.destroy(true, true);
         window.swiperInstance = new Swiper('.swiper', {
             loop: true,
-            pagination: { el: '.swiper-pagination', clickable: true },
             navigation: { nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev' },
-            scrollbar: { el: '.swiper-scrollbar' },
         });
     }
 }
@@ -104,17 +102,6 @@ async function carregarAnuncios(dados) {
 
     if (!section || !dados) return;
 
-    selectCategoria = document.getElementById("select-categoria");
-    selectStatus = document.getElementById("select-status");
-
-    const categorias = [...new Set(dados.map(imovel => imovel.categoria.replace("_", " ")))];
-    categorias.unshift("");
-    const status = [...new Set(dados.map(imovel => imovel.status.replace("_", " ")))];
-    status.unshift("");
-
-    selectCategoria.innerHTML = categorias.map(cat => `<option value="${cat}">${cat}</option>`).join("");
-    selectStatus.innerHTML = status.map(st => `<option value="${st}">${st}</option>`).join("");
-
     let html = "";
     for (const imovel of dados) {
         const b64 = imovel.anuncio?.imagens?.[0] || null;
@@ -131,12 +118,30 @@ async function carregarAnuncios(dados) {
         }
         html += `
             <div class="anuncio-imovel" onclick="abrirAnuncio(${imovel.id})">
-                <img src="${b64}" />
+                <div class="swiper">
+                    <div class="swiper-wrapper">
+                    <i class="fas fa-heart"></i>
+                    ${imovel.anuncio.imagens.map(img => `
+                        <div class="swiper-slide" style="background-image: url(${img})">
+                        </div>
+                    `).join('')}
+                    </div>
+                    <div class="swiper-button-prev" onclick="prevSlide()"></div>
+                    <div class="swiper-button-next" onclick="nextSlide()"></div>
+                </div>
                 <h2>${imovel.anuncio?.titulo}</h2>
                 <p>${imovel.endereco?.rua}, ${imovel.endereco?.numero}, ${imovel.endereco?.bairro}</p>
                 ${precoVenda.outerHTML}
                 ${precoAluguel.outerHTML}
                 <p class="descricao">${imovel.anuncio?.descricao}</p>
+                <div class="emojis">
+                    <i class="fas fa-ruler-combined">${imovel.areaTotal || 'N/A'} m²</i> 
+                    <i class="fas fa-bath">${imovel.quantBanheiros || 'N/A'}</i> 
+                    <i class="fas fa-couch">${imovel.quantSalas || 'N/A'}</i> 
+                    <i class="fas fa-bed">${imovel.quantQuartos || 'N/A'}</i>
+                    <i class="fas fa-car">${imovel.quantVagas || 'N/A'}</i>
+                    <i class="fab fa-whatsapp"></i>
+                </div>
             </div>
         `;
     }
@@ -201,6 +206,9 @@ function pesquisarCEP(event) {
 
 
 async function abrirAnuncio(imovel_id) {
+    if (event.target.classList.contains("swiper-button-prev") || event.target.classList.contains("swiper-button-next")) {
+        return;
+    }
     sessionStorage.setItem("imovel_id", imovel_id);
     window.location.href = "html/dados-imovel.html";
 }

@@ -2,4 +2,4 @@
 - [ ] Esqueceu senha: mandar o email
 - [ ] Implementar botões de aumentar e diminuir a fonte de <p>
 - [ ] continuar a tela de contato
-- [ ] Cópia de dados, ou de cadastro de imóvel para outro, muitas vezes imóveis do mesmo condominio tem o mesmo iptu ou condominio 
+- [ ] terminar __init__.php, 

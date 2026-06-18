@@ -5,7 +5,7 @@ class Endereco
 {
     public int $id;
     public string $rua;
-    public string $numero;
+    public int $numero;
     public string $bairro;
     public string $cep;
     public string $complemento;
@@ -16,7 +16,7 @@ class Endereco
     {
         $this->id = 0;
         $this->rua = $rua;
-        $this->numero = "";
+        $this->numero = 0;
         $this->bairro = $bairro;
         $this->cep = $cep;
         $this->complemento = "";

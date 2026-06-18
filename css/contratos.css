@@ -1,16 +1,13 @@
-html,
 body {
-    margin: 0;
-    padding: 0;
-}
-
-body {
+    min-height: 100vh;
     display: flex;
     flex-direction: column;
-    /* height: 100%; */
-    overflow-y: scroll;
+    overflow-y: auto;
+    align-items: center;
+    justify-content: center;
+    align-content: center;
+    justify-items: center;
 }
-
 
 #header {
     display: flex;
@@ -18,14 +15,12 @@ body {
 
 #botoes {
     display: none;
-    /* grid */
     grid-template-columns: repeat(2, 1fr);
 }
 
 #dados {
     display: grid;
     grid-template-columns: repeat(6, 9vw);
-    /* gap: 10px; */
     row-gap: 10px;
     column-gap: 20px;
     width: 80vw;
@@ -39,6 +34,7 @@ body {
     justify-content: center;
     margin-top: auto;
     margin: 20px;
+
     p {
         background-color: #ccc;
         width: auto;
@@ -57,4 +53,3 @@ body {
         background-color: var(--background-nav);
     }
 }
-
