@@ -83,14 +83,6 @@ class Init
 
     public static function initialize()
     {
-        self::$imobiliaria = new Imobiliaria("GameStart", "00000000000");
-
-        if (empty(self::$imobiliaria->getListaFiltrosApartamento())) {
-            self::$imobiliaria->cadastrarListaFiltros(self::$filtrosImovel, "filtros_imovel");
-        }
-        if (empty(self::$imobiliaria->getListaFiltrosCondominio())) {
-            self::$imobiliaria->cadastrarListaFiltros(self::$filtrosCondominio, "filtros_condominio");
-        }
 
         $emails = [
             "hotmail.com",
@@ -168,6 +160,27 @@ class Init
             "Farias",
             "Pinto",
         ];
+
+
+        $situacoes = [
+            "Em Costrução",
+            "Novo",
+            "Usado"
+        ];
+
+        $ocupacoes = [
+            "Desocupado",
+            "Inquilino",
+            "Proprietário"
+        ];
+
+
+        $condicoes = [
+            "Bom",
+            "Ótimo",
+            "Regular"
+        ];
+
 
         $enderecos = [
             [
@@ -312,7 +325,7 @@ class Init
             ]
         ];
 
-        $status = ["Venda", "Aluguel", "Venda e Aluguel", "Alugado", "Vendido", "Pendente"];
+        $lista_status = ["Venda", "Aluguel", "Venda e Aluguel", "Alugado", "Vendido", "Pendente"];
 
         $categorias = [
             "Sala Comercial",
@@ -346,11 +359,21 @@ class Init
             "F",
         ];
 
-        if (!self::$imobiliaria->getEstoque()->getListaImoveis() < 50) {
-            for ($i = 0; $i < 50; $i++) {
+        self::$imobiliaria = new Imobiliaria("GameStart", "00000000000");
+
+        if (empty(self::$imobiliaria->getListaFiltrosApartamento())) {
+            self::$imobiliaria->cadastrarListaFiltros(self::$filtrosImovel, "filtros_imovel");
+        }
+        if (empty(self::$imobiliaria->getListaFiltrosCondominio())) {
+            self::$imobiliaria->cadastrarListaFiltros(self::$filtrosCondominio, "filtros_condominio");
+        }
+
+
+        if (count(self::$imobiliaria->getEstoque()->getListaImoveis()) < 51) {
+            for ($i = 1; $i <= 51; $i++) {
 
                 $vistoriador = new Usuario(
-                    username: "vistoriador$i",
+                    username: "vistoriador$i@{$emails[array_rand($emails)]}",
                     senha: "Vistoriador$i#",
                     email: "vistoriador$i@{$emails[array_rand($emails)]}",
                     nome: "{$nomes[array_rand($nomes)]} {$segundoNomes[array_rand($segundoNomes)]} {$sobrenomes[array_rand($sobrenomes)]}",
@@ -359,60 +382,60 @@ class Init
                 );
 
                 $financeiro = new Usuario(
-                    username: "financeiro$i",
+                    username: "financeiro$i@{$emails[array_rand($emails)]}",
                     senha: "Financeiro$i#",
                     email: "financeiro$i@{$emails[array_rand($emails)]}",
                     nome: "{$nomes[array_rand($nomes)]} {$segundoNomes[array_rand($segundoNomes)]} {$sobrenomes[array_rand($sobrenomes)]}",
-                    cpfCnpj: str_repeat($i, 11),
+                    cpfCnpj: str_repeat($i + 1, 11),
                     tipo: Tipo::FINANCEIRO
                 );
 
                 $corretor = new Corretor(
-                    username: "corretor$i",
+                    username: "corretor$i@{$emails[array_rand($emails)]}",
                     senha: "Corretor$i#",
                     email: "corretor$i@{$emails[array_rand($emails)]}",
                     nome: "{$nomes[array_rand($nomes)]} {$segundoNomes[array_rand($segundoNomes)]} {$sobrenomes[array_rand($sobrenomes)]}",
-                    cpfCnpj: str_repeat($i, 11),
+                    cpfCnpj: str_repeat($i + 2, 11),
                     creci: str_repeat($i, 6)
                 );
 
                 $captador = new Captador(
-                    username: "captador$i",
+                    username: "captador$i@{$emails[array_rand($emails)]}",
                     senha: "Captador$i#",
                     email: "captador$i@{$emails[array_rand($emails)]}",
                     nome: "{$nomes[array_rand($nomes)]} {$segundoNomes[array_rand($segundoNomes)]} {$sobrenomes[array_rand($sobrenomes)]}",
-                    cpfCnpj: str_repeat($i, 11)
+                    cpfCnpj: str_repeat($i + 3, 11)
                 );
 
                 $gerente = new Gerente(
-                    username: "gerente$i",
+                    username: "gerente$i@{$emails[array_rand($emails)]}",
                     senha: "Gerente$i#",
                     email: "gerente$i@{$emails[array_rand($emails)]}",
                     nome: "{$nomes[array_rand($nomes)]} {$segundoNomes[array_rand($segundoNomes)]} {$sobrenomes[array_rand($sobrenomes)]}",
-                    cpfCnpj: str_repeat($i, 11)
+                    cpfCnpj: str_repeat($i + 4, 11)
                 );
 
                 $administrador = new Usuario(
-                    username: "administrador$i",
+                    username: "administrador$i@{$emails[array_rand($emails)]}",
                     senha: "Administrador$i#",
                     email: "administrador$i@{$emails[array_rand($emails)]}",
                     nome: "{$nomes[array_rand($nomes)]} {$segundoNomes[array_rand($segundoNomes)]} {$sobrenomes[array_rand($sobrenomes)]}",
-                    cpfCnpj: str_repeat($i, 11),
+                    cpfCnpj: str_repeat($i + 5, 11),
                     tipo: Tipo::ADMINISTRADOR
                 );
 
                 $cliente = new Cliente(
-                    username: "cliente$i",
+                    username: "cliente$i@{$emails[array_rand($emails)]}",
                     senha: "Cliente$i#",
                     email: "cliente$i@{$emails[array_rand($emails)]}",
                     nome: "{$nomes[array_rand($nomes)]} {$segundoNomes[array_rand($segundoNomes)]} {$sobrenomes[array_rand($sobrenomes)]}",
-                    cpfCnpj: str_repeat($i, 11)
+                    cpfCnpj: str_repeat($i + 6, 11)
                 );
 
                 $proprietario = new Proprietario(
                     email: "proprietario$i@{$emails[array_rand($emails)]}",
                     nome: "{$nomes[array_rand($nomes)]} {$segundoNomes[array_rand($segundoNomes)]} {$sobrenomes[array_rand($sobrenomes)]}",
-                    cpfCnpj: str_repeat($i, 11)
+                    cpfCnpj: str_repeat($i + 7, 11)
                 );
 
                 self::$imobiliaria->cadastrarUsuario($corretor);
@@ -436,15 +459,14 @@ class Init
 
                 $endereco->setNumero($i);
 
-                $anuncio = new Anuncio();
 
-                $condominio = new Condominio();
+
+                // $condominio = new Condominio();
 
                 $venda = floatval(rand(0, 1000000) / 1000000) * 1000000;
                 $aluguel = floatval(rand(0, 10000) / 10000) * 10000;
 
-
-                $imovel = new Imovel($endereco, Status::tryFrom(array_rand($status)), Categoria::tryFrom(array_rand($categorias)));
+                $imovel = new Imovel($endereco, Status::tryFrom($lista_status[array_rand($lista_status)]), Categoria::tryFrom($categorias[array_rand($categorias)]));
                 $numeroComplemento = rand(1, 100);
                 $imovel->setComplemento($numeroComplemento ? $numeroComplemento . " " . $complementos[array_rand($complementos)] : null);
                 $imovel->setValorVenda($venda);
@@ -457,13 +479,47 @@ class Init
                 $imovel->setQuantSalas(rand(0, 5));
                 $imovel->setQuantVagas(rand(0, 5));
                 $imovel->setQuantVarandas(rand(0, 5));
+                $imovel->setQuantQuartos(rand(0, 5));
+                $imovel->setIptu(rand(0, 10000));
+                $imovel->setValorCondominio(rand(0, 1000));
+                $imovel->setDataCadastro(DateTime::createFromFormat('Y-m-d H:i:s', date('Y-m-d H:i:s')));
+                $imovel->setSituacao(Situacao::TryFrom($situacoes[array_rand($situacoes)] ?? null));
+                $imovel->setOcupacao(Ocupacao::TryFrom($ocupacoes[array_rand($ocupacoes)] ?? null));
+                $imovel->setEstado(Estado::TryFrom($condicoes[array_rand($condicoes)] ?? null));
 
-                if ($venda && $aluguel) {
+                $titulo = $imovel->getCategoria()->value . " com " . ($imovel->getQuantidadeQuartos() ? $imovel->getQuantidadeQuartos() . " quartos" : $imovel->getAreaTotal() . " m²" ?? "") . " no bairro " . $imovel->getEndereco()->getBairro();
+
+                $descricao = "Imóvel localizado no bairro " . $imovel->getEndereco()->getBairro() . ", com " . ($imovel->getQuantidadeQuartos() ? $imovel->getQuantidadeQuartos() . " quartos" : $imovel->getAreaTotal() . " m²" ?? "") . ". Valor de venda: R$ " . number_format($imovel->getValorVenda(), 2, ",", ".") . ". Valor de aluguel: R$ " . number_format($imovel->getValorAluguel(), 2, ",", ".") . ".";
+
+                $anuncio = new Anuncio();
+
+
+                $anuncio->setTitulo($titulo);
+                $anuncio->setDescricao($descricao);
+                $idAnuncio = self::$imobiliaria->getEstoque()->cadastrarAnuncio($anuncio);
+
+
+                if ($idAnuncio > 0) {
+                    $anuncio->setId($idAnuncio);
+                    $imagem = new Anexo(
+                        $idAnuncio,
+                        "imoveis/imovel_" . $i . ".jpg",
+                        TipoAnexo::IMAGEM
+                    );
+                    self::$imobiliaria->cadastrarAnexo(
+                        $imagem,
+                    );
+                    $anuncio->setImagens([$imagem, $imagem, $imagem, $imagem, $imagem, $imagem, $imagem, $imagem, $imagem, $imagem, $imagem, $imagem, $imagem, $imagem, $imagem]);
+                    self::$imobiliaria->getEstoque()->atualizarAnuncio($anuncio);
+                }
+
+                $imovel->setAnuncio($anuncio);
+
+                if ($venda > 0 && $aluguel > 0) {
                     $imovel->setStatus(Status::VENDA_ALUGUEL);
                 }
 
                 self::$imobiliaria->getEstoque()->cadastrarImovel($imovel);
-                
             }
         }
     }

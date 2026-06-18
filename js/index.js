@@ -135,11 +135,11 @@ async function carregarAnuncios(dados) {
                 ${precoAluguel.outerHTML}
                 <p class="descricao">${imovel.anuncio?.descricao}</p>
                 <div class="emojis">
-                    <i class="fas fa-ruler-combined">${imovel.areaTotal || 'N/A'} m²</i> 
-                    <i class="fas fa-bath">${imovel.quantBanheiros || 'N/A'}</i> 
-                    <i class="fas fa-couch">${imovel.quantSalas || 'N/A'}</i> 
-                    <i class="fas fa-bed">${imovel.quantQuartos || 'N/A'}</i>
-                    <i class="fas fa-car">${imovel.quantVagas || 'N/A'}</i>
+                    <i class="fas fa-ruler-combined">${imovel.area_total || 'N/A'} m²</i> 
+                    <i class="fas fa-bath">${imovel.quant_banheiros || 'N/A'}</i> 
+                    <i class="fas fa-couch">${imovel.quant_salas || 'N/A'}</i> 
+                    <i class="fas fa-bed">${imovel.quant_quartos || 'N/A'}</i>
+                    <i class="fas fa-car">${imovel.quant_vagas || 'N/A'}</i>
                     <i class="fab fa-whatsapp"></i>
                 </div>
             </div>

@@ -604,7 +604,14 @@ class controller
                     "categoria" => $categoria,
                     "status" => $status,
                     "endereco" => $endereco,
-                    "anuncio" => $anuncio
+                    "anuncio" => $anuncio,
+                    "area_total" => $imovel->getAreaTotal(),
+                    "area_privativa" => $imovel->getAreaPrivativa(),
+                    "quant_quartos" => $imovel->getQuantidadeQuartos(),
+                    "quant_salas" => $imovel->getQuantidadeSalas(),
+                    "quant_vagas" => $imovel->getQuantidadeVagas(),
+                    "quant_banheiros" => $imovel->getQuantidadeBanheiros(),
+                    "quant_varandas" => $imovel->getQuantidadeVarandas(),
                 ];
             }
 

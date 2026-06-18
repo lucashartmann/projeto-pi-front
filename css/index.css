@@ -9,6 +9,9 @@ section#anuncios {
     justify-items: center;
     justify-content: center;
     height: auto;
+    /* &:nth-child(5) {
+        display: none !important;
+    } */
 }
 
 .anuncio-imovel {

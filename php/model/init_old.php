@@ -526,7 +526,6 @@ class Init
         }
 
         if (!self::$imobiliaria->getEstoque()->getListaImoveis() < 50) {
-            
         }
     }
 }

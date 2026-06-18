@@ -175,6 +175,8 @@ class Imovel
     public array $filtros;
     public string $complemento;
 
+    public int $quantClicks;
+
     public function __construct(?Endereco $endereco, Status $status, Categoria $categoria)
     {
         $this->id = 0;
@@ -207,6 +209,7 @@ class Imovel
         $this->condominio = NULL;
         $this->filtros = [];
         $this->complemento = "";
+        $this->quantClicks = 0;
     }
 
     public function getComplemento()
