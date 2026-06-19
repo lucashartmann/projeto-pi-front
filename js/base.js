@@ -459,7 +459,7 @@ async function setup() {
     //     topNav.addEventListener("click", mostrarNavLeft);
     // }
     if (document.getElementById("logo")) {
-        document.getElementById("logo").src = getCaminhoRelativo("assets/logo.png");
+        document.getElementById("logo").src = getCaminhoRelativo("assets/logo.webp");
     }
 }
 

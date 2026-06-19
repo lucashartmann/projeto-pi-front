@@ -459,9 +459,8 @@ class Init
 
                 $endereco->setNumero($i);
 
-
-
-                // $condominio = new Condominio();
+                $idEndereco = self::$imobiliaria->verificarEndereco($endereco) ?? self::$imobiliaria->cadastrarEndereco($endereco) ?? null;
+                $endereco->setId($idEndereco);
 
                 $venda = floatval(rand(0, 1000000) / 1000000) * 1000000;
                 $aluguel = floatval(rand(0, 10000) / 10000) * 10000;
@@ -503,7 +502,7 @@ class Init
                     $anuncio->setId($idAnuncio);
                     $imagem = new Anexo(
                         $idAnuncio,
-                        "imoveis/imovel_" . $i . ".jpg",
+                        "imoveis/imovel_" . $i . ".webp",
                         TipoAnexo::IMAGEM
                     );
                     self::$imobiliaria->cadastrarAnexo(

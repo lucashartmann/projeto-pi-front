@@ -1771,8 +1771,7 @@ class Banco extends PDO
 
             $stmt = $this->prepare($sql);
 
-
-            return $stmt->execute([
+            $stmt->execute([
                 $endereco->getRua(),
                 $endereco->getNumero(),
                 $endereco->getBairro(),
@@ -1781,6 +1780,8 @@ class Banco extends PDO
                 $endereco->getCidade(),
                 $endereco->getUf()
             ]);
+
+            return $this->lastInsertId();
         } catch (Exception $e) {
             error_log("ERRO! Banco->cadastrarEndereco: " . $e->getMessage());
             return false;
