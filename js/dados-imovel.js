@@ -5,16 +5,15 @@ function setupDados(dados) {
         swiperhtml = "";
         for (const imagem of dados.anuncio.imagens) {
             swiperhtml += `<div class="swiper-slide" style="background-image: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), url(${imagem})"></div>`;
-            imagensHtml += `<li><img src="${imagem}" alt="Imagem do imóvel" onclick="abrirImagem(this.src)" /></li>`;
+            imagensHtml += `<div class="swiper-slide" style="background-image: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), url(${imagem})" onclick="abrirImagem(this.style.backgroundImage.slice(5, -2))"></div>`;
         }
-
     }
 
     const divPai = document.getElementById("div-pai");
     const swiperWrapper = document.querySelector(".swiper-wrapper");
     const swiper = document.querySelector(".swiper");
     const divTitulo = document.getElementById("div-titulo");
-    const divGaleria = document.getElementById("ul-imagens");
+    const divGaleria = document.querySelector(".swiper-galeria");
     const pDescricao = document.getElementById("p-descricao");
     const divContato = document.getElementById("entrar-contato");
 
@@ -46,13 +45,6 @@ window.addEventListener("DOMContentLoaded", async () => {
     if (dados) {
         await setupDados(dados);
         await inicializarSwiper();
-
-        setInterval(() => {
-            const swiper = document.querySelector('.swiper').swiper;
-            if (swiper) {
-                swiper.slideNext();
-            }
-        }, 3500);
     } else {
         alert("Erro ao carregar dados do imóvel!");
         window.location.href = "../html/index.html";
@@ -91,17 +83,46 @@ function inicializarSwiper() {
         console.warn("Elemento .swiper não encontrado");
         return;
     }
-    if (window.Swiper) {
-        if (window.swiperInstance) window.swiperInstance.destroy(true, true);
-        window.swiperInstance = new Swiper('.swiper', {
-            loop: true,
-            pagination: { el: '.swiper-pagination', clickable: true },
-            navigation: { nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev' },
-            scrollbar: { el: '.swiper-scrollbar' },
-        });
-    } else {
-        console.warn("Swiper não encontrado");
-    }
+
+    const swiper1 = new Swiper('.swiper', {
+        loop: true,
+        pagination: {
+            el: '.swiper .swiper-pagination', 
+            clickable: true
+        },
+        navigation: {
+            nextEl: '.swiper .swiper-button-next', 
+            prevEl: '.swiper .swiper-button-prev'  
+        },
+        scrollbar: {
+            el: '.swiper .swiper-scrollbar'
+        },
+    });
+
+    console.log(document.querySelector('.swiper-galeria'));
+
+    const swiper2 = new Swiper('.swiper-galeria', {
+        pagination: {
+            el: '.swiper-galeria .swiper-pagination', 
+            clickable: true
+        },
+        navigation: {
+            nextEl: '.swiper-galeria .swiper-button-next', 
+            prevEl: '.swiper-galeria .swiper-button-prev'  
+        },
+        slidesPerView: 3,
+        spaceBetween: 50,
+        centeredSlides: true,
+        breakpoints: {
+            0: { slidesPerView: 1 },
+            640: { slidesPerView: 2 },
+            768: { slidesPerView: 2 },
+            1024: { slidesPerView: 3 },
+        },
+    });
+
+
+
 }
 
 function nextSlide() {
@@ -112,8 +133,8 @@ function nextSlide() {
     }
 }
 
-function calcularPrecoMedio(){
-   return;
+function calcularPrecoMedio() {
+    return;
 }
 
 function prevSlide() {

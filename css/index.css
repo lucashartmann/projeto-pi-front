@@ -35,17 +35,8 @@ section#anuncios {
     .swiper {
         width: 100%;
         margin: 0 auto;
-        /* max-height: 40rem; */
-        /* margin-top: 50px; */
-        /* height: 24rem;
-        min-height: 18rem;
-        overflow-y: hidden;
-        margin: 10px auto;
-        display: flex; */
-        /* border: rgb(123, 102, 102) solid 2px; */
-        /* border-radius: 3%; */
-        /* object-fit: cover; */
-
+        height: 14rem;
+        
         .swiper-button-prev {
             color: #000 !important;
         }
@@ -78,6 +69,7 @@ section#anuncios {
         font-size: 1.5rem;
         margin: 10px;
         right: 0px;
+
         &:hover {
             color: rgb(255, 0, 0);
             cursor: pointer;
@@ -89,20 +81,25 @@ section#anuncios {
     }
 
     p:nth-child(3) {
+        /* endereco */
         text-align: center;
         align-self: center;
+        font-size: 1.1rem;
     }
 
+    /* 
     p:nth-child(4) {
         text-indent: 5%;
         margin: 0px 20px 0px 20px;
-    }
+        font-size: 0.4rem;
+    } */
 
     h2 {
         text-align: center;
         align-self: center;
         margin: 10px 5px;
         margin-bottom: 0px;
+        font-size: 1.4rem;
     }
 
     .descricao {
@@ -114,8 +111,9 @@ section#anuncios {
         text-overflow: ellipsis;
         /* white-space: collapse; */
         /* min-height: 7rem; */
-        font-size: 100%;
+        font-size: 1rem;
         /* max-height: 4rem; */
+        margin-bottom: 40px !important;
     }
 
     &:hover {
@@ -134,7 +132,7 @@ section#anuncios {
         width: auto;
         height: auto;
         font-weight: normal;
-        /* margin-left: 5px; */
+        margin-left: 5px;
     }
 
     span {
@@ -150,17 +148,27 @@ section#anuncios {
 
     .emojis {
         display: flex;
-        /* justify-content: space-between; */
+        font-size: 1rem;
+        margin: 10px 3px 0px 3px;
+        margin-top: auto !important;
+
         .fa-whatsapp {
             margin-left: auto;
             color: rgb(37, 150, 37);
         }
+
         gap: 10px;
-        margin: 10px 3px 0px 3px;
 
         i {
-            font-size: 1.2rem;
-            color: black;
+            font-size: 1rem;
+            color: gray;
+            display: flex;
+
+            p {
+                color: black !important;
+                margin: 0;
+                margin-left: 5px;
+            }
         }
     }
 }

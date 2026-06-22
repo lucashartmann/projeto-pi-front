@@ -27,7 +27,32 @@ use PHPMailer\PHPMailer\Exception;
 class controller
 {
 
+    function favoritarImoveis($data) {
+        try {
+            $body = file_get_contents("php://input");
+            $data = json_decode($body, true);
 
+            if (json_last_error() !== JSON_ERROR_NONE) {
+                return (["status" => "erro", "mensagem" => "JSON inválido"]);
+            }
+
+            $idCliente = Init::getInstance()->usuarioAtual->getId();
+            $idImoveis = $data['id_imoveis'] ?? null;
+
+            if (!$idCliente || !is_array($idImoveis)) {
+                return (["status" => "erro", "mensagem" => "ID do cliente ou lista de imóveis inválidos"]);
+            }
+
+            $resultado = Init::getInstance()->cadastrarImoveisCliente($idCliente, $idImoveis);
+            if ($resultado) {
+                return (["status" => "sucesso", "mensagem" => "Imóveis favoritados com sucesso"]);
+            } else {
+                return (["status" => "erro", "mensagem" => "Erro ao favoritar imóveis"]);
+            }
+        } catch (Exception $e) {
+            return (["status" => "erro", "mensagem" => "Erro ao favoritar imóveis: " . $e->getMessage()]);
+        }
+    }
 
     function recuperarSenha($data)
     {

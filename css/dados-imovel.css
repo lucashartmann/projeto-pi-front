@@ -44,25 +44,37 @@ img {
     height: 80%;
 }
 
-#ul-imagens {
-    display: flex;
-    gap: 0px;
-    overflow-x: auto;
-    overflow-y: hidden;
-    list-style-type: none;
-    margin: 20px 0px 0px 0px;
-    width: 100%;
-    align-content: center;
-    justify-content: center;
 
-    li {
-        margin: 0px 0px;
-        list-style-type: none;
 
-        img {
-            height: 19vh;
-        }
+.swiper-galeria {
+    width: 90%;
+    height: 14rem;
+    margin-top: 50px;
+
+    .swiper-pagination-bullet {
+        background: #000;
     }
+
+    .swiper-button-prev {
+        color: #000;
+    }
+
+    .swiper-button-next {
+        color: #000;
+    }
+
+    .swiper-slide {
+        cursor: pointer;
+        background: rgb(135, 126, 126, 0.2);
+        width: 90%;
+        border-radius: 2px;
+        box-shadow: 0.1px 0.1px 3px black;
+        display: flex;
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-position: center;
+    }
+    
 }
 
 .swiper {

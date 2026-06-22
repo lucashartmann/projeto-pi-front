@@ -10,6 +10,8 @@ class Cliente extends Usuario
     public int $quantBanheirosDesejado;
     public ?Endereco $enderecoDesejado;
 
+    public array $imoveisFavoritos;
+
     public function __construct(string $username, string $senha, string $email, string $nome, string $cpfCnpj)
     {
         parent::__construct($username, $senha, $email, $nome, $cpfCnpj, Tipo::CLIENTE);
@@ -17,6 +19,7 @@ class Cliente extends Usuario
         $this->quantQuartosDesejado = 0;
         $this->quantBanheirosDesejado = 0;
         $this->enderecoDesejado = NULL;
+        $this->imoveisFavoritos = [];
     }
 
     public function setTiposImoveisDesejados(array $tipoImoveis)

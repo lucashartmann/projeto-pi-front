@@ -173,6 +173,13 @@ class Banco extends PDO
                 FOREIGN KEY (id_condominio) REFERENCES condominio(id)
             )",
 
+            "CREATE TABLE IF NOT EXISTS imovel_cliente (
+                id_imovel INTEGER,
+                id_cliente INTEGER,
+                FOREIGN KEY (id_imovel) REFERENCES imovel(id) ON DELETE CASCADE,
+                FOREIGN KEY (id_cliente) REFERENCES cliente(id_usuario) ON DELETE CASCADE
+            )",
+
             "CREATE TABLE IF NOT EXISTS midia_anuncio (
                 id INTEGER PRIMARY KEY AUTO_INCREMENT,
                 id_anuncio INTEGER NULL,
@@ -274,6 +281,22 @@ class Banco extends PDO
         }
     }
 
+    public function cadastrarImoveisCliente(int $idCliente, array $idImoveis) {
+        
+        try {
+            $sql = "INSERT INTO imovel_cliente (id_cliente, id_imovel) VALUES (:id_cliente, :id_imovel)";
+            $stmt = $this->prepare($sql);
+            foreach ($idImoveis as $idImovel) {
+                $stmt->execute([
+                    ':id_cliente' => $idCliente,
+                    ':id_imovel' => $idImovel
+                ]);
+            }
+        } catch (Exception $e) {
+            error_log("ERRO Banco->cadastrarImoveisCliente: " . $e->getMessage());
+            return null;
+        }
+    }
 
     public function getProprietarioPorId($id)
     {

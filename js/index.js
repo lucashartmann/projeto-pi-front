@@ -1,3 +1,35 @@
+const imoveisCurtidos = [];
+
+async function salvarImoveisCurtidos() {
+
+    try {
+        let caminho = getCaminhoRelativo("/php/api/login.php?acao=favoritar_imoveis");
+        const resposta = await fetch(caminho, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ id_imoveis: imoveisCurtidos })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.sucesso) {
+                console.log("Imóveis curtidos salvos com sucesso");
+            } else {
+                console.error("Erro ao salvar imóveis curtidos:", data.mensagem);
+            }
+        })
+        .catch(err => {
+            console.error("Erro na requisição para salvar imóveis curtidos:", err);
+        });
+    } catch (err) {
+        console.error("Erro ao salvar imóveis curtidos:", err);
+    }
+
+}
+
+function curtirImovel(imovelId) {
+    imoveisCurtidos.push(imovelId);
+}
+
 function imovelPrincipal(dados) {
     if (!Array.isArray(dados) || dados.length === 0) return;
 
@@ -96,6 +128,13 @@ function prevSlide() {
     }
 }
 
+window.addEventListener('beforeunload', function (event) {
+    salvarImoveisCurtidos();
+    // event.preventDefault();
+    // event.returnValue = '';
+});
+
+
 async function carregarAnuncios(dados) {
 
     const section = document.getElementById("anuncios");
@@ -135,11 +174,11 @@ async function carregarAnuncios(dados) {
                 ${precoAluguel.outerHTML}
                 <p class="descricao">${imovel.anuncio?.descricao}</p>
                 <div class="emojis">
-                    <i class="fas fa-ruler-combined">${imovel.area_total || 'N/A'} m²</i> 
-                    <i class="fas fa-bath">${imovel.quant_banheiros || 'N/A'}</i> 
-                    <i class="fas fa-couch">${imovel.quant_salas || 'N/A'}</i> 
-                    <i class="fas fa-bed">${imovel.quant_quartos || 'N/A'}</i>
-                    <i class="fas fa-car">${imovel.quant_vagas || 'N/A'}</i>
+                    <i class="fas fa-ruler-combined"><p>${imovel.area_total || 'N/A'} m²</p></i> 
+                    <i class="fas fa-bath"><p>${imovel.quant_banheiros || 'N/A'}</p></i> 
+                    <i class="fas fa-couch"><p>${imovel.quant_salas || 'N/A'}</p></i> 
+                    <i class="fas fa-bed"><p>${imovel.quant_quartos || 'N/A'}</p></i>
+                    <i class="fas fa-car"><p>${imovel.quant_vagas || 'N/A'}</p></i>
                     <i class="fab fa-whatsapp"></i>
                 </div>
             </div>
@@ -206,9 +245,10 @@ function pesquisarCEP(event) {
 
 
 async function abrirAnuncio(imovel_id) {
-    if (event.target.classList.contains("swiper-button-prev") || event.target.classList.contains("swiper-button-next")) {
+    if (event.target.classList.contains("swiper-button-prev") || event.target.classList.contains("swiper-button-next") || event.target.classList.contains("fa-heart")) {
         return;
     }
+    
     sessionStorage.setItem("imovel_id", imovel_id);
     window.location.href = "html/dados-imovel.html";
 }

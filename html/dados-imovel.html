@@ -38,14 +38,17 @@
 
                 <div class="swiper-scrollbar"></div>
             </div>
-            <ul id="ul-imagens">
-                <li><img src="../assets/campo.jpg" alt="Imagem do imóvel" onclick="abrirImagem(this.src)" /></li>
-                <li><img src="../assets/campo.jpg" alt="Imagem do imóvel" onclick="abrirImagem(this.src)" /></li>
-                <li><img src="../assets/campo.jpg" alt="Imagem do imóvel" onclick="abrirImagem(this.src)" /></li>
-                <li><img src="../assets/campo.jpg" alt="Imagem do imóvel" onclick="abrirImagem(this.src)" /></li>
-                <li><img src="../assets/campo.jpg" alt="Imagem do imóvel" onclick="abrirImagem(this.src)" /></li>
-            </ul>
+            <div class="swiper-galeria">
+                <div class="swiper-wrapper">
+                    <div class="swiper-slide"></div>
+                    <div class="swiper-slide"></div>
+                </div>
+                <div class="swiper-pagination"></div>
 
+                <div class="swiper-button-prev" onclick="prevSlide()"></div>
+                <div class="swiper-button-next" onclick="nextSlide()"></div>
+
+            </div>
             <h3>Descrição</h3>
             <p id="p-descricao">Casa no Campo com Jardim, localizada em uma área tranquila e com ótima infraestrutura.
             </p>
@@ -84,7 +87,6 @@
     </script>
 
 </body>
-<!-- <script src="../js/login.js"></script> -->
 <script type="text/javascript">
     fetch("nav.html")
         .then(response => response.text())

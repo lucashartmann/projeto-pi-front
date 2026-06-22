@@ -75,6 +75,11 @@ class Imobiliaria
         );
     }
 
+    public function cadastrarImoveisCliente(int $idCliente, array $idImoveis)
+    {
+        return $this->bancoDados->cadastrarImoveisCliente($idCliente, $idImoveis);
+    }
+
     public function getUsuarioPorId(int $id)
     {
         return $this->bancoDados->getUsuarioPorId($id);
