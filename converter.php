@@ -1,6 +1,6 @@
 <?php
 
-$pasta = "C:\\xampp\\htdocs\\PHP\\projeto-pi-front\\assets";
+$pasta = "C:\\xampp\\htdocs\\PHP\\projeto-pi-front\\assets\\imoveis";
 
 $qualidade = 80;
 $larguraMax = 1920;

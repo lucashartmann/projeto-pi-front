@@ -6,6 +6,28 @@ function formatarValor(valor) {
     return formatoMoeda;
 }
 
+function aumentarFonte() {
+    const body = document.body;
+    const style = window.getComputedStyle(body);
+    const fontSize = parseFloat(style.fontSize);
+    body.style.fontSize = (fontSize + 2) + 'px';
+}
+
+function diminuirFonte() {
+    const body = document.body;
+    const style = window.getComputedStyle(body);
+    const fontSize = parseFloat(style.fontSize);
+    body.style.fontSize = (fontSize - 2) + 'px';
+}
+
+function altoContraste() {
+    document.body.classList.toggle("alto-contraste");
+}
+
+function modoNoturno() {
+    document.body.classList.toggle("modo-noturno");
+}
+
 function getCaminhoRelativo(destino) {
     let caminho = window.location.pathname;
 

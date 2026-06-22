@@ -501,3 +501,53 @@ main {
     flex-direction: column;
     justify-content: center;
 }
+
+#acessibilidade {
+    position: fixed;
+    top: 80px;
+    right: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    z-index: 10000;
+
+    button {
+        background-color: rgba(36, 30, 30, 0.5);
+        backdrop-filter: blur(40px) !important;
+        border: none;
+        color: var(--cor-texto);
+        padding: 10px;
+        font-size: 16px;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all var(--transition);
+
+        &:hover {
+            background-color: rgba(36, 30, 30, 0.8);
+            transform: translateY(-2px);
+        }
+    }
+}
+
+.alto-contraste {
+    --cor-texto: #000000;
+    --background-nav: rgba(255, 255, 255, 0.92);
+    --hover: #000000;
+    --hover-soft: rgba(0, 0, 0, 0.12);
+    --shadow: 0 8px 30px rgba(0, 0, 0, 0.25);
+    --transition: 0.3s ease;
+}
+
+.modo-noturno {
+    --background: #121212;
+    --shadow: 0 8px 30px rgba(255, 255, 255, 0.2);
+    --cor-texto: #ffffff;
+    --background-nav: rgba(36, 30, 30, 0.92);
+    --hover: #d4af37;
+    --hover-soft: rgba(212, 175, 55, 0.12);
+    --transition: 0.3s ease;
+}
