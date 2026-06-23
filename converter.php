@@ -20,7 +20,6 @@ foreach ($arquivos as $arquivo) {
     $ext = strtolower(pathinfo($arquivo, PATHINFO_EXTENSION));
 
 
-    // ignora arquivos que já são webp
     if ($ext === "webp") {
         continue;
     }
@@ -46,7 +45,6 @@ foreach ($arquivos as $arquivo) {
     $alturaOriginal = imagesy($imagem);
 
 
-    // redimensiona se passar do limite
     if ($larguraOriginal > $larguraMax) {
 
         $novaLargura = $larguraMax;
@@ -82,7 +80,6 @@ foreach ($arquivos as $arquivo) {
     }
 
 
-    // novo nome mantendo o original
     $novoArquivo = $pasta . "\\" .
         pathinfo($arquivo, PATHINFO_FILENAME)
         . ".webp";
@@ -98,7 +95,6 @@ foreach ($arquivos as $arquivo) {
     imagedestroy($imagem);
 
 
-    // remove o arquivo antigo
     unlink($caminho);
 
 

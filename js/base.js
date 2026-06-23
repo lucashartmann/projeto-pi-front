@@ -7,17 +7,17 @@ function formatarValor(valor) {
 }
 
 function aumentarFonte() {
-    const body = document.body;
-    const style = window.getComputedStyle(body);
+    const root = document.documentElement;
+    const style = getComputedStyle(root);
     const fontSize = parseFloat(style.fontSize);
-    body.style.fontSize = (fontSize + 2) + 'px';
+    root.style.fontSize = (fontSize + 2) + 'px';
 }
 
 function diminuirFonte() {
-    const body = document.body;
-    const style = window.getComputedStyle(body);
+    const root = document.documentElement;
+    const style = window.getComputedStyle(root);
     const fontSize = parseFloat(style.fontSize);
-    body.style.fontSize = (fontSize - 2) + 'px';
+    root.style.fontSize = (fontSize - 2) + 'px';
 }
 
 function altoContraste() {
@@ -289,7 +289,7 @@ async function carregarUser() {
             const texto = await resposta.text();
             // alert("Resposta inesperada do servidor");
             console.error("Resposta não é JSON:", texto);
-            return;
+            return null;
         }
 
         if (dados.status == "erro") {

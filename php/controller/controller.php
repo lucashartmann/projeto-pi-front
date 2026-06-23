@@ -36,6 +36,10 @@ class controller
                 return (["status" => "erro", "mensagem" => "JSON inválido"]);
             }
 
+            if (!Init::getInstance()->usuarioAtual) {
+                return (["status" => "erro", "mensagem" => "Usuário não logado"]);
+            }
+
             $idCliente = Init::getInstance()->usuarioAtual->getId();
             $idImoveis = $data['id_imoveis'] ?? null;
 

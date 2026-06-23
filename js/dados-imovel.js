@@ -4,16 +4,15 @@ function setupDados(dados) {
     if (dados.anuncio.imagens && dados.anuncio.imagens.length > 0) {
         swiperhtml = "";
         for (const imagem of dados.anuncio.imagens) {
-            swiperhtml += `<div class="swiper-slide" style="background-image: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), url(${imagem})"></div>`;
-            imagensHtml += `<div class="swiper-slide" style="background-image: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), url(${imagem})" onclick="abrirImagem(this.style.backgroundImage.slice(5, -2))"></div>`;
+            swiperhtml += `<div class="swiper-slide" style="background-image: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), url(${imagem})" onclick="abrirImagem('${imagem}')"></div>`;
+            imagensHtml += `<div class="swiper-slide" style="background-image: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), url(${imagem})" onclick="abrirImagem('${imagem}')"></div>`;
         }
     }
 
     const divPai = document.getElementById("div-pai");
-    const swiperWrapper = document.querySelector(".swiper-wrapper");
-    const swiper = document.querySelector(".swiper");
+    const swiperWrapper = document.querySelector(".swiper-destaque .swiper-wrapper");
     const divTitulo = document.getElementById("div-titulo");
-    const divGaleria = document.querySelector(".swiper-galeria");
+    const divGaleria = document.querySelector(".swiper-galeria .swiper-wrapper");
     const pDescricao = document.getElementById("p-descricao");
     const divContato = document.getElementById("entrar-contato");
 
@@ -84,7 +83,7 @@ function inicializarSwiper() {
         return;
     }
 
-    const swiper1 = new Swiper('.swiper', {
+    var swiper = new Swiper('.swiper-destaque', {
         loop: true,
         pagination: {
             el: '.swiper .swiper-pagination', 
@@ -99,29 +98,30 @@ function inicializarSwiper() {
         },
     });
 
-    console.log(document.querySelector('.swiper-galeria'));
-
-    const swiper2 = new Swiper('.swiper-galeria', {
-        pagination: {
-            el: '.swiper-galeria .swiper-pagination', 
-            clickable: true
-        },
-        navigation: {
-            nextEl: '.swiper-galeria .swiper-button-next', 
-            prevEl: '.swiper-galeria .swiper-button-prev'  
-        },
-        slidesPerView: 3,
-        spaceBetween: 50,
-        centeredSlides: true,
-        breakpoints: {
-            0: { slidesPerView: 1 },
-            640: { slidesPerView: 2 },
-            768: { slidesPerView: 2 },
-            1024: { slidesPerView: 3 },
-        },
-    });
-
-
+    try {
+        window.swiperInstance = new Swiper('.swiper-galeria', {
+            loop: true,
+            pagination: {
+                el: '.swiper-galeria .swiper-pagination', 
+                clickable: true
+            },
+            navigation: {
+                nextEl: '.swiper-galeria .swiper-button-next',
+                prevEl: '.swiper-galeria .swiper-button-prev'
+            },
+            slidesPerView: 3,
+            spaceBetween: 30,
+            centeredSlides: true,
+            breakpoints: {
+                0: { slidesPerView: 3 },
+                640: { slidesPerView: 4 },
+                768: { slidesPerView: 5 },
+                1024: { slidesPerView: 6 },
+            },
+        });
+    } catch (error) {
+        console.error("Erro ao inicializar o Swiper da galeria:", error);
+    }
 
 }
 

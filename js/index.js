@@ -9,25 +9,45 @@ async function salvarImoveisCurtidos() {
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ id_imoveis: imoveisCurtidos })
         })
-        .then(res => res.json())
-        .then(data => {
-            if (data.sucesso) {
-                console.log("Imóveis curtidos salvos com sucesso");
-            } else {
-                console.error("Erro ao salvar imóveis curtidos:", data.mensagem);
-            }
-        })
-        .catch(err => {
-            console.error("Erro na requisição para salvar imóveis curtidos:", err);
-        });
+            .then(res => res.json())
+            .then(data => {
+                if (data.sucesso) {
+                    console.log("Imóveis curtidos salvos com sucesso");
+                } else {
+                    console.error("Erro ao salvar imóveis curtidos:", data.mensagem);
+                }
+            })
+            .catch(err => {
+                console.error("Erro na requisição para salvar imóveis curtidos:", err);
+            });
     } catch (err) {
         console.error("Erro ao salvar imóveis curtidos:", err);
     }
 
 }
 
-function curtirImovel(imovelId) {
+var logado = false;
+
+async function curtirImovel(imovelId) {
+    if (!logado) {
+        $usuario = await carregarUser();
+        if (!$usuario) {
+            alert("Você precisa estar logado para curtir um imóvel!");
+            return;
+        }
+        else {
+            logado = true;
+        }
+    }
+
+    if (imoveisCurtidos.includes(imovelId)) {
+        imoveisCurtidos.splice(imoveisCurtidos.indexOf(imovelId), 1);
+        event.target.classList.remove("curtido");
+        return;
+    }
     imoveisCurtidos.push(imovelId);
+    event.target.classList.toggle("curtido");
+    event.stopPropagation();
 }
 
 function imovelPrincipal(dados) {
@@ -86,8 +106,7 @@ function bannerImoveis(dados) {
         }
         let div = document.createElement("div");
         div.className = "swiper-slide";
-        div.style.backgroundImage = `linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), url(${b64})`
-        div.innerHTML = `<div class="sobrepor"><h2>${imovel.anuncio.titulo}</h2>${precoVenda.outerHTML}${precoAluguel.outerHTML}</div>`
+        div.innerHTML = `<img src="${b64}" alt="${imovel.anuncio.titulo}"> <div><h2>${imovel.anuncio.titulo}</h2>${precoVenda.outerHTML}${precoAluguel.outerHTML}<p>${imovel.anuncio.descricao}</p></div>`
         var id = imovel.id;
         div.addEventListener("click", () => abrirAnuncio(id));
         fragment.appendChild(div);
@@ -129,7 +148,9 @@ function prevSlide() {
 }
 
 window.addEventListener('beforeunload', function (event) {
-    salvarImoveisCurtidos();
+    if (imoveisCurtidos.length > 0) {
+        salvarImoveisCurtidos();
+    }
     // event.preventDefault();
     // event.returnValue = '';
 });
@@ -159,7 +180,7 @@ async function carregarAnuncios(dados) {
             <div class="anuncio-imovel" onclick="abrirAnuncio(${imovel.id})">
                 <div class="swiper">
                     <div class="swiper-wrapper">
-                    <i class="fas fa-heart"></i>
+                    <i class="fas fa-heart" onclick="curtirImovel(${imovel.id})"></i>
                     ${imovel.anuncio.imagens.map(img => `
                         <div class="swiper-slide" style="background-image: url(${img})">
                         </div>
@@ -179,7 +200,7 @@ async function carregarAnuncios(dados) {
                     <i class="fas fa-couch"><p>${imovel.quant_salas || 'N/A'}</p></i> 
                     <i class="fas fa-bed"><p>${imovel.quant_quartos || 'N/A'}</p></i>
                     <i class="fas fa-car"><p>${imovel.quant_vagas || 'N/A'}</p></i>
-                    <i class="fab fa-whatsapp"></i>
+                    <a href="https://wa.me/" style="text-decoration: none;" target="_blank" class="fab fa-whatsapp"></a>
                 </div>
             </div>
         `;
@@ -245,10 +266,10 @@ function pesquisarCEP(event) {
 
 
 async function abrirAnuncio(imovel_id) {
-    if (event.target.classList.contains("swiper-button-prev") || event.target.classList.contains("swiper-button-next") || event.target.classList.contains("fa-heart")) {
+    if (event.target.classList.contains("swiper-button-prev") || event.target.classList.contains("swiper-button-next") || event.target.classList.contains("fa-heart") || event.target.classList.contains("fa-whatsapp")) {
         return;
     }
-    
+
     sessionStorage.setItem("imovel_id", imovel_id);
     window.location.href = "html/dados-imovel.html";
 }

@@ -333,18 +333,34 @@ section#anuncios {
 
     .swiper-slide {
         cursor: pointer;
-        background: rgb(135, 126, 126, 0.2);
+        background: rgba(255, 255, 255, 0.2);
         width: 90%;
         border-radius: 2px;
         box-shadow: 0.1px 0.1px 3px black;
         display: flex;
-        background-repeat: no-repeat;
-        background-size: cover;
-        background-position: center;
+        justify-items: center;
+        text-align: center;
+        justify-content: center;
+        align-items: center;
+
+        div {
+            &>:nth-child(n) {
+                margin: 40px;
+            }
+        }
+
+        img {
+            height: 100%;
+            width: 60%;
+        }
+
+        p {
+            color: var(--cor-texto-alternativa) !important;
+        }
 
         h2,
         span {
-            color: white;
+            color: var(--cor-texto-alternativa) !important;
             font-size: 1.5rem;
         }
 
@@ -371,17 +387,6 @@ section#anuncios {
             height: auto;
         }
 
-        .sobrepor {
-            position: absolute;
-            z-index: 1;
-            background: rgba(0, 0, 0, 0.55);
-            backdrop-filter: blur(4px);
-            padding: 8px 14px;
-            border-radius: 8px;
-            margin-right: auto;
-            margin-top: auto;
-            border: 1px solid rgba(255, 255, 255, 0.15);
-        }
     }
 }
 
