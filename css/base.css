@@ -14,6 +14,7 @@
     --shadow: 0 8px 30px rgba(0, 0, 0, 0.25);
     --transition: 0.3s ease;
     --cor-texto-alternativa: #000000;
+    --cor-shadow: rgb(43, 33, 33);
 }
 
 
@@ -58,7 +59,7 @@
 
 .swiper-button-next::after {
     background: transparent;
-    backdrop-filter: blur(40px) !important;
+    /* backdrop-filter: blur(40px) !important; */
     color: black !important;
 }
 
@@ -157,7 +158,7 @@ nav {
 
         li {
             margin: 0;
-            box-shadow: 2px 1px 19px -13px rgb(100, 91, 91);
+            /* box-shadow: 2px 1px 19px -13px rgb(100, 91, 91); */
         }
     }
 
@@ -542,17 +543,19 @@ main {
     --shadow: 0 8px 30px rgba(0, 0, 0, 0.25);
     --transition: 0.3s ease;
     --cor-texto-alternativa: #000000;
+    --cor-shadow: rgb(43, 33, 33);
 }
 
 .modo-noturno {
     --background: #121212;
-    --shadow: 0 8px 30px rgba(255, 255, 255, 0.2);
+    /* --shadow: 0 8px 30px rgba(255, 255, 255, 0.2); */
     --cor-texto: #ffffff;
     --background-nav: rgba(36, 30, 30, 0.92);
     --hover: #d4af37;
     --hover-soft: rgba(212, 175, 55, 0.12);
     --transition: 0.3s ease;
     --cor-texto-alternativa: #ffffff;
+    --cor-shadow: rgb(43, 33, 33);
 }
 
 .curtido {

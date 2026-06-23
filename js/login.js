@@ -160,6 +160,7 @@ async function fazerLogin() {
 document.getElementById("h3-login").addEventListener("click", function () {
     document.getElementById("form-login").style.display = "flex";
     document.getElementById("form-cadastro").style.display = "none";
+    document.getElementById("form-nova-senha").style.display = "none";
     document.getElementById("h3-login").style.color = "var(--hover)";
     document.getElementById("h3-login").style.opacity = "0.6";
     document.getElementById("h3-cadastro").style.color = "white";
@@ -170,6 +171,7 @@ document.getElementById("h3-login").addEventListener("click", function () {
 document.getElementById("h3-cadastro").addEventListener("click", function () {
     document.getElementById("form-login").style.display = "none";
     document.getElementById("form-cadastro").style.display = "flex";
+    document.getElementById("form-nova-senha").style.display = "none";
     document.getElementById("h3-cadastro").style.color = "var(--hover)";
     document.getElementById("h3-cadastro").style.opacity = "0.6";
     document.getElementById("h3-login").style.color = "white";

@@ -1,4 +1,5 @@
 const imoveisCurtidos = [];
+let dadosImoveis = null;
 
 async function salvarImoveisCurtidos() {
 
@@ -307,7 +308,6 @@ function pesquisar() {
     }
 }
 
-let dadosImoveis = null;
 
 window.addEventListener("DOMContentLoaded", async () => {
     const dados = await listarImoveisDisponiveis() || NaN;
@@ -327,6 +327,6 @@ window.addEventListener("DOMContentLoaded", async () => {
         if (swiper) {
             swiper.slideNext();
         }
-    }, 3500);
+    }, 7500);
 });
 

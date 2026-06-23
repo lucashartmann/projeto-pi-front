@@ -11,15 +11,12 @@
     <script src="https://accounts.google.com/gsi/client" async></script>
     <link rel="stylesheet" href="../css/base.css">
     <link rel="stylesheet" href="../css/login.css">
-    <link rel="icon" type="image/x-icon" href="/php/projeto-pi-front/assets/logo.webp">
+    <link rel="icon" type="image/x-icon" href="../assets/logo.webp">
 </head>
 
 <body>
     <div id="login-container">
-        <div id="login-header">
-            <h1 id="h3-login">Login</h1>
-            <h1 id="barra">|</h1>
-            <h1 id="h3-cadastro">Cadastro</h1>
+        <div id="login-header"><h1 id="h3-login">Login</h1><h1 id="barra">|</h1><h1 id="h3-cadastro">Cadastro</h1>
         </div>
         <form id="form-nova-senha" onsubmit="enviarNovaSenha()" style="display: none;">
             <h2>Recuperar Senha</h2>
@@ -55,6 +52,8 @@
                     minlength="3" required>
                 <i class="fas fa-eye-slash" onclick="togglePasswordVisibility(event)"></i>
             </div>
+            <a href="" id="esqueceu-senha" onclick="novaSenha()">Esqueceu a senha?</a>
+
             <button type="submit" onsubmit="fazerLogin()">Login</button>
             <div
             id="g_id_onload"
@@ -62,8 +61,7 @@
             data-callback="handleCredentialResponse"
             data-client_id="PUT_YOUR_WEB_CLIENT_ID_HERE"
             ></div>
-            <div class="g_id_signin" data-width="10" data-type="standard" data-size="large"></div>
-            <a href="" id="esqueceu-senha" onclick="novaSenha()">Esqueceu a senha?</a>
+            <div class="g_id_signin" data-width="310" data-type="standard" data-size="large"></div>
         </form>
     </div>
     <footer>
