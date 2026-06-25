@@ -89,9 +89,9 @@ function imovelPrincipal(dados) {
 function bannerImoveis(dados) {
     var wrapper = document.querySelector(".swiper-wrapper");
     if (!wrapper) return;
-    const fragment = document.createDocumentFragment();
     for (var i = 0; i < 5; i++) {
         var imovel = dados[i];
+        console.log("Imóvel do banner:", imovel);
         if (!imovel) continue;
         var b64 = imovel.anuncio?.imagens?.[0];
         if (!b64) continue;
@@ -105,19 +105,11 @@ function bannerImoveis(dados) {
         } else {
             precoAluguel.innerHTML = `Aluguel: <p class="preco">${formatarValor(imovel.valor_aluguel)}</p>`;
         }
-        let div = document.createElement("div");
-        div.className = "swiper-slide";
-        div.innerHTML = `<img src="${b64}" alt="${imovel.anuncio.titulo}"> <div><h2>${imovel.anuncio.titulo}</h2>${precoVenda.outerHTML}${precoAluguel.outerHTML}<p>${imovel.anuncio.descricao}</p></div>`
-        var id = imovel.id;
-        div.addEventListener("click", () => abrirAnuncio(id));
-        fragment.appendChild(div);
+        wrapper.innerHTML += `
+        <div class="swiper-slide"  onclick="abrirAnuncio(${imovel.id})"> 
+        <img src="${b64}" alt="${imovel.anuncio.titulo}"> <div><h2>${imovel.anuncio.titulo}</h2>${precoVenda.outerHTML}${precoAluguel.outerHTML}<p>${imovel.anuncio.descricao}</p></div></div>
+        `
     }
-    if (fragment.childNodes.length === 0) {
-        console.warn("Nenhum imóvel com imagem encontrado para o banner");
-        return;
-    }
-    wrapper.replaceChildren(fragment);
-
 }
 
 function inicializarSwiper() {
@@ -271,7 +263,13 @@ async function abrirAnuncio(imovel_id) {
         return;
     }
 
-    sessionStorage.setItem("imovel_id", imovel_id);
+    console.log(event.target.closest(".swiper-slide-active"));
+
+    if (event.target.classList.contains("swiper-slide") && !event.target.classList.contains("swiper-slide-active")) {
+        return;
+    }
+    console.log("Abrindo anúncio do imóvel com ID:", imovel_id);
+    // sessionStorage.setItem("imovel_id", imovel_id);
     window.location.href = "html/dados-imovel.html";
 }
 

@@ -27,7 +27,188 @@ use PHPMailer\PHPMailer\Exception;
 class controller
 {
 
-    function favoritarImoveis($data) {
+
+    function montarJsonImoveis(array $lista_imoveis)
+    {
+        $lista = [];
+        foreach ($lista_imoveis as $imovel) {
+            $endereco = null;
+            if ($imovel->getEndereco()) {
+                $enderecoObj = $imovel->getEndereco();
+                $endereco = [
+                    "rua" => $enderecoObj->rua ?? null,
+                    "numero" => $enderecoObj->numero ?? null,
+                    "bairro" => $enderecoObj->bairro ?? null,
+                    "cidade" => $enderecoObj->cidade ?? null,
+                    "uf" => $enderecoObj->uf ?? null,
+                    "cep" => $enderecoObj->cep ?? null,
+                    "complemento" => $enderecoObj->complemento ?? null,
+                ];
+            }
+
+            $anuncio = null;
+            if ($imovel->getAnuncio()) {
+                $anuncioObj = $imovel->getAnuncio();
+                $imagens = [];
+                if ($anuncioObj->getImagens()) {
+                    foreach ($anuncioObj->getImagens() as $imagem) {
+                        if ($imagem instanceof Anexo) {
+                            $imagens[] =  rtrim(dirname($_SERVER['SCRIPT_NAME'], 3), '/') . "/assets/" .  $imagem->getCaminho();
+                        }
+                    }
+                }
+                $documentos = [];
+                error_log(serialize($anuncioObj->getAnexos()));
+                if ($anuncioObj->getAnexos()) {
+                    foreach ($anuncioObj->getAnexos() as $documento) {
+                        if ($documento instanceof Anexo) {
+                            $documentos[] =  rtrim(dirname($_SERVER['SCRIPT_NAME'], 3), '/') . "/assets/" .  $documento->getCaminho();
+                        }
+                    }
+                }
+                $videos = [];
+                if ($anuncioObj->getVideos()) {
+                    foreach ($anuncioObj->getVideos() as $video) {
+                        if ($video instanceof Anexo) {
+                            $videos[] =  rtrim(dirname($_SERVER['SCRIPT_NAME'], 3), '/') . "/assets/" .  $video->getCaminho();
+                        }
+                    }
+                }
+                $anuncio = [
+                    "id" => $anuncioObj->getId(),
+                    "descricao" => $anuncioObj->getDescricao(),
+                    "titulo" => $anuncioObj->getTitulo(),
+                    "imagens" => $imagens,
+                    "documentos" => $documentos,
+                    "videos" => $videos,
+                ];
+            }
+
+            $categoria = $imovel->getCategoria();
+            $status = $imovel->getStatus();
+
+            if ($imovel->getProprietarios()) {
+                $proprietarios = [];
+                foreach ($imovel->getProprietarios() as $proprietario) {
+                    $proprietarios[] = [
+                        "id" => $proprietario->getId(),
+                        "email" => $proprietario->getEmail(),
+                        "nome" => $proprietario->getNome(),
+                        "cpf_cnpj" => $proprietario->getCpfCnpj(),
+                        "rg" => $proprietario->getRg(),
+                        "telefones" => $proprietario->getTelefones() ?? [],
+                        "endereco" => $proprietario->getEndereco() ? [
+                            "rua" => $proprietario->getEndereco()->rua ?? null,
+                            "numero" => $proprietario->getEndereco()->numero ?? null,
+                            "bairro" => $proprietario->getEndereco()->bairro ?? null,
+                            "cidade" => $proprietario->getEndereco()->cidade ?? null,
+                            "uf" => $proprietario->getEndereco()->uf ?? null,
+                            "cep" => $proprietario->getEndereco()->cep ?? null,
+                            "complemento" => $proprietario->getEndereco()->complemento ?? null
+                        ] : null,
+                        "data_nascimento" => $proprietario->getDataNascimento() ? $proprietario->getDataNascimento()->format('d-m-Y') : null,
+                        "data_cadastro" => $proprietario->getDataCadastro(),
+                        "data_modificacao" => $proprietario->getDataModificacao()
+                    ];
+                }
+            }
+
+            if ($imovel->getCorretor()) {
+                $corretor = [
+                    "id" => $imovel->getCorretor()->getId(),
+                    "email" => $imovel->getCorretor()->getEmail(),
+                    "nome" => $imovel->getCorretor()->getNome(),
+                    "cpf_cnpj" => $imovel->getCorretor()->getCpfCnpj(),
+                    "rg" => $imovel->getCorretor()->getRg(),
+                    "telefones" => $imovel->getCorretor()->getTelefones() ?? [],
+                    "creci" => $imovel->getCorretor()->getCreci() ?? null,
+                    "endereco" => $imovel->getCorretor()->getEndereco() ? [
+                        "rua" => $imovel->getCorretor()->getEndereco()->rua ?? null,
+                        "numero" => $imovel->getCorretor()->getEndereco()->numero ?? null,
+                        "bairro" => $imovel->getCorretor()->getEndereco()->bairro ?? null,
+                        "cidade" => $imovel->getCorretor()->getEndereco()->cidade ?? null,
+                        "uf" => $imovel->getCorretor()->getEndereco()->uf ?? null,
+                        "cep" => $imovel->getCorretor()->getEndereco()->cep ?? null,
+                        "complemento" => $imovel->getCorretor()->getEndereco()->complemento ?? null
+                    ] : null,
+                    "data_nascimento" => $imovel->getCorretor()->getDataNascimento() ? $imovel->getCorretor()->getDataNascimento()->format('d-m-Y') : null,
+                    "data_cadastro" => $imovel->getCorretor()->getDataCadastro(),
+                    "data_modificacao" => $imovel->getCorretor()->getDataModificacao()
+                ];
+            }
+
+            if ($imovel->getCaptador()) {
+                $captador = [
+                    "id" => $imovel->getCaptador()->getId(),
+                    "email" => $imovel->getCaptador()->getEmail(),
+                    "nome" => $imovel->getCaptador()->getNome(),
+                    "cpf_cnpj" => $imovel->getCaptador()->getCpfCnpj(),
+                    "rg" => $imovel->getCaptador()->getRg(),
+                    "telefones" => $imovel->getCaptador()->getTelefones() ?? [],
+                    "salario" => $imovel->getCaptador()->getSalario() ?? null,
+                    "endereco" => $imovel->getCaptador()->getEndereco() ? [
+                        "rua" => $imovel->getCaptador()->getEndereco()->rua ?? null,
+                        "numero" => $imovel->getCaptador()->getEndereco()->numero ?? null,
+                        "bairro" => $imovel->getCaptador()->getEndereco()->bairro ?? null,
+                        "cidade" => $imovel->getCaptador()->getEndereco()->cidade ?? null,
+                        "uf" => $imovel->getCaptador()->getEndereco()->uf ?? null,
+                        "cep" => $imovel->getCaptador()->getEndereco()->cep ?? null,
+                        "complemento" => $imovel->getCaptador()->getEndereco()->complemento ?? null
+                    ] : null,
+                    "data_nascimento" => $imovel->getCaptador()->getDataNascimento() ? $imovel->getCaptador()->getDataNascimento()->format('d-m-Y') : null,
+                    "data_cadastro" => $imovel->getCaptador()->getDataCadastro(),
+                    "data_modificacao" => $imovel->getCaptador()->getDataModificacao()
+                ];
+            }
+
+
+            $lista[] = [
+                "id" => $imovel->getId(),
+                "valor_venda" => $imovel->getValorVenda(),
+                "valor_aluguel" => $imovel->getValorAluguel(),
+                "categoria" => $categoria,
+                "status" => $status,
+                "endereco" => $endereco,
+                "anuncio" => $anuncio,
+                "data_modificacao" => $imovel->getDataModificacao(),
+                "data_cadastro" => $imovel->getDataCadastro(),
+                "proprietarios" => $proprietarios ?? [],
+                "corretor" => $corretor ?? null,
+                "captador" => $captador ?? null,
+            ];
+        }
+
+        // error_log("JSON dos imóveis gerado: " . json_encode($lista));
+
+        return $lista;
+    }
+
+
+    function carregarFavoritos()
+    {
+        try {
+            session_start();
+            if (!isset($_SESSION['usuario_id'])) {
+                return (["status" => "erro", "mensagem" => "Usuário não logado"]);
+            }
+
+            $idCliente = $_SESSION['usuario_id'];
+            $imoveisFavoritos = Init::getInstance()->getImoveisFavoritos($idCliente);
+            if (!$imoveisFavoritos) {
+                return [
+                    "status" => "erro",
+                    "mensagem" => "Nenhum imóvel favorito encontrado para o usuário"
+                ];
+            } else {
+                return self::montarJsonImoveis($imoveisFavoritos);
+            }
+        } catch (Exception $e) {
+            return (["status" => "erro", "mensagem" => "Erro ao carregar favoritos: " . $e->getMessage()]);
+        }
+    }
+
+    function favoritarImoveis($data)
+    {
         try {
             $body = file_get_contents("php://input");
             $data = json_decode($body, true);
@@ -429,156 +610,18 @@ class controller
     {
         try {
             $imoveis = Init::getInstance()->getEstoque()->getListaImoveis();
-
-            $lista = [];
-            foreach ($imoveis as $imovel) {
-                $endereco = null;
-                if ($imovel->getEndereco()) {
-                    $enderecoObj = $imovel->getEndereco();
-                    $endereco = [
-                        "rua" => $enderecoObj->rua ?? null,
-                        "numero" => $enderecoObj->numero ?? null,
-                        "bairro" => $enderecoObj->bairro ?? null,
-                        "cidade" => $enderecoObj->cidade ?? null,
-                        "uf" => $enderecoObj->uf ?? null,
-                        "cep" => $enderecoObj->cep ?? null,
-                        "complemento" => $enderecoObj->complemento ?? null,
-                    ];
-                }
-
-                $anuncio = null;
-                if ($imovel->getAnuncio()) {
-                    $anuncioObj = $imovel->getAnuncio();
-                    $imagens = [];
-                    if ($anuncioObj->getImagens()) {
-                        foreach ($anuncioObj->getImagens() as $imagem) {
-                            if ($imagem instanceof Anexo) {
-                                $imagens[] =  rtrim(dirname($_SERVER['SCRIPT_NAME'], 3), '/') . "/assets/" .  $imagem->getCaminho();
-                            }
-                        }
-                    }
-                    $documentos = [];
-                    error_log(serialize($anuncioObj->getAnexos()));
-                    if ($anuncioObj->getAnexos()) {
-                        foreach ($anuncioObj->getAnexos() as $documento) {
-                            if ($documento instanceof Anexo) {
-                                $documentos[] =  rtrim(dirname($_SERVER['SCRIPT_NAME'], 3), '/') . "/assets/" .  $documento->getCaminho();
-                            }
-                        }
-                    }
-                    $videos = [];
-                    if ($anuncioObj->getVideos()) {
-                        foreach ($anuncioObj->getVideos() as $video) {
-                            if ($video instanceof Anexo) {
-                                $videos[] =  rtrim(dirname($_SERVER['SCRIPT_NAME'], 3), '/') . "/assets/" .  $video->getCaminho();
-                            }
-                        }
-                    }
-                    $anuncio = [
-                        "id" => $anuncioObj->getId(),
-                        "descricao" => $anuncioObj->getDescricao(),
-                        "titulo" => $anuncioObj->getTitulo(),
-                        "imagens" => $imagens,
-                        "documentos" => $documentos,
-                        "videos" => $videos,
-                    ];
-                }
-
-                $categoria = $imovel->getCategoria();
-                $status = $imovel->getStatus();
-
-                if ($imovel->getProprietarios()) {
-                    $proprietarios = [];
-                    foreach ($imovel->getProprietarios() as $proprietario) {
-                        $proprietarios[] = [
-                            "id" => $proprietario->getId(),
-                            "email" => $proprietario->getEmail(),
-                            "nome" => $proprietario->getNome(),
-                            "cpf_cnpj" => $proprietario->getCpfCnpj(),
-                            "rg" => $proprietario->getRg(),
-                            "telefones" => $proprietario->getTelefones() ?? [],
-                            "endereco" => $proprietario->getEndereco() ? [
-                                "rua" => $proprietario->getEndereco()->rua ?? null,
-                                "numero" => $proprietario->getEndereco()->numero ?? null,
-                                "bairro" => $proprietario->getEndereco()->bairro ?? null,
-                                "cidade" => $proprietario->getEndereco()->cidade ?? null,
-                                "uf" => $proprietario->getEndereco()->uf ?? null,
-                                "cep" => $proprietario->getEndereco()->cep ?? null,
-                                "complemento" => $proprietario->getEndereco()->complemento ?? null
-                            ] : null,
-                            "data_nascimento" => $proprietario->getDataNascimento() ? $proprietario->getDataNascimento()->format('d-m-Y') : null,
-                            "data_cadastro" => $proprietario->getDataCadastro(),
-                            "data_modificacao" => $proprietario->getDataModificacao()
-                        ];
-                    }
-                }
-
-                if ($imovel->getCorretor()) {
-                    $corretor = [
-                        "id" => $imovel->getCorretor()->getId(),
-                        "email" => $imovel->getCorretor()->getEmail(),
-                        "nome" => $imovel->getCorretor()->getNome(),
-                        "cpf_cnpj" => $imovel->getCorretor()->getCpfCnpj(),
-                        "rg" => $imovel->getCorretor()->getRg(),
-                        "telefones" => $imovel->getCorretor()->getTelefones() ?? [],
-                        "creci" => $imovel->getCorretor()->getCreci() ?? null,
-                        "endereco" => $imovel->getCorretor()->getEndereco() ? [
-                            "rua" => $imovel->getCorretor()->getEndereco()->rua ?? null,
-                            "numero" => $imovel->getCorretor()->getEndereco()->numero ?? null,
-                            "bairro" => $imovel->getCorretor()->getEndereco()->bairro ?? null,
-                            "cidade" => $imovel->getCorretor()->getEndereco()->cidade ?? null,
-                            "uf" => $imovel->getCorretor()->getEndereco()->uf ?? null,
-                            "cep" => $imovel->getCorretor()->getEndereco()->cep ?? null,
-                            "complemento" => $imovel->getCorretor()->getEndereco()->complemento ?? null
-                        ] : null,
-                        "data_nascimento" => $imovel->getCorretor()->getDataNascimento() ? $imovel->getCorretor()->getDataNascimento()->format('d-m-Y') : null,
-                        "data_cadastro" => $imovel->getCorretor()->getDataCadastro(),
-                        "data_modificacao" => $imovel->getCorretor()->getDataModificacao()
-                    ];
-                }
-
-                if ($imovel->getCaptador()) {
-                    $captador = [
-                        "id" => $imovel->getCaptador()->getId(),
-                        "email" => $imovel->getCaptador()->getEmail(),
-                        "nome" => $imovel->getCaptador()->getNome(),
-                        "cpf_cnpj" => $imovel->getCaptador()->getCpfCnpj(),
-                        "rg" => $imovel->getCaptador()->getRg(),
-                        "telefones" => $imovel->getCaptador()->getTelefones() ?? [],
-                        "salario" => $imovel->getCaptador()->getSalario() ?? null,
-                        "endereco" => $imovel->getCaptador()->getEndereco() ? [
-                            "rua" => $imovel->getCaptador()->getEndereco()->rua ?? null,
-                            "numero" => $imovel->getCaptador()->getEndereco()->numero ?? null,
-                            "bairro" => $imovel->getCaptador()->getEndereco()->bairro ?? null,
-                            "cidade" => $imovel->getCaptador()->getEndereco()->cidade ?? null,
-                            "uf" => $imovel->getCaptador()->getEndereco()->uf ?? null,
-                            "cep" => $imovel->getCaptador()->getEndereco()->cep ?? null,
-                            "complemento" => $imovel->getCaptador()->getEndereco()->complemento ?? null
-                        ] : null,
-                        "data_nascimento" => $imovel->getCaptador()->getDataNascimento() ? $imovel->getCaptador()->getDataNascimento()->format('d-m-Y') : null,
-                        "data_cadastro" => $imovel->getCaptador()->getDataCadastro(),
-                        "data_modificacao" => $imovel->getCaptador()->getDataModificacao()
-                    ];
-                }
-
-
-                $lista[] = [
-                    "id" => $imovel->getId(),
-                    "valor_venda" => $imovel->getValorVenda(),
-                    "valor_aluguel" => $imovel->getValorAluguel(),
-                    "categoria" => $categoria,
-                    "status" => $status,
-                    "endereco" => $endereco,
-                    "anuncio" => $anuncio,
-                    "data_modificacao" => $imovel->getDataModificacao(),
-                    "data_cadastro" => $imovel->getDataCadastro(),
-                    "proprietarios" => $proprietarios ?? [],
-                    "corretor" => $corretor ?? null,
-                    "captador" => $captador ?? null,
+            error_log("Imóveis encontrados: " . count($imoveis) ."");
+            if (!$imoveis) {
+                return [
+                    "status" => "erro",
+                    "mensagem" => "Nenhum imóvel encontrado"
                 ];
+            } else {
+                $resposta =  self::montarJsonImoveis($imoveis);
+                error_log("JSON dos imóveis gerado: " . json_encode(self::montarJsonImoveis($imoveis)));
+                return $resposta;
+                
             }
-
-            return ($lista);
         } catch (Exception $e) {
             return (["status" => "erro", "mensagem" => "Erro ao listar imóveis: " . $e->getMessage()]);
         }
@@ -590,61 +633,14 @@ class controller
         try {
             $imoveis = Init::getInstance()->getEstoque()->getListaImoveisDisponiveis();
             // echo $imoveis;
-            $lista = [];
-            foreach ($imoveis as $imovel) {
-                $endereco = null;
-                if ($imovel->getEndereco()) {
-                    $enderecoObj = $imovel->getEndereco();
-                    $endereco = [
-                        "rua" => $enderecoObj->rua ?? null,
-                        "numero" => $enderecoObj->numero ?? null,
-                        "bairro" => $enderecoObj->bairro ?? null,
-                        "cidade" => $enderecoObj->cidade ?? null,
-                        "uf" => $enderecoObj->uf ?? null,
-                        "cep" => $enderecoObj->cep ?? null,
-                        "complemento" => $enderecoObj->complemento ?? null,
-                    ];
-                }
-
-                $anuncio = null;
-                if ($imovel->getAnuncio()) {
-                    $anuncioObj = $imovel->getAnuncio();
-                    $imagens = [];
-                    if ($anuncioObj->getImagens()) {
-                        foreach ($anuncioObj->getImagens() as $imagem) {
-                            $imagens[] =  rtrim(dirname($_SERVER['SCRIPT_NAME'], 3), '/') . "/assets/" .  $imagem->getCaminho();
-                        }
-                    }
-                    $anuncio = [
-                        "id" => $anuncioObj->getId(),
-                        "descricao" => $anuncioObj->getDescricao(),
-                        "titulo" => $anuncioObj->getTitulo(),
-                        "imagens" => $imagens
-                    ];
-                }
-
-                $categoria = $imovel->getCategoria();
-                $status = $imovel->getStatus();
-
-                $lista[] = [
-                    "id" => $imovel->getId(),
-                    "valor_venda" => $imovel->getValorVenda(),
-                    "valor_aluguel" => $imovel->getValorAluguel(),
-                    "categoria" => $categoria,
-                    "status" => $status,
-                    "endereco" => $endereco,
-                    "anuncio" => $anuncio,
-                    "area_total" => $imovel->getAreaTotal(),
-                    "area_privativa" => $imovel->getAreaPrivativa(),
-                    "quant_quartos" => $imovel->getQuantidadeQuartos(),
-                    "quant_salas" => $imovel->getQuantidadeSalas(),
-                    "quant_vagas" => $imovel->getQuantidadeVagas(),
-                    "quant_banheiros" => $imovel->getQuantidadeBanheiros(),
-                    "quant_varandas" => $imovel->getQuantidadeVarandas(),
+            if (!$imoveis) {
+                return [
+                    "status" => "erro",
+                    "mensagem" => "Nenhum imóvel disponível encontrado"
                 ];
+            } else {
+                return self::montarJsonImoveis($imoveis);
             }
-
-            return $lista;
         } catch (Exception $e) {
             return (["status" => "erro", "mensagem" => "Erro ao listar imóveis disponíveis: " . $e->getMessage()]);
         }
@@ -658,100 +654,13 @@ class controller
             // logging->info(f"Requisição para obter imóvel com ID => {id}")
             $imovelObj = Init::getInstance()->getImovelPorId((int)$id);
 
-            if ($imovelObj) {
-                $anuncio = null;
-                if ($imovelObj->getAnuncio()) {
-                    $anuncioObj = $imovelObj->getAnuncio();
-                    $imagens = [];
-                    if ($anuncioObj->getImagens()) {
-                        foreach ($anuncioObj->getImagens() as $imagem) {
-                            $imagens[] =  "../assets/" .  $imagem->getCaminho();
-                        }
-                    }
-                    $documentos = [];
-                    error_log(serialize($anuncioObj->getAnexos()));
-                    if ($anuncioObj->getAnexos()) {
-                        foreach ($anuncioObj->getAnexos() as $documento) {
-                            if ($documento instanceof Anexo) {
-                                $documentos[] =  rtrim(dirname($_SERVER['SCRIPT_NAME'], 3), '/') . "/assets/" .  $documento->getCaminho();
-                            }
-                        }
-                    }
-                    $videos = [];
-                    if ($anuncioObj->getVideos()) {
-                        foreach ($anuncioObj->getVideos() as $video) {
-                            if ($video instanceof Anexo) {
-                                "/assets/" .  $video->getCaminho();
-                            }
-                        }
-                    }
-                    $anuncio = [
-                        "id" => $anuncioObj->getId(),
-                        "descricao" => $anuncioObj->getDescricao(),
-                        "titulo" => $anuncioObj->getTitulo(),
-                        "imagens" => $imagens,
-                        "documentos" => $documentos,
-                        "videos" => $videos,
-                    ];
-                }
-                $resposta = [
-                    "id" => $imovelObj->getId(),
-                    "valor_venda" => $imovelObj->getValorVenda(),
-                    "valor_condominio" => $imovelObj->getValorCondominio(),
-                    "valor_iptu" => $imovelObj->getIptu(),
-                    "valor_aluguel" => $imovelObj->getValorAluguel(),
-                    "categoria" => $imovelObj->getCategoria() ?? null,
-                    "status" => $imovelObj->getStatus() ?? null,
-                    "endereco" => $imovelObj->getEndereco() ? [
-                        "rua" => $imovelObj->getEndereco()->rua ?? null,
-                        "numero" => $imovelObj->getEndereco()->numero ?? null,
-                        "bairro" => $imovelObj->getEndereco()->bairro ?? null,
-                        "cidade" => $imovelObj->getEndereco()->cidade ?? null,
-                        "uf" => $imovelObj->getEndereco()->uf ?? null,
-                        "cep" => $imovelObj->getEndereco()->cep ?? null,
-                        "complemento" => $imovelObj->getEndereco()->complemento ?? null
-                    ] : null,
-                    "anuncio" => $anuncio,
-                    "quantidade_quartos" => $imovelObj->getQuantidadeQuartos(),
-                    "quant_salas" => $imovelObj->getQuantidadeSalas(),
-                    "quant_vagas" => $imovelObj->getQuantidadeVagas(),
-                    "quant_banheiros" => $imovelObj->getQuantidadeBanheiros(),
-                    "quant_varandas" => $imovelObj->getQuantidadeVarandas(),
-                    "andar" => $imovelObj->getAndar(),
-                    "estado" => $imovelObj->getEstado() ?? null,
-                    "bloco" => $imovelObj->getBloco(),
-                    "ano_construcao" => $imovelObj->getAnoConstrucao(),
-                    "area_total" => $imovelObj->getAreaTotal(),
-                    "area_privativa" => $imovelObj->getAreaPrivativa(),
-                    "situacao" => $imovelObj->getSituacao() ?? null,
-                    "ocupacao" => $imovelObj->getOcupacao() ?? null,
-                    "proprietarios" => $imovelObj->getProprietarios() ? array_map(function ($proprietario) {
-                        return [
-                            "id" => $proprietario->getId(),
-                            "email" => $proprietario->getEmail(),
-                            "nome" => $proprietario->getNome(),
-                            "cpf_cnpj" => $proprietario->getCpfCnpj(),
-                            "rg" => $proprietario->getRg(),
-                            "telefones" => [$proprietario->getTelefones()],
-                            "endereco" => $proprietario->getEndereco(),
-                            "data_nascimento" => $proprietario->getDataNascimento(),
-                            "imoveis" => $proprietario->getImoveis(),
-                            "data_cadastro" => $proprietario->getDataCadastro(),
-                            "data_modificacao" => $proprietario->getDataModificacao()
-                        ];
-                    }, $imovelObj->getProprietarios()) : [],
-                    "corretor" => $imovelObj->getCorretor() ? ["username" => $imovelObj->getCorretor()->getUsername(), "senha" => $imovelObj->getCorretor()->getSenha(), "email" => $imovelObj->getCorretor()->getEmail(), "nome" => $imovelObj->getCorretor()->getNome(), "cpf_cnpj" => $imovelObj->getCorretor()->getCpfCnpj(), "tipo" => $imovelObj->getCorretor()->getTipo()] : null,
-                    "captador" => $imovelObj->getCaptador() ? ["username" => $imovelObj->getCaptador()->getUsername(), "senha" => $imovelObj->getCaptador()->getSenha(), "email" => $imovelObj->getCaptador()->getEmail(), "nome" => $imovelObj->getCaptador()->getNome(), "cpf_cnpj" => $imovelObj->getCaptador()->getCpfCnpj(), "tipo" => $imovelObj->getCaptador()->getTipo()] : null,
-                    "data_cadastro" => $imovelObj->getDataCadastro(),
-                    "data_modificacao" => $imovelObj->getDataModificacao(),
-                    "condominio" => $imovelObj->getCondominio() ? ["id" => $imovelObj->getCondominio()->getId(), "nome" => $imovelObj->getCondominio()->getNome(), "filtros" => [$imovelObj->getCondominio()->getFiltros()]] : null,
-                    "filtros" => [$imovelObj->getFiltros()],
-                    "complemento" => $imovelObj->getAnuncio() ? $imovelObj->getComplemento() : null
+            if (!$imovelObj) {
+                return [
+                    "status" => "erro",
+                    "mensagem" => "Nenhum imóvel encontrado com o ID fornecido"
                 ];
-
-                return ($resposta);
             } else {
-                return (["status" => "erro", "mensagem" => "Imovel nao encontrado"]);
+                return self::montarJsonImoveis([$imovelObj]);
             }
         } catch (Exception $e) {
             return (["status" => "erro", "mensagem" => "Erro ao obter imóvel: " . $e->getMessage()]);

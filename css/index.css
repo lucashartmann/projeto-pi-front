@@ -3,12 +3,29 @@ section#anuncios {
     grid-template-columns: repeat(auto-fit, minmax(23%, 100fr));
     row-gap: 30px;
     column-gap: 0px;
-    margin: 50px 10px 90px 10px;
+    margin: 50px 10px 30px 10px;
     width: 100%;
     justify-self: center;
     justify-items: center;
     justify-content: center;
     height: auto;
+}
+
+#link-anuncios {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-decoration: underline;
+    color: var(--cor-texto-alternativa);
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 60px;
+    margin-top: 0px;
+
+    &:hover {
+        color: var(--cor-texto-alternativa);
+        cursor: pointer;
+    }
 }
 
 .anuncio-imovel {
@@ -325,7 +342,10 @@ section#anuncios {
     .swiper-slide {
         cursor: pointer;
         background: rgba(255, 255, 255, 0.2);
-        width: 100%;
+        width: 100% !important;
+        overflow-x: hidden;
+        margin: 0;
+        padding: 0;
         border-radius: 2px;
         box-shadow: 0.1px 0.1px 3px black;
         display: flex;
