@@ -28,9 +28,7 @@ textarea {
 }
 
 input {
-    height: 140%;
     font-size: 100%;
-
 }
 
 label {
@@ -53,22 +51,17 @@ label {
 }
 
 .tab {
-    justify-self: center;
     display: flex;
-    margin: 20px auto;
-    width: auto;
-    height: auto;
+    margin: 10px auto;
     width: 20%;
+    height: 45px;
+    justify-self: center;
     gap: 10px;
-
-    /* height: 45px;. */
     button {
-        /* background-color: rgba(32, 151, 24, 0.8); */
-        /* border: solid 2px rgba(17, 66, 13, 0.5); */
-        font-weight: 600;
-        font-size: 100%;
-        width: 90px;
-        height: 30px;
+         width: 50%;
+         height: 100%;
+         height: 2rem;
+         border-radius: 20% / 100%;
     }
 }
 
@@ -148,7 +141,7 @@ label {
     width: 90%;
 
     textarea {
-        height: 3rem;
+        height: 1.6rem;
 
         &:required {
             border: dashed 2px rgb(195, 174, 14);
@@ -168,7 +161,7 @@ label {
     }
 
     input {
-        height: 3rem;
+        height: 1.6rem;
 
         &:required {
             border: dashed 2px rgb(195, 174, 14);
@@ -188,7 +181,8 @@ label {
     }
 
     select {
-        height: 3rem;
+        height: 1.6rem;
+        width: auto;
 
         &:required {
             border: dashed 2px rgb(195, 174, 14);

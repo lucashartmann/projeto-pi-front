@@ -21,7 +21,7 @@ body {
 }
 
 input {
-    height: 2vw;
+    height: 1.6rem;
     font-size: 100%;
 }
 
@@ -34,7 +34,7 @@ input {
 }
 
 textarea {
-    height: 2vw;
+    height: 1.6rem;
     font-size: 140%;
 }
 
@@ -68,6 +68,9 @@ label {
 #container-resultado {
     display: block;
     margin-top: 20px;
+    width: 94.6%;
+    justify-self: center;
+    align-self: center;
 
     img {
         height: 10%;
