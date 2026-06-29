@@ -33,6 +33,10 @@ input {
     }
 }
 
+select {
+    height: 1.6rem;
+}
+
 textarea {
     height: 1.6rem;
     font-size: 140%;
