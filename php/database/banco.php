@@ -19,6 +19,7 @@ ini_set('display_errors', 0);
 error_reporting(E_ALL);
 class Banco extends PDO
 {
+
     private static ?Banco $db = null;
 
     public function __construct(?string $dsn, ?string $username, ?string $password)
@@ -36,7 +37,6 @@ class Banco extends PDO
                 $password = "";
                 self::$db = new Banco("mysql:host=$servername", $username, $password);
                 self::$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-                // error_log("Connected successfully");
                 return self::$db;
             } catch (PDOException $e) {
                 error_log($e->getMessage());
@@ -281,8 +281,143 @@ class Banco extends PDO
         }
     }
 
-    public function cadastrarImoveisCliente(int $idCliente, array $idImoveis) {
-        
+    function getImoveisFavoritos(int $idCliente)
+    {
+
+        try {
+            $sql = "
+            SELECT
+
+            imovel.id AS imovel_id,
+            imovel.valor_venda AS imovel_valor_venda,
+            imovel.valor_aluguel AS imovel_valor_aluguel,
+            imovel.quant_quartos AS imovel_quant_quartos,
+            imovel.quant_salas AS imovel_quant_salas,
+            imovel.quant_vagas AS imovel_quant_vagas,
+            imovel.quant_banheiros AS imovel_quant_banheiros,
+            imovel.quant_varandas AS imovel_quant_varandas,
+            imovel.categoria AS imovel_categoria,
+            imovel.id_endereco AS imovel_id_endereco,
+            imovel.status AS imovel_status,
+            imovel.iptu AS imovel_iptu,
+            imovel.valor_condominio AS imovel_valor_condominio,
+            imovel.andar AS imovel_andar,
+            imovel.estado AS imovel_estado,
+            imovel.bloco AS imovel_bloco,
+            imovel.ano_construcao AS imovel_ano_construcao,
+            imovel.area_total AS imovel_area_total,
+            imovel.area_privativa AS imovel_area_privativa,
+            imovel.situacao AS imovel_situacao,
+            imovel.ocupacao AS imovel_ocupacao,
+            imovel.id_corretor AS imovel_id_corretor,
+            imovel.id_captador AS imovel_id_captador,
+            imovel.data_cadastro AS imovel_data_cadastro,
+            imovel.data_modificacao AS imovel_data_modificacao,
+            imovel.id_anuncio AS imovel_id_anuncio,
+            imovel.id_condominio AS imovel_id_condominio,
+
+            endereco.id AS endereco_id,
+            endereco.rua AS endereco_rua,
+            endereco.numero AS endereco_numero,
+            endereco.complemento AS endereco_complemento,
+            endereco.bairro AS endereco_bairro,
+            endereco.cep AS endereco_cep,
+            endereco.cidade AS endereco_cidade,
+            endereco.uf AS endereco_uf,
+
+            condominio.id AS condominio_id,
+            condominio.nome AS condominio_nome,
+            condominio_endereco.id AS condominio_endereco_id,
+            condominio_endereco.rua AS condominio_endereco_rua,
+            condominio_endereco.numero AS condominio_endereco_numero,
+            condominio_endereco.complemento AS condominio_endereco_complemento,
+            condominio_endereco.bairro AS condominio_endereco_bairro,
+            condominio_endereco.cep AS condominio_endereco_cep,
+            condominio_endereco.cidade AS condominio_endereco_cidade,
+            condominio_endereco.uf AS condominio_endereco_uf,
+
+            usuario_corretor.id AS corretor_id,
+            usuario_corretor.username AS corretor_username,
+            usuario_corretor.senha AS corretor_senha,
+            usuario_corretor.email AS corretor_email,
+            usuario_corretor.nome AS corretor_nome,
+            usuario_corretor.cpf_cnpj AS corretor_cpf_cnpj,
+            usuario_corretor.rg AS corretor_rg,
+            corretor.creci AS corretor_creci,
+
+            usuario_captador.id AS captador_id,
+            usuario_captador.username AS captador_username,
+            usuario_captador.senha AS captador_senha,
+            usuario_captador.email AS captador_email,
+            usuario_captador.nome AS captador_nome,
+            usuario_captador.cpf_cnpj AS captador_cpf_cnpj,
+            usuario_captador.rg AS captador_rg,
+            captador.salario AS captador_salario,
+
+            anuncio.id AS anuncio_id,
+            anuncio.descricao AS anuncio_descricao,
+            anuncio.titulo AS anuncio_titulo
+
+            FROM imovel_cliente
+
+            LEFT join imovel 
+                ON imovel.id = imovel_cliente.id_imovel
+
+            LEFT JOIN endereco
+                ON endereco.id = imovel.id_endereco
+
+            LEFT JOIN condominio
+                ON condominio.id = imovel.id_condominio
+
+            LEFT JOIN endereco condominio_endereco
+                ON condominio_endereco.id = condominio.id_endereco
+
+            LEFT JOIN usuario u_cor
+                ON u_cor.id = imovel.id_corretor
+
+            LEFT JOIN corretor co
+                ON co.id_usuario = u_cor.id
+
+            LEFT JOIN usuario u_cap
+                ON u_cap.id = imovel.id_captador
+
+            LEFT JOIN captador ca
+                ON ca.id_usuario = u_cap.id
+
+            LEFT JOIN anuncio a
+                ON a.id = i.id_anuncio
+
+            WHERE id_cliente = :id
+
+            ";
+
+            $stmt = $this->prepare($sql);
+            $stmt->execute([':id' => $idCliente]);
+            $dados = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            if (empty($dados)) {
+                throw new Exception("Não há imóveis favoritados para o cliente especificado");
+            }
+
+            $lista = [];
+
+            foreach ($dados as $registro) {
+                $idImovel = (int)$registro['imovel_id'];
+                $imovel = $this->montarImovel($dados, $idImovel);
+                if ($imovel) {
+                    $lista[] = $imovel;
+                }
+            }
+
+            return $lista;
+        } catch (Exception $e) {
+            error_log("ERRO Banco->getImoveisFavoritos: " . $e->getMessage());
+            return null;
+        }
+    }
+
+    public function cadastrarImoveisCliente(int $idCliente, array $idImoveis)
+    {
+
         try {
             $sql = "INSERT INTO imovel_cliente (id_cliente, id_imovel) VALUES (:id_cliente, :id_imovel)";
             $stmt = $this->prepare($sql);
@@ -1191,7 +1326,7 @@ class Banco extends PDO
                 $stmt->execute([':nome' => $filtro]);
             } catch (Exception $e) {
                 $erro = "ERRO! Banco->cadastrarListaFiltros: " . $e->getMessage();
-                // error_log($erro);
+                error_log("ERRO! Banco->cadastrarListaFiltros: " . $erro);
                 continue;
             }
         }
@@ -1478,7 +1613,8 @@ class Banco extends PDO
         }
     }
 
-    public function getAnexoPorCaminho($caminho){
+    public function getAnexoPorCaminho($caminho)
+    {
         try {
             $stmt = $this->prepare("
                 SELECT * FROM midia_anuncio 
@@ -2157,54 +2293,31 @@ class Banco extends PDO
         try {
 
             $this->beginTransaction();
-
-
             $categoria = $imovel->getCategoria();
             $categoria = $categoria ? $categoria->value : null;
-
             $status = $imovel->getStatus();
             $status = $status ? $status->value : null;
-
             $estado = $imovel->getEstado();
             $estado = $estado ? $estado->value : null;
-
             $situacao = $imovel->getSituacao();
             $situacao = $situacao ? $situacao->value : null;
-
             $ocupacao = $imovel->getOcupacao();
             $ocupacao = $ocupacao ? $ocupacao->value : null;
-
-
             $endereco = $imovel->getEndereco();
             $endereco = ($endereco && $endereco->getId()) ? $endereco->getId() : null;
-
-            
-
             $anuncio = $imovel->getAnuncio();
             $anuncio = ($anuncio && $anuncio->getId()) ? $anuncio->getId() : null;
-
-            // error_log("ID ANUNCIO: " . $anuncio);
-
             $condominio = $imovel->getCondominio();
             $condominio = $condominio ? $condominio->getId() : null;
-
             $corretor = $imovel->getCorretor();
             $corretor = $corretor ? $corretor->getCpfCnpj() : null;
-
             $captador = $imovel->getCaptador();
             $captador = $captador ? $captador->getCpfCnpj() : null;
-
-
             $dataCadastro = $imovel->getDataCadastro();
             $dataCadastro = $dataCadastro ? $dataCadastro->format("Y-m-d") : null;
-
             $dataModificacao = $imovel->getDataModificacao();
             $dataModificacao = $dataModificacao ? $dataModificacao->format("Y-m-d") : null;
-
-
             $imovelDb = $this->getImovelPorId($imovel->getId());
-
-
             $propsAntigos = $imovelDb ? $imovelDb->getProprietarios() : [];
             $propsNovos = $imovel->getProprietarios() ?: [];
 
@@ -2897,15 +3010,13 @@ class Banco extends PDO
                 ");
                 $idAnuncio = (int)$dados['anuncio_id'];
                 $stmtAnexos->execute([':id_anuncio' => $idAnuncio]);
-                // error_log("Id requerido: " . $idAnuncio . "\n");
-                // error_log("Dados dos anexos: " . json_encode($stmtAnexos->fetchAll(PDO::FETCH_ASSOC)));
                 $imagens = [];
                 $videos = [];
                 $documentos = [];
 
                 foreach ($stmtAnexos->fetchAll(PDO::FETCH_ASSOC) as $anexo) {
                     if ($anexo['tipo'] === null) {
-                    continue;
+                        continue;
                     }
 
                     $tipoNormalizado = strtolower($anexo['tipo']);

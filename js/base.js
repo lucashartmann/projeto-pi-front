@@ -37,6 +37,10 @@ function getCaminhoRelativo(destino) {
         caminho = caminho.replace(caminho.substring(caminho.lastIndexOf("/html/")), "/");
     }
 
+    if (caminho.includes("/html")) {
+        caminho = caminho.replace(caminho.substring(caminho.lastIndexOf("/html")), "/");
+    }
+
     if (caminho.includes("/index.html")) {
         caminho = caminho.replace(caminho.substring(caminho.lastIndexOf("/index.html")), "/");
     }
@@ -182,33 +186,40 @@ async function listarImoveisDisponiveis() {
 async function getDadosImovel(id) {
     try {
         let caminho = getCaminhoRelativo("/php/api/imoveis.php?acao=get_dados_imovel&id=" + id);
-        const resposta = await fetch(caminho, {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json"
-            }
-        }
-        );
+        const resposta = await fetch(caminho)
+            // .then(res => console.log(res))
+            .then(async (res) => {
+                if (res.erro) {
+                    alert("Erro ao listar atendimentos: " + res.erro);
+                    return null;
+                }
+                const contentType = res.headers.get("content-type");
+                if (contentType && contentType.includes("application/json")) {
+                    return await res.json();
+                } else {
+                    const texto = await res.text();
+                    // alert("Resposta inesperada do servidor");
+                    console.error("Resposta não é JSON:", texto);
+                    return null;
+                }
+            })
+            .then(async (data) => {
+                // console.log(data);
+                return await data;
+            })
+            .catch(erro => {
+                console.error("Falha ao conectar com o backend:", erro);
+                return null;
+            });
 
-        if (resposta.erro) {
-            alert("Erro ao listar atendimentos: " + resposta.erro);
+        console.log("Dados do imóvel obtidos:", resposta);
+
+        if (resposta && Array.isArray(resposta) && resposta.length > 0) {
+            return resposta[0];
+        } else {
+            console.error("Resposta inválida ao obter dados do imóvel:", resposta);
             return null;
         }
-
-        const contentType = resposta.headers.get("content-type");
-        if (contentType && contentType.includes("application/json")) {
-            return await resposta.json();
-        } else {
-            const texto = await resposta.text();
-            alert("Resposta inesperada do servidor");
-            console.error("Resposta não é JSON:", texto);
-            return;
-        }
-
-        if (!resposta.ok) {
-            throw new Error(`HTTP ${resposta.status}`);
-        }
-
 
     } catch (erro) {
         console.error("Falha ao conectar com o backend:", erro);
@@ -259,7 +270,7 @@ async function deslogar() {
                 window.location.reload();
                 return;
             } else {
-                window.location.href = "../index.html";
+                window.location.href = getCaminhoRelativo("index.html");
             }
         }
         else {
@@ -384,6 +395,8 @@ function carregarTabs(usuario) {
 
         case "CLIENTE":
             tabs = [
+                {text: "Atendimento", href: "html/atendimento-cliente.html" },
+                {text: "Favoritos", href: "html/favoritos.html" },
                 { text: "<i class='fas fa-user'></i>", href: "html/dados-cliente.html" },
 
             ];

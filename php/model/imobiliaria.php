@@ -58,7 +58,12 @@ class Imobiliaria
         $this->estoque = $value;
     }
 
-    public function getAnexoPorCaminho($caminho){
+    public function getImoveisFavoritos(int $idCliente)
+    {
+        return $this->bancoDados->getImoveisFavoritos($idCliente);
+    }
+
+    public function getAnexoPorCaminho(string $caminho){
         return $this->bancoDados->getAnexoPorCaminho($caminho);
     }
 

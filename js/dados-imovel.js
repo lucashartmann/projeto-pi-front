@@ -36,17 +36,18 @@ window.addEventListener("DOMContentLoaded", async () => {
     id = sessionStorage.getItem("imovel_id") || null;
     if (!id) {
         alert("Imóvel não encontrado!");
-        window.location.href = "../html/index.html";
+        window.location.href = getCaminhoRelativo("index.html");
         return;
     }
     dados = await getDadosImovel(id);
+    console.log("Dados do imóvel obtidos:", dados);
     sessionStorage.removeItem("imovel_id");
     if (dados) {
         await setupDados(dados);
         await inicializarSwiper();
     } else {
         alert("Erro ao carregar dados do imóvel!");
-        window.location.href = "../html/index.html";
+        window.location.href = getCaminhoRelativo("index.html");
     }
 });
 

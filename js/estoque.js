@@ -1,12 +1,12 @@
-const imoveis_cache = [];
+const imoveisCache = [];
 
 async function carregarAnuncios() {
     let dados = [];
-    if (imoveis_cache.length === 0) {
+    if (imoveisCache.length === 0) {
         dados = await listarImoveis();
-        imoveis_cache.push(...dados);
+        imoveisCache.push(...dados);
     } else {
-        dados = imoveis_cache;
+        dados = imoveisCache;
     }
     const section = document.getElementById("container-resultado");
     const seta = document.getElementById("seta");
@@ -89,7 +89,7 @@ async function carregarAnuncios() {
     for (let imovel of dados) {
         
         const b64 = imovel.anuncio?.imagens?.[0] || null;
-        console.log(b64);
+        // console.log(b64);
         section.innerHTML += `
             <div class="resultado">
                 <input type="checkbox" class="checkbox-selecionar" onclick="montarOpcoes()">
@@ -148,7 +148,7 @@ function openMenu(element) {
 }
 
 async function duplicarImovel(imovelId) {
-    const imovel = imoveis_cache.find(imovel => imovel.id == imovelId);
+    const imovel = imoveisCache.find(imovel => imovel.id == imovelId);
     imovel.id = null;
     imovel.data_cadastro = null;
     imovel.data_modificacao = null;
@@ -238,13 +238,12 @@ function selecionarTodos() {
     montarOpcoes();
 }
 
-function filtrar() {
-    carregarAnuncios();
-}
+
+
 
 function abrirCadastro(imovel = null, id = null) {
     if (id && !imovel) {
-        imovel = imoveis_cache.find(imovel => imovel.id == id);
+        imovel = imoveisCache.find(imovel => imovel.id == id);
     } else if (!imovel && !id) {
         imovel = null;
         return
@@ -258,14 +257,15 @@ function pesquisar(event) {
     let contador = 0;
     const imoveis = document.querySelectorAll(".resultado");
     imoveis.forEach(anuncio => {
-        for (const label of document.querySelectorAll(".resultado .dados label")) {
+        for (const label of anuncio.querySelectorAll("label")) {
             if (label.textContent.toLowerCase().includes(termo)) {
                 anuncio.style.display = "flex";
                 contador++;
-                return;
+                break;
             } else {
                 anuncio.style.display = "none";
                 // contador =- 1;
+                continue;
             }
         }
     });

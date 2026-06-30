@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="../css/dados-cliente.css">
     <link rel="icon" type="image/x-icon" href="/php/projeto-pi-front/assets/logo.webp">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-    <link rel="icon" type="image/x-icon" href="/php/projeto-pi-front/assets/logo.webp">
+    <link rel="icon" type="image/x-icon" href="../assets/logo.webp">
     <script src="https://cdn.jsdelivr.net/npm/inputmask/dist/inputmask.min.js"></script>
 </head>
 
@@ -20,37 +20,37 @@
             <input name="username" type="text" id="inpt-username"> -->
             <div class="vertical-separator">
                 <label id="stt-nome">Nome</label>
-                <input placeholder="nome aqui" id="inpt-nome" type="text" name="nome">
+                <input id="inpt-nome" type="text" name="nome">
             </div>
             <div id="container-telefones">
                 <label id="stt-email">Email</label>
-                <input type="email" placeholder="email aqui" id="inpt-email" name="email">
+                <input type="email" id="inpt-email" name="email">
             </div>
             <div id="container-telefones">
                 <label id="stt-telefone">Telefone</label>
                 <div id="container-telefones">
-                    <input placeholder="(00) 00000-0000" id="inpt-telefone" type="text" class="telefone" maxlength="15">
+                    <input id="inpt-telefone" type="text" class="telefone" maxlength="15">
                     <button id="bt-mais-numero" onclick="adicionarNumeroTelefone()">+</button>
                     <button id="bt-remover-numero" onclick="removerNumeroTelefone()">X</button>
                 </div>
             </div>
             <div id="container-telefones">
                 <label id="stt-data-nascimento">Data de nascimento</label>
-                <input placeholder="00/00/0000" type="date" id="inpt-data-nascimento" maxlength="10" minlength="10"
+                <input  type="date" id="inpt-data-nascimento" maxlength="10" minlength="10"
                     name="data_nascimento">
             </div>
             <div id="container-telefones">
                 <label id="stt-cpf">CPF</label>
-                <input placeholder="000.000.000-00" type="text" id="inpt-cpf" maxlength="14" minlength="14"
+                <input type="text" id="inpt-cpf" maxlength="14" minlength="14"
                     name="cpf_cnpj">
             </div>
             <div id="container-telefones">
                 <label id="stt-rg">RG</label>
-                <input id="inpt-rg" placeholder="RG aqui" max="9" min="7" type="number" name="rg">
+                <input id="inpt-rg"  max="9" min="7" type="number" name="rg">
             </div>
             <div id="container-telefones">
                 <label>Senha</label>
-                <input type="password" name="senha" placeholder="alterar senha" id="inpt-senha" minlength="8"
+                <input type="password" name="senha" id="inpt-senha" minlength="8"
                     maxlength="255">
             </div>
         </form>
@@ -58,21 +58,21 @@
         <form id="detalhes">
             <div class="detalhes-content">
                 <label>Quartos:</label>
-                <input type="text" placeholder="00" name="quartos" id="inpt-quartos" maxlength="2">
+                <input type="text"  name="quartos" id="inpt-quartos" maxlength="2">
             </div>
             <div class="detalhes-content">
                 <label>Banheiros:</label>
-                <input type="text" placeholder="00" name="banheiros" id="inpt-banheiros" maxlength="2">
+                <input type="text"  name="banheiros" id="inpt-banheiros" maxlength="2">
             </div>
             <div class="detalhes-content">
                 <label>CEP desejado:</label>
-                <input type="text" placeholder="00000-000" id="inpt-cep" minlength="9" maxlength="9">
+                <input type="text" id="inpt-cep" minlength="9" maxlength="9">
             </div>
         </form>
         <div id="ctn-botao">
             <button onclick="salvarDados()">Salvar</button>
         </div>
-        <label id="stt-compras">Imoveis do usuário</label>
+        <label id="stt-compras">Imoveis do usuário (links para os anuncios)</label>
         <div id="imoveis"></div>
     </div>
     <footer class="">

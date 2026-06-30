@@ -71,6 +71,10 @@ switch ($acao) {
         $resultado = $controller->favoritarImoveis($data);
         break;
 
+    case "get_favoritos":
+        $resultado = $controller->carregarFavoritos();
+        break;
+
     case "recuperar_senha":
         $body = file_get_contents("php://input");
         $data = json_decode($body, true);

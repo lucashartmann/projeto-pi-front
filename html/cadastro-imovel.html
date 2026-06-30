@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="../css/cadastro-imovel.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.minlength.css">
     <script src="https://cdn.jsdelivr.net/npm/inputmask/dist/inputmask.min.js"></script>
-    <link rel="icon" type="image/x-icon" href="/php/projeto-pi-front/assets/logo.webp">
+    <link rel="icon" type="image/x-icon" href="../assets/logo.webp">
 </head>
 
 <body>
@@ -101,11 +101,11 @@
         </div>
         <div class="vertical-separator">
             <label for="" id="stt-ano-construcao">Ano de Construção</label>
-            <input type="number" placeholder="0000" id="ta-ano-construcao" min="1800" max="2026" name="ano_construcao">
+            <input type="number" id="ta-ano-construcao" min="1800" max="2026" name="ano_construcao">
         </div>
         <div class="vertical-separator">
             <label for="" id="stt-cep">CEP</label>
-            <input type="text" id="ta-cep" name="cep" placeholder="00000-000" required
+            <input type="text" id="ta-cep" name="cep" required
                 oninput="preencherEndereco(event)" minlength="9" maxlength="9">
         </div>
         <div class="vertical-separator">
@@ -126,7 +126,7 @@
         </div>
         <div class="vertical-separator">
             <label for="" id="stt-andar">Andar</label>
-            <input type="number" placeholder="00" id="ta-andar" min="0" max="99" name="andar">
+            <input type="number" id="ta-andar" min="0" max="99" name="andar">
         </div>
         <div class="vertical-separator">
             <label for="" id="stt-bairro">Bairro</label>
@@ -138,61 +138,61 @@
         </div>
         <div class="vertical-separator">
             <label for="" id="stt-estado">Estado</label>
-            <input type="text" readonly=True, placeholder="XX" id="ta-estado" minlength="2" maxlength="2" name="uf"
+            <input type="text" readonly=True id="ta-estado" minlength="2" maxlength="2" name="uf"
                 required>
         </div>
         <div class="vertical-separator">
             <label for="" id="stt-salas">Salas</label>
-            <input type="number" placeholder="00" id="ta-salas" name="quantidade_salas" min="0" max="99">
+            <input type="number"  id="ta-salas" name="quantidade_salas" min="0" max="99">
         </div>
         <div class="vertical-separator">
             <label for="" id="stt-banheiros">Banheiros</label>
-            <input type="number" placeholder="00" id="ta-banheiros" name="quantidade_banheiros" min="0" max="99">
+            <input type="number"  id="ta-banheiros" name="quantidade_banheiros" min="0" max="99">
         </div>
         <div class="vertical-separator">
             <label for="" id="stt-vagas">Vagas</label>
-            <input type="number" placeholder="00" id="ta-vagas" name="quantidade_vagas" min="0" max="99">
+            <input type="number"  id="ta-vagas" name="quantidade_vagas" min="0" max="99">
         </div>
         <div class="vertical-separator">
             <label for="" id="stt-varandas">Varandas</label>
-            <input type="number" placeholder="00" id="ta-varandas" name="quantidade_varandas" min="0" max="99">
+            <input type="number"  id="ta-varandas" name="quantidade_varandas" min="0" max="99">
         </div>
         <div class="vertical-separator">
             <label for="" id="stt-quartos">Quartos</label>
-            <input type="number" placeholder="00" id="ta-quartos" name="quantidade_quartos" min="0" max="99">
+            <input type="number"  id="ta-quartos" name="quantidade_quartos" min="0" max="99">
         </div>
         <div class="vertical-separator">
             <label for="" id="stt-area-total">Área Total</label>
-            <input type="text" id="ta-area-total" name="area_total" placeholder="0.00">
+            <input type="text" id="ta-area-total" name="area_total" >
         </div>
         <div class="vertical-separator">
             <label for="" id="stt-area-privativa">Área Privativa</label>
-            <input type="text" id="ta-area-privativa" name="area_privativa" placeholder="0.00">
+            <input type="text" id="ta-area-privativa" name="area_privativa" >
         </div>
         <div class="vertical-separator">
             <label for="" id="stt-venda">Valor Venda:</label>
-            <input type="text" id="ta-venda" name="valor_venda" placeholder="0.00">
+            <input type="text" id="ta-venda" name="valor_venda" >
         </div>
         <div class="vertical-separator">
             <label for="" id="stt-aluguel">Valor Aluguel:</label>
-            <input type="text" id="ta-aluguel" name="valor_aluguel" placeholder="0.00">
+            <input type="text" id="ta-aluguel" name="valor_aluguel" >
         </div>
         <div class="vertical-separator">
             <label for="" id="stt-condominio">Valor Condomínio:</label>
-            <input type="text" id="ta-condominio" name="valor_condominio" placeholder="0.00">
+            <input type="text" id="ta-condominio" name="valor_condominio" >
         </div>
         <div class="vertical-separator">
             <label for="" id="stt-iptu">Valor IPTU:</label>
-            <input type="text" placeholder="0.00" name="iptu" id="ta-iptu">
+            <input type="text"  name="iptu" id="ta-iptu">
         </div>
     </form>
 
     <form id="container-anuncio" style="display: none;" role="tabpanel" class="tabcontent">
-        <label>Titulo</label>
+        <label class="titulo">Titulo</label>
         <textarea name="titulo" id="ta-titulo-anuncio"></textarea>
-        <label>Descriçao</label>
+        <label class="titulo">Descriçao</label>
         <textarea name="descricao" id="ta-descricao-anuncio"></textarea>
-        <label>Apartamento</label>
+        <label class="titulo">Apartamento</label>
         <div id="container-info-imovel">
             <input type="checkbox" id="filtro-aceita-pet" value="Aceita Pet">
             <label for="filtro-aceita-pet">Aceita Pet</label>
@@ -226,7 +226,7 @@
             <label for="filtro-deposito">Depósito</label>
         </div>
 
-        <label for="">Condomínio</label>
+        <label for="" class="titulo">Condomínio</label>
         <div id="container-info-condominio">
             <input type="checkbox" id="filtro-churrasqueira-coletiva" value="Churrasqueira Coletiva">
             <label for="filtro-churrasqueira-coletiva">Churrasqueira Coletiva</label>
