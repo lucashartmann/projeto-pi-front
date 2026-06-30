@@ -58,7 +58,6 @@ class controller
                     }
                 }
                 $documentos = [];
-                error_log(serialize($anuncioObj->getAnexos()));
                 if ($anuncioObj->getAnexos()) {
                     foreach ($anuncioObj->getAnexos() as $documento) {
                         if ($documento instanceof Anexo) {
@@ -178,7 +177,6 @@ class controller
             ];
         }
 
-        // error_log("JSON dos imóveis gerado: " . json_encode($lista));
 
         return $lista;
     }
@@ -359,7 +357,6 @@ class controller
                     ];
                 }
             }
-            // error_log("". json_encode($lista));
             return (["status" => "sucesso", "dados" => $lista]);
         } catch (Exception $e) {
             return (["status" => "erro", "mensagem" => "Erro ao listar usuários"]);
@@ -610,7 +607,6 @@ class controller
     {
         try {
             $imoveis = Init::getInstance()->getEstoque()->getListaImoveis();
-            error_log("Imóveis encontrados: " . count($imoveis) ."");
             if (!$imoveis) {
                 return [
                     "status" => "erro",
@@ -618,7 +614,6 @@ class controller
                 ];
             } else {
                 $resposta =  self::montarJsonImoveis($imoveis);
-                error_log("JSON dos imóveis gerado: " . json_encode(self::montarJsonImoveis($imoveis)));
                 return $resposta;
                 
             }
@@ -694,7 +689,6 @@ class controller
     public function cadastrarImovel($data)
     {
         try {
-            // error_log("Dados recebidos para cadastro de imóvel: " . json_encode($data));
             $id =  array_key_exists("ref", $data) ? $data["ref"] : 0;
             $nomeCondominio = array_key_exists("nome_condominio", $data) ? $data["nome_condominio"] : "";
             $valorVenda = array_key_exists("valor_venda", $data) ? (float)(str_replace(['-', 'R$', ' '], '', $data["valor_venda"]) ?? 0) : 0.0;

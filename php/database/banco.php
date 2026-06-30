@@ -17,7 +17,8 @@ require_once __DIR__ . '/../model/vistoria.php';
 
 ini_set('display_errors', 0);
 error_reporting(E_ALL);
-class Banco extends PDO{
+class Banco extends PDO
+{
 
     private static ?Banco $db = null;
 
@@ -36,7 +37,6 @@ class Banco extends PDO{
                 $password = "";
                 self::$db = new Banco("mysql:host=$servername", $username, $password);
                 self::$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-                // error_log("Connected successfully");
                 return self::$db;
             } catch (PDOException $e) {
                 error_log($e->getMessage());
@@ -281,8 +281,9 @@ class Banco extends PDO{
         }
     }
 
-    function getImoveisFavoritos(int $idCliente) {
-    
+    function getImoveisFavoritos(int $idCliente)
+    {
+
         try {
             $sql = "
             SELECT
@@ -406,9 +407,9 @@ class Banco extends PDO{
                     $lista[] = $imovel;
                 }
             }
-            
+
             return $lista;
-        }catch (Exception $e) {
+        } catch (Exception $e) {
             error_log("ERRO Banco->getImoveisFavoritos: " . $e->getMessage());
             return null;
         }
@@ -1325,7 +1326,7 @@ class Banco extends PDO{
                 $stmt->execute([':nome' => $filtro]);
             } catch (Exception $e) {
                 $erro = "ERRO! Banco->cadastrarListaFiltros: " . $e->getMessage();
-                // error_log($erro);
+                error_log("ERRO! Banco->cadastrarListaFiltros: " . $erro);
                 continue;
             }
         }
@@ -2292,54 +2293,31 @@ class Banco extends PDO{
         try {
 
             $this->beginTransaction();
-
-
             $categoria = $imovel->getCategoria();
             $categoria = $categoria ? $categoria->value : null;
-
             $status = $imovel->getStatus();
             $status = $status ? $status->value : null;
-
             $estado = $imovel->getEstado();
             $estado = $estado ? $estado->value : null;
-
             $situacao = $imovel->getSituacao();
             $situacao = $situacao ? $situacao->value : null;
-
             $ocupacao = $imovel->getOcupacao();
             $ocupacao = $ocupacao ? $ocupacao->value : null;
-
-
             $endereco = $imovel->getEndereco();
             $endereco = ($endereco && $endereco->getId()) ? $endereco->getId() : null;
-
-
-
             $anuncio = $imovel->getAnuncio();
             $anuncio = ($anuncio && $anuncio->getId()) ? $anuncio->getId() : null;
-
-            // error_log("ID ANUNCIO: " . $anuncio);
-
             $condominio = $imovel->getCondominio();
             $condominio = $condominio ? $condominio->getId() : null;
-
             $corretor = $imovel->getCorretor();
             $corretor = $corretor ? $corretor->getCpfCnpj() : null;
-
             $captador = $imovel->getCaptador();
             $captador = $captador ? $captador->getCpfCnpj() : null;
-
-
             $dataCadastro = $imovel->getDataCadastro();
             $dataCadastro = $dataCadastro ? $dataCadastro->format("Y-m-d") : null;
-
             $dataModificacao = $imovel->getDataModificacao();
             $dataModificacao = $dataModificacao ? $dataModificacao->format("Y-m-d") : null;
-
-
             $imovelDb = $this->getImovelPorId($imovel->getId());
-
-
             $propsAntigos = $imovelDb ? $imovelDb->getProprietarios() : [];
             $propsNovos = $imovel->getProprietarios() ?: [];
 
@@ -3032,8 +3010,6 @@ class Banco extends PDO{
                 ");
                 $idAnuncio = (int)$dados['anuncio_id'];
                 $stmtAnexos->execute([':id_anuncio' => $idAnuncio]);
-                // error_log("Id requerido: " . $idAnuncio . "\n");
-                // error_log("Dados dos anexos: " . json_encode($stmtAnexos->fetchAll(PDO::FETCH_ASSOC)));
                 $imagens = [];
                 $videos = [];
                 $documentos = [];
@@ -3534,5 +3510,4 @@ class Banco extends PDO{
             return [];
         }
     }
-
 }

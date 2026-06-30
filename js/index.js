@@ -54,7 +54,6 @@ async function curtirImovel(imovelId) {
 function imovelPrincipal(dados) {
     if (!Array.isArray(dados) || dados.length === 0) return;
 
-
     const imoveisComImagem = dados.filter(imovel => imovel?.anuncio?.imagens?.[0]);
     const ramdomNumber = Math.floor(Math.random() * imoveisComImagem.length);
     const imovel = imoveisComImagem[ramdomNumber] || dados[0];
@@ -67,6 +66,7 @@ function imovelPrincipal(dados) {
 
     var banner = document.getElementById("imovel-destaque");
     if (!banner) return;
+    banner.innerHTML = "";
     let precoVenda = document.createElement("span");
     let precoAluguel = document.createElement("span");
     if (imovel.valor_aluguel && imovel.valor_venda) {
@@ -89,6 +89,7 @@ function imovelPrincipal(dados) {
 function bannerImoveis(dados) {
     var wrapper = document.querySelector(".swiper-wrapper");
     if (!wrapper) return;
+    wrapper.innerHTML = ""; 
     for (var i = 0; i < 5; i++) {
         var imovel = dados[i];
         console.log("Imóvel do banner:", imovel);
@@ -121,6 +122,11 @@ function inicializarSwiper() {
         if (window.swiperInstance) window.swiperInstance.destroy(true, true);
         window.swiperInstance = new Swiper('.swiper', {
             loop: true,
+            direction: 'horizontal',
+            initialSlide: 0,
+            scrollbar: false,
+            obeserver: false,
+            slidesPerView: 1,
             navigation: { nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev' },
         });
     }
@@ -154,6 +160,8 @@ async function carregarAnuncios(dados) {
     const section = document.getElementById("anuncios");
 
     if (!section || !dados) return;
+
+    section.innerHTML = ""; 
 
     let html = "";
     for (const imovel of dados) {

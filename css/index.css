@@ -341,12 +341,17 @@ section#anuncios {
     }
 }
 
+.swiper-wrapper {
+    max-width: 100%;
+}
 
 .swiper {
     width: 90%;
     height: 40rem;
     margin-top: 50px;
     border: solid rgba(47, 45, 45, 0.2) 1px;
+    /* border-radius: ; */
+    overflow: hidden hidden;
 
     .swiper-pagination-bullet {
         background: #000;
@@ -363,7 +368,7 @@ section#anuncios {
     .swiper-slide {
         cursor: pointer;
         background: rgba(255, 255, 255, 0.2);
-        width: 100% !important;
+        /* width: 100% !important; */
         overflow-x: hidden;
         margin: 0;
         padding: 0;
@@ -374,10 +379,17 @@ section#anuncios {
         text-align: center;
         justify-content: center;
         align-items: center;
+        overflow: hidden hidden;
+        border-radius: 0;
+        border: none;
+        box-shadow: none;
 
         div {
             width: auto;
             justify-items: center;
+            border-radius: 0;
+            border: none;
+            box-shadow: none;
 
             &>:nth-child(n) {
                 margin: 40px;

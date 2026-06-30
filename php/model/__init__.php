@@ -188,140 +188,140 @@ class Init
                 "Bairro" => "Partenon",
                 "Cidade" => "Porto Alegre",
                 "Estado" => "RS",
-                "CEP" => "90650-001"
+                "CEP" => "90650001"
             ],
             [
                 "Rua" => "Rua dos Andradas",
                 "Bairro" => "Centro",
                 "Cidade" => "Porto Alegre",
                 "Estado" => "RS",
-                "CEP" => "90020-007"
+                "CEP" => "90020007"
             ],
             [
                 "Rua" => "Av. Ipiranga",
                 "Bairro" => "Centro Histórico",
                 "Cidade" => "Porto Alegre",
                 "Estado" => "RS",
-                "CEP" => "90010-000"
+                "CEP" => "90010000"
             ],
             [
                 "Rua" => "Rua Zélia Maria Dutra Abichequer",
                 "Bairro" => "Florestal",
                 "Cidade" => "Lajeado",
                 "Estado" => "RS",
-                "CEP" => "95900-708"
+                "CEP" => "95900708"
             ],
             [
                 "Rua" => "Rua Monsenhor Scalabrini",
                 "Bairro" => "Centro",
                 "Cidade" => "Encantado",
                 "Estado" => "RS",
-                "CEP" => "95960-000"
+                "CEP" => "95960000"
             ],
             [
                 "Rua" => "Rua Padre Chagas",
                 "Bairro" => "Moinhos de Vento",
                 "Cidade" => "Porto Alegre",
                 "Estado" => "RS",
-                "CEP" => "90570-080"
+                "CEP" => "90570080"
             ],
             [
                 "Rua" => "Av. Getúlio Vargas",
                 "Bairro" => "Menino Deus",
                 "Cidade" => "Porto Alegre",
                 "Estado" => "RS",
-                "CEP" => "90150-000"
+                "CEP" => "90150000"
             ],
             [
                 "Rua" => "Rua Vicente da Fontoura",
                 "Bairro" => "Rio Branco",
                 "Cidade" => "Porto Alegre",
                 "Estado" => "RS",
-                "CEP" => "90640-000"
+                "CEP" => "90640000"
             ],
             [
                 "Rua" => "Rua Domingos Crescêncio",
                 "Bairro" => "Santana",
                 "Cidade" => "Porto Alegre",
                 "Estado" => "RS",
-                "CEP" => "90650-090"
+                "CEP" => "90650090"
             ],
             [
                 "Rua" => "Av. Assis Brasil",
                 "Bairro" => "Sarandi",
                 "Cidade" => "Porto Alegre",
                 "Estado" => "RS",
-                "CEP" => "91110-000"
+                "CEP" => "91110000"
             ],
             [
                 "Rua" => "Rua Coronel Bordini",
                 "Bairro" => "Auxiliadora",
                 "Cidade" => "Porto Alegre",
                 "Estado" => "RS",
-                "CEP" => "90440-001"
+                "CEP" => "90440001"
             ],
             [
                 "Rua" => "Av. Nilo Peçanha",
                 "Bairro" => "Boa Vista",
                 "Cidade" => "Porto Alegre",
                 "Estado" => "RS",
-                "CEP" => "91330-000"
+                "CEP" => "91330000"
             ],
             [
                 "Rua" => "Rua Mariante",
                 "Bairro" => "Independência",
                 "Cidade" => "Porto Alegre",
                 "Estado" => "RS",
-                "CEP" => "90035-110"
+                "CEP" => "90035110"
             ],
             [
                 "Rua" => "Av. Cristóvão Colombo",
                 "Bairro" => "Floresta",
                 "Cidade" => "Porto Alegre",
                 "Estado" => "RS",
-                "CEP" => "90560-000"
+                "CEP" => "90560000"
             ],
             [
                 "Rua" => "Rua Félix da Cunha",
                 "Bairro" => "Higienópolis",
                 "Cidade" => "Porto Alegre",
                 "Estado" => "RS",
-                "CEP" => "90570-000"
+                "CEP" => "90570000"
             ],
             [
                 "Rua" => "Av. Wenceslau Escobar",
                 "Bairro" => "Tristeza",
                 "Cidade" => "Porto Alegre",
                 "Estado" => "RS",
-                "CEP" => "91900-000"
+                "CEP" => "91900000"
             ],
             [
                 "Rua" => "Rua José de Alencar",
                 "Bairro" => "Azenha",
                 "Cidade" => "Porto Alegre",
                 "Estado" => "RS",
-                "CEP" => "90880-480"
+                "CEP" => "908800480"
             ],
             [
                 "Rua" => "Av. Cavalhada",
                 "Bairro" => "Cavalhada",
                 "Cidade" => "Porto Alegre",
                 "Estado" => "RS",
-                "CEP" => "91740-000"
+                "CEP" => "91740000"
             ],
             [
                 "Rua" => "Rua Anita Garibaldi",
                 "Bairro" => "Mont'Serrat",
                 "Cidade" => "Porto Alegre",
                 "Estado" => "RS",
-                "CEP" => "90450-000"
+                "CEP" => "90450000"
             ],
             [
                 "Rua" => "Av. Carlos Gomes",
                 "Bairro" => "Três Figueiras",
                 "Cidade" => "Porto Alegre",
                 "Estado" => "RS",
-                "CEP" => "90480-000"
+                "CEP" => "90480000"
             ]
         ];
 

@@ -82,9 +82,7 @@ function salvarArquivo($nomeTemporario, $nomeArquivo, $id, $tipo)
         $novoNomeArquivo = uniqid(more_entropy: true) . '.webp';
     }
     else if ($tipo == 'documento') {
-        error_log("Processando documento: " . $nomeArquivo);
         $novoNomeArquivo = uniqid(more_entropy: true) . "_" . $nomeArquivo;
-        error_log("Novo nome do arquivo: " . $novoNomeArquivo);
         $blob = file_get_contents($nomeTemporario);
     }
 
@@ -96,7 +94,6 @@ function salvarArquivo($nomeTemporario, $nomeArquivo, $id, $tipo)
     $caminhoCompleto = str_replace("\\php\\utils", "\\assets\\imoveis\\", __DIR__) . $id . "/" . $novoNomeArquivo;
 
     $diretorio = str_replace("\\php\\utils", "\\assets\\imoveis\\", __DIR__) . $id;
-    // error_log("Diretório para salvar anexo: " . $diretorio);
     if (!is_dir($diretorio)) {
         mkdir($diretorio, 0755, true);
     }

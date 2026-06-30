@@ -61,7 +61,7 @@ label {
          width: 50%;
          height: 100%;
          height: 2rem;
-         border-radius: 20% / 100%;
+         border-radius: 15% / 100%;
     }
 }
 
@@ -89,44 +89,66 @@ label {
     text-align: center;
     display: flex;
     flex-direction: column !important;
+    margin-top: 15px;
 
     textarea {
         width: 100%;
         margin: 10px 0;
         height: 3rem;
-        border-radius: 2% / 1%;
+        border-radius: 0;
         text-align: justify;
-        text-indent: 1.2em;
+        /* text-indent: 1.2em; */
     }
 
-    label {
+    .titulo {
+        
         font-size: 1.34rem;
         font-weight: bold !important;
-        margin: 100px 0 !important;
+        margin: 10px 0px !important;
+
+        &:first-child {
+            margin-top: 0px;
+        }
     }
 
     #container-info-condominio,
     #container-info-imovel {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(30%, 1fr));
-        gap: 2px;
-        width: 100%;
+        grid-template-columns: repeat(8, auto);
+        /* gap: 2px; */
+        width: auto;
         height: auto;
-
-        input[type="checkbox"] {
-            width: 20px;
-            height: 20px;
-        }
+        margin: 50px auto;
+        row-gap: 20px;
+        justify-items: center;
+        justify-content: center;
+        justify-self: center;
+        align-items: center;
+        align-content: center;
+        align-self: center;
 
         label {
-            font-size: 1.34rem !important;
+            font-size: 1rem !important;
             font-weight: 500 !important;
-            margin: 0 !important;
+            margin-right: 100px !important;
+            width: 100% !important;
+            text-align: left !important;
+            margin-left: 110px !important;
         }
+    
+        input[type="checkbox"] {
+            width: 15px;
+            height: 20px;
+            &:hover {
+                cursor: pointer;
+            }
+        }
+
     }
 
     #ta-descricao-anuncio {
         height: 10rem;
+        border-radius: 0;
     }
 }
 
