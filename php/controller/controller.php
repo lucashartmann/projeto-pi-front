@@ -112,6 +112,12 @@ class controller
                 }
             }
 
+            if ($imovel -> getCondominio()) {
+                $condominio = [
+                    "nome" => $imovel->getCondominio()->getNome(),
+                ];  
+            }
+
             if ($imovel->getCorretor()) {
                 $corretor = [
                     "id" => $imovel->getCorretor()->getId(),
@@ -160,7 +166,6 @@ class controller
                 ];
             }
 
-
             $lista[] = [
                 "id" => $imovel->getId(),
                 "valor_venda" => $imovel->getValorVenda(),
@@ -174,6 +179,23 @@ class controller
                 "proprietarios" => $proprietarios ?? [],
                 "corretor" => $corretor ?? null,
                 "captador" => $captador ?? null,
+                "valor_condominio" => $imovel->getValorCondominio() ?? null,
+                "valor_iptu" => $imovel->getIptu() ?? null,
+                "ano_construcao" => $imovel->getAnoConstrucao() ?? null,
+                "quantidade_banheiros" => $imovel->getQuantidadeBanheiros() ?? 0,
+                "quantidade_salas" => $imovel->getQuantidadeSalas() ?? 0,
+                "quantidade_varandas" => $imovel->getQuantidadeVarandas() ?? 0,
+                "quantidade_quartos" => $imovel->getQuantidadeQuartos() ?? 0,
+                "quantidade_vagas" => $imovel->getQuantidadeVagas() ?? 0,
+                "bloco" => $imovel->getBloco() ?? null,
+                "andar" => $imovel->getAndar() ?? null,
+                "situacao" => $imovel->getSituacao() ?? null,
+                "ocupacao" => $imovel->getOcupacao() ?? null,
+                "estado" => $imovel->getEstado() ?? null,
+                "area_privativa" => $imovel->getAreaPrivativa() ?? 0.00,
+                "area_total" => $imovel->getAreaTotal() ?? 0.00,
+                "complemento" => $imovel->getComplemento() ?? null,
+                "condominio" => $condominio ?? null
             ];
         }
 
@@ -689,10 +711,20 @@ class controller
     public function cadastrarImovel($data)
     {
         try {
+            error_log("Dados recebidos para cadastro de imóvel: " . json_encode($data));
             $id =  array_key_exists("ref", $data) ? $data["ref"] : 0;
             $nomeCondominio = array_key_exists("nome_condominio", $data) ? $data["nome_condominio"] : "";
-            $valorVenda = array_key_exists("valor_venda", $data) ? (float)(str_replace(['-', 'R$', ' '], '', $data["valor_venda"]) ?? 0) : 0.0;
-            $valorAluguel = array_key_exists("valor_aluguel", $data) ? (float)(str_replace(['-', 'R$', ' '], '', $data["valor_aluguel"]) ?? 0) : 0.0;
+
+            $valorVenda = array_key_exists("valor_venda", $data) ? $data["valor_venda"] : 0.0;
+            $valorVenda = $valorVenda ? str_replace(".", "", $valorVenda ?? 0.0) : 0.0;
+            $valorVenda = $valorVenda ? str_replace(",", ".", $valorVenda ?? 0.0) : 0.0;
+            $valorVenda = $valorVenda ? (float)trim(str_replace(['-', 'R$'], '', $valorVenda) ?? 0) : 0.0;
+
+            $valorAluguel = array_key_exists("valor_aluguel", $data) ? $data["valor_aluguel"] : 0.0;
+            $valorAluguel = $valorAluguel ? str_replace(".", "", $valorAluguel ?? 0.0) : 0.0;
+            $valorAluguel = $valorAluguel ? str_replace(",", ".", $valorAluguel ?? 0.0) : 0.0;
+            $valorAluguel = $valorAluguel ? (float)trim(str_replace(['-', 'R$'], '', $valorAluguel) ?? 0) : 0.0;
+
             $quantQuartos = array_key_exists("quantidade_quartos", $data) ? (int)($data["quantidade_quartos"] ?? 0) : 0;
             $quantSalas = array_key_exists("quantidade_salas", $data) ? (int)($data["quantidade_salas"] ?? 0) : 0;
             $quantVagas = array_key_exists("quantidade_vagas", $data) ? (int)($data["quantidade_vagas"] ?? 0) : 0;
@@ -709,16 +741,35 @@ class controller
                 error_log("Status inválido recebido: " . $data["status"]);
                 return (["status" => "erro", "mensagem" => "Status inválido"]);
             }
-            $iptu = array_key_exists("iptu", $data) ? (float)(str_replace(['-', 'R$', ' '], '', $data["iptu"]) ?? 0) : 0.0;
-            $valorCondominio = array_key_exists("valor_condominio", $data) ? (float)(str_replace(['-', 'R$', ' '], '', $data["valor_condominio"]) ?? 0) : 0.0;
-            $andar = array_key_exists("andar", $data) ? (int)($data["andar"] ?? 0) : 0;
+
+            $iptu = array_key_exists("iptu", $data) ? $data["iptu"] : 0.0;
+            $iptu = $iptu ? str_replace(".", "", $iptu ?? 0.0) : 0.0;
+            $iptu = $iptu ? str_replace(",", ".", $iptu ?? 0.0) : 0.0;
+            $iptu = $iptu ? (float)trim(str_replace(['-', 'R$'], '', $iptu) ?? 0) : 0.0;
+
+            $valorCondominio = array_key_exists("valor_condominio", $data) ? $data["valor_condominio"] : 0.0;
+            $valorCondominio = $valorCondominio ? str_replace(".", "", $valorCondominio ?? 0.0) : 0.0;
+            $valorCondominio = $valorCondominio ? str_replace(",", ".", $valorCondominio ?? 0.0) : 0.0;
+            $valorCondominio = $valorCondominio ? (float)trim(str_replace(['-', 'R$'], '', $valorCondominio) ?? 0) : 0.0;
+
+            $andar = array_key_exists("andar", $data) ? (int)trim($data["andar"] ?? 0) : 0;
             $estado = null;
             isset($data["estado_imovel"]) ? $estado = Estado::tryFrom($data["estado_imovel"]) : null;
             $bloco = array_key_exists("bloco", $data) ? $data["bloco"] : "";
-            $anoConstrucao = array_key_exists("ano_construcao", $data) ? (int)($data["ano_construcao"] ?? 0) : 0;
-            $areaTotal = array_key_exists("area_total", $data) ? (float)(str_replace(['-', 'm2', ' '], '', $data["area_total"]) ?? 0) : 0.0;
-            $areaPrivativa = array_key_exists("area_privativa", $data) ? (float)(str_replace(['-', 'm2', ' '], '', $data["area_privativa"]) ?? 0) : 0.0;
+            $anoConstrucao = array_key_exists("ano_construcao", $data) ? (int)trim($data["ano_construcao"] ?? 0) : 0;
+
+            $areaTotal = array_key_exists("area_total", $data) ? $data["area_total"] : 0.0;
+            $areaTotal = $areaTotal ? str_replace(".", "", $areaTotal ?? 0.0) : 0.0;
+            $areaTotal = $areaTotal ? str_replace(",", ".", $areaTotal ?? 0.0) : 0.0;
+            $areaTotal = $areaTotal ? (float)trim(str_replace('m2', '', $areaTotal) ?? 0) : 0.0;
+
+            $areaPrivativa = array_key_exists("area_privativa", $data) ? $data["area_privativa"] : 0.0;
             $situacao = null;
+            $areaPrivativa = $areaPrivativa ? str_replace(".", "", $areaPrivativa ?? 0.0) : 0.0;
+            $areaPrivativa = $areaPrivativa ? str_replace(",", ".", $areaPrivativa ?? 0.0) : 0.0;
+            $areaPrivativa = $areaPrivativa ? (float)trim(str_replace('m2', '', $areaPrivativa) ?? 0) : 0.0;
+
+
             isset($data["situacao"]) ? $situacao = Situacao::tryFrom($data["situacao"]) : null;
             $ocupacao = null;
             isset($data["ocupacao"]) ? $ocupacao = Ocupacao::tryFrom($data["ocupacao"]) : null;
@@ -730,7 +781,7 @@ class controller
             $documentos = $_FILES["documentos"] ?? [];
             // $video = $_FILES["videos"] ?? [];
             if ($cep) {
-                $cep = str_replace("-", "", $cep);
+                $cep = trim(str_replace("-", "", $cep));
             }
             $rua = array_key_exists("rua", $data) ? $data["rua"] : "";
             $bairro = array_key_exists("bairro", $data) ? $data["bairro"] : "";
@@ -739,7 +790,7 @@ class controller
             $descricao = array_key_exists("descricao", $data) ? $data["descricao"] : "";
             $complemento = array_key_exists("complemento", $data) ? $data["complemento"] : "";
             $uf = array_key_exists("uf", $data) ? $data["uf"] : "";
-            $numero = array_key_exists("numero", $data) ? (int)($data["numero"] ?? null) : null;
+            $numero = array_key_exists("numero", $data) ? (int)trim($data["numero"] ?? null) : null;
 
             $enderecoObj = new Endereco($rua, $bairro, $cep, $cidade, $uf);
             $enderecoObj->setNumero($numero);
@@ -776,7 +827,7 @@ class controller
             if ($id) {
                 $imovelObj = Init::getInstance()->getImovelPorId($id);
                 $imovelObj->setDataModificacao(DateTime::createFromFormat('Y-m-d H:i:s', date('Y-m-d H:i:s')));
-                error_log("Imóvel encontrado para atualização: " . json_encode($imovelObj));
+                // error_log("Imóvel encontrado para atualização: " . json_encode($imovelObj));
             } else {
                 $imovelObj = new Imovel($enderecoObj, $status, $categoria);
             }

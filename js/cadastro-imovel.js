@@ -515,24 +515,26 @@ function openTab(evento, tabId) {
 }
 
 
+
 async function abrirCadastro(imovel) {
     imovel = JSON.parse(imovel);
+    console.log("Abrindo cadastro do imóvel:", imovel);
     if (imovel) {
         let containerImagens = document.getElementById("container-imagens");
         prepararContainerArrastavel(containerImagens);
 
         document.getElementById("ta-ref").value = imovel.id || "";
-        document.getElementById("select-status").value = imovel.status || "Selecionar";
-        document.getElementById("select-situacao").value = imovel.situacao || "Selecionar";
-        document.getElementById("select-estado").value = imovel.estado || "Selecionar";
-        document.getElementById("select-ocupacao").value = imovel.ocupacao || "Selecionar";
+        document.getElementById("select-status").value = imovel.status || "";
+        document.getElementById("select-situacao").value = imovel.situacao || "";
+        document.getElementById("select-estado").value = imovel.estado || "";
+        document.getElementById("select-ocupacao").value = imovel.ocupacao || "";
         document.getElementById("ta-nome-condominio").value = imovel.condominio?.nome || "";
         document.getElementById("ta-rua").value = imovel.endereco?.rua || "";
         document.getElementById("ta-bairro").value = imovel.endereco?.bairro || "";
         document.getElementById("ta-cidade").value = imovel.endereco?.cidade || "";
         document.getElementById("ta-estado").value = imovel.endereco?.uf || "";
         // console.log(imovel.categoria);
-        document.getElementById("select-categoria").value = imovel.categoria || "Selecionar";
+        document.getElementById("select-categoria").value = imovel.categoria || "";
         document.getElementById("ta-titulo-anuncio").value = imovel.anuncio?.titulo || "";
         document.getElementById("ta-descricao-anuncio").value = imovel.anuncio?.descricao || "";
         document.getElementById("ta-numero").value = imovel.endereco?.numero || "";
@@ -544,22 +546,26 @@ async function abrirCadastro(imovel) {
         document.getElementById("ta-vagas").value = imovel.quantidade_vagas || "";
         document.getElementById("ta-varandas").value = imovel.quantidade_varandas || "";
         document.getElementById("ta-quartos").value = imovel.quantidade_quartos || "";
-        document.getElementById("ta-area-total").value = imovel.area_total || "";
-        document.getElementById("ta-area-privativa").value = imovel.area_privativa || "";
-        document.getElementById("ta-venda").value = imovel.valor_venda || "";
-        document.getElementById("ta-aluguel").value = imovel.valor_aluguel || "";
-        document.getElementById("ta-condominio").value = imovel.valor_condominio || "";
-        document.getElementById("ta-iptu").value = imovel.valor_iptu || "";
+        document.getElementById("ta-area-total").value = imovel.area_total ? imovel.area_total.toLocaleString('pt-BR', { style: 'unit',
+  unit: 'meter',
+  unitDisplay: 'long'}) : ""; 
+        document.getElementById("ta-area-privativa").value = imovel.area_privativa ? imovel.area_privativa.toLocaleString('pt-BR', { style: 'unit',
+  unit: 'meter',
+  unitDisplay: 'long'}) : "";
+        document.getElementById("ta-venda").value = imovel.valor_venda.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) || "";
+        document.getElementById("ta-aluguel").value = imovel.valor_aluguel.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) || "";
+        document.getElementById("ta-condominio").value = imovel.valor_condominio.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) || "";
+        document.getElementById("ta-iptu").value = imovel.valor_iptu.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) || "";
         document.getElementById("ta-ano-construcao").value = imovel.ano_construcao || "";
         document.getElementById("ta-cep").value = imovel.endereco?.cep;
         if (imovel.anuncio?.imagens && imovel.anuncio.imagens.length > 0) {
             let contadorImgens = 0;
             for (let imagem of imovel.anuncio.imagens) {
-                console.log(imagem);
+                // console.log(imagem);
                 let divImagem = document.createElement("div");
                 divImagem.classList.add("imagem-anuncio");
                 divImagem.style.backgroundImage = `linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), url(${imagem})`
-                console.log(imagem);
+                // console.log(imagem);
                 divImagem.setAttribute("onclick", `abrirImagem('${imagem}')`);
                 let checkbox = document.createElement("input");
                 checkbox.type = "checkbox";

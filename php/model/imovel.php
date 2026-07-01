@@ -113,7 +113,7 @@ enum Categoria: string
 
 enum Situacao: string
 {
-    case COSTRUCAO = "Em Costrução";
+    case COSTRUCAO = "Em Construção";
     case NOVO = "Novo";
     case USADO = "Usado";
 }
@@ -194,7 +194,7 @@ class Imovel
         $this->valorCondominio = 0;
         $this->andar = 0;
         $this->estado = NULL;
-        $this->bloco = 0;
+        $this->bloco = "";
         $this->anoConstrucao = 0;
         $this->areaTotal = 0;
         $this->areaPrivativa = 0;
