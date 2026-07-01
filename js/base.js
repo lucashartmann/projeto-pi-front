@@ -79,6 +79,49 @@ function closeNav() {
     document.querySelector("main").style.opacity = "1";
 }
 
+async function listarUsuarios() {
+    try {
+        let caminho = getCaminhoRelativo("/php/api/usuarios.php?acao=listar");
+        const resposta = await fetch(caminho)
+            .then(async (res) => {
+                if (res.erro) {
+                    alert("Erro ao listar atendimentos: " + res.erro);
+                    return null;
+                }
+                const contentType = res.headers.get("content-type");
+                if (contentType && contentType.includes("application/json")) {
+                    return await res.json();
+                } else {
+                    const texto = await res.text();
+                    alert("Resposta inesperada do servidor");
+                    console.error("Resposta não é JSON:", texto);
+                    return;
+                }
+            })
+            .then(async (data) => {
+                if (data.status == "erro") {
+                    alert("Erro ao listar usuários: " + data.mensagem);
+                    return null;
+                }
+                console.log("Usuários listados com sucesso:", data);
+                return data;
+            })
+            .catch(erro => {
+                console.error("Falha ao conectar com o backend:", erro);
+                return null;
+            });
+        console.log("Resposta da API de listar usuários:", resposta);
+        return resposta;
+    } catch (erro) {
+        console.error("Falha ao conectar com o backend:", erro);
+        return null;
+    }
+}
+
+async function listarProprietarios() {
+
+}
+
 async function listarImoveis() {
     try {
         let caminho = getCaminhoRelativo("/php/api/imoveis.php?acao=listar_imoveis");

@@ -108,6 +108,10 @@ label {
 }
 
 
+#bt-remover-numero {
+    display:none;
+}
+
 @media screen and (max-width: 380px) {
     #campo-dados {
         grid-template-columns: repeat(auto-fit, minmax(32%, 1fr));

@@ -1,4 +1,71 @@
 const imoveisCache = [];
+const proprietariosCache = [];
+const usuariosCache = [];
+
+function trocarCadastro() {
+    const valor = event.target.value;
+    console.log("Valor selecionado:", valor);
+    switch (valor) {
+        case "imovel":
+            console.log("Carregando anúncios...");
+            carregarAnuncios();
+            break;
+        case "cliente":
+            carregarUsuarios("CLIENTE");
+            break;
+        case "corretor":
+            carregarUsuarios("CORRETOR");
+            break;
+        case "proprietario":
+            carregarProprietarios();
+            break;
+        case "todos usuarios":
+            carregarUsuarios("TODOS");
+            break;
+        default:
+            break;
+    }
+}
+
+
+async function carregarUsuarios(tipo) {
+    let dados = [];
+    if (usuariosCache.length === 0) {
+        dados = await listarUsuarios();
+        usuariosCache.push(...dados);
+    } else {
+        dados = usuariosCache;
+    }
+    const section = document.getElementById("container-resultado");
+    const seta = document.getElementById("seta");
+    const filtro = document.getElementById("select-filtro").value;
+    if (!section || !dados) {
+        console.log("Erro: Elementos não encontrados");
+        return;
+    }
+    console.log(dados);
+    dados = dados.filter(usuario => usuario.tipo === tipo);
+    section.innerHTML = "";
+    document.getElementById("contador-imoveis").textContent = `${dados.length} ${dados.length === 1 ? 'usuário' : 'usuários'}`;
+    for (let usuario of dados) {
+        section.innerHTML += `
+            <div class="resultado">
+                <input type="checkbox" class="checkbox-selecionar" onclick="montarOpcoes()">
+                <div class="dados" onclick="abrirCadastro(null, ${usuario.id})">
+                    <label>ID: ${usuario.id}</label>
+                    <label for="">Nome: ${usuario.nome}</label>
+                    <label for="">Email: ${usuario.email}</label>
+                    <label for="">Telefone: ${usuario.telefone}</label>
+                    <label for="">Data de Cadastro: ${new Date(usuario.data_cadastro?.date).toLocaleDateString()}</label>
+                    <label for="">Data de Modificação: ${usuario.data_modificacao ? new Date(usuario.data_modificacao?.date).toLocaleDateString() : 'N/A'}</label>
+                </div>
+                <li style="list-style: none;">
+                    <i class="fas fa-bars" onclick="openMenu(this)"></i>
+                </li>
+            </div>
+        `;
+    }
+}
 
 async function carregarAnuncios() {
     let dados = [];
@@ -87,7 +154,7 @@ async function carregarAnuncios() {
     section.innerHTML = "";
     document.getElementById("contador-imoveis").textContent = `${dados.length} ${dados.length === 1 ? 'imóvel' : 'imóveis'}`;
     for (let imovel of dados) {
-        
+
         const b64 = imovel.anuncio?.imagens?.[0] || null;
         // console.log(b64);
         section.innerHTML += `
@@ -223,7 +290,7 @@ function montarOpcoes() {
         const filtro = document.getElementById("h-filtro");
         filtro.innerHTML = "";
         botaoApagar.style.display = "block";
-        botaoAbrir.style.display = "block";     
+        botaoAbrir.style.display = "block";
     } else {
         const filtro = document.getElementById("h-filtro");
         botaoApagar.style.display = "none";
@@ -237,8 +304,6 @@ function selecionarTodos() {
     checkboxes.forEach(checkbox => checkbox.checked = !todosSelecionados);
     montarOpcoes();
 }
-
-
 
 
 function abrirCadastro(imovel = null, id = null) {

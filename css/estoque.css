@@ -31,8 +31,6 @@
     justify-items: center;
     align-content: center;
     height: auto;
-    background: rgba(36, 30, 30, 0.5);
-    backdrop-filter: blur(40px) !important;
     width: 100%;
     padding: 20px;
 }
@@ -139,4 +137,62 @@ body {
             background: var(--hover);
         }
     }
+}
+
+#sidebar-anuncios{
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    width: 20rem;
+    &>:nth-child(n){
+        margin-top: 20px;
+    }
+    label {
+        margin-left: 4px;
+        color: var(--cor-texto);
+    }
+    input, select, textarea {
+        align-self: center;
+        width: 90%;
+        height: 1.8rem;
+    }
+
+    #container-info-imovel, #container-info-condominio {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        width: 80%;
+        row-gap: 20px;
+        column-gap: 0px;
+        input {
+            /* width: 90%; */
+            height: 1.1rem;
+        }
+    }
+
+   
+    #preco {
+        display: flex;
+        align-items: center;
+        justify-self: center;
+        align-self: center;
+        justify-content: center;
+        width: 90%;
+        margin-top: 10px;
+
+        label {
+            /* margin-bottom: 5px; */
+            color: var(--cor-texto);
+        }
+
+        input {
+            width: 100%;
+            height: 1.8rem;
+            /* margin-bottom: 5px; */
+        }
+    }
+}
+
+
+main {
+    display:flex;
 }

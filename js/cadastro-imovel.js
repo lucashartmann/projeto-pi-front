@@ -546,12 +546,16 @@ async function abrirCadastro(imovel) {
         document.getElementById("ta-vagas").value = imovel.quantidade_vagas || "";
         document.getElementById("ta-varandas").value = imovel.quantidade_varandas || "";
         document.getElementById("ta-quartos").value = imovel.quantidade_quartos || "";
-        document.getElementById("ta-area-total").value = imovel.area_total ? imovel.area_total.toLocaleString('pt-BR', { style: 'unit',
-  unit: 'meter',
-  unitDisplay: 'long'}) : ""; 
-        document.getElementById("ta-area-privativa").value = imovel.area_privativa ? imovel.area_privativa.toLocaleString('pt-BR', { style: 'unit',
-  unit: 'meter',
-  unitDisplay: 'long'}) : "";
+        document.getElementById("ta-area-total").value = imovel.area_total ? imovel.area_total.toLocaleString('pt-BR', {
+            style: 'unit',
+            unit: 'meter',
+            unitDisplay: 'long'
+        }) : "";
+        document.getElementById("ta-area-privativa").value = imovel.area_privativa ? imovel.area_privativa.toLocaleString('pt-BR', {
+            style: 'unit',
+            unit: 'meter',
+            unitDisplay: 'long'
+        }) : "";
         document.getElementById("ta-venda").value = imovel.valor_venda.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) || "";
         document.getElementById("ta-aluguel").value = imovel.valor_aluguel.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) || "";
         document.getElementById("ta-condominio").value = imovel.valor_condominio.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) || "";

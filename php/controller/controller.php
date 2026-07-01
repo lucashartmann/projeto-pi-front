@@ -112,10 +112,10 @@ class controller
                 }
             }
 
-            if ($imovel -> getCondominio()) {
+            if ($imovel->getCondominio()) {
                 $condominio = [
                     "nome" => $imovel->getCondominio()->getNome(),
-                ];  
+                ];
             }
 
             if ($imovel->getCorretor()) {
@@ -353,6 +353,9 @@ class controller
     {
         try {
             $usuarios = Init::getInstance()->getListaUsuarios();
+            if (!$usuarios) {
+                return (["status" => "erro", "mensagem" => "Nenhum usuário encontrado"]);
+            }
             $lista = [];
             if ($usuarios) {
                 foreach ($usuarios as $usuario) {
@@ -379,7 +382,7 @@ class controller
                     ];
                 }
             }
-            return (["status" => "sucesso", "dados" => $lista]);
+            return ($lista);
         } catch (Exception $e) {
             return (["status" => "erro", "mensagem" => "Erro ao listar usuários"]);
         }
@@ -389,8 +392,9 @@ class controller
     {
         try {
             $nome = isset($dados['nome']) ? $dados['nome'] : "";
-            // $email = isset($dados['email']) ? $dados['email'] : null;
-            // $senha = isset($dados['senha']) ? $dados['senha'] : null;
+            $email = isset($dados['email']) ? $dados['email'] : null;
+            $senha = isset($dados['senha']) ? $dados['senha'] : null;
+            $username = $email;
             $dataNascimento = isset($dados['data_nascimento']) && Validacao::validarDataNascimento($dados['data_nascimento']) ? DateTime::createFromFormat('d/m/Y', $dados['data_nascimento']) : null;
             $cpfCnpj = isset($dados['cpf_cnpj']) && Validacao::validarCPF($dados['cpf_cnpj']) ? str_replace(['.', '-', ' '], '', $dados['cpf_cnpj']) : "";
             $rg = isset($dados['rg']) && Validacao::validarRG($dados['rg']) ? $dados['rg'] : "";
@@ -410,20 +414,44 @@ class controller
             if (!$id) {
                 return (["status" => "erro", "mensagem" => "ID do usuário não fornecido"]);
             }
-            $usuario = Init::getInstance()->getUsuarioPorId($id);
-            if ($tipo == "CORRETOR") {
-                $usuario->setCreci($creci);
-            } else if ($tipo == "GERENTE") {
-                $usuario->setSalario($salario);
-            } else if ($tipo == "CAPTADOR") {
-                $usuario->setSalario($salario);
-            } else if ($tipo == "CLIENTE") {
-                $usuario->setNome($nome);
-            } else if ($tipo == "PROPRIETARIO") {
-                $usuario->setNome($nome);
+            if ($id) {
+                $usuario = Init::getInstance()->getUsuarioPorId($id);
             } else {
-                return (["status" => "erro", "mensagem" => "Tipo de usuário inválido"]);
+                switch ($tipo) {
+                    case "CORRETOR":
+                        $usuario = new Corretor($username, $senha, $email, $nome, $cpfCnpj, $creci);
+                        break;
+                    case "GERENTE":
+                        $usuario = new Gerente($username, $senha, $email, $nome, $cpfCnpj);
+                        $usuario->setSalario($salario);
+                        break;
+                    case "CAPTADOR":
+                        $usuario = new Captador($username, $senha, $email, $nome, $cpfCnpj);
+                        $usuario->setSalario($salario);
+                        break;
+                    case "CLIENTE":
+                        $usuario = new Cliente($username, $senha, $email, $nome, $cpfCnpj);
+                        $usuario->setNome($nome);
+                        break;
+                    case "PROPRIETARIO":
+                        $usuario = new Proprietario($email, $nome, $cpfCnpj);
+                        $usuario->setNome($nome);
+                        break;
+                    case "FINANCEIRO":
+                        $usuario = new Usuario($username, $senha, $email, $nome, $cpfCnpj, Tipo::FINANCEIRO);
+                        // $usuario->setSalario($salario);
+                        break;
+                    case "VISTORIADOR":
+                        $usuario = new Usuario($username, $senha, $email, $nome, $cpfCnpj, Tipo::VISTORIADOR);
+                        break;
+                    case "ADMINISTRADOR":
+                        $usuario = new Usuario($username, $senha, $email, $nome, $cpfCnpj, Tipo::ADMINISTRADOR);
+                        break;
+                    default:
+                        return (["status" => "erro", "mensagem" => "Tipo de usuário inválido"]);
+                }
             }
+
             $usuario->setNome($nome);
             $usuario->setCpfCnpj($cpfCnpj);
             $usuario->setDataNascimento($dataNascimento);
@@ -431,61 +459,41 @@ class controller
             $usuario->setTelefones($telefones);
             $usuario->setId($id);
 
-            // $endereco = new Endereco(
-            //     $endereco['rua'] ?? null,
-            //     $endereco['bairro'] ?? null,
-            //     $endereco['cep'] ?? null,
-            //     $endereco['cidade'] ?? null,
-            //     $endereco['uf'] ?? null,
-            // );
+            $endereco = new Endereco(
+                $rua ?? null,
+                $bairro ?? null,
+                $cep ?? null,
+                $cidade ?? null,
+                $uf ?? null,
+            );
 
-            // $endereco->setNumero($endereco['numero'] ?? null);
-            // $endereco->setComplemento($endereco['complemento'] ?? null);
-            // $verificar_endereco = Init::getInstance()->verificarEndereco($endereco);
-            // if ($verificar_endereco) {
-            //     $endereco = $verificar_endereco;
-            // } else {
-            //     $endereco = Init::getInstance()->cadastrarEndereco($endereco);
-            // }
-            // $usuario->setEndereco($endereco);
-
-            $atualizacao = Init::getInstance()->atualizarUsuario($usuario);
-            if ($atualizacao) {
-                return (["status" => "sucesso", "mensagem" => "Usuário atualizado com sucesso"]);
+            $endereco->setNumero($numero ?? null);
+            $endereco->setComplemento($complemento ?? null);
+            $verificar_endereco = Init::getInstance()->verificarEndereco($endereco);
+            if ($verificar_endereco) {
+                $endereco = $verificar_endereco;
             } else {
-                return (["status" => "erro", "mensagem" => "Erro ao atualizar usuário"]);
+                $endereco = Init::getInstance()->cadastrarEndereco($endereco);
+            }
+            $usuario->setEndereco($endereco);
+            $atualizacao = null;
+            if ($id) {
+                $atualizacao = Init::getInstance()->atualizarUsuario($usuario);
+                if ($atualizacao) {
+                    return (["status" => "sucesso", "mensagem" => "Usuário atualizado com sucesso"]);
+                } else {
+                    return (["status" => "erro", "mensagem" => "Erro ao atualizar usuário"]);
+                }
+            } else {
+                $atualizacao = Init::getInstance()->cadastrarUsuario($usuario);
+                if ($atualizacao) {
+                    return (["status" => "sucesso", "mensagem" => "Usuário cadastrado com sucesso"]);
+                } else {
+                    return (["status" => "erro", "mensagem" => "Erro ao cadastrar usuário"]);
+                }
             }
         } catch (Exception $e) {
             return (["status" => "erro", "mensagem" => "Erro ao atualizar usuário: " . $e->getMessage()]);
-        }
-    }
-
-    function cadastrarUsuario($data)
-    {
-        try {
-
-            $nome = isset($data['nome']) ? $data['nome'] : '';
-            $email = isset($data['email']) && Validacao::validarEmail($data['email']) ? $data['email'] : '';
-            $senha = isset($data['senha']) && Validacao::validarSenha($data['senha']) ? $data['senha'] : "";
-            $cpf = isset($data['cpf_cnpj']) && Validacao::validarCPF($data['cpf_cnpj']) ? str_replace(['.', '-', ' '], '', $data['cpf_cnpj']) : "";
-            $dataNascimento = isset($data['data_nascimento']) && Validacao::validarDataNascimento($data['data_nascimento']) ? DateTime::createFromFormat('d/m/Y', $data['data_nascimento']) : null;
-
-            $usuario = new Cliente($email, $senha, $email, $nome, $cpf);
-            $usuario->setDataNascimento($dataNascimento);
-
-            $resultado = Init::getInstance()->cadastrarUsuario($usuario);
-            if ($resultado) {
-                $login = $this->verificarLogin(['usuario' => $email, 'senha' => $senha]);
-                if ($login['status'] === 'sucesso') {
-                    return (["status" => "sucesso", "mensagem" => "Usuário cadastrado com sucesso"]);
-                } else {
-                    return (["status" => "erro", "mensagem" => "Usuário cadastrado, mas falha ao logar automaticamente"]);
-                }
-            } else {
-                return (["status" => "erro", "mensagem" => "Erro ao cadastrar usuário"]);
-            }
-        } catch (Exception $e) {
-            return (["status" => "erro", "mensagem" => "Erro ao cadastrar usuário: " . $e->getMessage()]);
         }
     }
 
@@ -637,7 +645,6 @@ class controller
             } else {
                 $resposta =  self::montarJsonImoveis($imoveis);
                 return $resposta;
-                
             }
         } catch (Exception $e) {
             return (["status" => "erro", "mensagem" => "Erro ao listar imóveis: " . $e->getMessage()]);
