@@ -53,16 +53,6 @@
 }
 
 
-.swiper-button-prev::after {
-    color: black !important;
-}
-
-.swiper-button-next::after {
-    background: transparent;
-    /* backdrop-filter: blur(40px) !important; */
-    color: black !important;
-}
-
 .obrigatorio {
     color: red;
 }
@@ -91,9 +81,17 @@ img:hover {
         background: white !important;
     }
 
+    .swiper-button-prev,
+    .swiper-button-next {
+        height: 100% !important;
+    }
+
     .swiper-button-prev::after,
     .swiper-button-next::after {
-        color: white;
+          /* background: green; */
+        /* backdrop-filter: blur(40px) !important; */
+        color: black !important;
+        height: 100% !important;
     }
 }
 

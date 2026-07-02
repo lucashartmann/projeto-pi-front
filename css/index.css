@@ -42,17 +42,23 @@ section#anuncios {
     border: solid rgba(47, 45, 45, 0.2) 2px;
     max-width: 500px;
     max-height: 550px;
+    z-index: 2;
 
     &:nth-child(n + 13) {
         display: none;
     }
 
-    .swiper {
+    .swiper-anuncio {
         width: 100%;
         margin: 0 auto;
         height: 14rem;
-        border: none;
         border-radius: 1.1% 1.1% 0% 0%;
+        overflow: hidden hidden;
+        z-index: 0;
+
+        .swiper-wrapper {
+            max-width: 100%;
+        }
 
         .swiper-button-prev {
             color: #000 !important;
@@ -65,14 +71,17 @@ section#anuncios {
         .swiper-slide {
             cursor: pointer;
             background: rgb(135, 126, 126, 0.2);
-            width: 90%;
-            border-radius: 2px;
-            box-shadow: 0.1px 0.1px 3px black;
             display: flex;
             background-repeat: no-repeat;
             background-size: cover;
             background-position: center;
-            height: 100%;
+            overflow: hidden hidden;
+            border-radius: 0;
+            border: none;
+            box-shadow: none;
+            margin: 0;
+            padding: 0;
+            width: 100% !important;
         }
     }
 
@@ -82,10 +91,10 @@ section#anuncios {
         z-index: 1;
         color: var(--cor-texto);
         background: transparent;
-        /* backdrop-filter: blur(40px) !important; */
         font-size: 1.5rem;
-        margin: 10px;
-        right: 0px;
+        /* alinhar na direita */
+        margin-left: 19.1%;
+        margin-top: 2px;
 
         &:hover {
             color: rgb(255, 0, 0);
@@ -233,8 +242,8 @@ section#anuncios {
         }
 
         .fab {
-           margin: 10px 3px;
-           font-size: 1.2rem;
+            margin: 10px 3px;
+            font-size: 1.2rem;
         }
 
         a {
@@ -341,17 +350,16 @@ section#anuncios {
     }
 }
 
-.swiper-wrapper {
-    max-width: 100%;
-}
-
-.swiper {
+.swiper-destaque {
     width: 90%;
     height: 40rem;
     margin-top: 50px;
     border: solid rgba(47, 45, 45, 0.2) 1px;
-    /* border-radius: ; */
     overflow: hidden hidden;
+
+    .swiper-wrapper {
+        max-width: 100%;
+    }
 
     .swiper-pagination-bullet {
         background: #000;
@@ -368,12 +376,8 @@ section#anuncios {
     .swiper-slide {
         cursor: pointer;
         background: rgba(255, 255, 255, 0.2);
-        /* width: 100% !important; */
-        overflow-x: hidden;
         margin: 0;
         padding: 0;
-        border-radius: 2px;
-        box-shadow: 0.1px 0.1px 3px black;
         display: flex;
         justify-items: center;
         text-align: center;

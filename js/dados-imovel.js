@@ -87,15 +87,15 @@ function inicializarSwiper() {
     var swiper = new Swiper('.swiper-destaque', {
         loop: true,
         pagination: {
-            el: '.swiper .swiper-pagination', 
+            el: '.swiper-destaque .swiper-pagination', 
             clickable: true
         },
         navigation: {
-            nextEl: '.swiper .swiper-button-next', 
-            prevEl: '.swiper .swiper-button-prev'  
+            nextEl: '.swiper-destaque .swiper-button-next', 
+            prevEl: '.swiper-destaque .swiper-button-prev'  
         },
         scrollbar: {
-            el: '.swiper .swiper-scrollbar'
+            el: '.swiper-destaque .swiper-scrollbar'
         },
     });
 

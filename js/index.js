@@ -87,9 +87,9 @@ function imovelPrincipal(dados) {
 }
 
 function bannerImoveis(dados) {
-    var wrapper = document.querySelector(".swiper-wrapper");
+    var wrapper = document.querySelector(".swiper-destaque .swiper-wrapper");
     if (!wrapper) return;
-    wrapper.innerHTML = ""; 
+    wrapper.innerHTML = "";
     for (var i = 0; i < 5; i++) {
         var imovel = dados[i];
         console.log("Imóvel do banner:", imovel);
@@ -118,18 +118,25 @@ function inicializarSwiper() {
         console.warn("Elemento .swiper não encontrado");
         return;
     }
-    if (window.Swiper) {
-        if (window.swiperInstance) window.swiperInstance.destroy(true, true);
-        window.swiperInstance = new Swiper('.swiper', {
-            loop: true,
-            direction: 'horizontal',
-            initialSlide: 0,
-            scrollbar: false,
-            obeserver: false,
-            slidesPerView: 1,
-            navigation: { nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev' },
-        });
-    }
+    var swiper = new Swiper('.swiper-destaque', {
+        loop: true,
+        direction: 'horizontal',
+        initialSlide: 0,
+        scrollbar: false,
+        obeserver: false,
+        slidesPerView: 1,
+        navigation: { nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev' },
+    });
+
+    var swiper = new Swiper('.swiper-anuncio', {
+        direction: 'horizontal',
+        initialSlide: 0,
+        scrollbar: false,
+        obeserver: false,
+        slidesPerView: 1,
+        navigation: { nextEl: '.swiper-anuncio .swiper-button-next', prevEl: '.swiper-anuncio .swiper-button-prev' },
+    });
+
 }
 
 function nextSlide() {
@@ -161,7 +168,7 @@ async function carregarAnuncios(dados) {
 
     if (!section || !dados) return;
 
-    section.innerHTML = ""; 
+    section.innerHTML = "";
 
     let html = "";
     for (const imovel of dados) {
@@ -179,9 +186,11 @@ async function carregarAnuncios(dados) {
         }
         html += `
             <div class="anuncio-imovel" onclick="abrirAnuncio(${imovel.id})">
-                <div class="swiper">
+                                    <i class="fas fa-heart" onclick="curtirImovel(${imovel.id})"></i>
+
+                <div class="swiper swiper-anuncio">
                     <div class="swiper-wrapper">
-                    <i class="fas fa-heart" onclick="curtirImovel(${imovel.id})"></i>
+                    
                     ${imovel.anuncio.imagens.map(img => `
                         <div class="swiper-slide" style="background-image: url(${img})">
                         </div>
@@ -190,6 +199,7 @@ async function carregarAnuncios(dados) {
                     <div class="swiper-button-prev" onclick="prevSlide()"></div>
                     <div class="swiper-button-next" onclick="nextSlide()"></div>
                 </div>
+                
                 <h2>${imovel.anuncio?.titulo}</h2>
                 <p>${imovel.endereco?.rua}, ${imovel.endereco?.numero}, ${imovel.endereco?.bairro}</p>
                 ${precoVenda.outerHTML}
@@ -225,7 +235,7 @@ function pesquisarCEP(event) {
     gallery2.style.display = "none";
     const gallery3 = document.getElementById("gallery3");
     gallery3.style.display = "none";
-    const swiper = document.querySelector(".swiper");
+    const swiper = document.querySelector(".swiper-anuncio");
     swiper.style.display = "none";
     const imovelDestaque = document.getElementById("imovel-destaque");
     imovelDestaque.style.display = "none";
@@ -329,7 +339,7 @@ window.addEventListener("DOMContentLoaded", async () => {
     inicializarSwiper();
 
     setInterval(() => {
-        const swiper = document.querySelector('.swiper').swiper;
+        const swiper = document.querySelector('.swiper-destaque').swiper;
         if (swiper) {
             swiper.slideNext();
         }
