@@ -85,7 +85,6 @@ section#anuncios {
         }
     }
 
-
     .fa-heart {
         position: absolute;
         z-index: 1;
@@ -106,7 +105,7 @@ section#anuncios {
         margin: 10px;
     }
 
-    p:nth-child(3) {
+    p:nth-child(4) {
         /* endereco */
         text-align: center;
         align-self: center;
@@ -184,6 +183,8 @@ section#anuncios {
                 color: var(--cor-texto-alternativa) !important;
                 margin: 0;
                 margin-left: 5px;
+                font-size: 0.8rem;
+                padding-top: 4px;
             }
         }
     }

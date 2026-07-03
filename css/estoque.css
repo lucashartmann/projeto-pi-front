@@ -43,7 +43,7 @@
 #h-filtro {
     display: flex;
     gap: 10px;
-    margin: 70px 20px 20px 20px;
+    margin: 0px 20px 20px 20px;
     width: 98%;
 
     select {
@@ -59,10 +59,24 @@
     }
 }
 
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+    thead {
+        background-color: rgba(186, 174, 174, 0.5);
+    }
+    tbody {
+        background-color: rgba(186, 174, 174, 0.2);
+    }
+}
 
 #container-resultado {
-    display: block;
+    display: flex;
+    /* display: none; */
+    flex-direction: column;
     margin-top: 20px;
+    width: 100% ;
 
     .resultado {
         display: flex;
@@ -71,6 +85,7 @@
         padding: 10px;
         margin: 10px 20px;
         cursor: pointer;
+        
 
         &:hover {
             background-color: rgba(186, 174, 174, 0.8);

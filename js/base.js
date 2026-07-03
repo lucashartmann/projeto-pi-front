@@ -30,35 +30,24 @@ function modoNoturno() {
 
 function getCaminhoRelativo(destino) {
     let caminho = window.location.pathname;
-
     substring = "";
-
     if (caminho.includes("/html/")) {
         caminho = caminho.replace(caminho.substring(caminho.lastIndexOf("/html/")), "/");
     }
-
     if (caminho.includes("/html")) {
         caminho = caminho.replace(caminho.substring(caminho.lastIndexOf("/html")), "/");
     }
-
     if (caminho.includes("/index.html")) {
         caminho = caminho.replace(caminho.substring(caminho.lastIndexOf("/index.html")), "/");
     }
-
     if (caminho.slice(-2) != "//") {
         caminho += "/";
     }
-
     const regex = new RegExp("/" + "$");
-
     // console.log(caminho)
-
     caminho = caminho.replace(regex, destino);
-
     return caminho;
 }
-
-
 
 function alterarSrc(event, caminho) {
     let a = event.target;
@@ -179,14 +168,12 @@ function removerCardPessoa(container, event) {
                             document.getElementById("container-captador").appendChild(containerPessoa.cloneNode(true));
                             break;
                     }
-
                 }
             }
             document.body.removeChild(container);
             document.removeEventListener("click", removerCardPessoa);
             console.log("Card removido");
         }
-
 }
 
 async function listarImoveisDisponiveis() {
@@ -225,7 +212,6 @@ async function listarImoveisDisponiveis() {
     }
 }
 
-
 async function getDadosImovel(id) {
     try {
         let caminho = getCaminhoRelativo("/php/api/imoveis.php?acao=get_dados_imovel&id=" + id);
@@ -254,23 +240,18 @@ async function getDadosImovel(id) {
                 console.error("Falha ao conectar com o backend:", erro);
                 return null;
             });
-
         console.log("Dados do imóvel obtidos:", resposta);
-
         if (resposta && Array.isArray(resposta) && resposta.length > 0) {
             return resposta[0];
         } else {
             console.error("Resposta inválida ao obter dados do imóvel:", resposta);
             return null;
         }
-
     } catch (erro) {
         console.error("Falha ao conectar com o backend:", erro);
         return null;
     }
-
 }
-
 
 async function deslogar() {
     try {
@@ -307,7 +288,6 @@ async function deslogar() {
                 console.warn("Elemento de navegação não encontrado para atualizar estado de login");
                 return;
             }
-
             console.log("Deslogado com sucesso!");
             if (window.location.pathname.endsWith("index.html") || window.location.pathname.endsWith("/")) {
                 window.location.reload();
@@ -345,7 +325,6 @@ async function carregarUser() {
             console.error("Resposta não é JSON:", texto);
             return null;
         }
-
         if (dados.status == "erro") {
             console.error("Erro ao carregar usuário: " + dados.mensagem);
             return null;
@@ -359,17 +338,13 @@ async function carregarUser() {
 
 function carregarTabs(usuario) {
     const nav = document.getElementById("top-nav");
-
     if (!nav) return;
-
     let tabs = [];
     let cadastros = [];
-
     if (!usuario || !usuario.tipo) {
         console.warn("Tipo de usuário não encontrado:", usuario);
         return;
     }
-
     switch (usuario.tipo) {
         case 'ADMIN':
             tabs = [
@@ -387,20 +362,17 @@ function carregarTabs(usuario) {
                 { text: "Dados Cliente", href: "html/dados-cliente.html" }
             ];
             break;
-
         case "FINANCEIRO":
             tabs = [
                 { text: "Contratos", href: "html/contratos.html" }
             ];
             break;
-
         case "VISTORIADOR":
             tabs = [
                 { text: "Agendar Vistoria", href: "html/agendar-visita.html" },
                 { text: "Relatório", href: "html/relatorio.html" }
             ];
             break;
-
         case "CORRETOR":
             tabs = [
                 { text: "Atendimento", href: "html/atendimento.html" },
@@ -413,7 +385,6 @@ function carregarTabs(usuario) {
                 { text: "Cliente", href: "html/cadastro-cliente.html" },
             ];
             break;
-
         case "GERENTE":
             tabs = [
                 { text: "Estoque", href: "html/estoque.html" }
@@ -425,7 +396,6 @@ function carregarTabs(usuario) {
                 { text: "Imobiliária", href: "html/dados-imobiliaria.html" },
             ];
             break;
-
         case "CAPTADOR":
             tabs = [
                 { text: "Estoque", href: "html/estoque.html" }
@@ -435,7 +405,6 @@ function carregarTabs(usuario) {
                 { text: "Cliente", href: "html/cadastro-cliente.html" },
             ];
             break;
-
         case "CLIENTE":
             tabs = [
                 {text: "Atendimento", href: "html/atendimento-cliente.html" },
@@ -445,12 +414,9 @@ function carregarTabs(usuario) {
             ];
             break;
     }
-
-
     let html = tabs.map(tab =>
         `<li><a href="#" onclick="alterarSrc(event, '${tab.href}')">${tab.text}</a></li>`
     ).join("");
-
     if (dados.length > 0 && cadastros.length > 0) {
         html += `
         <li class="dropdown">
@@ -498,9 +464,7 @@ function carregarTabs(usuario) {
     if (div) {
         div.innerHTML = html + `<li><a href="#" onclick="deslogar()" id="logout">Sair</a></li>`;
     }
-
 }
-
 
 // function colide(el1, el2) {
 //   const r1 = el1.getBoundingClientRect();
@@ -543,13 +507,3 @@ async function setup() {
 
 
 setup();
-
-
-
-// window.addEventListener("scroll", () => {
-//     const nav = document.querySelector("#top-nav");
-//     if (window.scrollY > 50) {
-//         nav.classList.add("scrolled");
-//     } else {        nav.classList.remove("scrolled");
-//     }
-// });

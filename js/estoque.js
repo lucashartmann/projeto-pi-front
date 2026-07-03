@@ -36,7 +36,7 @@ async function carregarUsuarios(tipo) {
     } else {
         dados = usuariosCache;
     }
-    const section = document.getElementById("container-resultado");
+    const section = document.getElementById("container-pai");
     const seta = document.getElementById("seta");
     const filtro = document.getElementById("select-filtro").value;
     if (!section || !dados) {
@@ -46,23 +46,35 @@ async function carregarUsuarios(tipo) {
     console.log(dados);
     dados = dados.filter(usuario => usuario.tipo === tipo);
     section.innerHTML = "";
-    document.getElementById("contador-imoveis").textContent = `${dados.length} ${dados.length === 1 ? 'usuário' : 'usuários'}`;
+    // document.getElementById("contador-imoveis").textContent = `${dados.length} ${dados.length === 1 ? 'usuário' : 'usuários'}`;
+    // <input type="checkbox" class="checkbox-selecionar" onclick="montarOpcoes()">
+    //             <div class="dados" onclick="abrirCadastro(null, ${usuario.id})"></div>
+    section.innerHTML = `
+    <table class="resultado">                
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nome</th>
+                        <th>Email</th>
+                        <th>Telefone</th>
+                        <th>Data de Cadastro</th>
+                        <th>Data de Modificação</th>
+                    </tr>
+                </thead>
+    `;
     for (let usuario of dados) {
         section.innerHTML += `
-            <div class="resultado">
-                <input type="checkbox" class="checkbox-selecionar" onclick="montarOpcoes()">
-                <div class="dados" onclick="abrirCadastro(null, ${usuario.id})">
-                    <label>ID: ${usuario.id}</label>
-                    <label for="">Nome: ${usuario.nome}</label>
-                    <label for="">Email: ${usuario.email}</label>
-                    <label for="">Telefone: ${usuario.telefone}</label>
-                    <label for="">Data de Cadastro: ${new Date(usuario.data_cadastro?.date).toLocaleDateString()}</label>
-                    <label for="">Data de Modificação: ${usuario.data_modificacao ? new Date(usuario.data_modificacao?.date).toLocaleDateString() : 'N/A'}</label>
-                </div>
-                <li style="list-style: none;">
-                    <i class="fas fa-bars" onclick="openMenu(this)"></i>
-                </li>
-            </div>
+                <tbody>
+                    <tr>
+                        <td>${usuario.id}</td>
+                        <td>${usuario.nome}</td>
+                        <td>${usuario.email}</td>
+                        <td>${usuario.telefone}</td>
+                        <td>${new Date(usuario.data_cadastro?.date).toLocaleDateString()}</td>
+                        <td>${usuario.data_modificacao ? new Date(usuario.data_modificacao?.date).toLocaleDateString() : 'N/A'}</td>
+                    </tr>
+                </tbody>
+            </table>
         `;
     }
 }

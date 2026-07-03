@@ -368,7 +368,6 @@ class Init
             self::$imobiliaria->cadastrarListaFiltros(self::$filtrosCondominio, "filtros_condominio");
         }
 
-
         if (count(self::$imobiliaria->getEstoque()->getListaImoveis()) < 51) {
             for ($i = 1; $i <= 51; $i++) {
 

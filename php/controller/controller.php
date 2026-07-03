@@ -199,10 +199,8 @@ class controller
             ];
         }
 
-
         return $lista;
     }
-
 
     function carregarFavoritos()
     {
@@ -211,7 +209,6 @@ class controller
             if (!isset($_SESSION['usuario_id'])) {
                 return (["status" => "erro", "mensagem" => "Usuário não logado"]);
             }
-
             $idCliente = $_SESSION['usuario_id'];
             $imoveisFavoritos = Init::getInstance()->getImoveisFavoritos($idCliente);
             if (!$imoveisFavoritos) {
@@ -232,22 +229,17 @@ class controller
         try {
             $body = file_get_contents("php://input");
             $data = json_decode($body, true);
-
             if (json_last_error() !== JSON_ERROR_NONE) {
                 return (["status" => "erro", "mensagem" => "JSON inválido"]);
             }
-
             if (!Init::getInstance()->usuarioAtual) {
                 return (["status" => "erro", "mensagem" => "Usuário não logado"]);
             }
-
             $idCliente = Init::getInstance()->usuarioAtual->getId();
             $idImoveis = $data['id_imoveis'] ?? null;
-
             if (!$idCliente || !is_array($idImoveis)) {
                 return (["status" => "erro", "mensagem" => "ID do cliente ou lista de imóveis inválidos"]);
             }
-
             $resultado = Init::getInstance()->cadastrarImoveisCliente($idCliente, $idImoveis);
             if ($resultado) {
                 return (["status" => "sucesso", "mensagem" => "Imóveis favoritados com sucesso"]);
@@ -262,18 +254,14 @@ class controller
     function recuperarSenha($data)
     {
         try {
-
             $email = $data['email'] ?? '';
-
             if (!$email || !Validacao::validarEmail($email)) {
                 return [
                     "status" => "erro",
                     "mensagem" => "Email inválido ou não fornecido"
                 ];
             }
-
             $mail = new PHPMailer(true);
-
             $mail->isSMTP();
             $mail->Host = 'smtp.office365.com';
             $mail->SMTPAuth = true;
@@ -281,16 +269,12 @@ class controller
             $mail->Password = 'suasenha';
             $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
             $mail->Port = 587;
-
             $mail->setFrom('seuemail@outlook.com', 'Summit');
             $mail->addAddress($email);
-
             $mail->isHTML(true);
             $mail->Subject = 'Recuperação de Senha';
             $mail->Body = getArquivo();
-
             $mail->send();
-
             return [
                 "status" => "sucesso",
                 "mensagem" => "Instruções enviadas para o email"
@@ -302,7 +286,6 @@ class controller
             ];
         }
     }
-
     function listarProprietarios()
     {
         try {
