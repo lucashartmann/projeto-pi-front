@@ -371,6 +371,8 @@ class Init
         if (count(self::$imobiliaria->getEstoque()->getListaImoveis()) < 51) {
             for ($i = 1; $i <= 51; $i++) {
 
+                
+
                 $vistoriador = new Usuario(
                     username: "vistoriador$i@{$emails[array_rand($emails)]}",
                     senha: "Vistoriador$i#",
@@ -379,6 +381,13 @@ class Init
                     cpfCnpj: str_repeat($i, 11),
                     tipo: Tipo::VISTORIADOR
                 );
+
+                $dataRandom = new DateTime();
+                $dataRandom->setTimestamp(rand(strtotime('2020-01-01'), strtotime(DateTime::createFromFormat('Y-m-d H:i:s', date('Y-m-d H:i:s'))->format('Y-m-d H:i:s'))));
+                $vistoriador->setDataCadastro($dataRandom);
+                $dataRandomModificacao = new DateTime();
+                $dataRandomModificacao->setTimestamp(rand(strtotime($dataRandom->format('Y-m-d H:i:s')), strtotime(DateTime::createFromFormat('Y-m-d H:i:s', date('Y-m-d H:i:s'))->format('Y-m-d H:i:s'))));
+                $vistoriador->setDataModificacao($dataRandomModificacao);
 
                 $financeiro = new Usuario(
                     username: "financeiro$i@{$emails[array_rand($emails)]}",
@@ -389,6 +398,13 @@ class Init
                     tipo: Tipo::FINANCEIRO
                 );
 
+                $dataRandom = new DateTime();
+                $dataRandom->setTimestamp(rand(strtotime('2020-01-01'), strtotime(DateTime::createFromFormat('Y-m-d H:i:s', date('Y-m-d H:i:s'))->format('Y-m-d H:i:s'))));
+                $financeiro->setDataCadastro($dataRandom);
+                $dataRandomModificacao = new DateTime();
+                $dataRandomModificacao->setTimestamp(rand(strtotime($dataRandom->format('Y-m-d H:i:s')), strtotime(DateTime::createFromFormat('Y-m-d H:i:s', date('Y-m-d H:i:s'))->format('Y-m-d H:i:s'))));
+                $financeiro->setDataModificacao($dataRandomModificacao);
+
                 $corretor = new Corretor(
                     username: "corretor$i@{$emails[array_rand($emails)]}",
                     senha: "Corretor$i#",
@@ -398,6 +414,13 @@ class Init
                     creci: str_repeat($i, 6)
                 );
 
+                $dataRandom = new DateTime();
+                $dataRandom->setTimestamp(rand(strtotime('2020-01-01'), strtotime(DateTime::createFromFormat('Y-m-d H:i:s', date('Y-m-d H:i:s'))->format('Y-m-d H:i:s'))));
+                $corretor->setDataCadastro($dataRandom);
+                $dataRandomModificacao = new DateTime();
+                $dataRandomModificacao->setTimestamp(rand(strtotime($dataRandom->format('Y-m-d H:i:s')), strtotime(DateTime::createFromFormat('Y-m-d H:i:s', date('Y-m-d H:i:s'))->format('Y-m-d H:i:s'))));
+                $corretor->setDataModificacao($dataRandomModificacao);
+
                 $captador = new Captador(
                     username: "captador$i@{$emails[array_rand($emails)]}",
                     senha: "Captador$i#",
@@ -406,6 +429,15 @@ class Init
                     cpfCnpj: str_repeat($i + 3, 11)
                 );
 
+                # TODO: ARRUMAR
+
+                $dataRandom = new DateTime();
+                $dataRandom->setTimestamp(rand(strtotime('2020-01-01'), strtotime(DateTime::createFromFormat('Y-m-d H:i:s', date('Y-m-d H:i:s'))->format('Y-m-d H:i:s'))));
+                $captador->setDataCadastro($dataRandom); 
+                $dataRandomModificacao = new DateTime();
+                $dataRandomModificacao->setTimestamp(rand(strtotime($dataRandom->format('Y-m-d H:i:s')), strtotime(DateTime::createFromFormat('Y-m-d H:i:s', date('Y-m-d H:i:s'))->format('Y-m-d H:i:s'))));
+                $captador->setDataModificacao($dataRandomModificacao);
+
                 $gerente = new Gerente(
                     username: "gerente$i@{$emails[array_rand($emails)]}",
                     senha: "Gerente$i#",
@@ -413,6 +445,17 @@ class Init
                     nome: "{$nomes[array_rand($nomes)]} {$segundoNomes[array_rand($segundoNomes)]} {$sobrenomes[array_rand($sobrenomes)]}",
                     cpfCnpj: str_repeat($i + 4, 11)
                 );
+
+                $dataRandom = new DateTime();
+                $dataRandom->setTimestamp(rand(strtotime('2020-01-01'), strtotime(DateTime::createFromFormat('Y-m-d H:i:s', date('Y-m-d H:i:s'))->format('Y-m-d H:i:s'))));
+                $gerente->setDataCadastro($dataRandom);
+                $dataRandomModificacao = new DateTime();
+                $dataRandomModificacao->setTimestamp(rand(strtotime($dataRandom->format('Y-m-d H:i:s')), strtotime(DateTime::createFromFormat('Y-m-d H:i:s', date('Y-m-d H:i:s'))->format('Y-m-d H:i:s'))));
+                $opcoes = [
+                    null,
+                    $dataRandomModificacao
+                ];
+                $gerente->setDataModificacao($dataRandomModificacao);
 
                 $administrador = new Usuario(
                     username: "administrador$i@{$emails[array_rand($emails)]}",
@@ -423,6 +466,17 @@ class Init
                     tipo: Tipo::ADMINISTRADOR
                 );
 
+                $dataRandom = new DateTime();
+                $dataRandom->setTimestamp(rand(strtotime('2020-01-01'), strtotime(DateTime::createFromFormat('Y-m-d H:i:s', date('Y-m-d H:i:s'))->format('Y-m-d H:i:s'))));
+                $administrador->setDataCadastro($dataRandom);
+                $dataRandomModificacao = new DateTime();
+                $dataRandomModificacao->setTimestamp(rand(strtotime($dataRandom->format('Y-m-d H:i:s')), strtotime(DateTime::createFromFormat('Y-m-d H:i:s', date('Y-m-d H:i:s'))->format('Y-m-d H:i:s'))));
+                $opcoes = [
+                    null,
+                    $dataRandomModificacao
+                ];
+                $administrador->setDataModificacao($dataRandomModificacao);
+
                 $cliente = new Cliente(
                     username: "cliente$i@{$emails[array_rand($emails)]}",
                     senha: "Cliente$i#",
@@ -431,11 +485,33 @@ class Init
                     cpfCnpj: str_repeat($i + 6, 11)
                 );
 
+                $dataRandom = new DateTime();
+                $dataRandom->setTimestamp(rand(strtotime('2020-01-01'), strtotime(DateTime::createFromFormat('Y-m-d H:i:s', date('Y-m-d H:i:s'))->format('Y-m-d H:i:s'))));
+                $cliente->setDataCadastro($dataRandom);
+                $dataRandomModificacao = new DateTime();
+                $dataRandomModificacao->setTimestamp(rand(strtotime($dataRandom->format('Y-m-d H:i:s')), strtotime(DateTime::createFromFormat('Y-m-d H:i:s', date('Y-m-d H:i:s'))->format('Y-m-d H:i:s'))));
+                $opcoes = [
+                    null,
+                    $dataRandomModificacao
+                ];
+                $cliente->setDataModificacao($dataRandomModificacao);
+
                 $proprietario = new Proprietario(
                     email: "proprietario$i@{$emails[array_rand($emails)]}",
                     nome: "{$nomes[array_rand($nomes)]} {$segundoNomes[array_rand($segundoNomes)]} {$sobrenomes[array_rand($sobrenomes)]}",
                     cpfCnpj: str_repeat($i + 7, 11)
                 );
+
+                $dataRandom = new DateTime();
+                $dataRandom->setTimestamp(rand(strtotime('2020-01-01'), strtotime(DateTime::createFromFormat('Y-m-d H:i:s', date('Y-m-d H:i:s'))->format('Y-m-d H:i:s'))));
+                $proprietario->setDataCadastro($dataRandom);
+                $dataRandomModificacao = new DateTime();
+                $dataRandomModificacao->setTimestamp(rand(strtotime($dataRandom->format('Y-m-d H:i:s')), strtotime(DateTime::createFromFormat('Y-m-d H:i:s', date('Y-m-d H:i:s'))->format('Y-m-d H:i:s'))));
+                $opcoes = [
+                    null,
+                    $dataRandomModificacao
+                ];
+                $proprietario->setDataModificacao($opcoes[array_rand($opcoes)]);
 
                 self::$imobiliaria->cadastrarUsuario($corretor);
                 self::$imobiliaria->cadastrarUsuario($captador);
@@ -480,7 +556,16 @@ class Init
                 $imovel->setQuantQuartos(rand(0, 5));
                 $imovel->setIptu(rand(0, 10000));
                 $imovel->setValorCondominio(rand(0, 1000));
-                $imovel->setDataCadastro(DateTime::createFromFormat('Y-m-d H:i:s', date('Y-m-d H:i:s')));
+                $dataRandom = new DateTime();
+                $dataRandom->setTimestamp(rand(strtotime('2020-01-01'), strtotime(DateTime::createFromFormat('Y-m-d H:i:s', date('Y-m-d H:i:s'))->format('Y-m-d H:i:s'))));
+                $imovel->setDataCadastro($dataRandom);
+                $opcoesModificacao = [
+                    null,
+                    rand(strtotime($dataRandom->format('Y-m-d H:i:s')), strtotime(DateTime::createFromFormat('Y-m-d H:i:s', date('Y-m-d H:i:s'))->format('Y-m-d H:i:s')))
+                ];
+                $dataRandomModificacao = new DateTime();
+                $dataRandomModificacao->setTimestamp($opcoesModificacao[array_rand($opcoesModificacao)]);
+                $imovel->setDataModificacao($dataRandomModificacao);
                 $imovel->setSituacao(Situacao::TryFrom($situacoes[array_rand($situacoes)] ?? null));
                 $imovel->setOcupacao(Ocupacao::TryFrom($ocupacoes[array_rand($ocupacoes)] ?? null));
                 $imovel->setEstado(Estado::TryFrom($condicoes[array_rand($condicoes)] ?? null));

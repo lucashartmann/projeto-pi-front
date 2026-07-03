@@ -92,14 +92,12 @@ async function listarUsuarios() {
                     alert("Erro ao listar usuários: " + data.mensagem);
                     return null;
                 }
-                console.log("Usuários listados com sucesso:", data);
                 return data;
             })
             .catch(erro => {
                 console.error("Falha ao conectar com o backend:", erro);
                 return null;
             });
-        console.log("Resposta da API de listar usuários:", resposta);
         return resposta;
     } catch (erro) {
         console.error("Falha ao conectar com o backend:", erro);

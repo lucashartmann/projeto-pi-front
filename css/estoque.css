@@ -26,10 +26,10 @@
 }
 
 #container-pai {
-    align-items: center;
+    /* align-items: center; */
     justify-content: center;
     justify-items: center;
-    align-content: center;
+    /* align-content: center; */
     height: auto;
     width: 100%;
     padding: 20px;
@@ -63,6 +63,35 @@ table {
     width: 100%;
     border-collapse: collapse;
     margin-bottom: 20px;
+    letter-spacing: 1px;
+    caption {
+    caption-side: bottom;
+    padding: 10px;
+    font-weight: bold;
+    }
+
+    th,
+    td {
+    border: 1px solid rgb(160 160 160);
+    padding: 8px 10px;
+    }
+
+    td:last-of-type {
+    text-align: center;
+    }
+
+    tbody > tr:nth-of-type(even) {
+    background-color: rgb(237 238 242);
+    }
+
+    tfoot th {
+    text-align: right;
+    }
+
+    tfoot td {
+    font-weight: bold;
+    }
+
     thead {
         background-color: rgba(186, 174, 174, 0.5);
     }

@@ -1,13 +1,13 @@
 const imoveisCache = [];
 const proprietariosCache = [];
 const usuariosCache = [];
+let filtroUsuario = "";
+let seta = "";
 
 function trocarCadastro() {
-    const valor = event.target.value;
-    console.log("Valor selecionado:", valor);
+    const valor = event.target.value || document.querySelector("#select-cadastro").value;
     switch (valor) {
         case "imovel":
-            console.log("Carregando anúncios...");
             carregarAnuncios();
             break;
         case "cliente":
@@ -27,6 +27,24 @@ function trocarCadastro() {
     }
 }
 
+function filtrarUsuario(event) {
+    if (event.target.tagName == "TH" || event.target.tagName == "th") {
+        filtroUsuario = event.target.textContent;
+        seta = event.target.querySelector(".seta");
+    } else if (event.target.tagName == "I" || event.target.tagName == "i") {
+        filtroUsuario = event.target.closest("th").textContent;
+        seta = event.target;
+    }
+    
+    if (seta.classList.contains("fa-angle-down")) {
+        seta.classList.remove("fa-angle-down");
+        seta.classList.add("fa-angle-up");
+    } else if (seta.classList.contains("fa-angle-up")) {
+        seta.classList.remove("fa-angle-up");
+        seta.classList.add("fa-angle-down");
+    }
+    trocarCadastro();
+}
 
 async function carregarUsuarios(tipo) {
     let dados = [];
@@ -37,46 +55,121 @@ async function carregarUsuarios(tipo) {
         dados = usuariosCache;
     }
     const section = document.getElementById("container-pai");
-    const seta = document.getElementById("seta");
-    const filtro = document.getElementById("select-filtro").value;
     if (!section || !dados) {
         console.log("Erro: Elementos não encontrados");
         return;
     }
-    console.log(dados);
     dados = dados.filter(usuario => usuario.tipo === tipo);
+    filtroLower = filtroUsuario.toLowerCase().trim();
+    switch (filtroLower) {
+        case "id":
+            if (seta.classList.contains("fa-angle-down")) {
+                dados.sort((a, b) => a.id - b.id);
+            } else {
+                dados.sort((a, b) => b.id - a.id);
+            }
+            break;
+        case "nome":
+            if (seta.classList.contains("fa-angle-down")) {
+                dados.sort((a, b) => a.nome.localeCompare(b.nome));
+            } else {
+                dados.sort((a, b) => b.nome.localeCompare(a.nome));
+            }
+            break;
+        case "email":
+            if (seta.classList.contains("fa-angle-down")) {
+                dados.sort((a, b) => a.email.localeCompare(b.email));
+            } else {
+                dados.sort((a, b) => b.email.localeCompare(a.email));
+            }
+            break;
+        case "telefone":
+            if (seta.classList.contains("fa-angle-down")) {
+                dados.sort((a, b) => a.telefone.localeCompare(b.telefone));
+            } else {
+                dados.sort((a, b) => b.telefone.localeCompare(a.telefone));
+            }
+            break;
+        case "data de cadastro":
+            if (seta.classList.contains("fa-angle-down")) {
+                dados.sort((a, b) => new Date(a.data_cadastro?.date) - new Date(b.data_cadastro?.date));
+            } else {
+                dados.sort((a, b) => new Date(b.data_cadastro?.date) - new Date(a.data_cadastro?.date));
+            }
+            break;
+        case "data de modificação":
+            if (seta.classList.contains("fa-angle-down")) {
+                dados.sort((a, b) => new Date(a.data_modificacao?.date) - new Date(b.data_modificacao?.date));
+            } else {
+                dados.sort((a, b) => new Date(b.data_modificacao?.date) - new Date(a.data_modificacao?.date));
+            }
+            break;
+        default:
+            break;
+    }
+
+    if (dados.length === 0) {
+        alert("Nenhum usuário encontrado para o tipo selecionado.");
+        return;
+    }
+
+    let classID = document.querySelector(".seta")?.className || "fa fa-angle-up seta";
+    let classNome = document.querySelectorAll(".seta")[1]?.className || "fa fa-angle-up seta";
+    let classEmail = document.querySelectorAll(".seta")[2]?.className || "fa fa-angle-up seta";
+    let classTelefone = document.querySelectorAll(".seta")[3]?.className || "fa fa-angle-up seta";
+    let classDataCadastro = document.querySelectorAll(".seta")[4]?.className || "fa fa-angle-up seta";
+    let classDataModificacao = document.querySelectorAll(".seta")[5]?.className || "fa fa-angle-up seta";
+
     section.innerHTML = "";
     // document.getElementById("contador-imoveis").textContent = `${dados.length} ${dados.length === 1 ? 'usuário' : 'usuários'}`;
     // <input type="checkbox" class="checkbox-selecionar" onclick="montarOpcoes()">
     //             <div class="dados" onclick="abrirCadastro(null, ${usuario.id})"></div>
-    section.innerHTML = `
+
+    html = `
     <table class="resultado">                
                 <thead>
                     <tr>
-                        <th>ID</th>
-                        <th>Nome</th>
-                        <th>Email</th>
-                        <th>Telefone</th>
-                        <th>Data de Cadastro</th>
-                        <th>Data de Modificação</th>
+                        <th onclick="filtrarUsuario(event)" style="cursor: pointer;">ID <i class="${classID}"></i></th>
+                        <th onclick="filtrarUsuario(event)" style="cursor: pointer;">Nome <i class="${classNome}"></i></th>
+                        <th onclick="filtrarUsuario(event)" style="cursor: pointer;">Email <i class="${classEmail}"></i></th>
+                        <th onclick="filtrarUsuario(event)" style="cursor: pointer;">Telefone <i class="${classTelefone}"></i></th>
+                        <th onclick="filtrarUsuario(event)" style="cursor: pointer;">Data de Cadastro <i class="${classDataCadastro}"></i></th>
+                        <th onclick="filtrarUsuario(event)" style="cursor: pointer;">Data de Modificação <i class="${classDataModificacao}"></i></th>
                     </tr>
                 </thead>
-    `;
-    for (let usuario of dados) {
-        section.innerHTML += `
                 <tbody>
+    `;
+
+    for (let usuario of dados) {
+        const dataCadastro = usuario.data_cadastro;
+        let dataCadastroValida = null;
+        let dataModificacaoValida = null;
+    
+        if (dataCadastro) {
+            const [day, month, year] = dataCadastro.split("-");
+            dataCadastroValida = new Date(`${year}-${month}-${day}`); 
+        }
+
+        const dataModificacao = usuario.data_modificacao;
+        if (dataModificacao) {
+            const [dayMod, monthMod, yearMod] = dataModificacao.split("-");
+            dataModificacaoValida = new Date(`${yearMod}-${monthMod}-${dayMod}`);
+        }
+
+        html += `
                     <tr>
                         <td>${usuario.id}</td>
                         <td>${usuario.nome}</td>
                         <td>${usuario.email}</td>
-                        <td>${usuario.telefone}</td>
-                        <td>${new Date(usuario.data_cadastro?.date).toLocaleDateString()}</td>
-                        <td>${usuario.data_modificacao ? new Date(usuario.data_modificacao?.date).toLocaleDateString() : 'N/A'}</td>
+                        <td>${usuario.telefones.join(', ')}</td>
+                        <td>${usuario.data_cadastro ? dataCadastroValida?.toLocaleDateString() : 'N/A'}</td>
+                        <td>${usuario.data_modificacao ? dataModificacaoValida?.toLocaleDateString() : 'N/A'}</td>
                     </tr>
-                </tbody>
-            </table>
         `;
     }
+    html += `</tbody></table>`;
+    section.innerHTML = html;
+
 }
 
 async function carregarAnuncios() {
@@ -166,9 +259,7 @@ async function carregarAnuncios() {
     section.innerHTML = "";
     document.getElementById("contador-imoveis").textContent = `${dados.length} ${dados.length === 1 ? 'imóvel' : 'imóveis'}`;
     for (let imovel of dados) {
-
         const b64 = imovel.anuncio?.imagens?.[0] || null;
-        // console.log(b64);
         section.innerHTML += `
             <div class="resultado">
                 <input type="checkbox" class="checkbox-selecionar" onclick="montarOpcoes()">

@@ -360,8 +360,8 @@ class controller
                         ] : null,
                         "data_nascimento" => $usuario->getDataNascimento() ? $usuario->getDataNascimento()->format('d-m-Y') : null,
                         "tipo" => $usuario->getTipo() ?? null,
-                        "data_cadastro" => $usuario->getDataCadastro(),
-                        "data_modificacao" => $usuario->getDataModificacao()
+                        "data_cadastro" => $usuario->getDataCadastro() ? $usuario->getDataCadastro()->format('d-m-Y') : null,
+                        "data_modificacao" => $usuario->getDataModificacao() ? $usuario->getDataModificacao()->format('d-m-Y') : null
                     ];
                 }
             }
@@ -460,6 +460,7 @@ class controller
             }
             $usuario->setEndereco($endereco);
             $atualizacao = null;
+            $usuario->setDataModificacao(DateTime::createFromFormat('Y-m-d H:i:s', date('Y-m-d H:i:s')));
             if ($id) {
                 $atualizacao = Init::getInstance()->atualizarUsuario($usuario);
                 if ($atualizacao) {
@@ -468,6 +469,7 @@ class controller
                     return (["status" => "erro", "mensagem" => "Erro ao atualizar usuário"]);
                 }
             } else {
+                $usuario->setDataCadastro(DateTime::createFromFormat('Y-m-d H:i:s', date('Y-m-d H:i:s')));
                 $atualizacao = Init::getInstance()->cadastrarUsuario($usuario);
                 if ($atualizacao) {
                     return (["status" => "sucesso", "mensagem" => "Usuário cadastrado com sucesso"]);

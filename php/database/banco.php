@@ -63,7 +63,9 @@ class Banco extends PDO
                 rg VARCHAR(12),
                 id_endereco INTEGER,
                 data_nascimento DATE,
-                tipo_usuario VARCHAR(50) NOT NULL
+                tipo_usuario VARCHAR(50) NOT NULL,
+                data_cadastro TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                data_modificacao DATETIME NULL
             )",
 
             "CREATE TABLE IF NOT EXISTS telefone (
@@ -537,6 +539,8 @@ class Banco extends PDO
             $nome = $registro['nome'];
             $cpfCnpj = $registro['cpf_cnpj'];
             $rg = $registro['rg'];
+            $dataModificacao = $registro['data_modificacao'] ? new DateTime($registro['data_modificacao']) : null;
+            $dataCadastro = $registro['data_cadastro'] ? new DateTime($registro['data_cadastro']) : null;
             $endereco = $registro['id_endereco'] !== null ? $this->getEnderecoPorId((int)$registro['id_endereco']) : null;
             $dataNascimento = $registro['data_nascimento'];
             if ($dataNascimento) {
@@ -666,6 +670,8 @@ class Banco extends PDO
             $usuarioObj->setEndereco($endereco);
             $usuarioObj->setDataNascimento($dataNascimento);
             $usuarioObj->setTelefones($telefones);
+            $usuarioObj->setDataCadastro($dataCadastro);
+            $usuarioObj->setDataModificacao($dataModificacao);
             return $usuarioObj;
         } catch (Exception $e) {
             error_log("ERRO Banco->getUsuarioPorId: " . $e->getMessage());
@@ -855,6 +861,8 @@ class Banco extends PDO
                 $cpf = $registro['cpf_cnpj'];
                 $rg = $registro['rg'];
                 $tipo = $registro['tipo_usuario'];
+                $dataCadastro = $registro['data_cadastro'] ? new DateTime($registro['data_cadastro']) : null;
+                $dataModificacao = $registro['data_modificacao'] ? new DateTime($registro['data_modificacao']) : null;
 
                 $endereco = null;
                 if ($registro['id_endereco']) {
@@ -967,6 +975,8 @@ class Banco extends PDO
                 $usuario->setEndereco($endereco);
                 $usuario->setDataNascimento($data);
                 $usuario->setTelefones($telefones);
+                $usuario->setDataCadastro($dataCadastro);
+                $usuario->setDataModificacao($dataModificacao);
 
                 $lista[] = $usuario;
             }
@@ -982,8 +992,8 @@ class Banco extends PDO
     {
         try {
             $sql = "
-                    INSERT INTO usuario (username, senha, email, nome, cpf_cnpj, rg, id_endereco, data_nascimento, tipo_usuario) 
-                    VALUES(:username, :senha, :email, :nome, :cpf_cnpj, :rg, :endereco, :data_nascimento, :tipo)
+                    INSERT INTO usuario (username, senha, email, nome, cpf_cnpj, rg, id_endereco, data_nascimento, tipo_usuario, data_cadastro, data_modificacao) 
+                    VALUES(:username, :senha, :email, :nome, :cpf_cnpj, :rg, :endereco, :data_nascimento, :tipo, :data_cadastro, :data_modificacao)
                 ";
             $stmt = $this->prepare($sql);
             if ($usuario->getEndereco()) {
@@ -1001,6 +1011,16 @@ class Banco extends PDO
             } else {
                 $dataNascimento = NULL;
             }
+            if ($usuario->getDataCadastro()) {
+                $dataCadastro = $usuario->getDataCadastro()->format("Y-m-d H:i:s");
+            } else {
+                $dataCadastro = date("Y-m-d H:i:s");
+            }
+            if ($usuario->getDataModificacao()) {
+                $dataModificacao = $usuario->getDataModificacao()->format("Y-m-d H:i:s");
+            } else {
+                $dataModificacao = NULL;
+            }
             $senha_hash = hash('sha256', $usuario->getSenha());
             $stmt->execute([
                 ':username' => $usuario->getUsername(),
@@ -1011,7 +1031,9 @@ class Banco extends PDO
                 ':rg' => $usuario->getRg(),
                 ':endereco' => $endereco,
                 ':data_nascimento' => $dataNascimento,
-                ':tipo' => $tipo
+                ':tipo' => $tipo,
+                ':data_cadastro' => $dataCadastro,
+                ':data_modificacao' => $dataModificacao
             ]);
             $id = $this->lastInsertId();
             if ($usuario->getTelefones()) {
@@ -1137,6 +1159,8 @@ class Banco extends PDO
             $cpfCnpj = $registro['cpf_cnpj'];
             $rg = $registro['rg'];
             $endereco = $registro['id_endereco'];
+            $dataCadastro = $registro['data_cadastro'] ? new DateTime($registro['data_cadastro']) : null;
+            $dataModificacao = $registro['data_modificacao'] ? new DateTime($registro['data_modificacao']) : null;
             if ($endereco) {
                 $endereco = $this->getEnderecoPorId((int)($registro['id_endereco']));
             }
@@ -1258,6 +1282,8 @@ class Banco extends PDO
             $usuarioObj->setEndereco($endereco);
             $usuarioObj->setDataNascimento($dataNascimento);
             $usuarioObj->setTelefones($telefones);
+            $usuarioObj->setDataCadastro($dataCadastro);
+            $usuarioObj->setDataModificacao($dataModificacao);
             return $usuarioObj;
         } catch (Exception $e) {
             $erro = "ERRO! Banco->getUsuarioPorCpfCnpj: " . $e->getMessage();
@@ -2713,7 +2739,8 @@ class Banco extends PDO
                     rg = :rg,
                     id_endereco = :endereco,
                     data_nascimento = :data,
-                    tipo_usuario = :tipo
+                    tipo_usuario = :tipo,
+                    data_modificacao = NOW(),
                 WHERE cpf_cnpj = :cpf_where OR id_usuario = :id
             ";
 
