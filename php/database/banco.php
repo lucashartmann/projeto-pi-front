@@ -70,7 +70,7 @@ class Banco extends PDO
 
             "CREATE TABLE IF NOT EXISTS telefone (
                 id INTEGER PRIMARY KEY AUTO_INCREMENT,
-                numero VARCHAR(11) NOT NULL UNIQUE
+                numero VARCHAR(13) NOT NULL UNIQUE
             )",
 
             "CREATE TABLE IF NOT EXISTS endereco (
@@ -1799,21 +1799,16 @@ class Banco extends PDO
             $cpfCnpj = $registro['cpf_cnpj'];
             $rg = $registro['rg'];
             $idEndereco = $registro['id_endereco'];
-            $dataNascimento = $registro['data_nascimento'];
+            $dataNascimento = $registro['data_nascimento'] ? DateTime::createFromFormat('Y-m-d', $registro['data_nascimento']) : null;
             $tipo = $registro['tipo_usuario'];
-
+            $dataCadastro = $registro['data_cadastro'] ? new DateTime($registro['data_cadastro']) : null;
+            $dataModificacao = $registro['data_modificacao'] ? new DateTime($registro['data_modificacao']) : null;
 
             $endereco = null;
             if ($idEndereco) {
                 $endereco = $this->getEnderecoPorId($idEndereco);
             }
-
-
-            if ($dataNascimento) {
-                $dataNascimento = DateTime::createFromFormat('d-m-Y', $dataNascimento);
-            }
-
-
+            
             $telefones = [];
 
             $stmt = $this->prepare("
@@ -1934,6 +1929,8 @@ class Banco extends PDO
             $usuarioObj->setRg($rg);
             $usuarioObj->setId($idUsuario);
             $usuarioObj->setTelefones($telefones);
+            $usuarioObj->setDataCadastro($dataCadastro);
+            $usuarioObj->setDataModificacao($dataModificacao);
 
             return $usuarioObj;
         } catch (Exception $e) {
@@ -2234,13 +2231,17 @@ class Banco extends PDO
             $idCondominio = $condominio ? $condominio->getId() : null;
 
             $dataCadastro = $imovel->getDataCadastro();
-            if ($dataCadastro instanceof DateTime) {
-                $dataCadastro = $dataCadastro->format("d-m-Y");
+            if ($dataCadastro) {
+                $dataCadastro = $dataCadastro->format("Y-m-d H:i:s");
+            } else {
+                $dataCadastro = date("Y-m-d H:i:s");
             }
 
             $dataModificacao = $imovel->getDataModificacao();
-            if ($dataModificacao instanceof DateTime) {
-                $dataModificacao = $dataModificacao->format("d-m-Y");
+            if ($dataModificacao) {
+                $dataModificacao = $dataModificacao->format("Y-m-d H:i:s");
+            } else {
+                $dataModificacao = null;
             }
 
 

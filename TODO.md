@@ -1,6 +1,5 @@
 - [ ] Entrar com google
 - [ ] Esqueceu senha: mandar o email
-- [ ] Implementar botões de aumentar e diminuir a fonte de <p>
 - [ ] continuar a tela de contato
-- [ ] terminar __init__.php
 - [ ] quantidade de visitas/clicks no imóvel
+- [ ] Arrumar contador de imoveis

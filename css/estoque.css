@@ -48,14 +48,23 @@
 
     select {
         width: 10rem;
+        height: 1.6rem;
     }
 
     #seta {
-        width: 4vw;
+        width: auto;
+        height: 1.6rem;
+        /* border: solid 1px rgb(160 160 160); */
+        text-align: center;
+        align-content: center;
+        &:hover {
+            cursor: pointer;
+        }
     }
 
     #selecionar-todos {
-        width: auto;
+        width: 9rem;        
+        height: 1.6rem;
     }
 }
 
@@ -69,15 +78,10 @@ table {
     padding: 10px;
     font-weight: bold;
     }
-
     th,
     td {
     border: 1px solid rgb(160 160 160);
     padding: 8px 10px;
-    }
-
-    td:last-of-type {
-    text-align: center;
     }
 
     tbody > tr:nth-of-type(even) {
@@ -102,7 +106,6 @@ table {
 
 #container-resultado {
     display: flex;
-    /* display: none; */
     flex-direction: column;
     margin-top: 20px;
     width: 100% ;
@@ -183,7 +186,11 @@ body {
     }
 }
 
-#sidebar-anuncios{
+#sidebar-pessoas {
+    display: none;
+}
+
+.sidebar-anuncios{
     display: flex;
     flex-direction: column;
     justify-content: flex-start;

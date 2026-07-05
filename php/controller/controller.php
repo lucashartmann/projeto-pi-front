@@ -360,8 +360,8 @@ class controller
                         ] : null,
                         "data_nascimento" => $usuario->getDataNascimento() ? $usuario->getDataNascimento()->format('d-m-Y') : null,
                         "tipo" => $usuario->getTipo() ?? null,
-                        "data_cadastro" => $usuario->getDataCadastro() ? $usuario->getDataCadastro()->format('d-m-Y') : null,
-                        "data_modificacao" => $usuario->getDataModificacao() ? $usuario->getDataModificacao()->format('d-m-Y') : null
+                        "data_cadastro" => $usuario->getDataCadastro() ? $usuario->getDataCadastro() : null,
+                        "data_modificacao" => $usuario->getDataModificacao() ? $usuario->getDataModificacao() : null
                     ];
                 }
             }
