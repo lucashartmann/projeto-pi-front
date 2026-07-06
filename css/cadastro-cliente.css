@@ -23,6 +23,7 @@ body {
 input {
     height: 1.6rem;
     font-size: 100%;
+    text-indent: 0.3rem !important;
 }
 
 #h-buttons {

@@ -367,8 +367,6 @@ async function salvar() {
     });
 
 
-    console.log("Dados do imóvel a serem enviados:", data);
-
     if (JSON.stringify(formData).length > 0) {
         try {
             let caminho = getCaminhoRelativo("/php/api/imoveis.php?acao=cadastrar_imovel");
@@ -378,7 +376,7 @@ async function salvar() {
             })
                 .then(async (response) => {
                     if (response.erro) {
-                        alert("Erro ao listar atendimentos: " + response.erro);
+                        alert("Erro ao cadastrar imóvel: " + response.erro);
                         return null;
                     }
                     const contentType = response.headers.get("content-type");

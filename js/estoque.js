@@ -452,7 +452,7 @@ async function carregarUsuarios(tipo) {
         });
 
         html += `
-                    <tr>
+                    <tr onclick="abrirCadastroUsuario(null, ${usuario.id})">
                         <td>${usuario.id}</td>
                         <td>${usuario.nome}</td>
                         <td>${usuario.email}</td>
@@ -646,6 +646,17 @@ function selecionarTodos() {
     const todosSelecionados = Array.from(checkboxes).every(checkbox => checkbox.checked);
     checkboxes.forEach(checkbox => checkbox.checked = !todosSelecionados);
     montarOpcoes();
+}
+
+function abrirCadastroUsuario(usuario = null, id = null) {
+    if (id && !usuario) {
+        usuario = usuariosCache.find(usuario => usuario.id == id);
+    } else if (!usuario && !id) {
+        usuario = null;
+        return
+    }
+    sessionStorage.setItem("usuario", JSON.stringify(usuario));
+    window.location.href = "cadastro-cliente.html";
 }
 
 

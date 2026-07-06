@@ -1,7 +1,130 @@
+Inputmask("(99) 99999-9999").mask("#inpt-telefone");
+Inputmask("999.999.999-99").mask("#inpt-cpf");
+Inputmask("99999-999").mask("#ta-cep");
 
 const usuario = null;
 
+async function salvar() {
+    var form = document.querySelector("form");
+    if (!form.checkValidity()) {
+        form.reportValidity();
+        return;
+    }
+    let formData = new FormData(form);
+    const data = {};
 
+    document.querySelector("container-telefones").querySelectorAll("input[name='telefone']").forEach((input, index) => {
+        const telefone = input.value.trim();
+        if (telefone !== "") {
+            if (!data.telefones) {
+                data.telefones = [];
+            }
+            data.telefones.push(telefone);
+        }
+    });
+
+    formData.forEach((value, key) => {
+        data[key] = value;
+    });
+    if (JSON.stringify(formData).length > 0) {
+        try {
+            let caminho = getCaminhoRelativo("/php/api/usuarios.php?acao=cadastro");
+            await fetch(caminho, {
+                method: "POST",
+                body: JSON.stringify(data)
+            })
+                .then(async response => {
+                    if (response.erro) {
+                        alert("Erro ao cadastrar usuário: " + response.erro);
+                        return null;
+                    }
+                    const contentType = response.headers.get("content-type");
+                    if (contentType && contentType.includes("application/json")) {
+                        return await response.json();
+                    } else {
+                        const texto = await response.text();
+                        alert("Resposta inesperada do servidor");
+                        console.error("Resposta não é JSON:", texto);
+                        return null;
+                    }
+                })
+                .then(async (data) => {
+                    if (data.status == "erro") {
+                        alert("Erro ao cadastrar usuário: " + data.mensagem);
+                        return;
+                    }
+                    else if (data.mensagem) {
+                        alert("Usuário cadastrado com sucesso: " + data.mensagem);
+                        if (!imovel) {
+                            forms.forEach(form => form.reset());
+                        }
+                    }
+
+                })
+                .catch(error => {
+                    alert("Erro ao cadastrar usuário:", error);
+                });
+
+        } catch (error) {
+            console.error("Erro ao enviar dados do usuário:", error);
+        }
+
+    } else {
+        alert("Nenhum dado para enviar!");
+    }
+
+    // console.log("Dados do imóvel a serem enviados:", data);
+}
+
+async function apagar() {
+    confirmar = confirm("Tem certeza que deseja excluir este usuário?");
+    if (usuarioID && confirmar) {
+        try {
+            let caminho = getCaminhoRelativo("/php/api/usuarios.php?acao=apagar&id=" + usuarioID);
+            const response = await fetch(caminho, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+
+            })
+                .then(async (response) => {
+                    if (response.erro) {
+                        alert("Erro ao remover usuário: " + response.erro);
+                        return null;
+                    }
+                    const contentType = response.headers.get("content-type");
+                    if (contentType && contentType.includes("application/json")) {
+                        return await response.json();
+                    } else {
+                        const texto = await response.text();
+                        alert("Resposta inesperada do servidor");
+                        console.error("Resposta não é JSON:", texto);
+                        return null;
+                    }
+                })
+                .then(async (data) => {
+                    if (data.status == "erro") {
+                        alert("Erro ao excluir imóvel: " + data.mensagem);
+                    } else {
+                        console.log("Imóvel excluído com sucesso:", data);
+                        window.location.href = "estoque.html";
+                    }
+                })
+                .catch(error => {
+                    console.error("Erro ao excluir imóvel:", error);
+                });
+        } catch (error) {
+            console.error("Erro ao enviar dados para exclusão do imóvel:", error);
+        }
+    }
+    else {
+        // alert("Nenhum imóvel selecionado para exclusão!");
+        window.location.href = "estoque.html";
+    }
+
+
+}
 
 function adicionarTelefone() {
     event.preventDefault();
@@ -11,6 +134,7 @@ function adicionarTelefone() {
     novoTelefone.name = "telefone";
     novoTelefone.placeholder = "Telefone";
     novoTelefone.classList.add("inpt-telefone");
+    novoTelefone.name = "telefone";
     Inputmask("(99) 99999-9999").mask(novoTelefone);
     campoTelefone.appendChild(novoTelefone);
     const botao = document.createElement("button");
@@ -33,11 +157,58 @@ function removerTelefone() {
     }
 }
 
-window.addEventListener('beforeunload', async function (event) {
-    usuario = await carregarUser();
-    Inputmask("(99) 99999-9999").mask("#inpt-telefone");
-    Inputmask("999.999.999-99").mask("#inpt-cpf");
-    Inputmask("99999-999").mask("#ta-cep");
+function formatarData(data) {
+    const partes = data.split("-");
+    if (partes.length === 3) {
+        return `${partes[2]}-${partes[1]}-${partes[0]}`;
+    }
+    return data;
+}
+
+async function abrirCadastro(usuario) {
+    usuario = JSON.parse(usuario);
+    if (usuario) {
+        document.getElementById("inpt-nome").value = usuario.nome || "";
+        // document.getElementById("inpt-username").value = usuario.username || "";
+        document.getElementById("inpt-email").value = usuario.email || "";
+        document.getElementById("inpt-cpf").value = usuario.cpf_cnpj || "";
+        document.getElementById("ta-cep").value = usuario.endereco?.cep || "";
+        document.getElementById("ta-rua").value = usuario.endereco?.rua || "";
+        document.getElementById("ta-numero").value = usuario.endereco?.numero || "";
+        document.getElementById("ta-bairro").value = usuario.endereco?.bairro || "";
+        document.getElementById("ta-cidade").value = usuario.endereco?.cidade || "";
+        document.getElementById("ta-estado").value = usuario.endereco?.uf || "";
+        document.getElementById("ta-complemento").value = usuario.endereco?.complemento || "";
+        document.getElementById("ta-bloco").value = usuario.endereco?.bloco || "";
+        document.getElementById("inpt-rg").value = usuario.rg || "";
+        document.getElementById("inpt-creci").value = usuario.creci || "";
+        document.getElementById("inpt-salario").value = usuario.salario || "";
+        document.getElementById("select-tipo").value = usuario.tipo || "";
+        if (dados.usuario?.data_nascimento) {
+            document.getElementById("inpt-data-nascimento").value = usuario.data_nascimento ? formatarData(usuario.data_nascimento) : "";
+        }
+        if (usuario.telefones && Array.isArray(usuario.telefones)) {
+            const containerTelefones = document.getElementById("container-telefones");
+            containerTelefones.innerHTML = "";
+            usuario.telefones.forEach(telefone => {
+                const novoTelefone = document.createElement("input");
+                novoTelefone.type = "text";
+                novoTelefone.name = "telefone";
+                novoTelefone.value = telefone;
+                novoTelefone.classList.add("inpt-telefone");
+                Inputmask("+99 (99) 99999-9999").mask(novoTelefone);
+                containerTelefones.appendChild(novoTelefone);
+            });
+        }
+    } else {
+        alert("Usuário não encontrado para edição.");
+        window.location.href = "estoque.html";
+    }
+
+}
+
+window.addEventListener('DOMContentLoaded', async function (event) {
+    let usuario = await carregarUser();
 
     const select = document.querySelector("#select-tipo");
 
@@ -79,5 +250,11 @@ window.addEventListener('beforeunload', async function (event) {
                 select.style.display = "none";
                 break;
         }
+    }
+
+    let usuario2 = this.sessionStorage.getItem("usuario");
+    if (usuario2) {
+        this.sessionStorage.removeItem("usuario");
+        await abrirCadastro(usuario2);
     }
 });

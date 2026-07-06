@@ -56,7 +56,7 @@ class Banco extends PDO
             "CREATE TABLE IF NOT EXISTS usuario (
                 id INTEGER PRIMARY KEY AUTO_INCREMENT,
                 username VARCHAR(255) UNIQUE,
-                senha VARCHAR(255) NOT NULL,
+                senha VARCHAR(255) NULL,
                 email VARCHAR(255) UNIQUE,
                 nome VARCHAR(255) NOT NULL,
                 cpf_cnpj VARCHAR(14) UNIQUE NOT NULL,
@@ -1747,9 +1747,9 @@ class Banco extends PDO
 
             $idEndereco = (int)$registro['id'];
             $rua = $registro['rua'];
-            $numero = $registro['numero'] ? (int)$registro['numero'] : null;
+            $numero = $registro['numero'] ? (int)$registro['numero'] : 0;
             $bairro = $registro['bairro'];
-            $cep = $registro['cep'] ? (int)$registro['cep'] : null;
+            $cep = $registro['cep'] ? (int)$registro['cep'] : "";
             $complemento = $registro['complemento'];
             $cidade = $registro['cidade'];
             $uf = $registro['uf'];

@@ -382,8 +382,8 @@ class Init
 
                 $vistoriador->setRg(str_repeat($i, 9));
                 $vistoriador->setTelefones([
-                    "(51) 9" . str_repeat($i, 8),
-                    "(51) 9" . str_repeat($i + 1, 8)
+                    "55519" . str_repeat($i, 8),
+                    "55519" . str_repeat($i + 1, 8)
                 ]);
                 $vistoriador->setDataNascimento(DateTime::createFromFormat('Y-m-d', '1990-01-01')->modify("+$i days"));
 
@@ -409,8 +409,8 @@ class Init
 
                 $financeiro->setRg(str_repeat($i + 1, 9));
                 $financeiro->setTelefones([
-                    "(51) 9" . str_repeat($i + 1, 8),
-                    "(51) 9" . str_repeat($i + 2, 8)
+                    "55519" . str_repeat($i + 1, 8),
+                    "55519" . str_repeat($i + 2, 8)
                 ]);
                 $financeiro->setDataNascimento(DateTime::createFromFormat('Y-m-d', '1990-01-01')->modify("+$i days"));
 
@@ -436,8 +436,8 @@ class Init
 
                 $corretor->setRg(str_repeat($i + 2, 9));
                 $corretor->setTelefones([
-                    "(51) 9" . str_repeat($i + 2, 8),
-                    "(51) 9" . str_repeat($i + 3, 8)
+                    "55519" . str_repeat($i + 2, 8),
+                    "55519" . str_repeat($i + 3, 8)
                 ]);
                 $corretor->setDataNascimento(DateTime::createFromFormat('Y-m-d', '1990-01-01')->modify("+$i days"));
 
@@ -462,8 +462,8 @@ class Init
 
                 $captador->setRg(str_repeat($i + 3, 9));
                 $captador->setTelefones([
-                    "(51) 9" . str_repeat($i + 3, 8),
-                    "(51) 9" . str_repeat($i + 4, 8)
+                    "55519" . str_repeat($i + 3, 8),
+                    "55519" . str_repeat($i + 4, 8)
                 ]);
                 $captador->setDataNascimento(DateTime::createFromFormat('Y-m-d', '1990-01-01')->modify("+$i days"));
 
@@ -488,8 +488,8 @@ class Init
 
                 $gerente->setRg(str_repeat($i + 4, 9));
                 $gerente->setTelefones([
-                    "(51) 9" . str_repeat($i + 4, 8),
-                    "(51) 9" . str_repeat($i + 5, 8)
+                    "55519" . str_repeat($i + 4, 8),
+                    "55519" . str_repeat($i + 5, 8)
                 ]);
                 $gerente->setDataNascimento(DateTime::createFromFormat('Y-m-d', '1990-01-01')->modify("+$i days"));
 
@@ -515,8 +515,8 @@ class Init
 
                 $administrador->setRg(str_repeat($i + 5, 9));
                 $administrador->setTelefones([
-                    "(51) 9" . str_repeat($i + 5, 8),
-                    "(51) 9" . str_repeat($i + 6, 8)
+                    "55519" . str_repeat($i + 5, 8),
+                    "55519" . str_repeat($i + 6, 8)
                 ]);
                 $administrador->setDataNascimento(DateTime::createFromFormat('Y-m-d', '1990-01-01')->modify("+$i days"));
 
@@ -565,8 +565,8 @@ class Init
 
                 $proprietario->setRg(str_repeat($i + 7, 9));
                 $proprietario->setTelefones([
-                    "(51) 9" . str_repeat($i + 7, 8),
-                    "(51) 9" . str_repeat($i + 8, 8)
+                    "55519" . str_repeat($i + 7, 8),
+                    "55519" . str_repeat($i + 8, 8)
                 ]);
                 $proprietario->setDataNascimento(DateTime::createFromFormat('Y-m-d', '1990-01-01')->modify("+$i days"));
 

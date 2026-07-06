@@ -23,15 +23,16 @@ require_once __DIR__ . '/../../vendor/autoload.php';
 
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
+use function PHPUnit\Framework\isInstanceOf;
 
 class controller
 {
 
 
-    function montarJsonImoveis(array $lista_imoveis)
+    function montarJsonImoveis(array $listaImoveis)
     {
         $lista = [];
-        foreach ($lista_imoveis as $imovel) {
+        foreach ($listaImoveis as $imovel) {
             $endereco = null;
             if ($imovel->getEndereco()) {
                 $enderecoObj = $imovel->getEndereco();
@@ -202,6 +203,55 @@ class controller
         return $lista;
     }
 
+    function montarJsonUsuario(array $listaUsuarios)
+    {
+
+        if (!$listaUsuarios) {
+            return (["status" => "erro", "mensagem" => "Nenhum usuário encontrado"]);
+        }
+        $lista = [];
+        if ($listaUsuarios) {
+            foreach ($listaUsuarios as $usuario) {
+                $lista[] = [
+                    "id" => $usuario->getId(),
+                    "email" => $usuario->getEmail(),
+                    "nome" => $usuario->getNome(),
+                    "cpf_cnpj" => $usuario->getCpfCnpj(),
+                    "rg" => $usuario->getRg(),
+                    "username" => $usuario->getUsername() ?? null,
+                    "telefones" => [$usuario->getTelefones()],
+                    "endereco" => $usuario->getEndereco() ? [
+                        "rua" => $usuario->getEndereco()->rua ?? null,
+                        "numero" => $usuario->getEndereco()->numero ?? null,
+                        "bairro" => $usuario->getEndereco()->bairro ?? null,
+                        "cidade" => $usuario->getEndereco()->cidade ?? null,
+                        "uf" => $usuario->getEndereco()->uf ?? null,
+                        "cep" => $usuario->getEndereco()->cep ?? null,
+                        "complemento" => $usuario->getEndereco()->complemento ?? null
+                    ] : null,
+                    "creci" => $usuario instanceof Corretor ? $usuario->getCreci() ?? null : null,
+                    "salario" => method_exists($usuario, 'getSalario') ? $usuario->getSalario() ?? null : null,
+                    "data_nascimento" => $usuario->getDataNascimento() ? $usuario->getDataNascimento()->format('d-m-Y') : null,
+                    "tipo" => $usuario->getTipo() ?? null,
+                    "data_cadastro" => $usuario->getDataCadastro() ? $usuario->getDataCadastro() : null,
+                    "data_modificacao" => $usuario->getDataModificacao() ? $usuario->getDataModificacao() : null,
+                    "imoveis" => array_map(function ($imovel) {
+                        return [
+                            "id" => $imovel->getId(),
+                            "valor_venda" => $imovel->getValorVenda(),
+                            "valor_aluguel" => $imovel->getValorAluguel(),
+                            "categoria" => $imovel->getCategoria() ? $imovel->getCategoria() : null,
+                            "status" => $imovel->getStatus() ? $imovel->getStatus() : null,
+                            "data_cadastro" => $imovel->getDataCadastro(),
+                            "data_modificacao" => $imovel->getDataModificacao()
+                        ];
+                    }, $usuario instanceof Proprietario ? $usuario->getImoveis() ?? [] : []),
+                ];
+            }
+        }
+        return ($lista);
+    }
+
     function carregarFavoritos()
     {
         try {
@@ -290,43 +340,7 @@ class controller
     {
         try {
             $proprietarios = Init::getInstance()->getListaProprietarios();
-            $lista = [];
-            if ($proprietarios) {
-                foreach ($proprietarios as $proprietario) {
-                    $lista[] = [
-                        "id" => $proprietario->getId(),
-                        "email" => $proprietario->getEmail(),
-                        "nome" => $proprietario->getNome(),
-                        "cpf_cnpj" => $proprietario->getCpfCnpj(),
-                        "rg" => $proprietario->getRg(),
-                        "telefones" => [$proprietario->getTelefones()],
-                        "endereco" => $proprietario->getEndereco() ? [
-                            "rua" => $proprietario->getEndereco()->rua ?? null,
-                            "numero" => $proprietario->getEndereco()->numero ?? null,
-                            "bairro" => $proprietario->getEndereco()->bairro ?? null,
-                            "cidade" => $proprietario->getEndereco()->cidade ?? null,
-                            "uf" => $proprietario->getEndereco()->uf ?? null,
-                            "cep" => $proprietario->getEndereco()->cep ?? null,
-                            "complemento" => $proprietario->getEndereco()->complemento ?? null
-                        ] : null,
-                        "data_nascimento" => $proprietario->getDataNascimento() ? $proprietario->getDataNascimento()->format('d-m-Y') : null,
-                        "imoveis" => array_map(function ($imovel) {
-                            return [
-                                "id" => $imovel->getId(),
-                                "valor_venda" => $imovel->getValorVenda(),
-                                "valor_aluguel" => $imovel->getValorAluguel(),
-                                "categoria" => $imovel->getCategoria() ? $imovel->getCategoria() : null,
-                                "status" => $imovel->getStatus() ? $imovel->getStatus() : null,
-                                "data_cadastro" => $imovel->getDataCadastro(),
-                                "data_modificacao" => $imovel->getDataModificacao()
-                            ];
-                        }, $proprietario->getImoveis()),
-                        "data_cadastro" => $proprietario->getDataCadastro(),
-                        "data_modificacao" => $proprietario->getDataModificacao()
-                    ];
-                }
-            }
-            return (["status" => "sucesso", "dados" => $lista]);
+            return self::montarJsonUsuario($proprietarios);
         } catch (Exception $e) {
             return (["status" => "erro", "mensagem" => "Erro ao listar proprietários"]);
         }
@@ -336,36 +350,7 @@ class controller
     {
         try {
             $usuarios = Init::getInstance()->getListaUsuarios();
-            if (!$usuarios) {
-                return (["status" => "erro", "mensagem" => "Nenhum usuário encontrado"]);
-            }
-            $lista = [];
-            if ($usuarios) {
-                foreach ($usuarios as $usuario) {
-                    $lista[] = [
-                        "id" => $usuario->getId(),
-                        "email" => $usuario->getEmail(),
-                        "nome" => $usuario->getNome(),
-                        "cpf_cnpj" => $usuario->getCpfCnpj(),
-                        "rg" => $usuario->getRg(),
-                        "telefones" => [$usuario->getTelefones()],
-                        "endereco" => $usuario->getEndereco() ? [
-                            "rua" => $usuario->getEndereco()->rua ?? null,
-                            "numero" => $usuario->getEndereco()->numero ?? null,
-                            "bairro" => $usuario->getEndereco()->bairro ?? null,
-                            "cidade" => $usuario->getEndereco()->cidade ?? null,
-                            "uf" => $usuario->getEndereco()->uf ?? null,
-                            "cep" => $usuario->getEndereco()->cep ?? null,
-                            "complemento" => $usuario->getEndereco()->complemento ?? null
-                        ] : null,
-                        "data_nascimento" => $usuario->getDataNascimento() ? $usuario->getDataNascimento()->format('d-m-Y') : null,
-                        "tipo" => $usuario->getTipo() ?? null,
-                        "data_cadastro" => $usuario->getDataCadastro() ? $usuario->getDataCadastro() : null,
-                        "data_modificacao" => $usuario->getDataModificacao() ? $usuario->getDataModificacao() : null
-                    ];
-                }
-            }
-            return ($lista);
+            return self::montarJsonUsuario($usuarios);
         } catch (Exception $e) {
             return (["status" => "erro", "mensagem" => "Erro ao listar usuários"]);
         }
@@ -374,30 +359,29 @@ class controller
     function atualizarUsuario($dados)
     {
         try {
-            $nome = isset($dados['nome']) ? $dados['nome'] : "";
-            $email = isset($dados['email']) ? $dados['email'] : null;
-            $senha = isset($dados['senha']) ? $dados['senha'] : null;
+            error_log("Dados recebidos para atualizar usuário: " . json_encode($dados));
+            $nome = array_key_exists('nome', $dados) ? $dados['nome'] : "";
+            $email = array_key_exists('email', $dados) ? $dados['email'] : "";
+            $senha = array_key_exists('senha', $dados) ? $dados['senha'] : "";
             $username = $email;
-            $dataNascimento = isset($dados['data_nascimento']) && Validacao::validarDataNascimento($dados['data_nascimento']) ? DateTime::createFromFormat('d/m/Y', $dados['data_nascimento']) : null;
-            $cpfCnpj = isset($dados['cpf_cnpj']) && Validacao::validarCPF($dados['cpf_cnpj']) ? str_replace(['.', '-', ' '], '', $dados['cpf_cnpj']) : "";
-            $rg = isset($dados['rg']) && Validacao::validarRG($dados['rg']) ? $dados['rg'] : "";
-            $telefones = isset($dados['telefones']) && Validacao::validarTelefone($dados['telefones']) ? str_replace(['-', '(', ')'], '', $dados['telefones']) : [];
-            $tipo = isset($dados['tipo']) ? $dados['tipo'] : null;
+            $dataNascimento = array_key_exists('data_nascimento', $dados) && Validacao::validarDataNascimento($dados['data_nascimento']) ? DateTime::createFromFormat('d/m/Y', $dados['data_nascimento']) : null;
+            $cpfCnpj = array_key_exists('cpf_cnpj', $dados) && Validacao::validarCPF($dados['cpf_cnpj']) ? str_replace(['.', '-', ' '], '', $dados['cpf_cnpj']) : "";
+            $rg = array_key_exists('rg', $dados) && Validacao::validarRG($dados['rg']) ? $dados['rg'] : "";
+            $telefones = array_key_exists('telefones', $dados) && Validacao::validarTelefone($dados['telefones']) ? str_replace(['-', '(', ')'], '', $dados['telefones']) : [];
+            $tipo = array_key_exists('tipo', $dados) ? $dados['tipo'] : null;
             $usuario = Null;
-            $creci = isset($dados['creci']) && Validacao::validarCreci($dados['creci']) ? $dados['creci'] : "";
-            $salario = isset($dados['salario']) && Validacao::validarSalario($dados['salario']) ? str_replace(['-', 'R$', ' '], '', $dados['salario']) : 0.0;
-            $id = isset($dados['id']) ? $dados['id'] : 0;
-            $rua = isset($dados['rua']) ? $dados['rua'] : "";
-            $numero = isset($dados['numero']) ? $dados['numero'] : 0;
-            $bairro = isset($dados['bairro']) ? $dados['bairro'] : "";
-            $cidade = isset($dados['cidade']) ? $dados['cidade'] : "";
-            $uf = isset($dados['uf']) ? $dados['uf'] : "";
-            $cep = isset($dados['cep']) && Validacao::validarCEP($dados['cep']) ? str_replace('-', '', $dados['cep']) : "";
-            $complemento = isset($dados['complemento']) ? $dados['complemento'] : "";
-            if (!$id) {
-                return (["status" => "erro", "mensagem" => "ID do usuário não fornecido"]);
-            }
-            if ($id) {
+            $creci = array_key_exists('creci', $dados) && Validacao::validarCreci($dados['creci']) ? $dados['creci'] : "";
+            $salario = array_key_exists('salario', $dados) && Validacao::validarSalario($dados['salario']) ? str_replace(['-', 'R$', ' '], '', $dados['salario']) : 0.0;
+            $id = array_key_exists('id', $dados) ? $dados['id'] : 0;
+            $rua = array_key_exists('rua', $dados) ? $dados['rua'] : "";
+            $numero = array_key_exists('numero', $dados) ? $dados['numero'] : 0;
+            $bairro = array_key_exists('bairro', $dados) ? $dados['bairro'] : "";
+            $cidade = array_key_exists('cidade', $dados) ? $dados['cidade'] : "";
+            $uf = array_key_exists('uf', $dados) ? $dados['uf'] : "";
+            $cep = array_key_exists('cep', $dados) && Validacao::validarCEP($dados['cep']) ? str_replace('-', '', $dados['cep']) : "";
+            $complemento = array_key_exists('complemento', $dados) ? $dados['complemento'] : "";
+
+            if ($id > 0) {
                 $usuario = Init::getInstance()->getUsuarioPorId($id);
             } else {
                 switch ($tipo) {
@@ -440,29 +424,38 @@ class controller
             $usuario->setDataNascimento($dataNascimento);
             $usuario->setRg($rg);
             $usuario->setTelefones($telefones);
-            $usuario->setId($id);
-
-            $endereco = new Endereco(
-                $rua ?? null,
-                $bairro ?? null,
-                $cep ?? null,
-                $cidade ?? null,
-                $uf ?? null,
-            );
-
-            $endereco->setNumero($numero ?? null);
-            $endereco->setComplemento($complemento ?? null);
-            $verificar_endereco = Init::getInstance()->verificarEndereco($endereco);
-            if ($verificar_endereco) {
-                $endereco = $verificar_endereco;
+            
+            if($cep){
+                $endereco = new Endereco(
+                    $rua ?? "",
+                    $bairro ?? "",
+                    $cep ?? "",
+                    $cidade ?? "",
+                    $uf ?? "",
+                );
+                $endereco->setNumero($numero ?? null);
+                $endereco->setComplemento($complemento ?? null);
+                $verificar_endereco = Init::getInstance()->verificarEndereco($endereco);
+                if ($verificar_endereco) {
+                    $endereco = $verificar_endereco;
+                } else {
+                    $idEndereco = Init::getInstance()->cadastrarEndereco($endereco);
+                    $endereco->setId($idEndereco);
+                }
             } else {
-                $endereco = Init::getInstance()->cadastrarEndereco($endereco);
+                $endereco = null;
             }
+
+           
             $usuario->setEndereco($endereco);
             $atualizacao = null;
             $usuario->setDataModificacao(DateTime::createFromFormat('Y-m-d H:i:s', date('Y-m-d H:i:s')));
-            if ($id) {
-                $atualizacao = Init::getInstance()->atualizarUsuario($usuario);
+            if ($id > 0) {
+                if ($tipo == "PROPRIETARIO") {
+                    $atualizacao = Init::getInstance()->atualizarProprietario($usuario);
+                } else {
+                    $atualizacao = Init::getInstance()->atualizarUsuario($usuario);
+                }
                 if ($atualizacao) {
                     return (["status" => "sucesso", "mensagem" => "Usuário atualizado com sucesso"]);
                 } else {
@@ -470,7 +463,11 @@ class controller
                 }
             } else {
                 $usuario->setDataCadastro(DateTime::createFromFormat('Y-m-d H:i:s', date('Y-m-d H:i:s')));
-                $atualizacao = Init::getInstance()->cadastrarUsuario($usuario);
+                if ($tipo == "PROPRIETARIO") {
+                    $atualizacao = Init::getInstance()->cadastrarProprietario($usuario);
+                } else {
+                    $atualizacao = Init::getInstance()->cadastrarUsuario($usuario);
+                }
                 if ($atualizacao) {
                     return (["status" => "sucesso", "mensagem" => "Usuário cadastrado com sucesso"]);
                 } else {
@@ -509,38 +506,12 @@ class controller
             if (isset($_SESSION['usuario_id'])) {
                 $usuario = Init::getInstance()->getUsuarioPorId($_SESSION['usuario_id']);
 
-                $dados = [
-                    "id" => $usuario->getId(),
-                    "nome" => $usuario->getNome(),
-                    "email" => $usuario->getEmail(),
-                    "cpf_cnpj" => $usuario->getCpfCnpj(),
-                    "rg" => $usuario->getRg(),
-                    "telefones" => $usuario->getTelefones() ? [$usuario->getTelefones()] : null,
-                    "endereco" => $usuario->getEndereco() ? [
-                        "rua" => $usuario->getEndereco()->rua ?? null,
-                        "numero" => $usuario->getEndereco()->numero ?? null,
-                        "bairro" => $usuario->getEndereco()->bairro ?? null,
-                        "cidade" => $usuario->getEndereco()->cidade ?? null,
-                        "uf" => $usuario->getEndereco()->uf ?? null,
-                        "cep" => $usuario->getEndereco()->cep ?? null,
-                        "complemento" => $usuario->getEndereco()->complemento ?? null,
-                    ] : null,
-                    "data_nascimento" => $usuario->getDataNascimento() ? $usuario->getDataNascimento()->format('d-m-Y') : null,
-                    "tipo" => $usuario->getTipo() ?? null,
-                    "data_cadastro" => $usuario->getDataCadastro(),
-                    "data_modificacao" => $usuario->getDataModificacao()
-                ];
-
-                if ($usuario->getTipo() == "CORRETOR") {
-                    $dados["creci"] = $usuario->getCreci();
-                } elseif (in_array($usuario->getTipo(), ["GERENTE", "CAPTADOR", "FINANCEIRO"])) {
-                    $dados["salario"] = $usuario->getSalario();
-                }
+                $dados = self::montarJsonUsuario([$usuario]);
 
                 return ([
                     "status" => "sucesso",
                     "tipo" => $_SESSION['tipo'],
-                    "usuario" => $dados
+                    "usuario" =>  is_array($dados) ? $dados[0] : null
                 ]);
             } else {
                 return ([
@@ -659,8 +630,7 @@ class controller
     function getImovelPorId($id)
     {
         try {
-            // echo $id;
-            // logging->info(f"Requisição para obter imóvel com ID => {id}")
+
             $imovelObj = Init::getInstance()->getImovelPorId((int)$id);
 
             if (!$imovelObj) {
@@ -676,6 +646,25 @@ class controller
         }
     }
 
+    function apagarUsuario(int $id)
+    {
+        try {
+            $usuario = Init::getInstance()->getUsuarioPorId($id);
+            if ($usuario) {
+                $remocao = Init::getInstance()->remover("id", $id, "usuario");
+                if ($remocao) {
+                    return (["status" => "sucesso", "mensagem" => "Usuário removido com sucesso"]);
+                } else {
+                    return (["status" => "erro", "mensagem" => "Erro ao remover usuário"]);
+                }
+            } else {
+                return (["status" => "erro", "mensagem" => "Usuário não encontrado"]);
+            }
+        } catch (Exception $e) {
+            return (["status" => "erro", "mensagem" => $e->getMessage()]);
+        }
+    }
+
 
     function apagarImovel(int $id)
     {
@@ -686,6 +675,10 @@ class controller
                 if ($remocao) {
                     if ($imovel->getAnuncio() && $imovel->getAnuncio()->getImagens()) {
                         limparPasta($imovel->getAnuncio()->getImagens(), $imovel->getId());
+                    } else if ($imovel->getAnuncio() && $imovel->getAnuncio()->getAnexos()) {
+                        limparPasta($imovel->getAnuncio()->getAnexos(), $imovel->getId());
+                    } else if ($imovel->getAnuncio() && $imovel->getAnuncio()->getVideos()) {
+                        limparPasta($imovel->getAnuncio()->getVideos(), $imovel->getId());
                     }
                     return (["status" => "sucesso", "mensagem" => "Imóvel removido com sucesso"]);
                 } else {

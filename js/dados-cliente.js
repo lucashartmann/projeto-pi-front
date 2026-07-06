@@ -154,6 +154,7 @@ async function salvarDados() {
 document.addEventListener("DOMContentLoaded", async function () {
     Inputmask("999.999.999-99").mask("#inpt-cpf");
     Inputmask("99999-999").mask("#ta-cep");
+    // TODO: possivel problema ao botar as masks aqui
     const containers = document.getElementsByClassName("telefone");
     for (let i = 0; i < containers.length; i++) {
         Inputmask("(99) 99999-9999").mask(containers[i]);

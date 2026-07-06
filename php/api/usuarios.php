@@ -21,7 +21,30 @@ ini_set('display_errors', 0);
 error_reporting(E_ALL);
 $acao = $_GET['acao'] ?? '';
 $controller = new controller();
+
 switch ($acao) {
+
+    case "cadastro":
+        $body = file_get_contents("php://input");
+        $data = json_decode($body, true);
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            $resultado = (["status" => "erro", "mensagem" => "JSON inválido"]);
+            return;
+        }
+        $resultado = $controller->atualizarUsuario($data);
+        break;
+
+    case "apagar":
+        $body = file_get_contents("php://input");
+        $data = json_decode($body, true);
+
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            $resultado = (["status" => "erro", "mensagem" => "JSON inválido"]);
+            return;
+        }
+
+        $resultado = $controller->apagarUsuario($data);
+        break;
 
     case "atualizar":
         $body = file_get_contents("php://input");
@@ -31,13 +54,11 @@ switch ($acao) {
             $resultado = (["status" => "erro", "mensagem" => "JSON inválido"]);
             return;
         }
-        
+
         $resultado = $controller->atualizarUsuario($data);
         break;
 
-    // case "get_usuario":
-    //     // carregarUsuario();
-    //     break;
+
     case "listar":
         $resultado = $controller->listarUsuarios();
         break;
@@ -46,5 +67,7 @@ switch ($acao) {
         $resultado = (["status" => "erro", "mensagem" => "Ação inválida"]);
         break;
 }
-echo json_encode($resultado);
-// remover '-' do cep e converter para inteiro
+
+if ($acao) {
+    echo json_encode($resultado);
+}
