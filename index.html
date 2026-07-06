@@ -24,14 +24,14 @@
     <main>
         <div id="pesquisa">
             <div id="pesquisa-container">
-                <input placeholder="Pesquise aqui" id="input-pesquisa" oninput="pesquisar()">
+                <input placeholder="Pesquise aqui" id="input-pesquisa" oninput="filtrar()">
                 <!-- <button onclick="pesquisar()">
                     Encontre sua nova moradia!
                 </button> -->
             </div>
             <div id="container-filtragem">
                 <label>Categoria</label>
-                <select name="categoria" id="select-categoria" required>
+                <select name="categoria" id="select-categoria" required onchange="filtrar()">
                     <option value="" selected>Selecione uma opção...</option>
                     <option value="Sala Comercial">Sala Comercial</option>
                     <option value="Apartamento">Apartamento</option>
@@ -56,17 +56,14 @@
                     <option value="Studio">Studio</option>
                 </select>
                 <label>Status</label>
-                <select name="status" id="select-status" required>
+                <select name="status" id="select-status" required onchange="filtrar()">
                     <option value="" selected>Selecione uma opção...</option>
                     <option value="Venda">Venda</option>
                     <option value="Aluguel">Aluguel</option>
                     <option value="Venda e Aluguel">Venda e Aluguel</option>
-                    <option value="Alugado">Alugado</option>
-                    <option value="Vendido">Vendido</option>
-                    <option value="Pendente">Pendente</option>
                 </select>
                 <label>CEP</label>
-                <input type="text" id="input-cep" oninput="pesquisarCEP(event)">
+                <input type="text" id="input-cep" oninput="filtrar()">
             </div>
         </div>
 

@@ -1,5 +1,6 @@
 const imoveisCurtidos = [];
-let dadosImoveis = null;
+let dadosImoveis = [];
+let imoveisFiltrados = [];
 
 async function salvarImoveisCurtidos() {
     try {
@@ -268,36 +269,59 @@ async function abrirAnuncio(imovel_id) {
     window.location.href = "html/dados-imovel.html";
 }
 
-function pesquisar() {
-    const termo = document.getElementById("input-pesquisa").value.toLowerCase();
+function filtrar() {
+    
     const anuncios = document.querySelectorAll(".anuncio-imovel");
     const gallery = document.getElementById("gallery");
-    gallery.style.display = "none";
     const gallery2 = document.getElementById("gallery2");
-    gallery2.style.display = "none";
     const gallery3 = document.getElementById("gallery3");
-    gallery3.style.display = "none";
     const swiper = document.querySelector(".swiper");
-    swiper.style.display = "none";
-    const imovelDestaque = document.getElementById("imovel-destaque");
-    imovelDestaque.style.display = "none";
-    anuncios.forEach(anuncio => {
-        const titulo = anuncio.querySelector("h2").textContent.toLowerCase();
-        const descricao = anuncio.querySelector(".descricao").textContent.toLowerCase();
-        if (titulo.includes(termo) || descricao.includes(termo)) {
-            anuncio.style.display = "block";
+    swiper.style.display = "flex";
+    gallery.style.display = "flex";
+    gallery2.style.display = "grid";
+    gallery3.style.display = "flex";
+
+    imoveisFiltrados = dadosImoveis;
+
+    document.querySelector("#pesquisa").querySelectorAll("input, select").forEach(input => {
+        let termo = input.value;
+        if (termo.length === 0) {
+            return;
         }
-        else {
-            anuncio.style.display = "none";
+        swiper.style.display = "none";
+        gallery3.style.display = "none";
+        gallery2.style.display = "none";
+        gallery.style.display = "none";
+
+        switch (input.id) {
+            case "input-cep":
+                termo = termo.toLowerCase();
+                imoveisFiltrados = imoveisFiltrados.filter(imovel => imovel.endereco.cep.includes(termo));
+                break;
+            case "input-pesquisa":
+                termo = termo.toLowerCase();
+                imoveisFiltrados = imoveisFiltrados.filter(imovel => {
+                    const titulo = imovel.anuncio.titulo.toLowerCase();
+                    const descricao = imovel.anuncio.descricao.toLowerCase();
+                    const bairro = imovel.endereco.bairro.toLowerCase();
+                    return titulo.includes(termo) || descricao.includes(termo) || bairro.includes(termo);
+                });
+                break;
+            case "select-categoria":
+                imoveisFiltrados = imoveisFiltrados.filter(imovel => imovel.categoria === termo);
+                break;
+            case "select-status":
+                imoveisFiltrados = imoveisFiltrados.filter(imovel => imovel.status === termo);
+                break;
+            default:
+                break;
+            
         }
     });
-    if (termo.length === 0) {
-        swiper.style.display = "block";
-        imovelDestaque.style.display = "flex";
-        gallery.style.display = "flex";
-        gallery2.style.display = "grid";
-        gallery3.style.display = "flex";
-    }
+
+   
+
+    carregarAnuncios(imoveisFiltrados);
 }
 
 window.addEventListener("DOMContentLoaded", async () => {
