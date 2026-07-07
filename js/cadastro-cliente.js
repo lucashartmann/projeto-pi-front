@@ -165,6 +165,11 @@ function formatarData(data) {
     return data;
 }
 
+async function abrirImovel(imovel = null) {
+    sessionStorage.setItem("imovel", JSON.stringify(imovel));
+    window.location.href = "cadastro-imovel.html";
+}
+
 async function abrirCadastro(usuario) {
     usuario = JSON.parse(usuario);
     if (usuario) {
@@ -199,6 +204,34 @@ async function abrirCadastro(usuario) {
                 Inputmask("+99 (99) 99999-9999").mask(novoTelefone);
                 containerTelefones.appendChild(novoTelefone);
             });
+        }
+        if (usuario.imoveis) {
+            html = "";
+
+            usuario.imoveis.forEach(imovel => {
+                html += `
+                <div class="resultado" onclick="abrirImovel(imovel)">
+                    <img src="${imovel.anuncio?.imagens?.[0] || null}" alt="">
+                    <div class="dados">
+                        <label for="">REF: ${imovel.id}</label>
+                        <label>${imovel.anuncio?.titulo || ""}</label>
+                        <label for="">${imovel.endereco || ""}</label>
+                        <label for="">${imovel.categoria || ""}</label>
+                        <label for="">${imovel.status || ""}</label>
+                    </div>
+                </div>
+            `;
+            });
+            if (html) {
+                const titulo = document.querySelector(".titulo");
+                titulo.style.display = "flex";
+                titulo.style.flexDirection = "row";
+                const containerResultado = document.querySelector("#container-resultado");
+                containerResultado.style.display = "flex";
+                containerResultado.style.flexDirection = "column";
+                containerResultado.innerHTML = "";
+                containerResultado.innerHTML = html;
+            }
         }
     } else {
         alert("Usuário não encontrado para edição.");

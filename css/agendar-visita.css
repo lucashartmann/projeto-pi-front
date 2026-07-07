@@ -1,53 +1,80 @@
-.ui.calendar {
-    margin: 0 auto !important;
-    width: 80% !important;
-
-    .header {
-        text-align: center !important;
-        font-size: 1.5em !important;
-        padding: 1em 0 !important;
-
-        .item {
-            color: white !important;
-        }
-    }
-}
-
-.menu {
-    margin-bottom: 0 !important;
-
-    .item {
-        padding: 0.5em 1em !important;
-    }
-}
-
-.ui {
-    background: rgb(37, 39, 39) !important;
-    color: white !important;
-    width: 100% !important;
-
-    a {
-        color: white !important;
-    }
-}
-
-#calendar {
-    color: white !important;
-
-    a {
-        color: white !important;
-    }
-}
-
 body {
-    overflow-x: hidden;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
     overflow-y: auto;
-    background: rgb(37, 39, 39);
+    align-items: center;
+    justify-content: center;
+    align-content: center;
+    justify-items: center;
 }
+
+
+#pai-calendario {
+   display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    align-self: center;
+    align-content: center;
+    justify-self: center;
+    justify-items: center;
+    width: 90%;
+    height: auto;
+    margin-top: auto;
+    margin-bottom: 0;
+    background-color: aqua;
+    max-height: 100% !important;
+    height: 70%;
+}
+
+.container {
+    border: none;
+    z-index: 0;
+    min-width: 0 !important;
+    min-height: 0 !important;
+    /* max-height: 10px !important; */
+    max-height: 100%; 
+    height: auto;
+
+    .ui, tr, td, th, .calendar, .column, .grid, #calendar {
+        min-width: 0 !important;
+        max-width: 100% !important;
+        min-height: 0 !important;
+        max-height: 100%; 
+        height: auto;
+    }
+
+    
+    .menu {
+        display: none;
+    }
+
+    background: #f0e9e9 !important;
+    color: var(--cor-texto-alternativa) !important;
+
+    .fc-day-grid-event {
+        background: var(--background-nav);
+        border: none !important;
+    }
+
+    color: var(--cor-texto-alternativa) !important;
+
+    td,
+    th {
+        border-color: var(--cor-texto-alternativa)  !important;
+    }
+
+    th {
+        font-size: 1.3rem;
+    }
+
+}
+
 
 button {
     background: rgb(37, 39, 39) !important;
-    color: white !important;
+    color: var(--cor-texto) !important;
 }
 
 .fc-today {
@@ -65,7 +92,7 @@ button {
     box-shadow: var(--shadow);
     height: auto;
     width: 50vw;
-    color: white;
+    color: var(--cor-texto) !important;
     display: flex;
     flex-direction: column;
     align-items: center;

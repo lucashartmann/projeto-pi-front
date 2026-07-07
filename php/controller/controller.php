@@ -243,7 +243,21 @@ class controller
                             "categoria" => $imovel->getCategoria() ? $imovel->getCategoria() : null,
                             "status" => $imovel->getStatus() ? $imovel->getStatus() : null,
                             "data_cadastro" => $imovel->getDataCadastro(),
-                            "data_modificacao" => $imovel->getDataModificacao()
+                            "data_modificacao" => $imovel->getDataModificacao(),
+                            "anuncio" => [
+                                "id" => $imovel->getAnuncio()->getId(),
+                                "descricao" => $imovel->getAnuncio()->getDescricao(),
+                                "titulo" => $imovel->getAnuncio()->getTitulo(),
+                                "imagens" => $imovel->getAnuncio()->getImagens() ? array_map(function ($imagem) {
+                                    return rtrim(dirname($_SERVER['SCRIPT_NAME'], 3), '/') . "/assets/" . $imagem->getCaminho();
+                                }, $imovel->getAnuncio()->getImagens()) : [],
+                                "documentos" => $imovel->getAnuncio()->getAnexos() ? array_map(function ($documento) {
+                                    return rtrim(dirname($_SERVER['SCRIPT_NAME'], 3), '/') . "/assets/" . $documento->getCaminho();
+                                }, $imovel->getAnuncio()->getAnexos()) : [],
+                                "videos" => $imovel->getAnuncio()->getVideos() ? array_map(function ($video) {
+                                    return rtrim(dirname($_SERVER['SCRIPT_NAME'], 3), '/') . "/assets/" . $video->getCaminho();
+                                }, $imovel->getAnuncio()->getVideos()) : [],
+                            ]
                         ];
                     }, $usuario instanceof Proprietario ? $usuario->getImoveis() ?? [] : []),
                 ];
@@ -424,8 +438,8 @@ class controller
             $usuario->setDataNascimento($dataNascimento);
             $usuario->setRg($rg);
             $usuario->setTelefones($telefones);
-            
-            if($cep){
+
+            if ($cep) {
                 $endereco = new Endereco(
                     $rua ?? "",
                     $bairro ?? "",
@@ -446,7 +460,7 @@ class controller
                 $endereco = null;
             }
 
-           
+
             $usuario->setEndereco($endereco);
             $atualizacao = null;
             $usuario->setDataModificacao(DateTime::createFromFormat('Y-m-d H:i:s', date('Y-m-d H:i:s')));

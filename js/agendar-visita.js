@@ -1,69 +1,38 @@
 async function calendar() {
   await $('#calendar').fullCalendar({
+    locale: 'pt-br',
+    buttonText: {
+        today: 'Hoje',
+        month: 'Mês',
+        week: 'Semana',
+        day: 'Dia'
+    },
+    dayNames: [
+        'Domingo', 'Segunda', 'Terça', 'Quarta',
+        'Quinta', 'Sexta', 'Sábado'
+    ],
+    dayNamesShort: [
+        'Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'
+    ],
+    monthNames: [
+        'Janeiro', 'Fevereiro', 'Março', 'Abril',
+        'Maio', 'Junho', 'Julho', 'Agosto',
+        'Setembro', 'Outubro', 'Novembro', 'Dezembro'
+    ],
+    monthNamesShort: [
+        'Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun',
+        'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'
+    ],
     header: {
       left: 'prev,next today',
       center: 'title',
       right: 'month,basicWeek,basicDay'
     },
-    defaultDate: '2026-04-12',
+    defaultDate: new Date().toISOString().slice(0, 10),
     navLinks: true,
     editable: true,
     eventLimit: true,
     events: [
-      {
-        title: 'All Day Event',
-        start: '2026-04-01'
-      },
-      {
-        title: 'Long Event',
-        start: '2026-04-07',
-        end: '2026-04-10'
-      },
-      {
-        id: 999,
-        title: 'Repeating Event',
-        start: '2026-04-09T16:00:00'
-      },
-      {
-        id: 999,
-        title: 'Repeating Event',
-        start: '2026-04-16T16:00:00'
-      },
-      {
-        title: 'Conference',
-        start: '2026-04-11',
-        end: '2026-04-13'
-      },
-      {
-        title: 'Meeting',
-        start: '2026-04-12T10:30:00',
-        end: '2026-04-12T12:30:00'
-      },
-      {
-        title: 'Lunch',
-        start: '2026-04-12T12:00:00'
-      },
-      {
-        title: 'Meeting',
-        start: '2026-04-12T14:30:00'
-      },
-      {
-        title: 'Happy Hour',
-        start: '2026-04-12T17:30:00'
-      },
-      {
-        title: 'Dinner',
-        start: '2026-04-12T20:00:00'
-      },
-      {
-        title: 'Birthday Party',
-        start: '2026-04-13T07:00:00'
-      },
-      {
-        title: 'Click for Google',
-        url: 'https://google.com/',
-        start: '2026-04-28'
-      }
     ]
   });
 };

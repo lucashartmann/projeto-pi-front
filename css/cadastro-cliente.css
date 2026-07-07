@@ -108,6 +108,13 @@ label {
 
 }
 
+.titulo { 
+    display: none;
+}
+
+#container-resultado {
+    display: none;
+}
 
 #bt-remover-numero {
     display:none;
