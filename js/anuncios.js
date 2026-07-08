@@ -6,6 +6,66 @@ let imoveisFiltrados = [];
 let filtroUsuario = "";
 let seta = "";
 var logado = false;
+var favoritos = false;
+const imoveisCurtidos = [];
+
+async function listarImoveisFavoritados() {
+    try {
+        let caminho = getCaminhoRelativo("/php/api/login.php?acao=get_favoritos");
+
+        const resposta = await fetch(caminho)
+            .then(async (res) => {
+                if (!res.ok) {
+                    throw new Error(`Erro na requisição: ${res.status}`);
+                    return null;
+                }
+
+                const contentType = res.headers.get("content-type");
+                if (contentType && contentType.includes("application/json")) {
+                    return await res.json();
+                } else {
+                    throw new Error("Resposta não é JSON");
+                    return null;
+                }
+
+            })
+            .then(async (data) => {
+                if (data.status == "erro") {
+                    console.log("Erro ao listar imóveis: " + data.mensagem);
+                    return null;
+                }
+                return await data;
+            })
+            .catch((error) => {
+                console.log("Erro ao listar imóveis favoritados:", error);
+                return null;
+            });
+
+        if (!resposta) {
+            console.log("Falha ao obter imóveis favoritados");
+            return null;
+        }
+
+        resposta?.forEach(imovel => {
+            switch (imovel.status) {
+                case "Venda":
+                    imovel.valor_aluguel = null;
+                    break;
+                case "Aluguel":
+                    imovel.valor_venda = null;
+                    break;
+                default:
+                    break;
+            }
+        });
+
+        return resposta;
+    } catch (erro) {
+        console.log("Falha ao conectar com o backend:", erro);
+        return null;
+    }
+
+}
 
 async function abrirAnuncio(imovel = null, id = null) {
     if (id && !imovel) {
@@ -54,7 +114,7 @@ async function salvarImoveisCurtidos() {
 }
 
 
-async function curtirImovel(imovelId) {
+async function curtirImovel(event, imovelId) {
     if (!logado) {
         $usuario = await carregarUser();
         if (!$usuario) {
@@ -347,11 +407,12 @@ async function carregarAnuncios() {
         } else {
             precoAluguel.innerHTML = `Aluguel: <p class="preco">${formatarValor(imovel.valor_aluguel)}</p>`;
         }
+        const classe = favoritos ? "curtido" : "";
         html += `
             <div class="anuncio-imovel" onclick="abrirAnuncio(null, ${imovel.id})">
                 <div class="swiper">
                     <div class="swiper-wrapper">
-                    <i class="fas fa-heart" onclick="curtirImovel(${imovel.id})"></i>
+                    <i class="fas fa-heart ${classe}" onclick="curtirImovel(event, ${imovel.id})"></i>
                     ${imovel.anuncio.imagens.map(img => `
                         <div class="swiper-slide" style="background-image: url(${img})">
                         </div>
@@ -415,29 +476,47 @@ function prevSlide() {
 }
 
 window.addEventListener("DOMContentLoaded", async () => {
+
+    favoritos = sessionStorage.getItem("favoritos") === "true";
+    sessionStorage.removeItem("favoritos");
     dados = [];
-    if (imoveisCache.length === 0) {
-        dados = await listarImoveisDisponiveis();
-        dados.sort((a, b) => new Date(b.data_cadastro?.date) - new Date(a.data_cadastro?.date));
-        imoveisCache.push(...dados);
+    if (favoritos) {
+        dados = await listarImoveisFavoritados();
     } else {
-        dados = imoveisCache;
+        if (imoveisCache.length === 0) {
+            dados = await listarImoveisDisponiveis();
+            dados.sort((a, b) => new Date(b.data_cadastro?.date) - new Date(a.data_cadastro?.date));
+            imoveisCache.push(...dados);
+        } else {
+            dados = imoveisCache;
+        }
     }
-    dadosImoveis = dados;
-    carregarAnuncios();
 
-    inicializarSwiper();
+    if (dados && dados.length > 0) {
+        dadosImoveis = dados;
 
-    const element = document.querySelector("#sidebar-anuncios");
-    if (element) {
-        element.querySelectorAll("input").forEach((input) => {
-            input.addEventListener("input", filtrar);
-        });
-        element.querySelectorAll("select").forEach((select) => {
-            select.addEventListener("change", filtrar);
-        });
+        carregarAnuncios();
+
+        inicializarSwiper();
+
+        const element = document.querySelector("#sidebar-anuncios");
+        if (element) {
+            element.querySelectorAll("input").forEach((input) => {
+                input.addEventListener("input", filtrar);
+            });
+            element.querySelectorAll("select").forEach((select) => {
+                select.addEventListener("change", filtrar);
+            });
+        }
     }
 });
 
+window.addEventListener('beforeunload', function (event) {
+    if (imoveisCurtidos.length > 0) {
+        salvarImoveisCurtidos();
+    }
+    // event.preventDefault();
+    // event.returnValue = '';
+});
 
 

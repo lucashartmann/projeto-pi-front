@@ -1,3 +1,4 @@
+
 #dados-imovel {
     display: flex;
     height: 170vh;
@@ -19,13 +20,55 @@
     overflow-y: visible;
     margin-left: 30px;
     width: 88vw;
+
+    #p-descricao {
+        width: 90%;
+        height: auto;
+        text-align: justify;
+        margin-top: 20px;
+        margin-left: 80px !important;
+    }
+
+    .div-filtros {
+        display: grid;
+        grid-template-columns: repeat(8, auto);
+        /* gap: 2px; */
+        width: auto;
+        height: auto;
+        margin: 50px auto;
+        row-gap: 20px;
+        justify-items: center;
+        justify-content: center;
+        justify-self: center;
+        align-items: center;
+        align-content: center;
+        align-self: center;
+
+        label {
+            font-size: 1rem !important;
+            font-weight: 500 !important;
+            margin-right: 100px !important;
+            width: 100% !important;
+            text-align: left !important;
+            margin-left: 110px !important;
+        }
+    
+        input[type="checkbox"] {
+            width: 15px;
+            height: 20px;
+            &:hover {
+                cursor: pointer;
+            }
+        }
+
+    }
 }
 
 #entrar-contato {
     background: rgb(241, 233, 233);
     text-align: center;
     align-content: center;
-    width: 50rem !important;
+    width: 30rem !important;
 
     button {
         border: solid black 1px;

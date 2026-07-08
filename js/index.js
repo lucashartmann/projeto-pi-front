@@ -10,10 +10,24 @@ async function salvarImoveisCurtidos() {
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ id_imoveis: imoveisCurtidos })
         })
-            .then(res => res.json())
+            .then(async (response) => {
+                if (response.erro) {
+                    alert("Erro ao cadastrar favoritos: " + response.erro);
+                    return null;
+                }
+                const contentType = response.headers.get("content-type");
+                if (contentType && contentType.includes("application/json")) {
+                    return await response.json();
+                } else {
+                    const texto = await response.text();
+                    alert("Resposta inesperada do servidor");
+                    console.error("Resposta não é JSON:", texto);
+                    return null;
+                }
+            })
             .then(data => {
-                if (data.sucesso) {
-                    console.log("Imóveis curtidos salvos com sucesso");
+                if (data.status === "sucesso") {
+                    console.log("Imóveis curtidos salvos com sucesso", data.mensagem);
                 } else {
                     console.error("Erro ao salvar imóveis curtidos:", data.mensagem);
                 }
@@ -29,7 +43,7 @@ async function salvarImoveisCurtidos() {
 
 var logado = false;
 
-async function curtirImovel(imovelId) {
+async function curtirImovel(event, imovelId) {
     if (!logado) {
         $usuario = await carregarUser();
         if (!$usuario) {
@@ -46,6 +60,7 @@ async function curtirImovel(imovelId) {
         return;
     }
     imoveisCurtidos.push(imovelId);
+    await salvarImoveisCurtidos();
     event.target.classList.toggle("curtido");
     event.stopPropagation();
 }
@@ -144,17 +159,10 @@ function prevSlide() {
     }
 }
 
-window.addEventListener('beforeunload', function (event) {
-    if (imoveisCurtidos.length > 0) {
-        salvarImoveisCurtidos();
-    }
-    // event.preventDefault();
-    // event.returnValue = '';
-});
-
 
 async function carregarAnuncios(dados) {
     const section = document.getElementById("anuncios");
+    let $usuario = await carregarUser();
     if (!section || !dados) return;
     section.innerHTML = "";
     let html = "";
@@ -171,9 +179,14 @@ async function carregarAnuncios(dados) {
         } else {
             precoAluguel.innerHTML = `Aluguel: <p class="preco">${formatarValor(imovel.valor_aluguel)}</p>`;
         }
+        
+        const classe = $usuario && $usuario.favoritos && $usuario.favoritos.includes(imovel.id) ? "curtido" : "";
+
+        // TODO: Botar os ids dos imóveis favoritados na lista imoveisCurtidos
+        
         html += `
             <div class="anuncio-imovel" onclick="abrirAnuncio(null, ${imovel.id})">
-                <i class="fas fa-heart" onclick="curtirImovel(${imovel.id})"></i>
+                <i class="fas fa-heart ${classe}" onclick="curtirImovel(event, ${imovel.id})"></i>
                 <div class="swiper swiper-anuncio">
                     <div class="swiper-wrapper">
                         ${imovel.anuncio.imagens.map(img => `
@@ -276,7 +289,7 @@ async function abrirAnuncio(imovel = null, id = null) {
 }
 
 function filtrar() {
-    
+
     const anuncios = document.querySelectorAll(".anuncio-imovel");
     const gallery = document.getElementById("gallery");
     const gallery2 = document.getElementById("gallery2");
@@ -321,11 +334,11 @@ function filtrar() {
                 break;
             default:
                 break;
-            
+
         }
     });
 
-   
+
 
     carregarAnuncios(imoveisFiltrados);
 }
@@ -347,4 +360,12 @@ window.addEventListener("DOMContentLoaded", async () => {
             swiper.slideNext();
         }
     }, 7500);
+});
+
+window.addEventListener('beforeunload', function (event) {
+    if (imoveisCurtidos.length > 0) {
+        salvarImoveisCurtidos();
+    }
+    event.preventDefault();
+    event.returnValue = '';
 });

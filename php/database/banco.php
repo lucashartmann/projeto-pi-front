@@ -176,7 +176,7 @@ class Banco extends PDO
             )",
 
             "CREATE TABLE IF NOT EXISTS imovel_cliente (
-                id_imovel INTEGER,
+                id_imovel INTEGER UNIQUE,
                 id_cliente INTEGER,
                 FOREIGN KEY (id_imovel) REFERENCES imovel(id) ON DELETE CASCADE,
                 FOREIGN KEY (id_cliente) REFERENCES cliente(id_usuario) ON DELETE CASCADE
@@ -285,10 +285,13 @@ class Banco extends PDO
 
     function getImoveisFavoritos(int $idCliente)
     {
+        // TODO: Corrigir sintaxe
 
         try {
             $sql = "
             SELECT
+
+            imovel_cliente.*,
 
             imovel.id AS imovel_id,
             imovel.valor_venda AS imovel_valor_venda,
@@ -374,20 +377,20 @@ class Banco extends PDO
             LEFT JOIN endereco condominio_endereco
                 ON condominio_endereco.id = condominio.id_endereco
 
-            LEFT JOIN usuario u_cor
-                ON u_cor.id = imovel.id_corretor
+            LEFT JOIN usuario usuario_corretor
+                ON usuario_corretor.id = imovel.id_corretor
 
-            LEFT JOIN corretor co
-                ON co.id_usuario = u_cor.id
+            LEFT JOIN corretor
+                ON corretor.id_usuario = usuario_corretor.id
 
-            LEFT JOIN usuario u_cap
-                ON u_cap.id = imovel.id_captador
+            LEFT JOIN usuario usuario_captador
+                ON usuario_captador.id = imovel.id_captador
 
-            LEFT JOIN captador ca
-                ON ca.id_usuario = u_cap.id
+            LEFT JOIN captador
+                ON captador.id_usuario = usuario_captador.id
 
-            LEFT JOIN anuncio a
-                ON a.id = i.id_anuncio
+            LEFT JOIN anuncio 
+                ON anuncio.id = imovel.id_anuncio
 
             WHERE id_cliente = :id
 
@@ -413,7 +416,7 @@ class Banco extends PDO
             return $lista;
         } catch (Exception $e) {
             error_log("ERRO Banco->getImoveisFavoritos: " . $e->getMessage());
-            return null;
+            return [];
         }
     }
 
@@ -421,6 +424,7 @@ class Banco extends PDO
     {
 
         try {
+            // TODO: Remover os que estão salvos no banco e não estão na lista
             $sql = "INSERT INTO imovel_cliente (id_cliente, id_imovel) VALUES (:id_cliente, :id_imovel)";
             $stmt = $this->prepare($sql);
             foreach ($idImoveis as $idImovel) {
@@ -429,6 +433,7 @@ class Banco extends PDO
                     ':id_imovel' => $idImovel
                 ]);
             }
+            return true;
         } catch (Exception $e) {
             error_log("ERRO Banco->cadastrarImoveisCliente: " . $e->getMessage());
             return null;

@@ -294,6 +294,7 @@ class controller
     }
 
     function favoritarImoveis($data)
+    // TODO: Talvez botar esse método na base ou outra coisa ja que compartilha entre dois. Talvez usar módulos
     {
         try {
             $body = file_get_contents("php://input");
@@ -301,10 +302,15 @@ class controller
             if (json_last_error() !== JSON_ERROR_NONE) {
                 return (["status" => "erro", "mensagem" => "JSON inválido"]);
             }
-            if (!Init::getInstance()->usuarioAtual) {
+            session_start();
+            $usuario = null;
+            if (isset($_SESSION['usuario_id'])) {
+                $usuario = Init::getInstance()->getUsuarioPorId($_SESSION['usuario_id']);
+            } else {
                 return (["status" => "erro", "mensagem" => "Usuário não logado"]);
             }
-            $idCliente = Init::getInstance()->usuarioAtual->getId();
+           
+            $idCliente = $usuario ? $usuario->getId() : null;
             $idImoveis = $data['id_imoveis'] ?? null;
             if (!$idCliente || !is_array($idImoveis)) {
                 return (["status" => "erro", "mensagem" => "ID do cliente ou lista de imóveis inválidos"]);

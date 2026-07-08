@@ -29,15 +29,25 @@ function setupDados(dados) {
         console.warn("Valores de condomínio e IPTU não encontrados");
     }
 
+    // console.log(imovel.filtros);
+
     if (imovel.filtros) {
-        const divFiltros = document.getElementById("div-filtros");
+        const divFiltros = document.createElement("div");
+        divFiltros.className = "div-filtros";
         for (const filtro of imovel.filtros) {
             divFiltros.innerHTML += `<input type="checkbox" checked disabled><label>${filtro}</label>`;
         }
         divPai.appendChild(divFiltros);
     }
 
-    // Adiiconar mapa do google maps
+    if (imovel.condominio?.filtros) {
+        const divFiltros = document.createElement("div");
+        divFiltros.className = "div-filtros";
+        for (const filtro of imovel.condominio.filtros) {
+            divFiltros.innerHTML += `<input type="checkbox" checked disabled><label>${filtro}</label>`;
+        }
+        divPai.appendChild(divFiltros);
+    }
 
     //TODO: adicionar filtros, localizacao, valores, etc
 }

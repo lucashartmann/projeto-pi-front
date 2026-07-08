@@ -51,6 +51,9 @@ function getCaminhoRelativo(destino) {
 
 function alterarSrc(event, caminho) {
     let a = event.target;
+    if (a.textContent.includes("Favoritos")) {
+        sessionStorage.setItem("favoritos", true);
+    }
     if (a.tagName !== "a") {
         a = a.closest("a");
     }
@@ -103,10 +106,6 @@ async function listarUsuarios() {
         console.error("Falha ao conectar com o backend:", erro);
         return null;
     }
-}
-
-async function listarProprietarios() {
-
 }
 
 async function listarImoveis() {
@@ -196,6 +195,10 @@ async function listarImoveisDisponiveis() {
             })
             .then(async (data) => {
                 // console.log(data);
+                if (data.status == "erro") {
+                    alert("Erro ao listar imóveis: " + data.mensagem);
+                    return null;
+                }
                 return await data;
             })
             .catch(erro => {
@@ -419,7 +422,7 @@ function carregarTabs(usuario) {
         case "CLIENTE":
             tabs = [
                 {text: "Atendimento", href: "html/atendimento-cliente.html" },
-                {text: "Favoritos", href: "html/favoritos.html" },
+                {text: "Favoritos", href: "html/anuncios.html" },
                 { text: "<i class='fas fa-user'></i>", href: "html/dados-cliente.html" },
 
             ];
