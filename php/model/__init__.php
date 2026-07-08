@@ -42,6 +42,8 @@ class Init
         "Depósito"
     ];
 
+
+
     private static $filtrosCondominio = [
         "Churrasqueira Coletiva",
         "Piscina",
@@ -83,6 +85,59 @@ class Init
 
     public static function initialize()
     {
+
+        $nomesCondominio = [
+            "Vila Nova",
+            "Residencial das Flores",
+            "Jardim Europa",
+            "Bosque Imperial",
+            "Parque das Águas",
+            "Villa Toscana",
+            "Morada do Sol",
+            "Horizonte Azul",
+            "Green Park",
+            "Alto da Serra",
+            "Solar dos Ipês",
+            "Residencial Primavera",
+            "Condomínio Bella Vista",
+            "Portal do Lago",
+            "Recanto Verde",
+            "Residencial Monte Carlo",
+            "Reserva das Palmeiras",
+            "Parque dos Pássaros",
+            "Villa Verona",
+            "Residencial Viena",
+            "Condomínio Firenze",
+            "Jardins do Vale",
+            "Essenza Residence",
+            "Residencial Infinity",
+            "Villa di Roma",
+            "Mirante do Bosque",
+            "Residencial Porto Seguro",
+            "Reserva Imperial",
+            "Condomínio Atlântico",
+            "Jardim das Acácias",
+            "Parque Central",
+            "Residencial Alameda",
+            "Condomínio Aurora",
+            "Vivendas do Parque",
+            "Residencial San Marino",
+            "Villa Toscana Premium",
+            "Condomínio Belvedere",
+            "Residencial Costa Verde",
+            "Jardim dos Lagos",
+            "Portal das Nações",
+            "Residencial Saint Germain",
+            "Bosque dos Pinheiros",
+            "Condomínio Mont Blanc",
+            "Villa Firenze",
+            "Parque das Oliveiras",
+            "Residencial Barcelona",
+            "Jardins de Provence",
+            "Condomínio Riviera",
+            "Reserva do Lago",
+            "Residencial Harmonia",
+        ];
 
         $emails = [
             "hotmail.com",
@@ -368,23 +423,51 @@ class Init
             self::$imobiliaria->cadastrarListaFiltros(self::$filtrosCondominio, "filtros_condominio");
         }
 
-        if (count(self::$imobiliaria->getEstoque()->getListaImoveis()) < 51) {
+        if (count(self::$imobiliaria->getEstoque()->getListaImoveis()) == 0) {
             for ($i = 1; $i <= 52; $i++) {
+                $sequencial = ($i - 1) * 8;
+                $cpfVistoriador   = str_pad((string)($sequencial + 1), 11, '0', STR_PAD_LEFT);
+                $cpfFinanceiro    = str_pad((string)($sequencial + 2), 11, '0', STR_PAD_LEFT);
+                $cpfCorretor      = str_pad((string)($sequencial + 3), 11, '0', STR_PAD_LEFT);
+                $cpfCaptador      = str_pad((string)($sequencial + 4), 11, '0', STR_PAD_LEFT);
+                $cpfGerente       = str_pad((string)($sequencial + 5), 11, '0', STR_PAD_LEFT);
+                $cpfAdministrador = str_pad((string)($sequencial + 6), 11, '0', STR_PAD_LEFT);
+                $cpfCliente       = str_pad((string)($sequencial + 7), 11, '0', STR_PAD_LEFT);
+                $cpfProprietario  = str_pad((string)($sequencial + 8), 11, '0', STR_PAD_LEFT);
+
+                $rgVistoriador   = str_pad((string)($sequencial + 1), 9, '0', STR_PAD_LEFT);
+                $rgFinanceiro    = str_pad((string)($sequencial + 2), 9, '0', STR_PAD_LEFT);
+                $rgCorretor      = str_pad((string)($sequencial + 3), 9, '0', STR_PAD_LEFT);
+                $rgCaptador      = str_pad((string)($sequencial + 4), 9, '0', STR_PAD_LEFT);
+                $rgGerente       = str_pad((string)($sequencial + 5), 9, '0', STR_PAD_LEFT);
+                $rgAdministrador = str_pad((string)($sequencial + 6), 9, '0', STR_PAD_LEFT);
+                $rgCliente       = str_pad((string)($sequencial + 7), 9, '0', STR_PAD_LEFT);
+                $rgProprietario  = str_pad((string)($sequencial + 8), 9, '0', STR_PAD_LEFT);
+
+                $telefone = function (int $id): string {
+                    return '55519' . str_pad((string)$id, 8, '0', STR_PAD_LEFT);
+                };
+
+                $telefoneVistoriador   = [$telefone($sequencial + 1), $telefone($sequencial + 2)];
+                $telefoneFinanceiro    = [$telefone($sequencial + 3), $telefone($sequencial + 4)];
+                $telefoneCorretor      = [$telefone($sequencial + 5), $telefone($sequencial + 6)];
+                $telefoneCaptador      = [$telefone($sequencial + 7), $telefone($sequencial + 8)];
+                $telefoneGerente       = [$telefone($sequencial + 9), $telefone($sequencial + 10)];
+                $telefoneAdministrador = [$telefone($sequencial + 11), $telefone($sequencial + 12)];
+                $telefoneCliente       = [$telefone($sequencial + 13), $telefone($sequencial + 14)];
+                $telefoneProprietario  = [$telefone($sequencial + 15), $telefone($sequencial + 16)];
 
                 $vistoriador = new Usuario(
                     username: "vistoriador$i@{$emails[array_rand($emails)]}",
                     senha: "Vistoriador$i#",
                     email: "vistoriador$i@{$emails[array_rand($emails)]}",
                     nome: "{$nomes[array_rand($nomes)]} {$segundoNomes[array_rand($segundoNomes)]} {$sobrenomes[array_rand($sobrenomes)]}",
-                    cpfCnpj: str_repeat($i, 11),
+                    cpfCnpj: $cpfVistoriador,
                     tipo: Tipo::VISTORIADOR
                 );
 
-                $vistoriador->setRg(str_repeat($i, 9));
-                $vistoriador->setTelefones([
-                    "55519" . str_repeat($i, 8),
-                    "55519" . str_repeat($i + 1, 8)
-                ]);
+                $vistoriador->setRg($rgVistoriador);
+                $vistoriador->setTelefones($telefoneVistoriador);
                 $vistoriador->setDataNascimento(DateTime::createFromFormat('Y-m-d', '1990-01-01')->modify("+$i days"));
 
                 $dataRandom = new DateTime();
@@ -403,15 +486,12 @@ class Init
                     senha: "Financeiro$i#",
                     email: "financeiro$i@{$emails[array_rand($emails)]}",
                     nome: "{$nomes[array_rand($nomes)]} {$segundoNomes[array_rand($segundoNomes)]} {$sobrenomes[array_rand($sobrenomes)]}",
-                    cpfCnpj: str_repeat($i + 1, 11),
+                    cpfCnpj: $cpfFinanceiro,
                     tipo: Tipo::FINANCEIRO
                 );
 
-                $financeiro->setRg(str_repeat($i + 1, 9));
-                $financeiro->setTelefones([
-                    "55519" . str_repeat($i + 1, 8),
-                    "55519" . str_repeat($i + 2, 8)
-                ]);
+                $financeiro->setRg($rgFinanceiro);
+                $financeiro->setTelefones($telefoneFinanceiro);
                 $financeiro->setDataNascimento(DateTime::createFromFormat('Y-m-d', '1990-01-01')->modify("+$i days"));
 
                 $dataRandom = new DateTime();
@@ -430,15 +510,12 @@ class Init
                     senha: "Corretor$i#",
                     email: "corretor$i@{$emails[array_rand($emails)]}",
                     nome: "{$nomes[array_rand($nomes)]} {$segundoNomes[array_rand($segundoNomes)]} {$sobrenomes[array_rand($sobrenomes)]}",
-                    cpfCnpj: str_repeat($i + 2, 11),
+                    cpfCnpj: $cpfCorretor,
                     creci: str_repeat($i, 6)
                 );
 
-                $corretor->setRg(str_repeat($i + 2, 9));
-                $corretor->setTelefones([
-                    "55519" . str_repeat($i + 2, 8),
-                    "55519" . str_repeat($i + 3, 8)
-                ]);
+                $corretor->setRg($rgCorretor);
+                $corretor->setTelefones($telefoneCorretor);
                 $corretor->setDataNascimento(DateTime::createFromFormat('Y-m-d', '1990-01-01')->modify("+$i days"));
 
                 $dataRandom = new DateTime();
@@ -457,14 +534,11 @@ class Init
                     senha: "Captador$i#",
                     email: "captador$i@{$emails[array_rand($emails)]}",
                     nome: "{$nomes[array_rand($nomes)]} {$segundoNomes[array_rand($segundoNomes)]} {$sobrenomes[array_rand($sobrenomes)]}",
-                    cpfCnpj: str_repeat($i + 3, 11)
+                    cpfCnpj: $cpfCaptador
                 );
 
-                $captador->setRg(str_repeat($i + 3, 9));
-                $captador->setTelefones([
-                    "55519" . str_repeat($i + 3, 8),
-                    "55519" . str_repeat($i + 4, 8)
-                ]);
+                $captador->setRg($rgCaptador);
+                $captador->setTelefones($telefoneCaptador);
                 $captador->setDataNascimento(DateTime::createFromFormat('Y-m-d', '1990-01-01')->modify("+$i days"));
 
                 $dataRandom = new DateTime();
@@ -483,14 +557,11 @@ class Init
                     senha: "Gerente$i#",
                     email: "gerente$i@{$emails[array_rand($emails)]}",
                     nome: "{$nomes[array_rand($nomes)]} {$segundoNomes[array_rand($segundoNomes)]} {$sobrenomes[array_rand($sobrenomes)]}",
-                    cpfCnpj: str_repeat($i + 4, 11)
+                    cpfCnpj: $cpfGerente
                 );
 
-                $gerente->setRg(str_repeat($i + 4, 9));
-                $gerente->setTelefones([
-                    "55519" . str_repeat($i + 4, 8),
-                    "55519" . str_repeat($i + 5, 8)
-                ]);
+                $gerente->setRg($rgGerente);
+                $gerente->setTelefones($telefoneGerente);
                 $gerente->setDataNascimento(DateTime::createFromFormat('Y-m-d', '1990-01-01')->modify("+$i days"));
 
                 $dataRandom = new DateTime();
@@ -509,15 +580,12 @@ class Init
                     senha: "Administrador$i#",
                     email: "administrador$i@{$emails[array_rand($emails)]}",
                     nome: "{$nomes[array_rand($nomes)]} {$segundoNomes[array_rand($segundoNomes)]} {$sobrenomes[array_rand($sobrenomes)]}",
-                    cpfCnpj: str_repeat($i + 5, 11),
+                    cpfCnpj: $cpfAdministrador,
                     tipo: Tipo::ADMINISTRADOR
                 );
 
-                $administrador->setRg(str_repeat($i + 5, 9));
-                $administrador->setTelefones([
-                    "55519" . str_repeat($i + 5, 8),
-                    "55519" . str_repeat($i + 6, 8)
-                ]);
+                $administrador->setRg($rgAdministrador);
+                $administrador->setTelefones($telefoneAdministrador);
                 $administrador->setDataNascimento(DateTime::createFromFormat('Y-m-d', '1990-01-01')->modify("+$i days"));
 
                 $dataRandom = new DateTime();
@@ -536,14 +604,11 @@ class Init
                     senha: "Cliente$i#",
                     email: "cliente$i@{$emails[array_rand($emails)]}",
                     nome: "{$nomes[array_rand($nomes)]} {$segundoNomes[array_rand($segundoNomes)]} {$sobrenomes[array_rand($sobrenomes)]}",
-                    cpfCnpj: str_repeat($i + 6, 11)
+                    cpfCnpj: $cpfCliente
                 );
 
-                $cliente->setRg(str_repeat($i + 6, 9));
-                $cliente->setTelefones([
-                    "55519" . str_repeat($i + 6, 8),
-                    "55519" . str_repeat($i + 7, 8)
-                ]);
+                $cliente->setRg($rgCliente);
+                $cliente->setTelefones($telefoneCliente);
                 $cliente->setDataNascimento(DateTime::createFromFormat('Y-m-d', '1990-01-01')->modify("+$i days"));
 
                 $dataRandom = new DateTime();
@@ -560,14 +625,11 @@ class Init
                 $proprietario = new Proprietario(
                     email: "proprietario$i@{$emails[array_rand($emails)]}",
                     nome: "{$nomes[array_rand($nomes)]} {$segundoNomes[array_rand($segundoNomes)]} {$sobrenomes[array_rand($sobrenomes)]}",
-                    cpfCnpj: str_repeat($i + 7, 11)
+                    cpfCnpj: $cpfProprietario
                 );
 
-                $proprietario->setRg(str_repeat($i + 7, 9));
-                $proprietario->setTelefones([
-                    "55519" . str_repeat($i + 7, 8),
-                    "55519" . str_repeat($i + 8, 8)
-                ]);
+                $proprietario->setRg($rgProprietario);
+                $proprietario->setTelefones($telefoneProprietario);
                 $proprietario->setDataNascimento(DateTime::createFromFormat('Y-m-d', '1990-01-01')->modify("+$i days"));
 
                 $dataRandom = new DateTime();
@@ -581,13 +643,48 @@ class Init
                 ];
                 $proprietario->setDataModificacao($opcoes[array_rand($opcoes)]);
 
-                self::$imobiliaria->cadastrarUsuario($corretor);
-                self::$imobiliaria->cadastrarUsuario($captador);
-                self::$imobiliaria->cadastrarUsuario($gerente);
-                self::$imobiliaria->cadastrarUsuario($cliente);
-                self::$imobiliaria->cadastrarUsuario($administrador);
-                self::$imobiliaria->cadastrarUsuario($vistoriador);
-                self::$imobiliaria->cadastrarUsuario($financeiro);
+                $idCorretor = self::$imobiliaria->cadastrarUsuario($corretor);
+                if ($idCorretor) {
+                    $corretor->setId($idCorretor);
+                } else {
+                    $corretor = null;
+                }
+                $idCaptador = self::$imobiliaria->cadastrarUsuario($captador);
+                if ($idCaptador) {
+                    $captador->setId($idCaptador);
+                } else {
+                    $captador = null;
+                }
+                $idGerente = self::$imobiliaria->cadastrarUsuario($gerente);
+                if ($idGerente) {
+                    $gerente->setId($idGerente);
+                } else {
+                    $gerente = null;
+                }
+                $idCliente = self::$imobiliaria->cadastrarUsuario($cliente);
+                if ($idCliente) {
+                    $cliente->setId($idCliente);
+                } else {
+                    $cliente = null;
+                }
+                $idAdministrador = self::$imobiliaria->cadastrarUsuario($administrador);
+                if ($idAdministrador) {
+                    $administrador->setId($idAdministrador);
+                } else {
+                    $administrador = null;
+                }
+                $idVistoriador = self::$imobiliaria->cadastrarUsuario($vistoriador);
+                if ($idVistoriador) {
+                    $vistoriador->setId($idVistoriador);
+                } else {
+                    $vistoriador = null;
+                }
+                $idFinanceiro = self::$imobiliaria->cadastrarUsuario($financeiro);
+                if ($idFinanceiro) {
+                    $financeiro->setId($idFinanceiro);
+                } else {
+                    $financeiro = null;
+                }
                 self::$imobiliaria->cadastrarProprietario($proprietario);
 
                 $numeroAleatorioEndereco = rand(0, count($enderecos) - 1);
@@ -602,8 +699,18 @@ class Init
 
                 $endereco->setNumero($i);
 
-                $idEndereco = self::$imobiliaria->verificarEndereco($endereco) ?? self::$imobiliaria->cadastrarEndereco($endereco) ?? null;
-                $endereco->setId($idEndereco);
+                $verificarEndereco = self::$imobiliaria->verificarEndereco($endereco);
+
+                if ($verificarEndereco) {
+                    $endereco = $verificarEndereco;
+                } else {
+                    $idEndereco = self::$imobiliaria->cadastrarEndereco($endereco) ?? null;
+                    if ($idEndereco) {
+                        $endereco->setId($idEndereco);
+                    } else {
+                        $endereco = null;
+                    }
+                }
 
                 $venda = floatval(rand(0, 1000000) / 1000000) * 1000000;
                 $aluguel = floatval(rand(0, 10000) / 10000) * 10000;
@@ -624,11 +731,41 @@ class Init
                 $imovel->setQuantQuartos(rand(0, 5));
                 $imovel->setIptu(rand(0, 10000));
                 $imovel->setValorCondominio(rand(0, 1000));
+                $limiteMaximo = isset($i) ? min($i - 1, count(self::$filtrosImovel)) : count(self::$filtrosImovel);
+                $filtros = self::$filtrosImovel;
+                shuffle($filtros);
+                $opcao = [
+                    [],
+                    array_slice($filtros, 0, rand(0, $limiteMaximo))
+                ];
+                $imovel->setFiltros($opcao[array_rand($opcao)]);
+                $listaProprietarios = self::$imobiliaria->getListaProprietarios();
+                $listaProprietarios = array_values($listaProprietarios);
+                $limiteMaximo = min(
+                    count($listaProprietarios) - 1,
+                    isset($i) ? $i - 1 : count($listaProprietarios) - 1
+                );
+                $opcao = [
+                    [],
+                    [$listaProprietarios[rand(0, $limiteMaximo)]]
+                ];
+                $imovel->setProprietarios($opcao[array_rand($opcao)]);
+                $opcao = [
+                    null,
+                    $corretor,
+                ];
+                $imovel->setCorretor($opcao[array_rand($opcao)]);
+                $opcao = [
+                    null,
+                    $captador,
+                ];
+                $imovel->setCaptador($opcao[array_rand($opcao)]);
+
 
                 $dataRandom = new DateTime();
                 $dataRandom->setTimestamp(rand(strtotime('2020-01-01'), strtotime(DateTime::createFromFormat('Y-m-d H:i:s', date('Y-m-d H:i:s'))->format('Y-m-d H:i:s'))));
                 $imovel->setDataCadastro($dataRandom);
-                
+
                 $dataRandomModificacao = new DateTime();
                 $dataRandomModificacao->setTimestamp(rand(strtotime($dataRandom->format('Y-m-d H:i:s')), strtotime(DateTime::createFromFormat('Y-m-d H:i:s', date('Y-m-d H:i:s'))->format('Y-m-d H:i:s'))));
                 $opcoes = [
@@ -667,13 +804,19 @@ class Init
                     self::$imobiliaria->getEstoque()->atualizarAnuncio($anuncio);
                 }
 
-                $imovel->setAnuncio($anuncio);
-
-                if ($venda > 0 && $aluguel > 0) {
-                    $imovel->setStatus(Status::VENDA_ALUGUEL);
-                }
+                $imovel->setAnuncio($anuncio ?? null);
 
                 self::$imobiliaria->getEstoque()->cadastrarImovel($imovel);
+
+                // $condominio = new Condominio($nomesCondominio[array_rand($nomesCondominio)], $endereco);
+                // $limiteMaximo = isset($i) ? $i - 1 : count(self::$filtrosCondominio);
+                // $limiteMaximo = max(0, $limiteMaximo);
+                // $opcao = [
+                //     [],
+                //     array_slice(self::$filtrosCondominio, 0, rand(0, $limiteMaximo))
+                // ];
+                // $condominio->setFiltros($opcao[array_rand($opcao)]);
+                // self::$imobiliaria->cadastrarCondominio($condominio);
             }
         }
     }

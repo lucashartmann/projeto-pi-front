@@ -116,6 +116,7 @@ class controller
             if ($imovel->getCondominio()) {
                 $condominio = [
                     "nome" => $imovel->getCondominio()->getNome(),
+                    "filtros" => $imovel->getCondominio()->getFiltros(),
                 ];
             }
 
@@ -196,7 +197,8 @@ class controller
                 "area_privativa" => $imovel->getAreaPrivativa() ?? 0.00,
                 "area_total" => $imovel->getAreaTotal() ?? 0.00,
                 "complemento" => $imovel->getComplemento() ?? null,
-                "condominio" => $condominio ?? null
+                "condominio" => $condominio ?? null,
+                "filtros" => $imovel->getFiltros()
             ];
         }
 
@@ -212,8 +214,11 @@ class controller
         $lista = [];
         if ($listaUsuarios) {
             foreach ($listaUsuarios as $usuario) {
+                if (!$usuario) {
+                    continue; 
+                }
                 $lista[] = [
-                    "id" => $usuario->getId(),
+                    "id" => $usuario->getId() ?? null,
                     "email" => $usuario->getEmail(),
                     "nome" => $usuario->getNome(),
                     "cpf_cnpj" => $usuario->getCpfCnpj(),

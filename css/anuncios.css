@@ -1,3 +1,40 @@
+#container-pai {
+    /* align-items: center; */
+    justify-content: center;
+    justify-items: center;
+    /* align-content: center; */
+    height: auto;
+    width: 100%;
+    padding: 20px;
+}
+
+#h-filtro {
+    display: flex;
+    gap: 10px;
+    margin: 0px 20px 20px 20px;
+    width: 98%;
+
+    select {
+        width: 10rem;
+        height: 1.6rem;
+    }
+
+    #seta {
+        width: auto;
+        height: 1.6rem;
+        /* border: solid 1px rgb(160 160 160); */
+        text-align: center;
+        align-content: center;
+        &:hover {
+            cursor: pointer;
+        }
+    }
+
+    #selecionar-todos {
+        width: 9rem;        
+        height: 1.6rem;
+    }
+}
 
 section {
     display:flex;

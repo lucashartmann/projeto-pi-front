@@ -203,6 +203,19 @@ async function listarImoveisDisponiveis() {
                 return null;
             });
 
+        resposta.forEach(imovel => {
+            switch (imovel.status) {
+                case "Venda":
+                    imovel.valor_aluguel = null;
+                    break;
+                case "Aluguel":
+                    imovel.valor_venda = null;
+                    break;
+                default:
+                    break;
+            }
+        });
+
         return resposta;
     } catch (erro) {
         console.error("Falha ao conectar com o backend:", erro);

@@ -1022,7 +1022,7 @@ class Banco extends PDO
                 $dataModificacao = NULL;
             }
             $senha_hash = hash('sha256', $usuario->getSenha());
-            $stmt->execute([
+            $resultado = $stmt->execute([
                 ':username' => $usuario->getUsername(),
                 ':senha' => $senha_hash,
                 ':email' => $usuario->getEmail(),
@@ -1038,69 +1038,124 @@ class Banco extends PDO
             $id = $this->lastInsertId();
             if ($usuario->getTelefones()) {
                 foreach ($usuario->getTelefones() as $telefone) {
-                    $sqlQuery = " 
-                            INSERT INTO telefone (numero) 
-                            VALUES(:numero)
-                            ";
-                    $stmt = $this->prepare($sqlQuery);
-                    $stmt->execute([
-                        ':numero' => $telefone,
-                    ]);
-                    $idTelefone = $this->lastInsertId();
-                    $sqlQuery = " 
-                            INSERT INTO telefone_usuario (id_usuario, id_telefone) 
-                            VALUES(:id_usuario, :id_telefone)
-                            ";
-                    $stmt = $this->prepare($sqlQuery);
-                    $stmt->execute([
-                        ':id_usuario' => $id,
-                        ':id_telefone' => $idTelefone
-                    ]);
+                    try {
+                        $stmt = $this->prepare("
+                            SELECT id
+                            FROM telefone
+                            WHERE numero = :numero
+                        ");
+                        $stmt->execute([
+                            ':numero' => $telefone
+                        ]);
+
+                        $idTelefone = $stmt->fetchColumn();
+
+                        if (!$idTelefone) {
+                            $stmt = $this->prepare("
+                                INSERT INTO telefone (numero)
+                                VALUES (:numero)
+                            ");
+                            $stmt->execute([
+                                ':numero' => $telefone
+                            ]);
+
+                            $idTelefone = $this->lastInsertId();
+                        }
+
+                        $stmt = $this->prepare("
+                            SELECT 1
+                            FROM telefone_usuario
+                            WHERE id_usuario = :id_usuario
+                            AND id_telefone = :id_telefone
+                        ");
+                        $stmt->execute([
+                            ':id_usuario' => $id,
+                            ':id_telefone' => $idTelefone
+                        ]);
+
+                        if (!$stmt->fetchColumn()) {
+                            $stmt = $this->prepare("
+                                INSERT INTO telefone_usuario (id_usuario, id_telefone)
+                                VALUES (:id_usuario, :id_telefone)
+                            ");
+                            $stmt->execute([
+                                ':id_usuario' => $id,
+                                ':id_telefone' => $idTelefone
+                            ]);
+                        }
+                    } catch (Exception $e) {
+                        // error_log("ERRO Banco->cadastrarUsuario TELEFONE: " . $e->getMessage());
+                    }
                 }
             }
             $tipoUsuarioObj = $usuario->getTipo();
             $tipoUsuarioValor = $tipoUsuarioObj ? $tipoUsuarioObj->value : NULL;
-            if ($tipoUsuarioValor == "CORRETOR") {
-                $stmt = $this->prepare("
+            error_log("Tipo de usuário: " . $tipoUsuarioValor);
+            switch ($tipoUsuarioValor) {
+                case "CORRETOR":
+                    try {
+                        $stmt = $this->prepare("
                                     INSERT INTO corretor (id_usuario, creci)
                                     VALUES(:id_usuario, :creci)
                                 ");
-                $stmt->execute([
-                    ':id_usuario' => $id,
-                    ':creci' => $usuario->getCreci()
-                ]);
-            } else if ($tipoUsuarioValor == "CAPTADOR") {
-                $stmt = $this->prepare("
-                                    INSERT INTO captador (id_usuario, salario)
-                                    VALUES(:id_usuario, :salario)
+                        $stmt->execute([
+                            ':id_usuario' => $id,
+                            ':creci' => $usuario->getCreci()
+                        ]);
+                    } catch (Exception $e) {
+                        error_log("ERRO Banco->cadastrarUsuario CORRETOR: " . $e->getMessage());
+                        return False;
+                    }
+                    break;
+                case "CAPTADOR":
+                    try {
+                        $stmt = $this->prepare("
+                                        INSERT INTO captador (id_usuario, salario)
+                                        VALUES(:id_usuario, :salario)
                                 ");
-                $stmt->execute([
-                    ':id_usuario' => $id,
-                    ':salario' => $usuario->getSalario()
-                ]);
-            } else if ($tipoUsuarioValor == "GERENTE") {
-                $stmt = $this->prepare("
+                        $stmt->execute([
+                            ':id_usuario' => $id,
+                            ':salario' => $usuario->getSalario()
+                        ]);
+                    } catch (Exception $e) {
+                        error_log("ERRO Banco->cadastrarUsuario CAPTADOR: " . $e->getMessage());
+                        return False;
+                    }
+                    break;
+                case "GERENTE":
+                    try {
+                        $stmt = $this->prepare("
                                     INSERT INTO gerente (id_usuario, salario)
                                     VALUES(:id_usuario, :salario)
                                 ");
-                $stmt->execute([
-                    ':id_usuario' => $id,
-                    ':salario' => $usuario->getSalario()
-                ]);
-            } else if ($tipoUsuarioValor == "CLIENTE") {
-                $stmt = $this->prepare("
+                        $stmt->execute([
+                            ':id_usuario' => $id,
+                            ':salario' => $usuario->getSalario()
+                        ]);
+                    } catch (Exception $e) {
+                        error_log("ERRO Banco->cadastrarUsuario GERENTE: " . $e->getMessage());
+                        return False;
+                    }
+                    break;
+                case "CLIENTE":
+                    try {
+                        $stmt = $this->prepare("
                                     INSERT INTO cliente (id_usuario)
                                     VALUES(:id_usuario)
                                 ");
-                $stmt->execute([
-                    ':id_usuario' => $id,
-
-                ]);
+                        $stmt->execute([
+                            ':id_usuario' => $id,
+                        ]);
+                    } catch (Exception $e) {
+                        error_log("ERRO Banco->cadastrarUsuario CLIENTE: " . $e->getMessage());
+                        return False;
+                    }
+                    break;
             }
-            return True;
+            return $this->lastInsertId();
         } catch (Exception $e) {
             $erro = "ERRO! Banco->cadastrarUsuario " . $e->getMessage();
-            error_log($erro);
+            // error_log($erro);
             return False;
         }
     }
@@ -1808,7 +1863,7 @@ class Banco extends PDO
             if ($idEndereco) {
                 $endereco = $this->getEnderecoPorId($idEndereco);
             }
-            
+
             $telefones = [];
 
             $stmt = $this->prepare("
@@ -2222,10 +2277,10 @@ class Banco extends PDO
             $ocupacao = $ocupacao ? $ocupacao->value : null;
 
             $corretor = $imovel->getCorretor();
-            $cpf_corretor = $corretor ? $corretor->getCpfCnpj() : null;
+            $cpf_corretor = $corretor ? $corretor->getId() : null;
 
             $captador = $imovel->getCaptador();
-            $cpf_captador = $captador ? $captador->getCpfCnpj() : null;
+            $cpf_captador = $captador ? $captador->getId() : null;
 
             $condominio = $imovel->getCondominio();
             $idCondominio = $condominio ? $condominio->getId() : null;
@@ -2294,10 +2349,29 @@ class Banco extends PDO
 
             if ($imovel->getFiltros()) {
                 foreach ($imovel->getFiltros() as $filtro) {
-                    $idFiltro = $this->getIdFiltroImovelPorNome($filtro);
-                    if ($idFiltro) {
-                        $this->cadastrarFiltroImovel($idImovel, $filtro);
-                    }
+                    $stmt = $this->prepare("
+                        INSERT IGNORE INTO filtros_imovel (nome)
+                        VALUES (:nome)
+                    ");
+                    $stmt->execute([':nome' => $filtro]);
+
+                    $stmt = $this->prepare("
+                        SELECT id
+                        FROM filtros_imovel
+                        WHERE nome = :nome
+                    ");
+                    $stmt->execute([':nome' => $filtro]);
+
+                    $idFiltro = $stmt->fetchColumn();
+
+                    $stmt = $this->prepare("
+                        INSERT INTO imovel_filtros (id_imovel, id_filtros_imovel)
+                        VALUES (:id_imovel, :id_filtro)
+                    ");
+                    $stmt->execute([
+                        ':id_imovel' => $idImovel,
+                        ':id_filtro' => $idFiltro
+                    ]);
                 }
             }
 
@@ -2306,7 +2380,9 @@ class Banco extends PDO
 
             return  $this->lastInsertId();
         } catch (Exception $e) {
-            // $this->rollBack();
+            if ($this->inTransaction()) {
+                $this->rollBack();
+            }
             error_log("ERRO! Banco->cadastrarImovel: " . $e->getMessage());
             return false;
         }
@@ -2463,7 +2539,9 @@ class Banco extends PDO
             ]);
             return  $this->commit();
         } catch (Exception $e) {
-            $this->rollBack();
+            if ($this->inTransaction()) {
+                $this->rollBack();
+            }
             error_log("ERRO Banco->atualizarImovel: " . $e->getMessage());
             return false;
         }
@@ -2653,7 +2731,9 @@ class Banco extends PDO
 
             return $this->commit();
         } catch (Exception $e) {
-            $this->rollBack();
+            if ($this->inTransaction()) {
+                $this->rollBack();
+            }
             error_log("ERRO Banco->atualizarAnuncio: " . $e->getMessage());
             return false;
         }
@@ -2718,7 +2798,9 @@ class Banco extends PDO
             }
             return $this->commit();
         } catch (Exception $e) {
-            $this->rollBack();
+            if ($this->inTransaction()) {
+                $this->rollBack();
+            }
             error_log("ERRO Banco->atualizarCondominio: " . $e->getMessage());
             return false;
         }
@@ -2870,7 +2952,9 @@ class Banco extends PDO
             }
             return $this->commit();
         } catch (Exception $e) {
-            $this->rollBack();
+            if ($this->inTransaction()) {
+                $this->rollBack();
+            }
             error_log("ERRO Banco->atualizarUsuario: " . $e->getMessage());
             return false;
         }
@@ -2971,7 +3055,9 @@ class Banco extends PDO
 
             return $this->commit();
         } catch (Exception $e) {
-            $this->rollBack();
+            if ($this->inTransaction()) {
+                $this->rollBack();
+            }
             error_log("ERRO Banco->atualizarProprietario: " . $e->getMessage());
             return false;
         }

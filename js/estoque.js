@@ -56,10 +56,6 @@ async function filtroOrdenado() {
 }
 
 async function filtrar() {
-    if (!event || !event.target) {
-        return;
-    }
-
     if (document.getElementById("sidebar-imoveis").style.display !== "none") {
         imoveisFiltrados = imoveisCache;
         document.getElementById("sidebar-imoveis").querySelectorAll("input, select, textarea").forEach((elemento) => {

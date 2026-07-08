@@ -86,7 +86,6 @@ function bannerImoveis(dados) {
     wrapper.innerHTML = "";
     for (var i = 0; i < 5; i++) {
         var imovel = dados[i];
-        console.log("Imóvel do banner:", imovel);
         if (!imovel) continue;
         var b64 = imovel.anuncio?.imagens?.[0];
         if (!b64) continue;
@@ -101,7 +100,7 @@ function bannerImoveis(dados) {
             precoAluguel.innerHTML = `Aluguel: <p class="preco">${formatarValor(imovel.valor_aluguel)}</p>`;
         }
         wrapper.innerHTML += `
-        <div class="swiper-slide"  onclick="abrirAnuncio(${imovel.id})"> 
+        <div class="swiper-slide"  onclick="abrirAnuncio(null, ${imovel.id})"> 
         <img src="${b64}" alt="${imovel.anuncio.titulo}"><div><h2>${imovel.anuncio.titulo}</h2>${precoVenda.outerHTML}${precoAluguel.outerHTML}<p>${imovel.anuncio.descricao}</p></div></div>
         `
     }
@@ -173,7 +172,7 @@ async function carregarAnuncios(dados) {
             precoAluguel.innerHTML = `Aluguel: <p class="preco">${formatarValor(imovel.valor_aluguel)}</p>`;
         }
         html += `
-            <div class="anuncio-imovel" onclick="abrirAnuncio(${imovel.id})">
+            <div class="anuncio-imovel" onclick="abrirAnuncio(null, ${imovel.id})">
                 <i class="fas fa-heart" onclick="curtirImovel(${imovel.id})"></i>
                 <div class="swiper swiper-anuncio">
                     <div class="swiper-wrapper">
@@ -256,16 +255,23 @@ function pesquisarCEP(event) {
     }
 }
 
-async function abrirAnuncio(imovel_id) {
+async function abrirAnuncio(imovel = null, id = null) {
+    if (id && !imovel) {
+        imovel = dadosImoveis.find(imovel => imovel.id == id);
+    } else if (!imovel && !id) {
+        imovel = null;
+        return
+    }
+
     if (event.target.classList.contains("swiper-button-prev") || event.target.classList.contains("swiper-button-next") || event.target.classList.contains("fa-heart") || event.target.classList.contains("fa-whatsapp")) {
         return;
     }
-    // console.log(event.target.closest(".swiper-slide-active"));
+
     if (event.target.classList.contains("swiper-slide") && !event.target.classList.contains("swiper-slide-active")) {
         return;
     }
-    // console.log("Abrindo anúncio do imóvel com ID:", imovel_id);
-    // sessionStorage.setItem("imovel_id", imovel_id);
+
+    sessionStorage.setItem("dados_imovel", JSON.stringify(imovel));
     window.location.href = "html/dados-imovel.html";
 }
 

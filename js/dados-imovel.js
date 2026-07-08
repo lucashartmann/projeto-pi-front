@@ -1,9 +1,10 @@
 function setupDados(dados) {
+    imovel = JSON.parse(dados);
     var div = document.getElementById("dados-imovel");
     let imagensHtml = "";
-    if (dados.anuncio.imagens && dados.anuncio.imagens.length > 0) {
+    if (imovel.anuncio.imagens && imovel.anuncio.imagens.length > 0) {
         swiperhtml = "";
-        for (const imagem of dados.anuncio.imagens) {
+        for (const imagem of imovel.anuncio.imagens) {
             swiperhtml += `<div class="swiper-slide" style="background-image: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), url(${imagem})" onclick="abrirImagem('${imagem}')"></div>`;
             imagensHtml += `<div class="swiper-slide" style="background-image: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), url(${imagem})" onclick="abrirImagem('${imagem}')"></div>`;
         }
@@ -16,39 +17,45 @@ function setupDados(dados) {
     const pDescricao = document.getElementById("p-descricao");
     const divContato = document.getElementById("entrar-contato");
 
-    divTitulo.querySelector("h3").innerText = dados.anuncio.titulo;
-    divTitulo.querySelector("p").innerText = `${dados.endereco.rua}, ${dados.endereco.numero}, ${dados.endereco.bairro}`;
+    divTitulo.querySelector("h3").innerText = imovel.anuncio.titulo;
+    divTitulo.querySelector("p").innerText = `${imovel.endereco.rua}, ${imovel.endereco.numero}, ${imovel.endereco.bairro}`;
     swiperWrapper.innerHTML = swiperhtml;
     divGaleria.innerHTML = imagensHtml;
-    pDescricao.innerText = dados.anuncio.descricao;
+    pDescricao.innerText = imovel.anuncio.descricao;
     try {
-        divContato.getElementById("condominio").querySelector("p").innerText = formatarValor(dados.valor_condominio);
-        divContato.getElementById("iptu").querySelector("p").innerText = formatarValor(dados.valor_iptu);
+        divContato.getElementById("condominio").querySelector("p").innerText = formatarValor(imovel.valor_condominio);
+        divContato.getElementById("iptu").querySelector("p").innerText = formatarValor(imovel.valor_iptu);
     } catch (e) {
         console.warn("Valores de condomínio e IPTU não encontrados");
     }
+
+    if (imovel.filtros) {
+        const divFiltros = document.getElementById("div-filtros");
+        for (const filtro of imovel.filtros) {
+            divFiltros.innerHTML += `<input type="checkbox" checked disabled><label>${filtro}</label>`;
+        }
+        divPai.appendChild(divFiltros);
+    }
+
+    // Adiiconar mapa do google maps
 
     //TODO: adicionar filtros, localizacao, valores, etc
 }
 
 
 window.addEventListener("DOMContentLoaded", async () => {
-    id = sessionStorage.getItem("imovel_id") || null;
-    if (!id) {
+    const dados = sessionStorage.getItem("dados_imovel") || null;
+
+    if (JSON.parse(dados).length === 0) {
         alert("Imóvel não encontrado!");
         window.location.href = getCaminhoRelativo("index.html");
         return;
     }
-    dados = await getDadosImovel(id);
-    console.log("Dados do imóvel obtidos:", dados);
-    sessionStorage.removeItem("imovel_id");
-    if (dados) {
-        await setupDados(dados);
-        await inicializarSwiper();
-    } else {
-        alert("Erro ao carregar dados do imóvel!");
-        window.location.href = getCaminhoRelativo("index.html");
-    }
+
+    sessionStorage.removeItem("dados_imovel");
+    await setupDados(dados);
+    await inicializarSwiper();
+   
 });
 
 function abrirImagem(src) {
