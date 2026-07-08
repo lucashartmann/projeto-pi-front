@@ -23,29 +23,21 @@ body {
     height: auto;
     margin-top: auto;
     margin-bottom: 0;
-    background-color: aqua;
+    /* background-color: aqua; */
     max-height: 100% !important;
-    height: 70%;
+    height: 70vh;
 }
 
 .container {
     border: none;
     z-index: 0;
-    min-width: 0 !important;
-    min-height: 0 !important;
-    /* max-height: 10px !important; */
-    max-height: 100%; 
-    height: auto;
+    width: 100% !important;
+
 
     .ui, tr, td, th, .calendar, .column, .grid, #calendar {
-        min-width: 0 !important;
-        max-width: 100% !important;
-        min-height: 0 !important;
-        max-height: 100%; 
-        height: auto;
+        max-width: 100%;
     }
 
-    
     .menu {
         display: none;
     }
@@ -55,14 +47,23 @@ body {
 
     .fc-day-grid-event {
         background: var(--background-nav);
-        border: none !important;
     }
 
-    color: var(--cor-texto-alternativa) !important;
+    .fc-today a{
+        color: var(--cor-texto);
+    }
 
     td,
     th {
-        border-color: var(--cor-texto-alternativa)  !important;
+        border-color: var(--cor-texto-alternativa);
+    }
+
+    .fc-day-number {
+        color: var(--cor-texto-alternativa);
+    }
+
+    th a {
+        color: var(--cor-texto-alternativa);
     }
 
     th {

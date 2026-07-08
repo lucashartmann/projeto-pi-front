@@ -32,8 +32,9 @@ async function calendar() {
     navLinks: true,
     editable: true,
     eventLimit: true,
-    events: [
-    ]
+    height: $('#pai-calendario').height(),
+    handleWindowResize: true,
+    width: $('#pai-calendario').width(),
   });
 };
 

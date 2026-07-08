@@ -69,30 +69,34 @@ function imovelPrincipal(dados) {
     if (!Array.isArray(dados) || dados.length === 0) return;
     const imoveisComImagem = dados.filter(imovel => imovel?.anuncio?.imagens?.[0]);
     const ramdomNumber = Math.floor(Math.random() * imoveisComImagem.length);
-    const imovel = imoveisComImagem[ramdomNumber] || dados[0];
-    const b64 = imovel?.anuncio?.imagens?.[0] || null;
-    if (!b64) {
-        console.warn("Imóvel principal não possui imagem");
-        return;
-    }
-    var banner = document.getElementById("imovel-destaque");
-    if (!banner) return;
-    banner.innerHTML = "";
-    let precoVenda = document.createElement("span");
-    let precoAluguel = document.createElement("span");
-    if (imovel.valor_aluguel && imovel.valor_venda) {
-        precoVenda.innerHTML = `Venda: <p class="preco">${formatarValor(imovel.valor_venda)}</p>`;
-        precoAluguel.innerHTML = `Aluguel: <p class="preco">${formatarValor(imovel.valor_aluguel)}</p>`;
-    } else if (imovel.valor_venda) {
-        precoVenda.innerHTML = `Venda: <p class="preco">${formatarValor(imovel.valor_venda)}</p>`;
-    } else {
-        precoAluguel.innerHTML = `Aluguel: <p class="preco">${formatarValor(imovel.valor_aluguel)}</p>`;
-    }
-    banner.innerHTML = `
-        <h2 class="sobrepor">${imovel.anuncio.titulo}${precoVenda.outerHTML}${precoAluguel.outerHTML}</h2>
+  
+    let imovel = imoveisComImagem[Math.floor(Math.random() * imoveisComImagem.length)];
+    let imovel1 = imoveisComImagem[Math.floor(Math.random() * imoveisComImagem.length)];
+    let imovel2 = imoveisComImagem[Math.floor(Math.random() * imoveisComImagem.length)];
+    let imovel3 = imoveisComImagem[Math.floor(Math.random() * imoveisComImagem.length)];
+    let imovel4 = imoveisComImagem[Math.floor(Math.random() * imoveisComImagem.length)];
+    let imovel5 = imoveisComImagem[Math.floor(Math.random() * imoveisComImagem.length)];
+    let imovel6 = imoveisComImagem[Math.floor(Math.random() * imoveisComImagem.length)];
+    let imovel7 = imoveisComImagem[Math.floor(Math.random() * imoveisComImagem.length)];
+    
+    
+    document.querySelector("#gallery").innerHTML = `
+        <img src="${imovel.anuncio.imagens[0]}"  onclick="abrirAnuncio(null, ${imovel.id})">
+        <img src="${imovel1.anuncio.imagens[0]}"  onclick="abrirAnuncio(null, ${imovel1.id})">
     `
-    banner.style.backgroundImage = `linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), url(${b64})`
-    banner.addEventListener("click", () => abrirAnuncio(imovel.id));
+
+    document.querySelector("#gallery3").innerHTML = `
+        <img src="${imovel2.anuncio.imagens[0]}"  onclick="abrirAnuncio(null, ${imovel2.id})">
+        <img src="${imovel3.anuncio.imagens[0]}"  onclick="abrirAnuncio(null, ${imovel3.id})">
+    `
+
+    document.querySelector("#gallery2").innerHTML = `
+        <img src="${imovel4.anuncio.imagens[0]}"  onclick="abrirAnuncio(null, ${imovel4.id})">
+        <img src="${imovel5.anuncio.imagens[0]}"  onclick="abrirAnuncio(null, ${imovel5.id})">
+        <img src="${imovel6.anuncio.imagens[0]}"  onclick="abrirAnuncio(null, ${imovel6.id})">
+        <img src="${imovel7.anuncio.imagens[0]}"  onclick="abrirAnuncio(null, ${imovel7.id})">
+    `
+
 }
 
 function bannerImoveis(dados) {
@@ -366,6 +370,6 @@ window.addEventListener('beforeunload', function (event) {
     if (imoveisCurtidos.length > 0) {
         salvarImoveisCurtidos();
     }
-    event.preventDefault();
-    event.returnValue = '';
+    // event.preventDefault();
+    // event.returnValue = '';
 });

@@ -424,7 +424,7 @@ class Init
         }
 
         if (count(self::$imobiliaria->getEstoque()->getListaImoveis()) == 0) {
-            for ($i = 1; $i <= 52; $i++) {
+            for ($i = 1; $i <= 50; $i++) {
                 $sequencial = ($i - 1) * 8;
                 $cpfVistoriador   = str_pad((string)($sequencial + 1), 11, '0', STR_PAD_LEFT);
                 $cpfFinanceiro    = str_pad((string)($sequencial + 2), 11, '0', STR_PAD_LEFT);
