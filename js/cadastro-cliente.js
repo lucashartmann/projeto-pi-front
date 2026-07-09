@@ -1,8 +1,11 @@
+import { getCaminhoRelativo } from "./modules/utils.js";
+import { usuarioLogado, carregarUser } from "./modules/usuario.js";
+
 Inputmask("(99) 99999-9999").mask("#inpt-telefone");
 Inputmask("999.999.999-99").mask("#inpt-cpf");
 Inputmask("99999-999").mask("#ta-cep");
 
-const usuario = null;
+let usuario = null;
 
 async function salvar() {
     var form = document.querySelector("form");
@@ -241,7 +244,7 @@ async function abrirCadastro(usuario) {
 }
 
 window.addEventListener('DOMContentLoaded', async function (event) {
-    let usuario = await carregarUser();
+    usuario = usuarioLogado || await carregarUser();
 
     const select = document.querySelector("#select-tipo");
 
