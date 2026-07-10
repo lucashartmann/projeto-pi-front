@@ -1,3 +1,7 @@
+function cadastrarAtendimento() {
+    
+}
+
 function setupDados(dados) {
     imovel = JSON.parse(dados);
     var div = document.getElementById("dados-imovel");
