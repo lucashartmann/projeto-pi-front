@@ -285,41 +285,39 @@ class Banco extends PDO
 
     function getImoveisFavoritos(int $idCliente)
     {
-        // TODO: Corrigir sintaxe
-
         try {
             $sql = "
             SELECT
 
             imovel_cliente.*,
 
-            imovel.id AS imovel_id,
-            imovel.valor_venda AS imovel_valor_venda,
-            imovel.valor_aluguel AS imovel_valor_aluguel,
-            imovel.quant_quartos AS imovel_quant_quartos,
-            imovel.quant_salas AS imovel_quant_salas,
-            imovel.quant_vagas AS imovel_quant_vagas,
-            imovel.quant_banheiros AS imovel_quant_banheiros,
-            imovel.quant_varandas AS imovel_quant_varandas,
-            imovel.categoria AS imovel_categoria,
-            imovel.id_endereco AS imovel_id_endereco,
-            imovel.status AS imovel_status,
-            imovel.iptu AS imovel_iptu,
-            imovel.valor_condominio AS imovel_valor_condominio,
-            imovel.andar AS imovel_andar,
-            imovel.estado AS imovel_estado,
-            imovel.bloco AS imovel_bloco,
-            imovel.ano_construcao AS imovel_ano_construcao,
-            imovel.area_total AS imovel_area_total,
-            imovel.area_privativa AS imovel_area_privativa,
-            imovel.situacao AS imovel_situacao,
-            imovel.ocupacao AS imovel_ocupacao,
-            imovel.id_corretor AS imovel_id_corretor,
-            imovel.id_captador AS imovel_id_captador,
-            imovel.data_cadastro AS imovel_data_cadastro,
-            imovel.data_modificacao AS imovel_data_modificacao,
-            imovel.id_anuncio AS imovel_id_anuncio,
-            imovel.id_condominio AS imovel_id_condominio,
+            imovel.id AS id,
+            imovel.valor_venda AS valor_venda,
+            imovel.valor_aluguel AS valor_aluguel,
+            imovel.quant_quartos AS quant_quartos,
+            imovel.quant_salas AS quant_salas,
+            imovel.quant_vagas AS quant_vagas,
+            imovel.quant_banheiros AS quant_banheiros,
+            imovel.quant_varandas AS quant_varandas,
+            imovel.categoria AS categoria,
+            imovel.id_endereco AS id_endereco,
+            imovel.status AS status,
+            imovel.iptu AS iptu,
+            imovel.valor_condominio AS valor_condominio,
+            imovel.andar AS andar,
+            imovel.estado AS estado,
+            imovel.bloco AS bloco,
+            imovel.ano_construcao AS ano_construcao,
+            imovel.area_total AS area_total,
+            imovel.area_privativa AS area_privativa,
+            imovel.situacao AS situacao,
+            imovel.ocupacao AS ocupacao,
+            imovel.id_corretor AS id_corretor,
+            imovel.id_captador AS id_captador,
+            imovel.data_cadastro AS data_cadastro,
+            imovel.data_modificacao AS data_modificacao,
+            imovel.id_anuncio AS id_anuncio,
+            imovel.id_condominio AS id_condominio,
 
             endereco.id AS endereco_id,
             endereco.rua AS endereco_rua,
@@ -366,7 +364,7 @@ class Banco extends PDO
             FROM imovel_cliente
 
             LEFT join imovel 
-                ON imovel.id = imovel_cliente.id_imovel
+                ON imovel_cliente.id_imovel = imovel.id 
 
             LEFT JOIN endereco
                 ON endereco.id = imovel.id_endereco
@@ -406,13 +404,12 @@ class Banco extends PDO
             $lista = [];
 
             foreach ($dados as $registro) {
-                $idImovel = (int)$registro['imovel_id'];
-                $imovel = $this->montarImovel($dados, $idImovel);
+                $idImovel = (int)$registro['id'];
+                $imovel = $this->montarImovel($registro, $idImovel);
                 if ($imovel) {
                     $lista[] = $imovel;
                 }
             }
-
             return $lista;
         } catch (Exception $e) {
             error_log("ERRO Banco->getImoveisFavoritos: " . $e->getMessage());
@@ -424,8 +421,25 @@ class Banco extends PDO
     {
 
         try {
-            // TODO: Remover os que estão salvos no banco e não estão na lista
-            $sql = "INSERT INTO imovel_cliente (id_cliente, id_imovel) VALUES (:id_cliente, :id_imovel)";
+            error_log("Imóveis a serem cadastrados para o cliente $idCliente: " . implode(',', array_map('intval', $idImoveis)));
+
+            if (empty($idImoveis)) {
+                $sql = "DELETE FROM imovel_cliente WHERE id_cliente = :id_cliente";
+                $stmt = $this->prepare($sql);
+                $reusltado = $stmt->execute([
+                    ':id_cliente' => $idCliente
+                ]);
+                return true;
+            }
+
+            $sql = "DELETE FROM imovel_cliente WHERE id_cliente = :id_cliente AND id_imovel NOT IN (" . implode(',', array_map('intval', $idImoveis)) . ")";
+            $stmt = $this->prepare($sql);
+            $reusltado = $stmt->execute([
+                ':id_cliente' => $idCliente
+            ]);
+            error_log("Resultado da exclusão de imóveis do cliente: " . ($reusltado ? "Sucesso" : "Falha"));
+           
+            $sql = "INSERT IGNORE INTO imovel_cliente (id_cliente, id_imovel) VALUES (:id_cliente, :id_imovel)";
             $stmt = $this->prepare($sql);
             foreach ($idImoveis as $idImovel) {
                 $stmt->execute([
@@ -3071,6 +3085,7 @@ class Banco extends PDO
     public function montarImovel($dados, $idImovel)
     {
         try {
+
             $endereco = null;
             if ($dados['endereco_id']) {
                 $endereco = new Endereco(
@@ -3123,7 +3138,7 @@ class Banco extends PDO
                 $anuncio->setTitulo($dados['anuncio_titulo'] ?? '');
 
                 $stmtAnexos = $this->prepare("
-                    SELECT id, nome_arquivo, tipo, id_anuncio
+                    SELECT id, id_anuncio, nome_arquivo, tipo 
                     FROM midia_anuncio
                     WHERE id_anuncio = :id_anuncio
                 ");

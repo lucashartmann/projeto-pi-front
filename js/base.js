@@ -1,10 +1,13 @@
-function formatarValor(valor) {
-    const formatoMoeda = new Intl.NumberFormat('pt-BR', {
-        style: 'currency',
-        currency: 'BRL',
-    }).format(valor);
-    return formatoMoeda;
-}
+import { usuarioLogado, carregarUser } from "./modules/usuario.js";
+import { getCaminhoRelativo } from "./modules/utils.js";
+
+window.alterarSrc = alterarSrc;
+window.aumentarFonte = aumentarFonte;
+window.diminuirFonte = diminuirFonte;
+window.altoContraste = altoContraste;
+window.modoNoturno = modoNoturno;
+window.openNav = openNav;
+window.closeNav = closeNav;
 
 function aumentarFonte() {
     const root = document.documentElement;
@@ -28,26 +31,7 @@ function modoNoturno() {
     document.body.classList.toggle("modo-noturno");
 }
 
-function getCaminhoRelativo(destino) {
-    let caminho = window.location.pathname;
-    substring = "";
-    if (caminho.includes("/html/")) {
-        caminho = caminho.replace(caminho.substring(caminho.lastIndexOf("/html/")), "/");
-    }
-    if (caminho.includes("/html")) {
-        caminho = caminho.replace(caminho.substring(caminho.lastIndexOf("/html")), "/");
-    }
-    if (caminho.includes("/index.html")) {
-        caminho = caminho.replace(caminho.substring(caminho.lastIndexOf("/index.html")), "/");
-    }
-    if (caminho.slice(-2) != "//") {
-        caminho += "/";
-    }
-    const regex = new RegExp("/" + "$");
-    // console.log(caminho)
-    caminho = caminho.replace(regex, destino);
-    return caminho;
-}
+
 
 function alterarSrc(event, caminho) {
     let a = event.target;
@@ -71,290 +55,40 @@ function closeNav() {
     document.querySelector("main").style.opacity = "1";
 }
 
-async function listarUsuarios() {
-    try {
-        let caminho = getCaminhoRelativo("/php/api/usuarios.php?acao=listar");
-        const resposta = await fetch(caminho)
-            .then(async (res) => {
-                if (res.erro) {
-                    alert("Erro ao listar atendimentos: " + res.erro);
-                    return null;
-                }
-                const contentType = res.headers.get("content-type");
-                if (contentType && contentType.includes("application/json")) {
-                    return await res.json();
-                } else {
-                    const texto = await res.text();
-                    alert("Resposta inesperada do servidor");
-                    console.error("Resposta não é JSON:", texto);
-                    return;
-                }
-            })
-            .then(async (data) => {
-                if (data.status == "erro") {
-                    alert("Erro ao listar usuários: " + data.mensagem);
-                    return null;
-                }
-                return data;
-            })
-            .catch(erro => {
-                console.error("Falha ao conectar com o backend:", erro);
-                return null;
-            });
-        return resposta;
-    } catch (erro) {
-        console.error("Falha ao conectar com o backend:", erro);
-        return null;
-    }
-}
+// function removerCardPessoa(container, event) {
+//     if (document.body.contains(container) && !container.contains(event.target)) {
+//             const checkboxes = container.querySelectorAll("input[type='checkbox']");
+//             const selecionados = Array.from(checkboxes).filter(checkbox => checkbox.checked);
+//             if (selecionados.length > 0) {
+//                 for (let checkbox of selecionados) {
+//                     let containerPessoa = checkbox.closest(".resultado-pessoa");
+//                     switch (tipo) {
+//                         case "proprietario":
+//                             containerPessoa.classList.add("pessoa-selecionada");
+//                             document.getElementById("container-proprietario").appendChild(containerPessoa.cloneNode(true));
+//                             break;
+//                         case "corretor":
+//                             document.getElementById("container-corretor").appendChild(containerPessoa.cloneNode(true));
+//                             break;
+//                         case "captador":
+//                             document.getElementById("container-captador").appendChild(containerPessoa.cloneNode(true));
+//                             break;
+//                     }
+//                 }
+//             }
+//             document.body.removeChild(container);
+//             document.removeEventListener("click", removerCardPessoa);
+//             console.log("Card removido");
+//         }
+// }
 
-async function listarImoveis() {
-    try {
-        let caminho = getCaminhoRelativo("/php/api/imoveis.php?acao=listar_imoveis");
-        const resposta = await fetch(caminho)
-            .then(async (res) => {
-                const contentType = res.headers.get("content-type");
-                if (res.erro) {
-                    alert("Erro ao listar atendimentos: " + res.erro);
-                    return null;
-                }
-                if (contentType && contentType.includes("application/json")) {
-                    return await res.json();
-                } else {
-                    const texto = await res.text();
-                    alert("Resposta inesperada do servidor");
-                    console.error("Resposta não é JSON:", texto);
-                    return;
-                }
-            })
-            .then(async (data) => {
-                if (data.status == "erro") {
-                    alert("Erro ao listar imóveis: " + data.mensagem);
-                    return null;
-                }
-                return data;
-            })
-            .catch(erro => {
-                console.error("Falha ao conectar com o backend:", erro);
-                return null;
-            });
-
-        return resposta;
-    } catch (erro) {
-        console.error("Falha ao conectar com o backend:", erro);
-        return null;
-    }
-}
-
-function removerCardPessoa(container, event) {
-    if (document.body.contains(container) && !container.contains(event.target)) {
-            const checkboxes = container.querySelectorAll("input[type='checkbox']");
-            const selecionados = Array.from(checkboxes).filter(checkbox => checkbox.checked);
-            if (selecionados.length > 0) {
-                for (let checkbox of selecionados) {
-                    let containerPessoa = checkbox.closest(".resultado-pessoa");
-                    switch (tipo) {
-                        case "proprietario":
-                            containerPessoa.classList.add("pessoa-selecionada");
-                            document.getElementById("container-proprietario").appendChild(containerPessoa.cloneNode(true));
-                            break;
-                        case "corretor":
-                            document.getElementById("container-corretor").appendChild(containerPessoa.cloneNode(true));
-                            break;
-                        case "captador":
-                            document.getElementById("container-captador").appendChild(containerPessoa.cloneNode(true));
-                            break;
-                    }
-                }
-            }
-            document.body.removeChild(container);
-            document.removeEventListener("click", removerCardPessoa);
-            console.log("Card removido");
-        }
-}
-
-async function listarImoveisDisponiveis() {
-    try {
-        let caminho = getCaminhoRelativo("/php/api/imoveis.php?acao=listar_imoveis_disponiveis");
-        const resposta = await fetch(caminho)
-            // .then(res => console.log(res))
-            .then(async (res) => {
-                if (res.erro) {
-                    alert("Erro ao listar atendimentos: " + res.erro);
-                    return null;
-                }
-                const contentType = res.headers.get("content-type");
-                if (contentType && contentType.includes("application/json")) {
-                    return await res.json();
-                } else {
-                    const texto = await res.text();
-                    // alert("Resposta inesperada do servidor");
-                    console.error("Resposta não é JSON:", texto);
-                    return null;
-                }
-            })
-            .then(async (data) => {
-                // console.log(data);
-                if (data.status == "erro") {
-                    alert("Erro ao listar imóveis: " + data.mensagem);
-                    return null;
-                }
-                return await data;
-            })
-            .catch(erro => {
-                console.error("Falha ao conectar com o backend:", erro);
-                return null;
-            });
-
-        resposta.forEach(imovel => {
-            switch (imovel.status) {
-                case "Venda":
-                    imovel.valor_aluguel = null;
-                    break;
-                case "Aluguel":
-                    imovel.valor_venda = null;
-                    break;
-                default:
-                    break;
-            }
-        });
-
-        return resposta;
-    } catch (erro) {
-        console.error("Falha ao conectar com o backend:", erro);
-        return null;
-    }
-}
-
-async function getDadosImovel(id) {
-    try {
-        let caminho = getCaminhoRelativo("/php/api/imoveis.php?acao=get_dados_imovel&id=" + id);
-        const resposta = await fetch(caminho)
-            // .then(res => console.log(res))
-            .then(async (res) => {
-                if (res.erro) {
-                    alert("Erro ao listar atendimentos: " + res.erro);
-                    return null;
-                }
-                const contentType = res.headers.get("content-type");
-                if (contentType && contentType.includes("application/json")) {
-                    return await res.json();
-                } else {
-                    const texto = await res.text();
-                    // alert("Resposta inesperada do servidor");
-                    console.error("Resposta não é JSON:", texto);
-                    return null;
-                }
-            })
-            .then(async (data) => {
-                // console.log(data);
-                return await data;
-            })
-            .catch(erro => {
-                console.error("Falha ao conectar com o backend:", erro);
-                return null;
-            });
-        console.log("Dados do imóvel obtidos:", resposta);
-        if (resposta && Array.isArray(resposta) && resposta.length > 0) {
-            return resposta[0];
-        } else {
-            console.error("Resposta inválida ao obter dados do imóvel:", resposta);
-            return null;
-        }
-    } catch (erro) {
-        console.error("Falha ao conectar com o backend:", erro);
-        return null;
-    }
-}
-
-async function deslogar() {
-    try {
-        let caminho = getCaminhoRelativo("/php/api/login.php?acao=deslogar");
-        const resposta = await fetch(caminho, {
-            method: "POST"
-        });
-        if (resposta.erro) {
-            alert("Erro ao listar atendimentos: " + resposta.erro);
-            return null;
-        }
-        if (!resposta.ok) throw new Error(`HTTP ${resposta.status}`);
-        const contentType = resposta.headers.get("content-type");
-        if (contentType && contentType.includes("application/json")) {
-            dados = await resposta.json();
-        } else {
-            const texto = await resposta.text();
-            alert("Resposta inesperada do servidor");
-            console.error("Resposta não é JSON:", texto);
-            return;
-        }
-        if (dados.status == "sucesso") {
-            const nav = document.querySelector("nav ul");
-            if (nav) {
-                for (const li of nav.children) {
-                    const a = li.querySelector("a");
-                    if (a && a.innerText === "Sair") {
-                        a.innerText = "Logar";
-                        a.removeEventListener("click", deslogar);
-                        a.href = "login.html";
-                    }
-                }
-            } else {
-                console.warn("Elemento de navegação não encontrado para atualizar estado de login");
-                return;
-            }
-            console.log("Deslogado com sucesso!");
-            if (window.location.pathname.endsWith("index.html") || window.location.pathname.endsWith("/")) {
-                window.location.reload();
-                return;
-            } else {
-                window.location.href = getCaminhoRelativo("index.html");
-            }
-        }
-        else {
-            console.warn("Erro ao deslogar: " + dados.mensagem);
-        }
-    } catch (erro) {
-        console.error("Falha ao conectar com o backend:", erro);
-        return null;
-    }
-}
-
-async function carregarUser() {
-    try {
-        let caminho = getCaminhoRelativo("/php/api/login.php?acao=get_usuario");
-        const resposta = await fetch(caminho, {
-            method: "GET"
-        });
-        if (resposta.erro) {
-            alert("Erro ao listar atendimentos: " + resposta.erro);
-            return null;
-        }
-        if (!resposta.ok) throw new Error(`HTTP ${resposta.status}`);
-        const contentType = resposta.headers.get("content-type");
-        if (contentType && contentType.includes("application/json")) {
-            dados = await resposta.json();
-        } else {
-            const texto = await resposta.text();
-            // alert("Resposta inesperada do servidor");
-            console.error("Resposta não é JSON:", texto);
-            return null;
-        }
-        if (dados.status == "erro") {
-            console.error("Erro ao carregar usuário: " + dados.mensagem);
-            return null;
-        }
-        return dados;
-    } catch (erro) {
-        console.error("Falha ao conectar com o backend:", erro);
-        return null;
-    }
-}
 
 function carregarTabs(usuario) {
     const nav = document.getElementById("top-nav");
     if (!nav) return;
     let tabs = [];
     let cadastros = [];
+    let dados = [];
     if (!usuario || !usuario.tipo) {
         console.warn("Tipo de usuário não encontrado:", usuario);
         return;
@@ -474,7 +208,7 @@ function carregarTabs(usuario) {
         </li>
         `;
     }
-    div = nav.querySelector(".right");
+    let div = nav.querySelector(".right");
     if (div) {
         div.innerHTML = html + `<li><a href="#" onclick="deslogar()" id="logout">Sair</a></li>`;
     }
@@ -508,7 +242,7 @@ function carregarTabs(usuario) {
 // window.addEventListener("load", reorganizarMenu);
 
 async function setup() {
-    const usuario = await carregarUser();
+    const usuario = usuarioLogado || await carregarUser();
     if (usuario) carregarTabs(usuario);
     // const topNav = document.querySelector("#top-nav .fa-bars");
     // if (topNav){

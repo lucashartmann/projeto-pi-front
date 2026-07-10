@@ -1,3 +1,7 @@
+import { salvarImoveisCurtidos, curtirImovel, imoveisCurtidos } from "./modules/usuario.js";
+import { getCaminhoRelativo, formatarValor } from "./modules/utils.js";
+import { listarImoveisDisponiveis } from "./modules/imoveis.js";
+
 let imoveisCache = [];
 let proprietariosCache = [];
 let usuariosFiltrados = [];
@@ -5,9 +9,10 @@ let usuariosCache = [];
 let imoveisFiltrados = [];
 let filtroUsuario = "";
 let seta = "";
-var logado = false;
 var favoritos = false;
-const imoveisCurtidos = [];
+
+window.abrirAnuncio = abrirAnuncio;
+window.curtirImovel = curtirImovel;
 
 async function listarImoveisFavoritados() {
     try {
@@ -87,53 +92,6 @@ async function abrirAnuncio(imovel = null, id = null) {
     window.location.href = "dados-imovel.html";
 }
 
-
-async function salvarImoveisCurtidos() {
-    try {
-        let caminho = getCaminhoRelativo("/php/api/login.php?acao=favoritar_imoveis");
-        const resposta = await fetch(caminho, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ id_imoveis: imoveisCurtidos })
-        })
-            .then(res => res.json())
-            .then(data => {
-                if (data.sucesso) {
-                    console.log("Imóveis curtidos salvos com sucesso");
-                } else {
-                    console.error("Erro ao salvar imóveis curtidos:", data.mensagem);
-                }
-            })
-            .catch(err => {
-                console.error("Erro na requisição para salvar imóveis curtidos:", err);
-            });
-    } catch (err) {
-        console.error("Erro ao salvar imóveis curtidos:", err);
-    }
-
-}
-
-
-async function curtirImovel(event, imovelId) {
-    if (!logado) {
-        $usuario = await carregarUser();
-        if (!$usuario) {
-            alert("Você precisa estar logado para curtir um imóvel!");
-            return;
-        }
-        else {
-            logado = true;
-        }
-    }
-    if (imoveisCurtidos.includes(imovelId)) {
-        imoveisCurtidos.splice(imoveisCurtidos.indexOf(imovelId), 1);
-        event.target.classList.remove("curtido");
-        return;
-    }
-    imoveisCurtidos.push(imovelId);
-    event.target.classList.toggle("curtido");
-    event.stopPropagation();
-}
 
 async function filtroOrdenado() {
     seta = event.target;
@@ -443,7 +401,6 @@ async function carregarAnuncios() {
     }
     section.innerHTML = html;
 
-
 }
 
 
@@ -476,12 +433,12 @@ function prevSlide() {
 }
 
 window.addEventListener("DOMContentLoaded", async () => {
-
     favoritos = sessionStorage.getItem("favoritos") === "true";
     sessionStorage.removeItem("favoritos");
-    dados = [];
+    let dados = [];
     if (favoritos) {
         dados = await listarImoveisFavoritados();
+        imoveisCache.push(...dados);
     } else {
         if (imoveisCache.length === 0) {
             dados = await listarImoveisDisponiveis();
@@ -493,12 +450,8 @@ window.addEventListener("DOMContentLoaded", async () => {
     }
 
     if (dados && dados.length > 0) {
-        dadosImoveis = dados;
-
         carregarAnuncios();
-
         inicializarSwiper();
-
         const element = document.querySelector("#sidebar-anuncios");
         if (element) {
             element.querySelectorAll("input").forEach((input) => {
@@ -511,12 +464,11 @@ window.addEventListener("DOMContentLoaded", async () => {
     }
 });
 
-window.addEventListener('beforeunload', function (event) {
-    if (imoveisCurtidos.length > 0) {
-        salvarImoveisCurtidos();
+window.addEventListener('beforeunload', async function (event) {
+    event.preventDefault();
+    event.returnValue = '';
+    if (favoritos) {
+        await salvarImoveisCurtidos();
     }
-    // event.preventDefault();
-    // event.returnValue = '';
+
 });
-
-

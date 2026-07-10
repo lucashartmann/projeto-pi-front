@@ -294,7 +294,6 @@ class controller
     }
 
     function favoritarImoveis($data)
-    // TODO: Talvez botar esse método na base ou outra coisa ja que compartilha entre dois. Talvez usar módulos
     {
         try {
             $body = file_get_contents("php://input");
@@ -309,12 +308,20 @@ class controller
             } else {
                 return (["status" => "erro", "mensagem" => "Usuário não logado"]);
             }
+
+            if (!($usuario instanceof Cliente)) {
+                return (["status" => "erro", "mensagem" => "Usuário não é um cliente"]);
+            }
            
             $idCliente = $usuario ? $usuario->getId() : null;
             $idImoveis = $data['id_imoveis'] ?? null;
             if (!$idCliente || !is_array($idImoveis)) {
                 return (["status" => "erro", "mensagem" => "ID do cliente ou lista de imóveis inválidos"]);
             }
+
+            // if ($idImoveis == array_column($usuario->getImoveisFavoritos(), 'id')) {
+            //     return (["status" => "sucesso", "mensagem" => "Imóveis já favoritados"]);
+            // }
             $resultado = Init::getInstance()->cadastrarImoveisCliente($idCliente, $idImoveis);
             if ($resultado) {
                 return (["status" => "sucesso", "mensagem" => "Imóveis favoritados com sucesso"]);

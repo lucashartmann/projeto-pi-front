@@ -1,100 +1,47 @@
-const imoveisCurtidos = [];
+import { listarImoveisDisponiveis } from "./modules/imoveis.js";
+import { carregarUser, salvarImoveisCurtidos, curtirImovel, imoveisCurtidos } from "./modules/usuario.js";
+import { getCaminhoRelativo, formatarValor } from "./modules/utils.js";
+
+window.abrirAnuncio = abrirAnuncio;
+window.curtirImovel = curtirImovel;
+
+
 let dadosImoveis = [];
 let imoveisFiltrados = [];
 
-async function salvarImoveisCurtidos() {
-    try {
-        let caminho = getCaminhoRelativo("/php/api/login.php?acao=favoritar_imoveis");
-        const resposta = await fetch(caminho, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ id_imoveis: imoveisCurtidos })
-        })
-            .then(async (response) => {
-                if (response.erro) {
-                    alert("Erro ao cadastrar favoritos: " + response.erro);
-                    return null;
-                }
-                const contentType = response.headers.get("content-type");
-                if (contentType && contentType.includes("application/json")) {
-                    return await response.json();
-                } else {
-                    const texto = await response.text();
-                    alert("Resposta inesperada do servidor");
-                    console.error("Resposta não é JSON:", texto);
-                    return null;
-                }
-            })
-            .then(data => {
-                if (data.status === "sucesso") {
-                    console.log("Imóveis curtidos salvos com sucesso", data.mensagem);
-                } else {
-                    console.error("Erro ao salvar imóveis curtidos:", data.mensagem);
-                }
-            })
-            .catch(err => {
-                console.error("Erro na requisição para salvar imóveis curtidos:", err);
-            });
-    } catch (err) {
-        console.error("Erro ao salvar imóveis curtidos:", err);
-    }
-
-}
-
-var logado = false;
-
-async function curtirImovel(event, imovelId) {
-    if (!logado) {
-        $usuario = await carregarUser();
-        if (!$usuario) {
-            alert("Você precisa estar logado para curtir um imóvel!");
-            return;
-        }
-        else {
-            logado = true;
-        }
-    }
-    if (imoveisCurtidos.includes(imovelId)) {
-        imoveisCurtidos.splice(imoveisCurtidos.indexOf(imovelId), 1);
-        event.target.classList.remove("curtido");
-        return;
-    }
-    imoveisCurtidos.push(imovelId);
-    await salvarImoveisCurtidos();
-    event.target.classList.toggle("curtido");
-    event.stopPropagation();
-}
 
 function imovelPrincipal(dados) {
     if (!Array.isArray(dados) || dados.length === 0) return;
     const imoveisComImagem = dados.filter(imovel => imovel?.anuncio?.imagens?.[0]);
     const ramdomNumber = Math.floor(Math.random() * imoveisComImagem.length);
-  
-    let imovel = imoveisComImagem[Math.floor(Math.random() * imoveisComImagem.length)];
-    let imovel1 = imoveisComImagem[Math.floor(Math.random() * imoveisComImagem.length)];
-    let imovel2 = imoveisComImagem[Math.floor(Math.random() * imoveisComImagem.length)];
-    let imovel3 = imoveisComImagem[Math.floor(Math.random() * imoveisComImagem.length)];
-    let imovel4 = imoveisComImagem[Math.floor(Math.random() * imoveisComImagem.length)];
-    let imovel5 = imoveisComImagem[Math.floor(Math.random() * imoveisComImagem.length)];
-    let imovel6 = imoveisComImagem[Math.floor(Math.random() * imoveisComImagem.length)];
-    let imovel7 = imoveisComImagem[Math.floor(Math.random() * imoveisComImagem.length)];
-    
-    
+
+    const lista = [];
+
+    for (let i = 0; i <= 8; i++) {
+        let imovel = imoveisComImagem[Math.floor(Math.random() * imoveisComImagem.length)];
+        while (lista.includes(imovel)) {
+            imovel = imoveisComImagem[Math.floor(Math.random() * imoveisComImagem.length)];
+        }
+        if (!lista.includes(imovel)) {
+            lista.push(imovel);
+        }
+    }
+
     document.querySelector("#gallery").innerHTML = `
-        <img src="${imovel.anuncio.imagens[0]}"  onclick="abrirAnuncio(null, ${imovel.id})">
-        <img src="${imovel1.anuncio.imagens[0]}"  onclick="abrirAnuncio(null, ${imovel1.id})">
+        <img src="${lista[0].anuncio.imagens[0]}"  onclick="abrirAnuncio(null, ${lista[0].id})">
+        <img src="${lista[1].anuncio.imagens[0]}"  onclick="abrirAnuncio(null, ${lista[1].id})">
     `
 
     document.querySelector("#gallery3").innerHTML = `
-        <img src="${imovel2.anuncio.imagens[0]}"  onclick="abrirAnuncio(null, ${imovel2.id})">
-        <img src="${imovel3.anuncio.imagens[0]}"  onclick="abrirAnuncio(null, ${imovel3.id})">
+        <img src="${lista[2].anuncio.imagens[0]}"  onclick="abrirAnuncio(null, ${lista[2].id})">
+        <img src="${lista[3].anuncio.imagens[0]}"  onclick="abrirAnuncio(null, ${lista[3].id})">
     `
 
     document.querySelector("#gallery2").innerHTML = `
-        <img src="${imovel4.anuncio.imagens[0]}"  onclick="abrirAnuncio(null, ${imovel4.id})">
-        <img src="${imovel5.anuncio.imagens[0]}"  onclick="abrirAnuncio(null, ${imovel5.id})">
-        <img src="${imovel6.anuncio.imagens[0]}"  onclick="abrirAnuncio(null, ${imovel6.id})">
-        <img src="${imovel7.anuncio.imagens[0]}"  onclick="abrirAnuncio(null, ${imovel7.id})">
+        <img src="${lista[4].anuncio.imagens[0]}"  onclick="abrirAnuncio(null, ${lista[4].id})">
+        <img src="${lista[5].anuncio.imagens[0]}"  onclick="abrirAnuncio(null, ${lista[5].id})">
+        <img src="${lista[6].anuncio.imagens[0]}"  onclick="abrirAnuncio(null, ${lista[6].id})">
+        <img src="${lista[7].anuncio.imagens[0]}"  onclick="abrirAnuncio(null, ${lista[7].id})">
     `
 
 }
@@ -183,11 +130,11 @@ async function carregarAnuncios(dados) {
         } else {
             precoAluguel.innerHTML = `Aluguel: <p class="preco">${formatarValor(imovel.valor_aluguel)}</p>`;
         }
-        
+
         const classe = $usuario && $usuario.favoritos && $usuario.favoritos.includes(imovel.id) ? "curtido" : "";
 
         // TODO: Botar os ids dos imóveis favoritados na lista imoveisCurtidos
-        
+
         html += `
             <div class="anuncio-imovel" onclick="abrirAnuncio(null, ${imovel.id})">
                 <i class="fas fa-heart ${classe}" onclick="curtirImovel(event, ${imovel.id})"></i>
@@ -342,8 +289,6 @@ function filtrar() {
         }
     });
 
-
-
     carregarAnuncios(imoveisFiltrados);
 }
 
@@ -366,10 +311,11 @@ window.addEventListener("DOMContentLoaded", async () => {
     }, 7500);
 });
 
-window.addEventListener('beforeunload', function (event) {
-    if (imoveisCurtidos.length > 0) {
-        salvarImoveisCurtidos();
-    }
+window.addEventListener('beforeunload', async function (event) {
     // event.preventDefault();
     // event.returnValue = '';
+    if (imoveisCurtidos.length > 0) {
+        await salvarImoveisCurtidos();
+    }
+   
 });

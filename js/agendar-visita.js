@@ -1,3 +1,6 @@
+import { usuarioLogado, carregarUser } from "./modules/usuario.js";
+import { getCaminhoRelativo } from "./modules/utils.js";
+
 async function calendar() {
   await $('#calendar').fullCalendar({
     locale: 'pt-br',
@@ -39,7 +42,7 @@ async function calendar() {
 };
 
 async function salvarEvento(data) {
-  const usuario = await carregarUser();
+  const usuario = usuarioLogado || await carregarUser();
 
   if (!usuario) {
     alert("Usuário não encontrado. Faça login novamente.");
