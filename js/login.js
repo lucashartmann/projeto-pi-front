@@ -1,5 +1,14 @@
+import { getCaminhoRelativo } from "./modules/utils.js";
+
 Inputmask("999.999.999-99").mask("#cpf_cnpj");
 
+window.togglePasswordVisibility = togglePasswordVisibility;
+window.verificaDataNascimento = verificaDataNascimento;
+window.verificaSenha = verificaSenha;
+window.fazerLogin = fazerLogin;
+window.enviarNovaSenha = enviarNovaSenha;
+window.voltarLogin = voltarLogin;
+window.novaSenha = novaSenha;
 
 async function enviarNovaSenha() {
     event.preventDefault();
@@ -15,10 +24,11 @@ async function enviarNovaSenha() {
                 email: email
             })
         });
-        if (resposta.erro) {
-            alert("Erro ao recuperar senha: " + resposta.erro);
+        if (!resposta.ok) {
+            alert("Erro ao recuperar senha: ");
             return null;
         }
+        let dados= null;
         const contentType = resposta.headers.get("content-type");
         if (contentType && contentType.includes("application/json")) {
             dados = await resposta.json();
@@ -36,7 +46,8 @@ async function enviarNovaSenha() {
 
         if (resposta.ok && dados.status == "sucesso") {
             alert(dados.mensagem);
-            window.location.href = "../index.html";
+            return;
+            // window.location.href = "../index.html";
         }
 
     } catch (erro) {
@@ -45,20 +56,7 @@ async function enviarNovaSenha() {
 }
 
 
-function onSignIn(googleUser) {
-    var profile = googleUser.getBasicProfile();
-    console.log('ID: ' + profile.getId());
-    console.log('Name: ' + profile.getName());
-    console.log('Image URL: ' + profile.getImageUrl());
-    console.log('Email: ' + profile.getEmail());
-}
 
-function signOut() {
-    var auth2 = gapi.auth2.getAuthInstance();
-    auth2.signOut().then(function () {
-        console.log('User signed out.');
-    });
-}
 
 function togglePasswordVisibility(event) {
     const senhaInput = event.target.previousElementSibling;
@@ -106,7 +104,7 @@ function verificaSenha() {
     }
 }
 
-async function fazerLogin() {
+async function fazerLogin(event) {
     event.preventDefault();
     const usuario = document.getElementById("usuario").value;
     const senha = document.getElementById("senha").value;
@@ -128,6 +126,7 @@ async function fazerLogin() {
             return null;
         }
         const contentType = resposta.headers.get("content-type");
+        let dados = null;
         if (contentType && contentType.includes("application/json")) {
             dados = await resposta.json();
         } else {
@@ -261,32 +260,61 @@ function voltarLogin() {
     formNovaSenha.style.display = "none";
 }
 
-function decodeJWT(token) {
+window.handleCredentialResponse = handleCredentialResponse;
 
-    let base64Url = token.split(".")[1];
-    let base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
-    let jsonPayload = decodeURIComponent(
-        atob(base64)
-            .split("")
-            .map(function (c) {
-                return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
+async function handleCredentialResponse(response) {
+    event.preventDefault();
+     try {
+        let caminho = getCaminhoRelativo("/php/api/login.php?acao=login");
+        const resposta = await fetch(caminho, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                credential: response.credential
             })
-            .join("")
-    );
-    return JSON.parse(jsonPayload);
+        });
+        if (resposta.erro) {
+            alert("Erro ao fazer login: " + resposta.erro);
+            return null;
+        }
+        const contentType = resposta.headers.get("content-type");
+        let dados = null;
+        if (contentType && contentType.includes("application/json")) {
+            dados = await resposta.json();
+        } else {
+            const texto = await resposta.text();
+            // alert("Resposta inesperada do servidor");
+            console.error("Resposta não é JSON:", texto);
+            return;
+        }
+
+        if (dados.status == "erro") {
+            alert(dados.mensagem);
+            return;
+        }
+
+        if (resposta.ok && dados.status == "sucesso") {
+            if (dados.usuario.tipo == "CLIENTE") {
+                window.location.href = "../index.html";
+                return;
+            }
+            window.location.href = "../html/cadastro-imovel.html";
+            return;
+        }
+
+        alert("Login invalido!");
+    } catch (erro) {
+        console.error("Falha ao conectar com o backend:", erro);
+    }
 }
 
-function handleCredentialResponse(response) {
-
-    console.log("Encoded JWT ID token: " + response.credential);
-
-    const responsePayload = decodeJWT(response.credential);
-
-    console.log("Decoded JWT ID token fields:");
-    console.log("  Full Name: " + responsePayload.name);
-    console.log("  Given Name: " + responsePayload.given_name);
-    console.log("  Family Name: " + responsePayload.family_name);
-    console.log("  Unique ID: " + responsePayload.sub);
-    console.log("  Profile image URL: " + responsePayload.picture);
-    console.log("  Email: " + responsePayload.email);
-}
+window.addEventListener("DOMContentLoaded", function () {
+    const formLogin = document.getElementById("form-login");
+    formLogin.addEventListener("submit", fazerLogin);
+    const formCadastro = document.getElementById("form-cadastro");
+    formCadastro.addEventListener("submit", fazerCadastro);
+    const formNovaSenha = document.getElementById("form-nova-senha");
+    formNovaSenha.addEventListener("submit", enviarNovaSenha);
+});

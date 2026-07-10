@@ -72,11 +72,12 @@ class Imobiliaria
         return $this->bancoDados->atualizar($campo_desejado, $valor, $tabela);
     }
 
-    public function verificarUsuario(string $username, string $senha)
+    public function verificarUsuario(string $username, string $senha, bool $google=false)
     {
         return $this->bancoDados->verificarUsuario(
             $username,
-            $senha
+            $senha,
+            $google
         );
     }
 

@@ -59,7 +59,7 @@ class Banco extends PDO
                 senha VARCHAR(255) NULL,
                 email VARCHAR(255) UNIQUE,
                 nome VARCHAR(255) NOT NULL,
-                cpf_cnpj VARCHAR(14) UNIQUE NOT NULL,
+                cpf_cnpj VARCHAR(14) UNIQUE,
                 rg VARCHAR(12),
                 id_endereco INTEGER,
                 data_nascimento DATE,
@@ -417,40 +417,62 @@ class Banco extends PDO
         }
     }
 
-    public function cadastrarImoveisCliente(int $idCliente, array $idImoveis)
+    public function cadastrarImoveisCliente(int $idCliente, array $idImoveis): bool
     {
+        $idImoveis = array_map('intval', $idImoveis);
 
         try {
-            error_log("Imóveis a serem cadastrados para o cliente $idCliente: " . implode(',', array_map('intval', $idImoveis)));
+            $this->beginTransaction();
+
+            error_log("Imóveis a serem cadastrados para o cliente {$idCliente}: " . implode(',', $idImoveis));
 
             if (empty($idImoveis)) {
-                $sql = "DELETE FROM imovel_cliente WHERE id_cliente = :id_cliente";
-                $stmt = $this->prepare($sql);
-                $reusltado = $stmt->execute([
+                $stmt = $this->prepare("
+                DELETE FROM imovel_cliente
+                WHERE id_cliente = :id_cliente
+            ");
+
+                $resultado = $stmt->execute([
                     ':id_cliente' => $idCliente
                 ]);
-                return true;
+
+                $this->commit();
+                return $resultado;
             }
 
-            $sql = "DELETE FROM imovel_cliente WHERE id_cliente = :id_cliente AND id_imovel NOT IN (" . implode(',', array_map('intval', $idImoveis)) . ")";
-            $stmt = $this->prepare($sql);
-            $reusltado = $stmt->execute([
+            $stmt = $this->prepare("
+            DELETE FROM imovel_cliente
+            WHERE id_cliente = :id_cliente
+            AND id_imovel NOT IN (" . implode(',', $idImoveis) . ")
+        ");
+
+            $resultado = $stmt->execute([
                 ':id_cliente' => $idCliente
             ]);
-            error_log("Resultado da exclusão de imóveis do cliente: " . ($reusltado ? "Sucesso" : "Falha"));
-           
-            $sql = "INSERT IGNORE INTO imovel_cliente (id_cliente, id_imovel) VALUES (:id_cliente, :id_imovel)";
-            $stmt = $this->prepare($sql);
+
+            error_log("Resultado da exclusão de imóveis do cliente: " . ($resultado ? "Sucesso" : "Falha"));
+
+            $stmt = $this->prepare("
+            INSERT IGNORE INTO imovel_cliente (id_cliente, id_imovel)
+            VALUES (:id_cliente, :id_imovel)
+        ");
+
             foreach ($idImoveis as $idImovel) {
                 $stmt->execute([
                     ':id_cliente' => $idCliente,
                     ':id_imovel' => $idImovel
                 ]);
             }
+
+            $this->commit();
             return true;
         } catch (Exception $e) {
+            if ($this->inTransaction()) {
+                $this->rollBack();
+            }
+
             error_log("ERRO Banco->cadastrarImoveisCliente: " . $e->getMessage());
-            return null;
+            return false;
         }
     }
 
@@ -1174,7 +1196,7 @@ class Banco extends PDO
             return $this->lastInsertId();
         } catch (Exception $e) {
             $erro = "ERRO! Banco->cadastrarUsuario " . $e->getMessage();
-            // error_log($erro);
+            error_log($erro);
             return False;
         }
     }
@@ -1622,7 +1644,7 @@ class Banco extends PDO
     {
         try {
             $sqlQuery = " 
-                    INSERT INTO midia_anuncio (id_anuncio, nome_arquivo, tipo) 
+                    INSERT IGNORE INTO midia_anuncio (id_anuncio, nome_arquivo, tipo) 
                     VALUES(:id_anuncio, :nome_arquivo, :tipo)
                     ";
             $stmt = $this->prepare($sqlQuery);
@@ -1841,7 +1863,7 @@ class Banco extends PDO
         }
     }
 
-    public function verificarUsuario($username, $senha)
+    public function verificarUsuario($username, $senha, bool $google = false)
     {
         try {
 
@@ -1856,15 +1878,18 @@ class Banco extends PDO
                 throw new Exception("Usuário não encontrado");
             }
 
-            $senha_hash_banco = $registro['senha'];
+            $senha_hash_banco = "";
 
+            if (!$google) {
 
-            $senha_hash = hash('sha256', $senha);
+                $senha_hash_banco = $registro['senha'];
 
-            if ($senha_hash_banco !== $senha_hash) {
-                throw new Exception("Senha errada!");
+                $senha_hash = hash('sha256', $senha);
+
+                if ($senha_hash_banco !== $senha_hash) {
+                    throw new Exception("Senha errada!");
+                }
             }
-
 
             $idUsuario = (int)$registro['id'];
             $username = $registro['username'];
@@ -2148,30 +2173,25 @@ class Banco extends PDO
                 $anuncio->getTitulo()
             ]);
 
-            $idAnuncio = $this->lastInsertId();
-
-            // Imagens
             if ($anuncio->getImagens()) {
                 foreach ($anuncio->getImagens() as $img) {
                     $this->cadastrarAnexo($img);
                 }
             }
 
-            // Vídeos
             if ($anuncio->getVideos()) {
                 foreach ($anuncio->getVideos() as $video) {
                     $this->cadastrarAnexo($video);
                 }
             }
 
-            // Documentos
             if ($anuncio->getAnexos()) {
                 foreach ($anuncio->getAnexos() as $anexo) {
                     $this->cadastrarAnexo($anexo);
                 }
             }
 
-            return $idAnuncio;
+            return $this->lastInsertId();
         } catch (Exception $e) {
             error_log("ERRO! Banco->cadastrarAnuncio: " . $e->getMessage());
             return false;

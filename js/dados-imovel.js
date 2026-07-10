@@ -1,11 +1,58 @@
+import { getCaminhoRelativo } from "./modules/utils.js";
+
+window.abrirImagem = abrirImagem;
+let imovel = null;
+
 function cadastrarAtendimento() {
-    
+    alert("Um especialista irá entrar em contato por email ou whatsapp");
+    try {
+        let caminho = getCaminhoRelativo("/php/api/atendimentos.php?acao=cadastro&idImovel=" + imovel.id);
+        await fetch(caminho, {
+            method: "POST",
+            body: JSON.stringify(data)
+        })
+            .then(async response => {
+                if (response.erro) {
+                    console.error("Erro ao cadastrar atendimento: " + response.erro);
+                    return null;
+                }
+                const contentType = response.headers.get("content-type");
+                if (contentType && contentType.includes("application/json")) {
+                    return await response.json();
+                } else {
+                    const texto = await response.text();
+                    console.error("Resposta inesperada do servidor");
+                    console.error("Resposta não é JSON:", texto);
+                    return null;
+                }
+            })
+            .then(async (data) => {
+                if (data.status == "erro") {
+                    console.error("Erro ao cadastrar atendimento: " + data.mensagem);
+                    return;
+                }
+                else if (data.mensagem) {
+                    console.log("Atendimento cadastrado com sucesso: " + data.mensagem);
+                }
+
+            })
+            .catch(error => {
+                console.error("Erro ao cadastrar atendimento:", error);
+            });
+
+    } catch (error) {
+        console.error("Erro ao enviar dados do usuário:", error);
+    }
+
+
+
 }
 
 function setupDados(dados) {
     imovel = JSON.parse(dados);
     var div = document.getElementById("dados-imovel");
     let imagensHtml = "";
+    let swiperhtml = "";
     if (imovel.anuncio.imagens && imovel.anuncio.imagens.length > 0) {
         swiperhtml = "";
         for (const imagem of imovel.anuncio.imagens) {
@@ -69,7 +116,7 @@ window.addEventListener("DOMContentLoaded", async () => {
     sessionStorage.removeItem("dados_imovel");
     await setupDados(dados);
     await inicializarSwiper();
-   
+
 });
 
 function abrirImagem(src) {
@@ -108,12 +155,12 @@ function inicializarSwiper() {
     var swiper = new Swiper('.swiper-destaque', {
         loop: true,
         pagination: {
-            el: '.swiper-destaque .swiper-pagination', 
+            el: '.swiper-destaque .swiper-pagination',
             clickable: true
         },
         navigation: {
-            nextEl: '.swiper-destaque .swiper-button-next', 
-            prevEl: '.swiper-destaque .swiper-button-prev'  
+            nextEl: '.swiper-destaque .swiper-button-next',
+            prevEl: '.swiper-destaque .swiper-button-prev'
         },
         scrollbar: {
             el: '.swiper-destaque .swiper-scrollbar'
@@ -124,7 +171,7 @@ function inicializarSwiper() {
         window.swiperInstance = new Swiper('.swiper-galeria', {
             loop: true,
             pagination: {
-                el: '.swiper-galeria .swiper-pagination', 
+                el: '.swiper-galeria .swiper-pagination',
                 clickable: true
             },
             navigation: {

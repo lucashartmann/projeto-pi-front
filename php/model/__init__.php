@@ -797,9 +797,6 @@ class Init
                         "imoveis/imovel_" . $i . ".webp",
                         TipoAnexo::IMAGEM
                     );
-                    self::$imobiliaria->cadastrarAnexo(
-                        $imagem,
-                    );
                     $anuncio->setImagens([$imagem, $imagem, $imagem, $imagem, $imagem, $imagem, $imagem, $imagem, $imagem, $imagem, $imagem, $imagem, $imagem, $imagem, $imagem]);
                     self::$imobiliaria->getEstoque()->atualizarAnuncio($anuncio);
                 }

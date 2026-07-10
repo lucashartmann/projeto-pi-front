@@ -1,4 +1,4 @@
-import { usuarioLogado, carregarUser } from "./modules/usuario.js";
+import { usuarioLogado, carregarUser, deslogar } from "./modules/usuario.js";
 import { getCaminhoRelativo } from "./modules/utils.js";
 
 window.alterarSrc = alterarSrc;
@@ -8,6 +8,7 @@ window.altoContraste = altoContraste;
 window.modoNoturno = modoNoturno;
 window.openNav = openNav;
 window.closeNav = closeNav;
+window.deslogar = deslogar;
 
 function aumentarFonte() {
     const root = document.documentElement;

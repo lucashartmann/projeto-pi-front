@@ -48,7 +48,7 @@ async function filtroOrdenado() {
     });
 
     seta.classList.add("active");
-    
+
     console.log(seta);
 
     filtrar();

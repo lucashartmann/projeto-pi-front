@@ -465,8 +465,8 @@ window.addEventListener("DOMContentLoaded", async () => {
 });
 
 window.addEventListener('beforeunload', async function (event) {
-    event.preventDefault();
-    event.returnValue = '';
+    // event.preventDefault();
+    // event.returnValue = '';
     if (favoritos) {
         await salvarImoveisCurtidos();
     }

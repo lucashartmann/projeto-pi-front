@@ -19,16 +19,48 @@ require_once __DIR__ . '/../model/seguranca.php';
 require_once __DIR__ . '/../utils/caminho_xamp.php';
 require_once __DIR__ . '/../utils/imagem.php';
 require_once __DIR__ . '/../utils/email.php';
+require_once __DIR__ . '/../utils/env.php';
 require_once __DIR__ . '/../../vendor/autoload.php';
 
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
+use PHPMailer\PHPMailer\SMTP;
 use function PHPUnit\Framework\isInstanceOf;
 
 class controller
 {
 
+    function cadastrarAtendimento($idImovel)
+    {
 
+        if (isset($_SESSION['usuario_id'])) {
+
+            $idUsuario = $_SESSION['usuario_id'];
+
+            $atendimento = new Atendimento();
+            $atendimento->setCliente(Init::getInstance()->getUsuarioPorId($idUsuario));
+            $atendimento->setImovel(Init::getInstance()->getImovelPorId($idImovel));
+            $atendimento->setStatus(StatusAtendimento::PENDENTE);
+
+            $cadastro = Init::getInstance()->cadastrarAtendimento($atendimento);
+            if (!$cadastro) {
+                return ([
+                    "status" => "erro",
+                    "mensagem" => "Erro ao cadastrar atendimento"
+                ]);
+            } else {
+                return ([
+                    "status" => "sucesso",
+                    "mensagem" => "Atendimento cadastrado com sucesso"
+                ]);
+            }
+        } else {
+            return ([
+                "status" => "erro",
+                "mensagem" => "Usuário não logado"
+            ]);
+        }
+    }
     function montarJsonImoveis(array $listaImoveis)
     {
         $lista = [];
@@ -215,7 +247,7 @@ class controller
         if ($listaUsuarios) {
             foreach ($listaUsuarios as $usuario) {
                 if (!$usuario) {
-                    continue; 
+                    continue;
                 }
                 $lista[] = [
                     "id" => $usuario->getId() ?? null,
@@ -312,7 +344,7 @@ class controller
             if (!($usuario instanceof Cliente)) {
                 return (["status" => "erro", "mensagem" => "Usuário não é um cliente"]);
             }
-           
+
             $idCliente = $usuario ? $usuario->getId() : null;
             $idImoveis = $data['id_imoveis'] ?? null;
             if (!$idCliente || !is_array($idImoveis)) {
@@ -338,34 +370,45 @@ class controller
         try {
             $email = $data['email'] ?? '';
             if (!$email || !Validacao::validarEmail($email)) {
-                return [
+                return ([
                     "status" => "erro",
                     "mensagem" => "Email inválido ou não fornecido"
-                ];
+                ]);
             }
             $mail = new PHPMailer(true);
-            $mail->isSMTP();
-            $mail->Host = 'smtp.office365.com';
-            $mail->SMTPAuth = true;
-            $mail->Username = 'seuemail@outlook.com';
-            $mail->Password = 'suasenha';
-            $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-            $mail->Port = 587;
-            $mail->setFrom('seuemail@outlook.com', 'Summit');
-            $mail->addAddress($email);
-            $mail->isHTML(true);
-            $mail->Subject = 'Recuperação de Senha';
-            $mail->Body = getArquivo();
-            $mail->send();
-            return [
-                "status" => "sucesso",
-                "mensagem" => "Instruções enviadas para o email"
-            ];
+            try {
+                loadEnv(__DIR__ . '/../../.env');
+                $mail->isSMTP();
+                $mail->Host = $_ENV['SMTP_HOST'];
+                $mail->SMTPAuth = true;
+                $mail->Username = $_ENV['SMTP_USERNAME'];
+                $mail->Password = $_ENV['SMTP_PASSWORD'];
+                $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+                $mail->Port = $_ENV['PORT'];
+                $mail->setFrom($_ENV['SMTP_USERNAME'], 'Summit');
+                $mail->addAddress($email);
+                $mail->isHTML(true);
+                $mail->CharSet = 'UTF-8';
+                $mail->Encoding = 'base64';
+                $mail->Subject = 'Recuperação de Senha';
+                $mail->Body = getArquivo();
+                $mail->send();
+                return ([
+                    "status" => "sucesso",
+                    "mensagem" => "Instruções enviadas para o email"
+                ]);
+            } catch (Exception $e) {
+                error_log("Erro ao enviar email: " . $mail->ErrorInfo);
+                return ([
+                    "status" => "erro",
+                    "mensagem" => "Erro ao configurar o PHPMailer"
+                ]);
+            }
         } catch (Exception $e) {
-            return [
+            return ([
                 "status" => "erro",
-                "mensagem" => $e->getMessage()
-            ];
+                "mensagem" => "Erro ao recuperar senha: "
+            ]);
         }
     }
     function listarProprietarios()
@@ -391,7 +434,6 @@ class controller
     function atualizarUsuario($dados)
     {
         try {
-            error_log("Dados recebidos para atualizar usuário: " . json_encode($dados));
             $nome = array_key_exists('nome', $dados) ? $dados['nome'] : "";
             $email = array_key_exists('email', $dados) ? $dados['email'] : "";
             $senha = array_key_exists('senha', $dados) ? $dados['senha'] : "";
@@ -565,12 +607,43 @@ class controller
 
             $usuario = $data['usuario'] ?? '';
             $senha = $data['senha'] ?? '';
+            $consulta = null;
 
-            if (!$usuario || !$senha) {
-                return (["status" => "erro", "mensagem" => "Usuário ou senha não fornecidos"]);
+            if (array_key_exists('credential', $data)) {
+                $token = $data["credential"];
+                $client = new Google_Client([
+                    'client_id' => '158912931156-6opb8fsg8d9iscqfuqnm606128e5nceq.apps.googleusercontent.com'
+                ]);
+
+                $payload = $client->verifyIdToken($token);
+
+                if ($payload) {
+
+                    $email = $payload['email'];
+                    $nome = $payload['name'];
+                    $foto = $payload['picture'];
+
+                    $consulta = Init::getInstance()->verificarUsuario($email, "", true);
+
+                    if (!$consulta) {
+                        $resultado =  self::atualizarUsuario([
+                            "nome" => $nome,
+                            "email" => $email,
+                            "username" => $email,
+                            "senha" => "",
+                            "tipo" => "CLIENTE"
+                        ]);
+                        return $resultado;
+                    }
+                }
+            } else {
+
+                if (!$usuario || !$senha) {
+                    return (["status" => "erro", "mensagem" => "Usuário ou senha não fornecidos"]);
+                }
+
+                $consulta = Init::getInstance()->verificarUsuario($usuario, $senha);
             }
-
-            $consulta = Init::getInstance()->verificarUsuario($usuario, $senha);
 
             if ($consulta) {
                 $_SESSION['usuario_id'] = $consulta->getId();
@@ -728,7 +801,6 @@ class controller
     public function cadastrarImovel($data)
     {
         try {
-            error_log("Dados recebidos para cadastro de imóvel: " . json_encode($data));
             $id =  array_key_exists("ref", $data) ? $data["ref"] : 0;
             $nomeCondominio = array_key_exists("nome_condominio", $data) ? $data["nome_condominio"] : "";
 
@@ -844,7 +916,6 @@ class controller
             if ($id) {
                 $imovelObj = Init::getInstance()->getImovelPorId($id);
                 $imovelObj->setDataModificacao(DateTime::createFromFormat('Y-m-d H:i:s', date('Y-m-d H:i:s')));
-                // error_log("Imóvel encontrado para atualização: " . json_encode($imovelObj));
             } else {
                 $imovelObj = new Imovel($enderecoObj, $status, $categoria);
             }
@@ -958,7 +1029,6 @@ class controller
                 }
                 if ($cadastrado && $cadastroAnuncio && $imagens) {
                     $imagensObjetos = [];
-                    error_log('quantidade de imagens recebidas: ' . count($imagens['tmp_name']));
                     foreach ($imagens['tmp_name'] as $i => $nomeTemporario) {
                         try {
                             if ($imagens['error'][$i] !== UPLOAD_ERR_OK) {
@@ -985,7 +1055,6 @@ class controller
                 }
                 if ($cadastrado && $cadastroAnuncio && $documentos) {
                     $documentosObjetos = [];
-                    error_log('quantidade de documentos recebidos: ' . count($documentos['tmp_name']));
                     foreach ($documentos['tmp_name'] as $i => $nomeTemporario) {
                         try {
                             $nomeArquivo = $documentos['name'][$i];
@@ -1023,30 +1092,6 @@ class controller
             }
         } catch (Exception $e) {
             return (["status" => "erro", "mensagem" => "Erro interno"]);
-        }
-    }
-
-    public function salvarLogin(string $username, string $senha, string $email)
-    {
-        $umUsuario = new Cliente(
-            $nome = "",
-            $cpf = "",
-            $rg = "",
-            $telefone = "",
-            $email = ""
-        );
-
-        $umUsuario->setUsername($username);
-        $umUsuario->setSenha($senha);
-        $umUsuario->setEmail($email);
-
-        $consulta = Init::getInstance()->cadastrarUsuario($umUsuario);
-
-        if ($consulta) {
-            Init::$usuarioAtual = $umUsuario;
-            return (["status" => "sucesso", "mensagem" => "Cadastro realizado com sucesso"]);
-        } else {
-            return (["status" => "erro", "mensagem" => "ERRO ao cadastrar. Tente Novamente"]);
         }
     }
 }

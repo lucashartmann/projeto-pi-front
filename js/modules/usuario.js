@@ -78,8 +78,9 @@ export async function deslogar() {
         }
         if (!resposta.ok) throw new Error(`HTTP ${resposta.status}`);
         const contentType = resposta.headers.get("content-type");
+        let dados = null;
         if (contentType && contentType.includes("application/json")) {
-            let dados = await resposta.json();
+            dados = await resposta.json();
         } else {
             const texto = await resposta.text();
             alert("Resposta inesperada do servidor");
@@ -147,7 +148,7 @@ export async function carregarUser() {
             return null;
         }
         usuarioLogado = dados.usuario;
-        if (usuarioLogado.tipo === "CLIENTE") {
+        if (usuarioLogado.tipo && usuarioLogado.tipo === "CLIENTE") {
             imoveisCurtidos = dados.imoveis || [];
         }
         return dados;

@@ -4,11 +4,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="google-signin-client_id" content="YOUR_CLIENT_ID.apps.googleusercontent.com">
+    <meta name="google-signin-client_id" content="158912931156-6opb8fsg8d9iscqfuqnm606128e5nceq.apps.googleusercontent.com">
     <title>Login</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/inputmask/dist/inputmask.min.js"></script>
-    <script src="https://accounts.google.com/gsi/client" async></script>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
     <link rel="stylesheet" href="../css/base.css">
     <link rel="stylesheet" href="../css/login.css">
     <link rel="icon" type="image/x-icon" href="../assets/logo.webp">
@@ -16,15 +16,18 @@
 
 <body>
     <div id="login-container">
-        <div id="login-header"><h1 id="h3-login">Login</h1><h1 id="barra">|</h1><h1 id="h3-cadastro">Cadastro</h1>
+        <div id="login-header">
+            <h1 id="h3-login">Login</h1>
+            <h1 id="barra">|</h1>
+            <h1 id="h3-cadastro">Cadastro</h1>
         </div>
-        <form id="form-nova-senha" onsubmit="enviarNovaSenha()" style="display: none;">
+        <form id="form-nova-senha" style="display: none;">
             <h2>Recuperar Senha</h2>
             <input type="text" id="email" name="email" placeholder="Digite seu email" required>
             <button type="submit">Enviar</button>
             <a href="" id="voltar-login" onclick="voltarLogin()">Voltar para Login</a>
         </form>
-        <form onsubmit="fazerCadastro()" id="form-cadastro" style="display: none;">
+        <form id="form-cadastro" style="display: none;">
             <h3>Nome Completo</h3>
             <input type="text" name="nome" id="nome" autocomplete="name" required>
             <h3>Data de Nascimento</h3>
@@ -40,9 +43,9 @@
                     required>
                 <i class="fas fa-eye-slash" onclick="togglePasswordVisibility(event)"></i>
             </div>
-            <button type="submit" onsubmit="fazerCadastro()">Cadastrar</button>
+            <button type="submit">Cadastrar</button>
         </form>
-        <form onsubmit="fazerLogin()" id="form-login">
+        <form id="form-login">
             <h3>Email</h3>
             <input type="text" name="email" id="usuario" required autocomplete="email">
             <!--  Mudar para email depois -->
@@ -54,13 +57,9 @@
             </div>
             <a href="" id="esqueceu-senha" onclick="novaSenha()">Esqueceu a senha?</a>
 
-            <button type="submit" onsubmit="fazerLogin()">Login</button>
-            <div
-            id="g_id_onload"
-            data-auto_prompt="false"
-            data-callback="handleCredentialResponse"
-            data-client_id="PUT_YOUR_WEB_CLIENT_ID_HERE"
-            ></div>
+            <button type="submit">Login</button>
+            <div id="g_id_onload" data-auto_prompt="false" data-callback="handleCredentialResponse"
+                data-client_id="158912931156-6opb8fsg8d9iscqfuqnm606128e5nceq.apps.googleusercontent.com"></div>
             <div class="g_id_signin" data-width="310" data-type="standard" data-size="large"></div>
         </form>
     </div>
@@ -97,6 +96,6 @@
 <script type="module" src="../js/modules/utils.js"></script>
 <script type="module" src="../js/modules/usuario.js"></script>
 <script type="module" src="../js/base.js"></script>
-<script src="../js/login.js"></script>
+<script type="module" src="../js/login.js"></script>
 
 </html>

@@ -25,6 +25,11 @@ $controller = new controller();
 
 switch ($acao) {
 
+    case "cadastrar":
+        $idImovel = $_GET['idImovel'] ?? null;
+        $resultado = $controller->cadastrarAtendimento($idImovel);
+        break;
+
     case "listar_atendimentos":
         $resultado = $controller->listarAtendimentos();
         break;

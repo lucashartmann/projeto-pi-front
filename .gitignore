@@ -8,3 +8,4 @@ ERROS.MD
 /.phpunit.cache
 erro.md
 assets/imoveis/..
+.venv

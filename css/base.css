@@ -546,6 +546,9 @@ main {
 }
 
 .modo-noturno {
+    input[type="date"]::-webkit-calendar-picker-indicator {
+        filter: invert(1); 
+    }
     --background: #121212;
     /* --shadow: 0 8px 30px rgba(255, 255, 255, 0.2); */
     --cor-texto: #ffffff;
