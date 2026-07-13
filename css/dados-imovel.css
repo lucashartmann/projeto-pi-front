@@ -1,32 +1,98 @@
-
 #dados-imovel {
     display: flex;
-    height: 170vh;
-    overflow-y: hidden;
-}
-
-#div-titulo {
-    display: block;
-    align-items: center;
+    /* height: 170vh; */
+    /* overflow-y: hidden; */
+    /* align-items: center; */
     justify-content: center;
     justify-items: center;
-    text-align: center;
+    align-self: flex-start;
+}
+
+body > hr {
+        color: rgba(253, 13, 13, 0.92);
+        margin-top: 30px;
+    }
+
+#div-titulo {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    justify-items: center;
+    /* text-align: center; */
+    justify-self: center;
+    width: 80rem;
+    align-self: flex-start;
+    /* background-color: rgb(135, 126, 126, 0.2); */
+
+    .fa-map-marker-alt {
+        color: var(--cor-texto-alternativa);
+        font-size: 1.2rem;
+    }
+
+    span {
+        display: flex;
+        gap: 10px;
+        align-self: flex-start;
+    }
+
+    h3 {
+        font-size: 2rem;
+    }
+
+
+    div {
+        display: flex;
+        flex-direction: column;
+        align-self: flex-start;
+    }
+
+    #botoes {
+        display: flex;
+        flex-direction: row;
+        align-self: flex-start;
+        gap: 10px;
+
+
+        > button:hover {
+            .fa-heart {
+                color: red;
+                cursor: pointer;
+            }
+        }
+
+        .fa-heart {
+            color: var(--cor-texto-alternativa);
+            font-size: 1rem;
+           margin: 2px;
+        }
+
+        .fa-share-alt {
+            color: var(--cor-texto-alternativa);
+            font-size: 1rem;
+            margin: 2px;
+            &:hover {
+                cursor: pointer;
+            }
+        }
+    }
 }
 
 #div-pai {
-    display: block;
+    display: flex;
+    flex-direction: column;
     height: auto;
-    height: 100%;
-    overflow-y: visible;
+    align-self: flex-start;
+    /* height: 100%; */
+    /* overflow-y: visible; */
     margin-left: 30px;
-    width: 88vw;
+    width: 50vw;
 
     #p-descricao {
         width: 90%;
         height: auto;
         text-align: justify;
         margin-top: 20px;
-        margin-left: 80px !important;
+        margin-left: 30px !important;
     }
 
     .div-filtros {
@@ -52,10 +118,11 @@
             text-align: left !important;
             margin-left: 110px !important;
         }
-    
+
         input[type="checkbox"] {
             width: 15px;
             height: 20px;
+
             &:hover {
                 cursor: pointer;
             }
@@ -65,25 +132,73 @@
 }
 
 #entrar-contato {
-    background: rgb(241, 233, 233);
-    text-align: center;
+    position: sticky !important;
+    height: auto;
     align-content: center;
-    width: 30rem !important;
+    width: 20rem !important;
+    display: flex;
+    align-self: flex-start;
+    flex-direction: column;
+    top: 1rem;
+    label,
+    p {
+        font-size: 1.2rem;
+    }
+
+    #whatsapp {
+        color: var(--cor-texto) !important;
+
+        i {
+            color: var(--cor-texto) !important;
+        }
+    }
+
+
+    div {
+        display: flex;
+        max-width: 100%;
+
+        &:first-child {
+            margin-top: 50px;
+            
+        }
+
+        &:nth-child(n + 2) {
+            justify-content: space-between;
+        }
+    }
+
+    >p {
+        font-size: 1.8rem;
+        font-weight: bold;
+        margin-bottom: 20px;
+    }
+
+    hr {
+        margin-bottom: 20px;
+    }
+
+    #label-venda, #label-aluguel {
+        margin-top: 20px;
+    }
 
     button {
         border: solid black 1px;
-        margin: 10px;
-        width: 10rem;
-        height: 2rem;
-        margin: 10px;
+        min-width: 8rem;
+        min-height: 3rem;
+        margin: 5px;
     }
 
-    #iptu,
-    #condominio {
-        display: inline-block;
-        margin: 10px;
-        font-size: 1.2rem;
+    i {
+        color: var(--cor-texto-alternativa);
+        margin: auto;
     }
+
+    span {
+        display: flex;
+        gap: 5px;
+    }
+
 }
 
 
@@ -158,6 +273,7 @@ img {
         border-radius: 2px;
         box-shadow: 0.1px 0.1px 3px black;
         display: flex;
+        align-self: flex-start;
         background-repeat: no-repeat;
         background-size: cover;
         background-position: center;

@@ -51,6 +51,10 @@
 
 #whatsapp {
     background-color: rgb(20, 126, 32, 0.7);
+    color: var(--cor-texto) !important;
+    &:hover {
+        background-color: rgb(20, 126, 32, 0.3);
+    }
 }
 
 

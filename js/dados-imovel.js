@@ -1,13 +1,19 @@
-import { getCaminhoRelativo } from "./modules/utils.js";
+import { getCaminhoRelativo, formatarValor } from "./modules/utils.js";
+import { usuarioLogado } from "./modules/usuario.js";
 
 window.abrirImagem = abrirImagem;
 let imovel = null;
+let usuario = usuarioLogado;
 
-function cadastrarAtendimento() {
+async function cadastrarAtendimento() {
+    if (!usuario) {
+        alert("Você precisa estar logado para solicitar atendimento.");
+        return;
+    }
     alert("Um especialista irá entrar em contato por email ou whatsapp");
     try {
         let caminho = getCaminhoRelativo("/php/api/atendimentos.php?acao=cadastro&idImovel=" + imovel.id);
-        await fetch(caminho, {
+        const resposta = await fetch(caminho, {
             method: "POST",
             body: JSON.stringify(data)
         })
@@ -69,16 +75,38 @@ function setupDados(dados) {
     const divContato = document.getElementById("entrar-contato");
 
     divTitulo.querySelector("h3").innerText = imovel.anuncio.titulo;
-    divTitulo.querySelector("p").innerText = `${imovel.endereco.rua}, ${imovel.endereco.numero}, ${imovel.endereco.bairro}`;
-    swiperWrapper.innerHTML = swiperhtml;
+    divTitulo.querySelector("span p").innerText = `${imovel.endereco.rua}, ${imovel.endereco.numero}, ${imovel.endereco.bairro}`;
+
     divGaleria.innerHTML = imagensHtml;
     pDescricao.innerText = imovel.anuncio.descricao;
-    try {
-        divContato.getElementById("condominio").querySelector("p").innerText = formatarValor(imovel.valor_condominio);
-        divContato.getElementById("iptu").querySelector("p").innerText = formatarValor(imovel.valor_iptu);
-    } catch (e) {
-        console.warn("Valores de condomínio e IPTU não encontrados");
+    swiperWrapper.innerHTML = swiperhtml;
+
+    if (imovel.valor_aluguel && imovel.valor_venda) {
+        document.querySelectorAll("#div-titulo h3")[1].innerText = formatarValor(imovel.valor_venda) + " | " + formatarValor(imovel.valor_aluguel);
+        document.querySelector("#entrar-contato #valor-venda").innerText = formatarValor(imovel.valor_venda);
+        document.querySelector("#entrar-contato #valor-aluguel").innerText = formatarValor(imovel.valor_aluguel);
+    } else if (imovel.valor_venda) {
+        document.querySelectorAll("#div-titulo h3")[1].innerText = formatarValor(imovel.valor_venda);
+        document.querySelector("#entrar-contato #valor-venda").innerText = formatarValor(imovel.valor_venda);
+        document.querySelector("#entrar-contato #valor-aluguel").style.display = "none";
+        document.querySelector("#entrar-contato #label-aluguel").style.display = "none";
+    } else if (imovel.valor_aluguel) {
+        document.querySelectorAll("#div-titulo h3")[1].innerText = formatarValor(imovel.valor_aluguel);
+        document.querySelector("#entrar-contato #valor-aluguel").innerText = formatarValor(imovel.valor_aluguel);
+        document.querySelector("#entrar-contato #valor-venda").style.display = "none";
+        document.querySelector("#entrar-contato #label-venda").style.display = "none";
     }
+
+
+    document.querySelector("#entrar-contato #condominio").innerText = formatarValor(imovel.valor_condominio ?? 0);
+    document.querySelector("#entrar-contato #iptu").innerText = formatarValor(imovel.valor_iptu ?? 0);
+    document.querySelector("#entrar-contato #area-total").innerText = `${imovel.area_total ?? '0.00'} m²`;
+    document.querySelector("#entrar-contato #area-privativa").innerText = `${imovel.area_privativa ?? '0.00'} m²`;
+    document.querySelector("#entrar-contato #quartos").innerText = imovel.quantidade_quartos ?? 0;
+    // document.querySelector("#entrar-contato #suite").innerText = imovel.suite;
+    document.querySelector("#entrar-contato #banheiros").innerText = imovel.quantidade_banheiros ?? 0;
+    document.querySelector("#entrar-contato #vagas").innerText = imovel.quantidade_vagas ?? 0;
+
 
     // console.log(imovel.filtros);
 
@@ -100,7 +128,6 @@ function setupDados(dados) {
         divPai.appendChild(divFiltros);
     }
 
-    //TODO: adicionar filtros, localizacao, valores, etc
 }
 
 
