@@ -177,13 +177,13 @@ document.addEventListener('DOMContentLoaded', async function () {
             <div class="form-header"><h2>Agendar visita para ${dataSelecionada}</h2>
             <button id="close-btn" onclick="this.parentElement.parentElement.remove()">X</button></div>
             <form>
-            <input type="hidden" name="data" value="${dataSelecionada}">
+            <input type="hidden" name="data" value="${dataSelecionada}" placeholder="">
               <label for="nome">Nome do evento:</label>
-              <input type="text" id="nome" name="nome" required>
+              <input type="text" id="nome" name="nome" required placeholder="">
               <label for="hora">Hora do evento:</label>
-              <input type="time" id="hora" name="hora" required>
+              <input type="time" id="hora" name="hora" required placeholder="">
               <div class="checkbox-container">
-                <input type="checkbox" id="confirmar" name="confirmar">
+                <input type="checkbox" id="confirmar" name="confirmar" placeholder="">
                 <label for="">Mandar email para cliente?</label>
               </div>
               ${getIdImoveis() ?? "<p>Nenhum imóvel encontrado.</p>"}

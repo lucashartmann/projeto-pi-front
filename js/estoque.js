@@ -421,6 +421,15 @@ async function carregarUsuarios(tipo) {
 
     section.innerHTML = "";
 
+    if (dados.length === 0 || !dados) {
+        const divVazio = document.createElement("div");
+        divVazio.id = "vazio";
+        divVazio.textContent = "Nenhum usuário encontrado.";
+        section.innerHTML = "";
+        section.appendChild(divVazio);
+        return;
+    }
+
     html = `
     <table class="resultado">                
                 <thead>
@@ -475,6 +484,15 @@ function carregarAnuncios() {
     let classSeta = document.querySelector("#seta")?.className || "fas fa-arrow-up";
 
     section.innerHTML = "";
+
+    if (dados.length === 0 || !dados) {
+        const divVazio = document.createElement("div");
+        divVazio.id = "vazio";
+        divVazio.textContent = "Nenhum imóvel encontrado.";
+        section.innerHTML = "";
+        section.appendChild(divVazio);
+        return;
+    }
 
     html = `
     <div id="h-filtro">
@@ -678,6 +696,15 @@ window.addEventListener("DOMContentLoaded", async () => {
         dados = usuariosCache;
     }
 
+    // if (dados.length === 0 || !dados) {
+    //     const section = document.getElementById("container-pai");
+    //     const divVazio = document.createElement("div");
+    //     divVazio.id = "vazio";
+    //     divVazio.textContent = "Nenhum usuário encontrado.";
+    //     section.innerHTML = "";
+    //     section.appendChild(divVazio);
+    //     return;
+    // }
 
     dados = [];
     if (imoveisCache.length === 0) {
@@ -687,6 +714,16 @@ window.addEventListener("DOMContentLoaded", async () => {
     } else {
         dados = imoveisCache;
     }
+
+    // if (dados.length === 0 || !dados) {
+    //     const section = document.getElementById("container-pai");
+    //     const divVazio = document.createElement("div");
+    //     divVazio.id = "vazio";
+    //     divVazio.textContent = "Nenhum usuário encontrado.";
+    //     section.innerHTML = "";
+    //     section.appendChild(divVazio);
+    //     return;
+    // }
 
 
     carregarAnuncios();

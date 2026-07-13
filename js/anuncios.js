@@ -13,6 +13,7 @@ var favoritos = false;
 
 window.abrirAnuncio = abrirAnuncio;
 window.curtirImovel = curtirImovel;
+window.filtrar = filtrar;
 
 async function listarImoveisFavoritados() {
     try {
@@ -148,8 +149,8 @@ async function filtrar() {
         if (!elemento.name || !elemento.value || elemento.value === "") {
             return;
         }
-        const nome = elemento.name;
-        const valor = elemento.value;
+        let nome = elemento.name;
+        let valor = elemento.value;
 
         switch (nome) {
             case "ref":
@@ -278,8 +279,8 @@ async function filtrar() {
         }
     });
 
-    seta = document.querySelector("#seta");
-    nome = document.getElementById("select-filtro") ? document.getElementById("select-filtro").value : null;
+    let seta = document.querySelector("#seta");
+    let nome = document.getElementById("select-filtro") ? document.getElementById("select-filtro").value : null;
 
     if (seta && nome) {
         switch (nome) {
@@ -352,6 +353,16 @@ async function carregarAnuncios() {
     if (contador) {
         contador.textContent = `${dados.length} imóveis`;
     }
+
+    if (dados.length === 0 || !dados) {
+        const divVazio = document.createElement("div");
+        divVazio.id = "vazio";
+        divVazio.textContent = "Nenhum imóvel encontrado.";
+        section.innerHTML = "";
+        section.appendChild(divVazio);
+        return;
+    }
+    
     for (const imovel of dados) {
         const b64 = imovel.anuncio?.imagens?.[0] || null;
         if (!b64) continue;
@@ -436,6 +447,18 @@ window.addEventListener("DOMContentLoaded", async () => {
     favoritos = sessionStorage.getItem("favoritos") === "true";
     sessionStorage.removeItem("favoritos");
     let dados = [];
+
+    if (dados.length === 0 || !dados) {
+        const section = document.getElementById("anuncios");
+        const divVazio = document.createElement("div");
+        divVazio.id = "vazio";
+        divVazio.textContent = "Nenhum imóvel encontrado.";
+        section.innerHTML = "";
+        section.appendChild(divVazio);
+        return;
+    }
+    
+
     if (favoritos) {
         dados = await listarImoveisFavoritados();
         imoveisCache.push(...dados);

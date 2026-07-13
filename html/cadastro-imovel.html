@@ -27,7 +27,7 @@
     <form id="container-cadastro" style="display: grid;" role="tabpanel" class="tabcontent" value="cadastro_imovel">
         <div class="vertical-separator">
             <label id="stt-ref" for="">ref:</label>
-            <textarea name="ref" id="ta-ref" readonly=True></textarea>
+            <textarea name="ref" id="ta-ref" readonly=True placeholder=""></textarea>
         </div>
         <div class="vertical-separator">
             <label for="" id="stt-categoria">Categoria:</label>
@@ -98,101 +98,101 @@
         </div>
         <div class="vertical-separator">
             <label for="" id="stt-nome-condominio">Nome do Condomínio</label>
-            <textarea name="nome_condominio" id="ta-nome-condominio"></textarea>
+            <textarea name="nome_condominio" id="ta-nome-condominio" placeholder=""></textarea>
         </div>
         <div class="vertical-separator">
             <label for="" id="stt-ano-construcao">Ano de Construção</label>
-            <input type="number" id="ta-ano-construcao" min="1800" max="2026" name="ano_construcao">
+            <input type="number" id="ta-ano-construcao" min="1800" max="2026" name="ano_construcao" placeholder="">
         </div>
         <div class="vertical-separator">
             <label for="" id="stt-cep">CEP</label>
             <input type="text" id="ta-cep" name="cep" required
-                oninput="preencherEndereco(event)" minlength="9" maxlength="9">
+                oninput="preencherEndereco(event)" minlength="9" maxlength="9" placeholder="">
         </div>
         <div class="vertical-separator">
             <label for="" id="stt-rua">Rua</label>
-            <textarea id="ta-rua" readonly=True name="rua" required></textarea>
+            <textarea id="ta-rua" placeholder="" readonly=True name="rua" required></textarea>
         </div>
         <div class="vertical-separator">
             <label for="" id="stt-numero">Número</label>
-            <input type="number" id="ta-numero" name="numero" required>
+            <input type="number" placeholder="" id="ta-numero" name="numero" required>
         </div>
         <div class="vertical-separator">
             <label for="" id="stt-complemento">Complemento</label>
-            <textarea name="complemento" id="ta-complemento"></textarea>
+            <textarea name="complemento" placeholder="" id="ta-complemento"></textarea>
         </div>
         <div class="vertical-separator">
             <label for="" id="stt-bloco">Bloco</label>
-            <textarea name="bloco" id="ta-bloco"></textarea>
+            <textarea name="bloco" placeholder="" id="ta-bloco"></textarea>
         </div>
         <div class="vertical-separator">
             <label for="" id="stt-andar">Andar</label>
-            <input type="number" id="ta-andar" min="0" max="99" name="andar">
+            <input type="number" id="ta-andar" placeholder="" min="0" max="99" name="andar">
         </div>
         <div class="vertical-separator">
             <label for="" id="stt-bairro">Bairro</label>
-            <textarea id="ta-bairro" readonly=True name="bairro" required></textarea>
+            <textarea id="ta-bairro" placeholder="" readonly=True name="bairro" required></textarea>
         </div>
         <div class="vertical-separator">
             <label for="" id="stt-cidade">Cidade</label>
-            <textarea id="ta-cidade" readonly=True name="cidade" required></textarea>
+            <textarea id="ta-cidade" placeholder="" readonly=True name="cidade" required></textarea>
         </div>
         <div class="vertical-separator">
             <label for="" id="stt-estado">Estado</label>
             <input type="text" readonly=True id="ta-estado" minlength="2" maxlength="2" name="uf"
-                required>
+                required placeholder="">
         </div>
         <div class="vertical-separator">
             <label for="" id="stt-salas">Salas</label>
-            <input type="number"  id="ta-salas" name="quantidade_salas" min="0" max="99">
+            <input type="number"  id="ta-salas" name="quantidade_salas" min="0" max="99" placeholder="">
         </div>
         <div class="vertical-separator">
             <label for="" id="stt-banheiros">Banheiros</label>
-            <input type="number"  id="ta-banheiros" name="quantidade_banheiros" min="0" max="99">
+            <input type="number"  id="ta-banheiros" name="quantidade_banheiros" min="0" max="99" placeholder="">
         </div>
         <div class="vertical-separator">
             <label for="" id="stt-vagas">Vagas</label>
-            <input type="number"  id="ta-vagas" name="quantidade_vagas" min="0" max="99">
+            <input type="number"  id="ta-vagas" name="quantidade_vagas" min="0" max="99" placeholder="">
         </div>
         <div class="vertical-separator">
             <label for="" id="stt-varandas">Varandas</label>
-            <input type="number"  id="ta-varandas" name="quantidade_varandas" min="0" max="99">
+            <input type="number"  id="ta-varandas" name="quantidade_varandas" min="0" max="99" placeholder="">
         </div>
         <div class="vertical-separator">
             <label for="" id="stt-quartos">Quartos</label>
-            <input type="number"  id="ta-quartos" name="quantidade_quartos" min="0" max="99">
+            <input type="number"  id="ta-quartos" name="quantidade_quartos" min="0" max="99" placeholder="">
         </div>
         <div class="vertical-separator">
             <label for="" id="stt-area-total">Área Total</label>
-            <input type="text" id="ta-area-total" name="area_total" >
+            <input type="text" id="ta-area-total" name="area_total" placeholder="">
         </div>
         <div class="vertical-separator">
             <label for="" id="stt-area-privativa">Área Privativa</label>
-            <input type="text" id="ta-area-privativa" name="area_privativa" >
+            <input type="text" id="ta-area-privativa" name="area_privativa" placeholder="">
         </div>
         <div class="vertical-separator">
             <label for="" id="stt-venda">Valor Venda:</label>
-            <input type="text" id="ta-venda" name="valor_venda" >
+            <input type="text" id="ta-venda" name="valor_venda" placeholder="">
         </div>
         <div class="vertical-separator">
             <label for="" id="stt-aluguel">Valor Aluguel:</label>
-            <input type="text" id="ta-aluguel" name="valor_aluguel" >
+            <input type="text" id="ta-aluguel" name="valor_aluguel" placeholder="">
         </div>
         <div class="vertical-separator">
             <label for="" id="stt-condominio">Valor Condomínio:</label>
-            <input type="text" id="ta-condominio" name="valor_condominio" >
+            <input type="text" id="ta-condominio" name="valor_condominio" placeholder="">
         </div>
         <div class="vertical-separator">
             <label for="" id="stt-iptu">Valor IPTU:</label>
-            <input type="text"  name="iptu" id="ta-iptu">
+            <input type="text"  name="iptu" id="ta-iptu" placeholder="">
         </div>
     </form>
 
     <form id="container-anuncio" style="display: none;" role="tabpanel" class="tabcontent">
         <label class="titulo">Titulo</label>
-        <textarea name="titulo" id="ta-titulo-anuncio"></textarea>
+        <textarea name="titulo" id="ta-titulo-anuncio" placeholder=""></textarea>
         <label class="titulo">Descriçao</label>
-        <textarea name="descricao" id="ta-descricao-anuncio"></textarea>
+        <textarea name="descricao" id="ta-descricao-anuncio" placeholder=""></textarea>
         <label class="titulo">Apartamento</label>
         <div id="container-info-imovel">
             <input type="checkbox" id="filtro-aceita-pet" value="Aceita Pet">

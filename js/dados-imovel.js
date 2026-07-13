@@ -55,7 +55,7 @@ async function cadastrarAtendimento() {
 }
 
 function setupDados(dados) {
-    imovel = JSON.parse(dados);
+    let imovel = JSON.parse(dados);
     var div = document.getElementById("dados-imovel");
     let imagensHtml = "";
     let swiperhtml = "";
@@ -194,30 +194,26 @@ function inicializarSwiper() {
         },
     });
 
-    try {
-        window.swiperInstance = new Swiper('.swiper-galeria', {
-            loop: true,
-            pagination: {
-                el: '.swiper-galeria .swiper-pagination',
-                clickable: true
-            },
-            navigation: {
-                nextEl: '.swiper-galeria .swiper-button-next',
-                prevEl: '.swiper-galeria .swiper-button-prev'
-            },
-            slidesPerView: 3,
-            spaceBetween: 30,
-            centeredSlides: true,
-            breakpoints: {
-                0: { slidesPerView: 3 },
-                640: { slidesPerView: 4 },
-                768: { slidesPerView: 5 },
-                1024: { slidesPerView: 6 },
-            },
-        });
-    } catch (error) {
-        console.error("Erro ao inicializar o Swiper da galeria:", error);
-    }
+    var swiper = new Swiper('.swiper-galeria', {
+        loop: true,
+        pagination: {
+            el: '.swiper-galeria .swiper-pagination',
+            clickable: true
+        },
+        navigation: {
+            nextEl: '.swiper-galeria .swiper-button-next',
+            prevEl: '.swiper-galeria .swiper-button-prev'
+        },
+        slidesPerView: 2,
+        spaceBetween: 30,
+        centeredSlides: true,
+        breakpoints: {
+            0: { slidesPerView: 2 },
+            640: { slidesPerView: 3 },
+            768: { slidesPerView: 4 },
+            1024: { slidesPerView: 5 },
+        },
+    });
 
 }
 
