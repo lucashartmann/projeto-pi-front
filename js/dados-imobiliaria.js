@@ -37,8 +37,8 @@ new Chart(ctx, {
                 text: 'Exemplo de Gráfico de Pizza',
                 color: 'white',
                 font: {
-                size: 16
-            }
+                    size: 16
+                }
             }
         }
     }

@@ -108,7 +108,7 @@ label {
 
 }
 
-.titulo { 
+.titulo {
     display: none;
 }
 
@@ -117,7 +117,7 @@ label {
 }
 
 #bt-remover-numero {
-    display:none;
+    display: none;
 }
 
 @media screen and (max-width: 380px) {

@@ -98,8 +98,8 @@ class Validacao
 
     public static function validarAnoConstrucao(string $ano)
     {
-        $ano = (int)$ano;
-        $anoAtual = (int)date('Y');
+        $ano = (int) $ano;
+        $anoAtual = (int) date('Y');
         return $ano > 1800 && $ano <= $anoAtual;
     }
 

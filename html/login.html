@@ -4,7 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="google-signin-client_id" content="158912931156-6opb8fsg8d9iscqfuqnm606128e5nceq.apps.googleusercontent.com">
+    <meta name="google-signin-client_id"
+        content="158912931156-6opb8fsg8d9iscqfuqnm606128e5nceq.apps.googleusercontent.com">
     <title>Login</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/inputmask/dist/inputmask.min.js"></script>
@@ -31,15 +32,17 @@
             <h3>Nome Completo</h3>
             <input type="text" name="nome" id="nome" autocomplete="name" required placeholder="">
             <h3>Data de Nascimento</h3>
-            <input type="date" name="data_nascimento" id="data-nascimento" required oninput="verificaDataNascimento()" placeholder="">
+            <input type="date" name="data_nascimento" id="data-nascimento" required oninput="verificaDataNascimento()"
+                placeholder="">
             <h3>CPF/CNPJ</h3>
-            <input type="text" name="cpf_cnpj" id="cpf_cnpj" autocomplete="off" minlength="14" maxlength="14" required placeholder="">
+            <input type="text" name="cpf_cnpj" id="cpf_cnpj" autocomplete="off" minlength="14" maxlength="14" required
+                placeholder="">
             <h3>Email</h3>
             <input type="email" name="email" id="email-cadastro" autocomplete="email" required placeholder="">
             <h3>Senha</h3>
             <div class="senha-container">
-                <input type="password" name="senha" class="senha" id="senha-cadastro" autocomplete="current-password" minlength="8"
-                    required placeholder="">
+                <input type="password" name="senha" class="senha" id="senha-cadastro" autocomplete="current-password"
+                    minlength="8" required placeholder="">
                 <i class="fas fa-eye-slash" onclick="togglePasswordVisibility(event)"></i>
             </div>
             <button type="submit">Cadastrar</button>
@@ -49,7 +52,8 @@
             <input type="email" name="email" id="usuario" required autocomplete="email" placeholder="">
             <h3>Senha</h3>
             <div class="senha-container">
-                <input type="password" name="senha" id="senha" class="senha" autocomplete="current-password" required minlength="8" placeholder="">
+                <input type="password" name="senha" id="senha" class="senha" autocomplete="current-password" required
+                    minlength="8" placeholder="">
                 <i class="fas fa-eye-slash" onclick="togglePasswordVisibility(event)"></i>
             </div>
             <a href="" id="esqueceu-senha" onclick="novaSenha()">Esqueceu a senha?</a>

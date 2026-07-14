@@ -38,10 +38,8 @@
 }
 
 #container-pai {
-    /* align-items: center; */
     justify-content: center;
     justify-items: center;
-    /* align-content: center; */
     height: auto;
     width: 100%;
     padding: 20px;
@@ -57,27 +55,50 @@
     gap: 10px;
     margin: 0px 20px 20px 20px;
     width: 98%;
-
-    select {
-        width: 10rem;
-        height: 1.6rem;
-    }
+    align-items: center;
 
     #seta {
         width: auto;
         height: 1.6rem;
-        /* border: solid 1px rgb(160 160 160); */
         text-align: center;
         align-content: center;
+
         &:hover {
             cursor: pointer;
         }
     }
 
     #selecionar-todos {
-        width: 9rem;        
+        width: 9rem;
+        border-radius: 5% / 30%;
+        height: 2.1rem !important;
+    }
+
+    #filtro-seta {
+        background-color: rgba(228, 217, 217, 0.5);
+        border-radius: 5% / 30%;
+        border: solid 1px black;
+
+        select {
+            background: none;
+            border: none;
+            border: solid 1px black;
+            height: 2rem !important;
+            max-width: 100% !important;
+        }
+
+        i {
+            background: none;
+            margin-left: 2px;
+            margin-right: 4px;
+        }
+    }
+
+     select {
+        width: 10rem;
         height: 1.6rem;
     }
+
 }
 
 table {
@@ -85,32 +106,35 @@ table {
     border-collapse: collapse;
     margin-bottom: 20px;
     letter-spacing: 1px;
+
     caption {
-    caption-side: bottom;
-    padding: 10px;
-    font-weight: bold;
-    }
-    th,
-    td {
-    border: 1px solid rgb(160 160 160);
-    padding: 8px 10px;
+        caption-side: bottom;
+        padding: 10px;
+        font-weight: bold;
     }
 
-    tbody > tr:nth-of-type(even) {
-    background-color: rgb(237 238 242);
+    th,
+    td {
+        border: 1px solid rgb(160 160 160);
+        padding: 8px 10px;
+    }
+
+    tbody>tr:nth-of-type(even) {
+        background-color: rgb(237 238 242);
     }
 
     tfoot th {
-    text-align: right;
+        text-align: right;
     }
 
     tfoot td {
-    font-weight: bold;
+        font-weight: bold;
     }
 
     thead {
         background-color: rgba(186, 174, 174, 0.5);
     }
+
     tbody {
         background-color: rgba(186, 174, 174, 0.2);
     }
@@ -120,7 +144,7 @@ table {
     display: flex;
     flex-direction: column;
     margin-top: 20px;
-    width: 100% ;
+    width: 100%;
 
     .resultado {
         display: flex;
@@ -129,7 +153,7 @@ table {
         padding: 10px;
         margin: 10px 20px;
         cursor: pointer;
-        
+
 
         &:hover {
             background-color: rgba(186, 174, 174, 0.8);
@@ -202,37 +226,43 @@ body {
     display: none;
 }
 
-.sidebar-anuncios{
+.sidebar-anuncios {
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
     width: 20rem;
-    &>:nth-child(n){
+
+    &>:nth-child(n) {
         margin-top: 20px;
     }
+
     label {
         margin-left: 4px;
         color: var(--cor-texto);
     }
-    input, select, textarea {
+
+    input,
+    select,
+    textarea {
         align-self: center;
         width: 90%;
         height: 1.8rem;
     }
 
-    #container-info-imovel, #container-info-condominio {
+    #container-info-imovel,
+    #container-info-condominio {
         display: grid;
         grid-template-columns: repeat(2, 1fr);
         width: 80%;
         row-gap: 20px;
         column-gap: 0px;
+
         input {
-            /* width: 90%; */
             height: 1.1rem;
         }
     }
 
-   
+
     #preco {
         display: flex;
         align-items: center;
@@ -243,19 +273,17 @@ body {
         margin-top: 10px;
 
         label {
-            /* margin-bottom: 5px; */
             color: var(--cor-texto);
         }
 
         input {
             width: 100%;
             height: 1.8rem;
-            /* margin-bottom: 5px; */
         }
     }
 }
 
 
 main {
-    display:flex;
+    display: flex;
 }

@@ -28,7 +28,7 @@ async function enviarNovaSenha() {
             alert("Erro ao recuperar senha: ");
             return null;
         }
-        let dados= null;
+        let dados = null;
         const contentType = resposta.headers.get("content-type");
         if (contentType && contentType.includes("application/json")) {
             dados = await resposta.json();
@@ -264,7 +264,7 @@ window.handleCredentialResponse = handleCredentialResponse;
 
 async function handleCredentialResponse(response) {
     event.preventDefault();
-     try {
+    try {
         let caminho = getCaminhoRelativo("/php/api/login.php?acao=login");
         const resposta = await fetch(caminho, {
             method: "POST",

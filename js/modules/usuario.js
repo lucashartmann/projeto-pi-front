@@ -30,7 +30,7 @@ export async function salvarImoveisCurtidos() {
             })
             .then(data => {
                 if (data.status === "sucesso") {
-                    carregarUser(); 
+                    carregarUser();
                     console.log("Imóveis curtidos salvos com sucesso", data.mensagem);
                 } else {
                     console.error("Erro ao salvar imóveis curtidos:", data.mensagem);
@@ -115,7 +115,7 @@ export async function deslogar() {
         else {
             console.warn("Erro ao deslogar: " + dados.mensagem);
         }
-        
+
     } catch (erro) {
         console.error("Falha ao conectar com o backend:", erro);
         return null;

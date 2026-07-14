@@ -40,7 +40,8 @@ class Cliente extends Usuario
         $this->enderecoDesejado = $endereco;
     }
 
-    public function getImoveisFavoritos() {
+    public function getImoveisFavoritos()
+    {
         return $this->imoveisFavoritos;
     }
 }

@@ -11,7 +11,7 @@ body {
 
 
 #pai-calendario {
-   display: flex;
+    display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
@@ -23,7 +23,6 @@ body {
     height: auto;
     margin-top: auto;
     margin-bottom: 0;
-    /* background-color: aqua; */
     max-height: 100% !important;
     height: 70vh;
 }
@@ -34,7 +33,14 @@ body {
     width: 100% !important;
 
 
-    .ui, tr, td, th, .calendar, .column, .grid, #calendar {
+    .ui,
+    tr,
+    td,
+    th,
+    .calendar,
+    .column,
+    .grid,
+    #calendar {
         max-width: 100%;
     }
 
@@ -49,7 +55,7 @@ body {
         background: var(--background-nav);
     }
 
-    .fc-today a{
+    .fc-today a {
         color: var(--cor-texto);
     }
 

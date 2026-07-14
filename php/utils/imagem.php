@@ -80,8 +80,7 @@ function salvarArquivo($nomeTemporario, $nomeArquivo, $id, $tipo)
     if ($tipo == 'imagem') {
         $blob = imagemParaWebpBlob($nomeTemporario);
         $novoNomeArquivo = uniqid(more_entropy: true) . '.webp';
-    }
-    else if ($tipo == 'documento') {
+    } else if ($tipo == 'documento') {
         $novoNomeArquivo = uniqid(more_entropy: true) . "_" . $nomeArquivo;
         $blob = file_get_contents($nomeTemporario);
     }
@@ -90,7 +89,7 @@ function salvarArquivo($nomeTemporario, $nomeArquivo, $id, $tipo)
         return false;
     }
 
-    
+
     $caminhoCompleto = str_replace("\\php\\utils", "\\assets\\imoveis\\", __DIR__) . $id . "/" . $novoNomeArquivo;
 
     $diretorio = str_replace("\\php\\utils", "\\assets\\imoveis\\", __DIR__) . $id;

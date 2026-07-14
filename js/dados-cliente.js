@@ -22,7 +22,7 @@ function removerNumeroTelefone() {
 }
 
 async function carregarDados() {
-    let  dados = await carregarUser();
+    let dados = await carregarUser();
     if (dados.status == "erro") {
         alert("Usuário não encontrado. Faça login novamente.");
         window.location.href = "../html/login.html";
@@ -102,7 +102,7 @@ async function salvarDados() {
         }
     }
     data["telefones"] = telefones;
-    let  dados = await carregarUser();
+    let dados = await carregarUser();
     if (dados.status == "sucesso" && dados.usuario) {
         if (dados.usuario.tipo == "CLIENTE") {
             data["tipo"] = dados.usuario.tipo;

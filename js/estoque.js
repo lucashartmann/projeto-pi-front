@@ -1,3 +1,7 @@
+import { listarUsuarios } from "./modules/usuarios.js";
+import { listarImoveis } from "./modules/imoveis.js";
+import { formatarValor } from "./modules/utils.js";
+
 let imoveisCache = [];
 let proprietariosCache = [];
 let usuariosFiltrados = [];
@@ -6,11 +10,13 @@ let imoveisFiltrados = [];
 let filtroUsuario = "";
 let seta = "";
 
+window.filtroOrdenado = filtroOrdenado;
+
 async function filtroOrdenado() {
     seta = event.target;
 
     if (event.target.tagName == "TH" || event.target.tagName == "th") {
-        seta = event.target.querySelector(".seta");
+        seta = event.target.querySelector("#seta");
     } else if (event.target.tagName == "I" || event.target.tagName == "i") {
         seta = event.target;
     }
@@ -23,22 +29,14 @@ async function filtroOrdenado() {
     }
 
 
-    if (!seta.classList.contains("seta")) {
-        if (seta.classList.contains("fa-arrow-down")) {
-            seta.classList.remove("fa-arrow-down");
-            seta.classList.add("fa-arrow-up");
-        } else if (seta.classList.contains("fa-arrow-up")) {
-            seta.classList.remove("fa-arrow-up");
-            seta.classList.add("fa-arrow-down");
-        }
-    } else if (seta.classList.contains("seta")) {
-        if (seta.classList.contains("fa-angle-down")) {
-            seta.classList.remove("fa-angle-down");
-            seta.classList.add("fa-angle-up");
-        } else if (seta.classList.contains("fa-angle-up")) {
-            seta.classList.remove("fa-angle-up");
-            seta.classList.add("fa-angle-down");
-        }
+
+    if (seta.classList.contains("fa-arrow-down")) {
+        seta.classList.remove("fa-arrow-down");
+        seta.classList.add("fa-arrow-up");
+    } else if (seta.classList.contains("fa-arrow-up")) {
+        seta.classList.remove("fa-arrow-up");
+        seta.classList.add("fa-arrow-down");
+
     } else {
         return;
     }
@@ -49,10 +47,7 @@ async function filtroOrdenado() {
 
     seta.classList.add("active");
 
-    console.log(seta);
-
     filtrar();
-
 }
 
 async function filtrar() {
@@ -192,8 +187,8 @@ async function filtrar() {
             }
         });
 
-        seta = document.querySelector("#seta");
-        nome = document.getElementById("select-filtro") ? document.getElementById("select-filtro").value : null;
+        let seta = document.querySelector("#seta");
+        let nome = document.getElementById("select-filtro") ? document.getElementById("select-filtro").value : null;
 
         if (seta && nome) {
             switch (nome) {
@@ -399,7 +394,7 @@ function trocarCadastro() {
 }
 
 async function carregarUsuarios(tipo) {
-    let dados = usuariosFiltrados.length ? usuariosFiltrados : usuariosCache;
+    let dados = usuariosFiltrados;
     const section = document.getElementById("container-pai");
     if (!section || !dados) {
         console.log("Erro: Elementos não encontrados");
@@ -473,7 +468,7 @@ async function carregarUsuarios(tipo) {
 }
 
 function carregarAnuncios() {
-    let dados = imoveisFiltrados.length ? imoveisFiltrados : imoveisCache;
+    let dados = imoveisFiltrados;
     const section = document.getElementById("container-pai");
     const seta = document.getElementById("seta");
     if (!section || !dados) {
@@ -494,20 +489,22 @@ function carregarAnuncios() {
         return;
     }
 
-    html = `
+    let html = `
     <div id="h-filtro">
-                <select id="select-filtro" onchange="filtrar()">
-                    <option value="referencia">Referência</option>
-                    <option value="categoria">Categoria</option>
-                    <option value="status">Status</option>
-                    <option value="cep">CEP</option>
-                    <option value="numero">Número</option>
-                    <option value="aluguel">Aluguel</option>
-                    <option value="venda">Venda</option>
-                    <option value="data_cadastro" selected>Data de Cadastro</option>
-                    <option value="data_modificacao">Data de Modificação</option>
-                </select>
-                <i class="${classSeta}" id="seta" flat=True onclick="filtroOrdenado()"></i>
+                <div id="filtro-seta">
+                    <select id="select-filtro" onchange="filtrar()">
+                        <option value="referencia">Referência</option>
+                        <option value="categoria">Categoria</option>
+                        <option value="status">Status</option>
+                        <option value="cep">CEP</option>
+                        <option value="numero">Número</option>
+                        <option value="aluguel">Aluguel</option>
+                        <option value="venda">Venda</option>
+                        <option value="data_cadastro" selected>Data de Cadastro</option>
+                        <option value="data_modificacao">Data de Modificação</option>
+                    </select>
+                    <i class="${classSeta}" id="seta" flat=True onclick="filtroOrdenado()"></i>
+                </div>
                 <button id="selecionar-todos" onclick="selecionarTodos()">Selecionar Todos</button>
                 <button id="abrir-multiplos" style="display: none;" onclick="abrirMultiplos()">Abrir</button>
                 <button id="apagar-multiplos" style="display: none;" onclick="apagarMultiplos()">Apagar</button>
@@ -690,40 +687,45 @@ window.addEventListener("DOMContentLoaded", async () => {
     let dados = [];
     if (usuariosCache.length === 0) {
         dados = await listarUsuarios();
+        if (dados.length === 0 || !dados) {
+            const section = document.getElementById("container-pai");
+            const divVazio = document.createElement("div");
+            divVazio.id = "vazio";
+            divVazio.textContent = "Nenhum usuário encontrado.";
+            section.innerHTML = "";
+            section.appendChild(divVazio);
+            return;
+        }
         dados.sort((a, b) => new Date(b.data_cadastro?.date) - new Date(a.data_cadastro?.date));
         usuariosCache.push(...dados);
+        usuariosFiltrados = usuariosCache;
     } else {
         dados = usuariosCache;
+        usuariosFiltrados = usuariosCache;
     }
 
-    // if (dados.length === 0 || !dados) {
-    //     const section = document.getElementById("container-pai");
-    //     const divVazio = document.createElement("div");
-    //     divVazio.id = "vazio";
-    //     divVazio.textContent = "Nenhum usuário encontrado.";
-    //     section.innerHTML = "";
-    //     section.appendChild(divVazio);
-    //     return;
-    // }
+
 
     dados = [];
     if (imoveisCache.length === 0) {
         dados = await listarImoveis();
+        if (dados.length === 0 || !dados) {
+            const section = document.getElementById("container-pai");
+            const divVazio = document.createElement("div");
+            divVazio.id = "vazio";
+            divVazio.textContent = "Nenhum imóvel encontrado.";
+            section.innerHTML = "";
+            section.appendChild(divVazio);
+            return;
+        }
         dados.sort((a, b) => new Date(b.data_cadastro?.date) - new Date(a.data_cadastro?.date));
         imoveisCache.push(...dados);
+        imoveisFiltrados = imoveisCache;
     } else {
         dados = imoveisCache;
+        imoveisFiltrados = imoveisCache;
     }
 
-    // if (dados.length === 0 || !dados) {
-    //     const section = document.getElementById("container-pai");
-    //     const divVazio = document.createElement("div");
-    //     divVazio.id = "vazio";
-    //     divVazio.textContent = "Nenhum usuário encontrado.";
-    //     section.innerHTML = "";
-    //     section.appendChild(divVazio);
-    //     return;
-    // }
 
 
     carregarAnuncios();

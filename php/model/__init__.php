@@ -1,7 +1,6 @@
 <?php
 
 require_once __DIR__ . '/cliente.php';
-require_once __DIR__ . '/imobiliaria.php';
 require_once __DIR__ . '/corretor.php';
 require_once __DIR__ . '/imovel.php';
 require_once __DIR__ . '/captador.php';
@@ -14,7 +13,16 @@ require_once __DIR__ . '/gerente.php';
 require_once __DIR__ . '/usuario.php';
 require_once __DIR__ . '/proprietario.php';
 require_once __DIR__ . '/anexo.php';
-
+require_once __DIR__ . '/../dao/imovelDAO.php';
+require_once __DIR__ . '/../dao/anexoDAO.php';
+require_once __DIR__ . '/../dao/usuarioDAO.php';
+require_once __DIR__ . '/../dao/condominioDAO.php';
+require_once __DIR__ . '/../dao/anuncioDAO.php';
+require_once __DIR__ . '/../dao/atendimentoDAO.php';
+require_once __DIR__ . '/../dao/enderecoDAO.php';
+require_once __DIR__ . '/../dao/proprietarioDAO.php';
+require_once __DIR__ . '/../dao/visitaDAO.php';
+require_once __DIR__ . '/../dao/vistoriaDAO.php';
 
 ini_set('display_errors', 0);
 error_reporting(E_ALL);
@@ -75,13 +83,13 @@ class Init
         "Elevador de Serviço"
     ];
 
-    public static function getInstance()
-    {
-        if (self::$imobiliaria === null) {
-            self::initialize();
-        }
-        return self::$imobiliaria;
-    }
+    // public static function getInstance()
+    // {
+    //     if ( === null) {
+    //         self::initialize();
+    //     }
+    //     return ;
+    // }
 
     public static function initialize()
     {
@@ -414,48 +422,57 @@ class Init
             "F",
         ];
 
-        self::$imobiliaria = new Imobiliaria("GameStart", "00000000000");
+        $imovelDAO = new ImovelDAO();
+        $anexoDAO = new AnexoDAO();
+        $anuncioDAO = new AnuncioDAO();
+        $atendimentoDAO = new AtendimentoDAO();
+        $condominioDAO = new CondominioDAO();
+        $enderecoDAO = new EnderecoDAO();
+        $proprietarioDAO = new ProprietarioDAO();
+        $usuarioDAO = new UsuarioDAO();
+        $visitaDAO = new VisitaDAO();
+        $vistoriaDAO = new VistoriaDAO();
 
-        if (empty(self::$imobiliaria->getListaFiltrosApartamento())) {
-            self::$imobiliaria->cadastrarListaFiltros(self::$filtrosImovel, "filtros_imovel");
+        if (empty($imovelDAO->getConexao()->getListaFiltrosApartamento())) {
+            $imovelDAO->getConexao()->cadastrarListaFiltros(self::$filtrosImovel, "filtros_imovel");
         }
-        if (empty(self::$imobiliaria->getListaFiltrosCondominio())) {
-            self::$imobiliaria->cadastrarListaFiltros(self::$filtrosCondominio, "filtros_condominio");
+        if (empty($condominioDAO->getListaFiltrosCondominio())) {
+            $imovelDAO->getConexao()->cadastrarListaFiltros(self::$filtrosCondominio, "filtros_condominio");
         }
 
-        if (count(self::$imobiliaria->getEstoque()->getListaImoveis()) == 0) {
+        if (count($imovelDAO->getListaImoveis()) == 0) {
             for ($i = 1; $i <= 50; $i++) {
                 $sequencial = ($i - 1) * 8;
-                $cpfVistoriador   = str_pad((string)($sequencial + 1), 11, '0', STR_PAD_LEFT);
-                $cpfFinanceiro    = str_pad((string)($sequencial + 2), 11, '0', STR_PAD_LEFT);
-                $cpfCorretor      = str_pad((string)($sequencial + 3), 11, '0', STR_PAD_LEFT);
-                $cpfCaptador      = str_pad((string)($sequencial + 4), 11, '0', STR_PAD_LEFT);
-                $cpfGerente       = str_pad((string)($sequencial + 5), 11, '0', STR_PAD_LEFT);
-                $cpfAdministrador = str_pad((string)($sequencial + 6), 11, '0', STR_PAD_LEFT);
-                $cpfCliente       = str_pad((string)($sequencial + 7), 11, '0', STR_PAD_LEFT);
-                $cpfProprietario  = str_pad((string)($sequencial + 8), 11, '0', STR_PAD_LEFT);
+                $cpfVistoriador = str_pad((string) ($sequencial + 1), 11, '0', STR_PAD_LEFT);
+                $cpfFinanceiro = str_pad((string) ($sequencial + 2), 11, '0', STR_PAD_LEFT);
+                $cpfCorretor = str_pad((string) ($sequencial + 3), 11, '0', STR_PAD_LEFT);
+                $cpfCaptador = str_pad((string) ($sequencial + 4), 11, '0', STR_PAD_LEFT);
+                $cpfGerente = str_pad((string) ($sequencial + 5), 11, '0', STR_PAD_LEFT);
+                $cpfAdministrador = str_pad((string) ($sequencial + 6), 11, '0', STR_PAD_LEFT);
+                $cpfCliente = str_pad((string) ($sequencial + 7), 11, '0', STR_PAD_LEFT);
+                $cpfProprietario = str_pad((string) ($sequencial + 8), 11, '0', STR_PAD_LEFT);
 
-                $rgVistoriador   = str_pad((string)($sequencial + 1), 9, '0', STR_PAD_LEFT);
-                $rgFinanceiro    = str_pad((string)($sequencial + 2), 9, '0', STR_PAD_LEFT);
-                $rgCorretor      = str_pad((string)($sequencial + 3), 9, '0', STR_PAD_LEFT);
-                $rgCaptador      = str_pad((string)($sequencial + 4), 9, '0', STR_PAD_LEFT);
-                $rgGerente       = str_pad((string)($sequencial + 5), 9, '0', STR_PAD_LEFT);
-                $rgAdministrador = str_pad((string)($sequencial + 6), 9, '0', STR_PAD_LEFT);
-                $rgCliente       = str_pad((string)($sequencial + 7), 9, '0', STR_PAD_LEFT);
-                $rgProprietario  = str_pad((string)($sequencial + 8), 9, '0', STR_PAD_LEFT);
+                $rgVistoriador = str_pad((string) ($sequencial + 1), 9, '0', STR_PAD_LEFT);
+                $rgFinanceiro = str_pad((string) ($sequencial + 2), 9, '0', STR_PAD_LEFT);
+                $rgCorretor = str_pad((string) ($sequencial + 3), 9, '0', STR_PAD_LEFT);
+                $rgCaptador = str_pad((string) ($sequencial + 4), 9, '0', STR_PAD_LEFT);
+                $rgGerente = str_pad((string) ($sequencial + 5), 9, '0', STR_PAD_LEFT);
+                $rgAdministrador = str_pad((string) ($sequencial + 6), 9, '0', STR_PAD_LEFT);
+                $rgCliente = str_pad((string) ($sequencial + 7), 9, '0', STR_PAD_LEFT);
+                $rgProprietario = str_pad((string) ($sequencial + 8), 9, '0', STR_PAD_LEFT);
 
                 $telefone = function (int $id): string {
-                    return '55519' . str_pad((string)$id, 8, '0', STR_PAD_LEFT);
+                    return '55519' . str_pad((string) $id, 8, '0', STR_PAD_LEFT);
                 };
 
-                $telefoneVistoriador   = [$telefone($sequencial + 1), $telefone($sequencial + 2)];
-                $telefoneFinanceiro    = [$telefone($sequencial + 3), $telefone($sequencial + 4)];
-                $telefoneCorretor      = [$telefone($sequencial + 5), $telefone($sequencial + 6)];
-                $telefoneCaptador      = [$telefone($sequencial + 7), $telefone($sequencial + 8)];
-                $telefoneGerente       = [$telefone($sequencial + 9), $telefone($sequencial + 10)];
+                $telefoneVistoriador = [$telefone($sequencial + 1), $telefone($sequencial + 2)];
+                $telefoneFinanceiro = [$telefone($sequencial + 3), $telefone($sequencial + 4)];
+                $telefoneCorretor = [$telefone($sequencial + 5), $telefone($sequencial + 6)];
+                $telefoneCaptador = [$telefone($sequencial + 7), $telefone($sequencial + 8)];
+                $telefoneGerente = [$telefone($sequencial + 9), $telefone($sequencial + 10)];
                 $telefoneAdministrador = [$telefone($sequencial + 11), $telefone($sequencial + 12)];
-                $telefoneCliente       = [$telefone($sequencial + 13), $telefone($sequencial + 14)];
-                $telefoneProprietario  = [$telefone($sequencial + 15), $telefone($sequencial + 16)];
+                $telefoneCliente = [$telefone($sequencial + 13), $telefone($sequencial + 14)];
+                $telefoneProprietario = [$telefone($sequencial + 15), $telefone($sequencial + 16)];
 
                 $vistoriador = new Usuario(
                     username: "vistoriador$i@{$emails[array_rand($emails)]}",
@@ -643,49 +660,49 @@ class Init
                 ];
                 $proprietario->setDataModificacao($opcoes[array_rand($opcoes)]);
 
-                $idCorretor = self::$imobiliaria->cadastrarUsuario($corretor);
+                $idCorretor = $usuarioDAO->cadastrarUsuario($corretor);
                 if ($idCorretor) {
                     $corretor->setId($idCorretor);
                 } else {
                     $corretor = null;
                 }
-                $idCaptador = self::$imobiliaria->cadastrarUsuario($captador);
+                $idCaptador = $usuarioDAO->cadastrarUsuario($captador);
                 if ($idCaptador) {
                     $captador->setId($idCaptador);
                 } else {
                     $captador = null;
                 }
-                $idGerente = self::$imobiliaria->cadastrarUsuario($gerente);
+                $idGerente = $usuarioDAO->cadastrarUsuario($gerente);
                 if ($idGerente) {
                     $gerente->setId($idGerente);
                 } else {
                     $gerente = null;
                 }
-                $idCliente = self::$imobiliaria->cadastrarUsuario($cliente);
+                $idCliente = $usuarioDAO->cadastrarUsuario($cliente);
                 if ($idCliente) {
                     $cliente->setId($idCliente);
                 } else {
                     $cliente = null;
                 }
-                $idAdministrador = self::$imobiliaria->cadastrarUsuario($administrador);
+                $idAdministrador = $usuarioDAO->cadastrarUsuario($administrador);
                 if ($idAdministrador) {
                     $administrador->setId($idAdministrador);
                 } else {
                     $administrador = null;
                 }
-                $idVistoriador = self::$imobiliaria->cadastrarUsuario($vistoriador);
+                $idVistoriador = $usuarioDAO->cadastrarUsuario($vistoriador);
                 if ($idVistoriador) {
                     $vistoriador->setId($idVistoriador);
                 } else {
                     $vistoriador = null;
                 }
-                $idFinanceiro = self::$imobiliaria->cadastrarUsuario($financeiro);
+                $idFinanceiro = $usuarioDAO->cadastrarUsuario($financeiro);
                 if ($idFinanceiro) {
                     $financeiro->setId($idFinanceiro);
                 } else {
                     $financeiro = null;
                 }
-                self::$imobiliaria->cadastrarProprietario($proprietario);
+                $proprietarioDAO->cadastrarProprietario($proprietario);
 
                 $numeroAleatorioEndereco = rand(0, count($enderecos) - 1);
 
@@ -699,12 +716,12 @@ class Init
 
                 $endereco->setNumero($i);
 
-                $verificarEndereco = self::$imobiliaria->verificarEndereco($endereco);
+                $verificarEndereco = $enderecoDAO->verificarEndereco($endereco);
 
                 if ($verificarEndereco) {
                     $endereco = $verificarEndereco;
                 } else {
-                    $idEndereco = self::$imobiliaria->cadastrarEndereco($endereco) ?? null;
+                    $idEndereco = $enderecoDAO->cadastrarEndereco($endereco) ?? null;
                     if ($idEndereco) {
                         $endereco->setId($idEndereco);
                     } else {
@@ -720,7 +737,7 @@ class Init
                 $imovel->setComplemento($numeroComplemento ? $numeroComplemento . " " . $complementos[array_rand($complementos)] : null);
                 $imovel->setValorVenda($venda);
                 $imovel->setValorAluguel($aluguel);
-                $imovel->setAndar((((string)$numeroComplemento)[0]) ?? 0);
+                $imovel->setAndar((((string) $numeroComplemento)[0]) ?? 0);
                 $imovel->setAnoConstrucao(rand(1950, 2024));
                 $imovel->setAreaPrivativa(rand(0, 500));
                 $imovel->setAreaTotal(rand(0, 1000));
@@ -739,7 +756,7 @@ class Init
                     array_slice($filtros, 0, rand(0, $limiteMaximo))
                 ];
                 $imovel->setFiltros($opcao[array_rand($opcao)]);
-                $listaProprietarios = self::$imobiliaria->getListaProprietarios();
+                $listaProprietarios = $proprietarioDAO->getListaProprietarios();
                 $listaProprietarios = array_values($listaProprietarios);
                 $limiteMaximo = min(
                     count($listaProprietarios) - 1,
@@ -787,7 +804,7 @@ class Init
 
                 $anuncio->setTitulo($titulo);
                 $anuncio->setDescricao($descricao);
-                $idAnuncio = self::$imobiliaria->getEstoque()->cadastrarAnuncio($anuncio);
+                $idAnuncio = $anuncioDAO->cadastrarAnuncio($anuncio);
 
 
                 if ($idAnuncio > 0) {
@@ -798,12 +815,12 @@ class Init
                         TipoAnexo::IMAGEM
                     );
                     $anuncio->setImagens([$imagem, $imagem, $imagem, $imagem, $imagem, $imagem, $imagem, $imagem, $imagem, $imagem, $imagem, $imagem, $imagem, $imagem, $imagem]);
-                    self::$imobiliaria->getEstoque()->atualizarAnuncio($anuncio);
+                    $anuncioDAO->atualizarAnuncio($anuncio);
                 }
 
                 $imovel->setAnuncio($anuncio ?? null);
 
-                self::$imobiliaria->getEstoque()->cadastrarImovel($imovel);
+                $imovelDAO->cadastrarImovel($imovel);
 
                 // $condominio = new Condominio($nomesCondominio[array_rand($nomesCondominio)], $endereco);
                 // $limiteMaximo = isset($i) ? $i - 1 : count(self::$filtrosCondominio);
@@ -813,7 +830,7 @@ class Init
                 //     array_slice(self::$filtrosCondominio, 0, rand(0, $limiteMaximo))
                 // ];
                 // $condominio->setFiltros($opcao[array_rand($opcao)]);
-                // self::$imobiliaria->cadastrarCondominio($condominio);
+                // ->cadastrarCondominio($condominio);
             }
         }
     }

@@ -5,26 +5,26 @@ async function calendar() {
   await $('#calendar').fullCalendar({
     locale: 'pt-br',
     buttonText: {
-        today: 'Hoje',
-        month: 'Mês',
-        week: 'Semana',
-        day: 'Dia'
+      today: 'Hoje',
+      month: 'Mês',
+      week: 'Semana',
+      day: 'Dia'
     },
     dayNames: [
-        'Domingo', 'Segunda', 'Terça', 'Quarta',
-        'Quinta', 'Sexta', 'Sábado'
+      'Domingo', 'Segunda', 'Terça', 'Quarta',
+      'Quinta', 'Sexta', 'Sábado'
     ],
     dayNamesShort: [
-        'Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'
+      'Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'
     ],
     monthNames: [
-        'Janeiro', 'Fevereiro', 'Março', 'Abril',
-        'Maio', 'Junho', 'Julho', 'Agosto',
-        'Setembro', 'Outubro', 'Novembro', 'Dezembro'
+      'Janeiro', 'Fevereiro', 'Março', 'Abril',
+      'Maio', 'Junho', 'Julho', 'Agosto',
+      'Setembro', 'Outubro', 'Novembro', 'Dezembro'
     ],
     monthNamesShort: [
-        'Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun',
-        'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'
+      'Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun',
+      'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'
     ],
     header: {
       left: 'prev,next today',

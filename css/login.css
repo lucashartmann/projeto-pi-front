@@ -124,16 +124,16 @@ form {
     border-radius: 2% / 30%;
 
     &:has(input:required) {
-            outline: solid 2px rgb(195, 174, 14);
+        outline: solid 2px rgb(195, 174, 14);
 
-            &:has(input:invalid) {
-                outline: 2px solid red;
-            }
+        &:has(input:invalid) {
+            outline: 2px solid red;
+        }
     }
 
 
     &:has(input:not(:placeholder-shown)) {
-       &:has(input:required) {
+        &:has(input:required) {
             &:has(input:valid) {
                 outline: none;
                 border: 0.1px inset;

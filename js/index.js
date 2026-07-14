@@ -317,5 +317,5 @@ window.addEventListener('beforeunload', async function (event) {
     if (imoveisCurtidos.length > 0) {
         await salvarImoveisCurtidos();
     }
-   
+
 });

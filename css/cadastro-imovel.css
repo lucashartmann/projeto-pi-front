@@ -17,7 +17,6 @@ textarea {
         z-index: 1;
         background: rgba(0, 0, 0, 0.55);
         backdrop-filter: blur(40px);
-        /* padding: 8px 14px; */
         width: 2rem;
         height: 1.2rem;
         border-radius: 8px;
@@ -57,11 +56,12 @@ label {
     height: 45px;
     justify-self: center;
     gap: 10px;
+
     button {
-         width: 50%;
-         height: 100%;
-         height: 2rem;
-         border-radius: 15% / 100%;
+        width: 50%;
+        height: 100%;
+        height: 2rem;
+        border-radius: 15% / 100%;
     }
 }
 
@@ -97,11 +97,10 @@ label {
         height: 3rem;
         border-radius: 0;
         text-align: justify;
-        /* text-indent: 1.2em; */
     }
 
     .titulo {
-        
+
         font-size: 1.34rem;
         font-weight: bold !important;
         margin: 10px 0px !important;
@@ -115,7 +114,6 @@ label {
     #container-info-imovel {
         display: grid;
         grid-template-columns: repeat(8, auto);
-        /* gap: 2px; */
         width: auto;
         height: auto;
         margin: 50px auto;
@@ -135,10 +133,11 @@ label {
             text-align: left !important;
             margin-left: 110px !important;
         }
-    
+
         input[type="checkbox"] {
             width: 15px;
             height: 20px;
+
             &:hover {
                 cursor: pointer;
             }

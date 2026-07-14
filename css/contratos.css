@@ -43,7 +43,6 @@ body {
 
 #proprietario {
     display: none;
-    /* grid */
     z-index: 10000;
     position: fixed;
     top: 50%;

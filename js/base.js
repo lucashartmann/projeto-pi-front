@@ -156,8 +156,8 @@ function carregarTabs(usuario) {
             break;
         case "CLIENTE":
             tabs = [
-                {text: "Atendimento", href: "html/atendimento-cliente.html" },
-                {text: "Favoritos", href: "html/anuncios.html" },
+                { text: "Atendimento", href: "html/atendimento-cliente.html" },
+                { text: "Favoritos", href: "html/anuncios.html" },
                 { text: "<i class='fas fa-user'></i>", href: "html/dados-cliente.html" },
 
             ];

@@ -1,7 +1,7 @@
 <?php
 function getArquivo()
 {
-  return <<<HTML
+    return <<<HTML
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Atendimentos</title>
+    <link rel="stylesheet" href="../css/base.css">
+    <link rel="stylesheet" href="../css/atendimento-cliente.css">
+    <link rel="icon" type="image/x-icon" href="/php/projeto-pi-front/assets/logo.webp">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="icon" type="image/x-icon" href="../assets/logo.webp">
+    <script src="https://cdn.jsdelivr.net/npm/inputmask/dist/inputmask.min.js"></script>
+</head>
+
+<body>
+
+    <footer class="">
+        <p>Copyright 2025 - By Lucas Hartmann</p>
+        <a href="https://github.com/lucashartmann" target="_blank"><i class="fab fa-github"></i></a>
+    </footer>
+
+    <div vw class="enabled">
+        <div vw-access-button class="active"></div>
+        <div vw-plugin-wrapper>
+            <div class="vw-plugin-top-wrapper"></div>
+        </div>
+    </div>
+    <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
+    <script>
+        new window.VLibras.Widget('https://vlibras.gov.br/app');
+    </script>
+
+
+</body>
+<!-- <script src="../js/login.js"></script> -->
+<script type="text/javascript">
+    fetch("nav.html")
+        .then(response => response.text())
+        .then(data => {
+            document.body.insertAdjacentHTML('afterbegin', data);
+        });
+</script>
+<script type="module" src="../js/modules/utils.js"></script>
+<script type="module" src="../js/modules/usuario.js"></script>
+<script type="module" src="../js/base.js"></script>
+<script type="module" src="../js/atendimento-cliente.js"></script>
+
+</html>
