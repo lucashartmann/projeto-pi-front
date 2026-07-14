@@ -6,9 +6,9 @@ require_once __DIR__ . '/../usuarioController.php';
 class ProprietarioController
 {
 
-    private $proprietarioDAO;
+    private ProprietarioDAO $proprietarioDAO;
 
-    private $usuarioController;
+    private UsuarioController $usuarioController;
 
     public function __construct()
     {

@@ -9,13 +9,13 @@ require_once __DIR__ . '/../dao/anuncioDAO.php';
 
 class ImovelController
 {
-    private $imovelDAO;
-    private $usuarioDAO;
-    private $proprietarioDAO;
-    private $enderecoDAO;
-    private $condominioDAO;
+    private ImovelDAO $imovelDAO;
+    private UsuarioDAO $usuarioDAO;
+    private ProprietarioDAO $proprietarioDAO;
+    private EnderecoDAO $enderecoDAO;
+    private CondominioDAO $condominioDAO;
 
-    private $anuncioDAO;
+    private AnuncioDAO $anuncioDAO;
 
     public function __construct()
     {

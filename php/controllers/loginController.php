@@ -10,15 +10,15 @@ require_once __DIR__ . '/../../vendor/autoload.php';
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 use PHPMailer\PHPMailer\SMTP;
-use function PHPUnit\Framework\isInstanceOf;
+// use function PHPUnit\Framework\isInstanceOf;
 
 class loginController
 {
-    private $usuarioDAO;
-    private $imovelDAO;
-    private $usuarioController;
+    private UsuarioDAO $usuarioDAO;
+    private ImovelDAO $imovelDAO;
+    private UsuarioController $usuarioController;
 
-    private $imovelController;
+    private ImovelController $imovelController;
 
     public function __construct()
     {

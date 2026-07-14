@@ -6,11 +6,11 @@ require_once __DIR__ . '/../dao/enderecoDAO.php';
 class UsuarioController
 {
 
-    private $usuarioDAO;
+    private UsuarioDAO $usuarioDAO;
 
-    private $proprietarioDAO;
+    private ProprietarioDAO $proprietarioDAO;
 
-    private $enderecoDAO;
+    private EnderecoDAO $enderecoDAO;
 
     public function __construct()
     {

@@ -9,14 +9,14 @@ require_once __DIR__ . '/imovelController.php';
 class AtendimentoController
 {
 
-    private $atendimentoDAO;
-    private $usuarioDAO;
+    private AtendimentoDAO $atendimentoDAO;
+    private UsuarioDAO $usuarioDAO;
 
-    private $imovelDAO;
+    private ImovelDAO $imovelDAO;
 
-    private $usuarioController;
+    private UsuarioController $usuarioController;
 
-    private $imovelController;
+    private ImovelController $imovelController;
 
     public function __construct()
     {
@@ -62,7 +62,7 @@ class AtendimentoController
         }
     }
 
-    function cadastrarAtendimento($idImovel)
+    function cadastrarAtendimento(int $idImovel)
     {
 
         if (isset($_SESSION['usuario_id'])) {
