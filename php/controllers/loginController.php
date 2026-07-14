@@ -2,8 +2,10 @@
 
 require_once __DIR__ . '/../dao/usuarioDAO.php';
 require_once __DIR__ . '/../dao/imovelDAO.php';
+require_once __DIR__ . '/../dao/atendimentoDAO.php';
 require_once __DIR__ . '/usuarioController.php';
 require_once __DIR__ . '/imovelController.php';
+require_once __DIR__ . '/atendimentoController.php';
 require_once __DIR__ . '/../utils/env.php';
 require_once __DIR__ . '/../../vendor/autoload.php';
 
@@ -17,8 +19,10 @@ class loginController
     private UsuarioDAO $usuarioDAO;
     private ImovelDAO $imovelDAO;
     private UsuarioController $usuarioController;
+    private AtendimentoDAO $atendimentoDAO;
 
     private ImovelController $imovelController;
+    private AtendimentoController $atendimentoController;
 
     public function __construct()
     {
@@ -26,6 +30,31 @@ class loginController
         $this->imovelDAO = new ImovelDAO();
         $this->usuarioController = new UsuarioController();
         $this->imovelController = new ImovelController();
+        $this->atendimentoDAO = new AtendimentoDAO();
+        $this->atendimentoController = new AtendimentoController();
+    }
+
+    function carregarAtendimentos()
+    {
+
+        try {
+            session_start();
+            if (!isset($_SESSION['usuario_id'])) {
+                return (["status" => "erro", "mensagem" => "Usuário não logado"]);
+            }
+            $idUsuario = $_SESSION['usuario_id'];
+            $atendimentos = $this->atendimentoDAO->getAtendimentosPorUsuario($idUsuario);
+            if (!$atendimentos) {
+                return [
+                    "status" => "erro",
+                    "mensagem" => "Nenhum atendimento encontrado para o usuário"
+                ];
+            } else {
+                return $this->atendimentoController->montarJsonAtendimentos($atendimentos);
+            }
+        } catch (Exception $e) {
+            return (["status" => "erro", "mensagem" => "Erro ao carregar atendimentos: " . $e->getMessage()]);
+        }
     }
 
     function carregarFavoritos()

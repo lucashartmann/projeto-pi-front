@@ -11,6 +11,8 @@ let filtroUsuario = "";
 let seta = "";
 
 window.filtroOrdenado = filtroOrdenado;
+window.filtrar = filtrar;
+window.trocarCadastro = trocarCadastro;
 
 async function filtroOrdenado() {
     seta = event.target;
@@ -280,8 +282,8 @@ async function filtrar() {
             }
         });
 
-        seta = document.querySelector("thead") ? document.querySelector("thead").querySelector(".active") : null;
-        nome = seta ? seta.closest("th").getAttribute("name") : null;
+        let seta = document.querySelector("thead") ? document.querySelector("thead").querySelector(".active") : null;
+        let nome = seta ? seta.closest("th").getAttribute("name") : null;
         if (seta && nome) {
             switch (nome) {
                 case "id":
@@ -425,7 +427,7 @@ async function carregarUsuarios(tipo) {
         return;
     }
 
-    html = `
+    let html = `
     <table class="resultado">                
                 <thead>
                     <tr>

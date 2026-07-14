@@ -1,9 +1,11 @@
 import { listarImoveisDisponiveis } from "./modules/imoveis.js";
 import { carregarUser, salvarImoveisCurtidos, curtirImovel, imoveisCurtidos } from "./modules/usuario.js";
 import { getCaminhoRelativo, formatarValor } from "./modules/utils.js";
+import { usuarioLogado } from "./modules/usuario.js";
 
 window.abrirAnuncio = abrirAnuncio;
 window.curtirImovel = curtirImovel;
+window.filtrar = filtrar;
 
 
 let dadosImoveis = [];
@@ -113,7 +115,7 @@ function prevSlide() {
 
 async function carregarAnuncios(dados) {
     const section = document.getElementById("anuncios");
-    let $usuario = await carregarUser();
+    let $usuario = usuarioLogado;
     if (!section || !dados) return;
     section.innerHTML = "";
     let html = "";

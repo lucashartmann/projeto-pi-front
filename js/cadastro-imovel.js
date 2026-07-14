@@ -497,7 +497,7 @@ function activateTab(tabId, tabButton) {
     hideAllTabContents();
     clearActiveTabLinks();
 
-    tabPanel.style.display = tabDisplays[tabId] || "block";
+    tabPanel.style.display = tabDisplays[tabId] || "flex";
 
     if (tabButton) {
         tabButton.classList.add("active");
@@ -940,7 +940,7 @@ window.addEventListener("DOMContentLoaded", async function () {
             tabDisplays[panel.id] = inlineDisplay;
         } else {
             var computedDisplay = window.getComputedStyle(panel).display;
-            tabDisplays[panel.id] = computedDisplay !== "none" ? computedDisplay : "block";
+            tabDisplays[panel.id] = computedDisplay !== "none" ? computedDisplay : "flex";
         }
     }
 

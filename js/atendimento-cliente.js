@@ -1,6 +1,6 @@
 async function listarAtendimentos() {
     try {
-        let caminho = getCaminhoRelativo("/php/api/atendimentos.php?acao=listar_atendimentos");
+        let caminho = getCaminhoRelativo("/php/api/login.php?acao=get_atendimentos");
 
         const res = await fetch(caminho);
 

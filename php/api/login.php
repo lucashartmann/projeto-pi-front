@@ -66,7 +66,6 @@ switch ($acao) {
         break;
 
     case "get_atendimentos":
-        $controller = new AtendimentoController();
         $resultado = $controller->carregarAtendimentos();
         break;
 

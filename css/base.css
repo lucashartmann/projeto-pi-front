@@ -388,8 +388,12 @@ input {
     }
 
     &:not(:placeholder-shown) {
-        &:has(input:valid) {
+        &:valid {
             outline: none;
+        }
+        &:invalid {
+            outline: solid 2px red;
+            border: none;
         }
     }
 }
@@ -410,8 +414,12 @@ textarea {
     }
 
     &:not(:placeholder-shown) {
-        &:has(input:valid) {
+        &:valid {
             outline: none;
+        }
+        &:invalid {
+            outline: solid 2px red;
+            border: none;
         }
     }
 }

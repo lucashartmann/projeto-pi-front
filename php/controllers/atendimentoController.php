@@ -39,28 +39,7 @@ class AtendimentoController
             return (["status" => "erro", "mensagem" => "Erro ao listar atendimentos: " . $e->getMessage()]);
         }
     }
-    function carregarAtendimentos()
-    {
-
-        try {
-            session_start();
-            if (!isset($_SESSION['usuario_id'])) {
-                return (["status" => "erro", "mensagem" => "Usuário não logado"]);
-            }
-            $idUsuario = $_SESSION['usuario_id'];
-            $atendimentos = $this->atendimentoDAO->getAtendimentosPorUsuario($idUsuario);
-            if (!$atendimentos) {
-                return [
-                    "status" => "erro",
-                    "mensagem" => "Nenhum atendimento encontrado para o usuário"
-                ];
-            } else {
-                return self::montarJsonAtendimentos($atendimentos);
-            }
-        } catch (Exception $e) {
-            return (["status" => "erro", "mensagem" => "Erro ao carregar atendimentos: " . $e->getMessage()]);
-        }
-    }
+    
 
     function cadastrarAtendimento(int $idImovel)
     {
