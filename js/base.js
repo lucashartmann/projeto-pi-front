@@ -209,7 +209,10 @@ function carregarTabs(usuario) {
     }
     let div = nav.querySelector(".right");
     if (div) {
-        div.innerHTML = html + `<li><a href="#" onclick="deslogar()" id="logout">Sair</a></li>`;
+        html += `
+        <li><i class="fas fa-bell"></i></li>
+        <li><a href="#" onclick="deslogar()" id="logout">Sair</a></li>`;
+        div.innerHTML = html;
     }
 }
 

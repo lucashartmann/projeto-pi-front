@@ -1,9 +1,11 @@
 import { getCaminhoRelativo, formatarValor } from "./modules/utils.js";
-import { usuarioLogado } from "./modules/usuario.js";
+import { usuarioLogado, salvarImoveisCurtidos, curtirImovel, imoveisCurtidos } from "./modules/usuario.js";
 
 window.abrirImagem = abrirImagem;
 let imovel = null;
 let usuario = usuarioLogado;
+
+window.cadastrarAtendimento = cadastrarAtendimento;
 
 async function cadastrarAtendimento() {
     if (!usuario) {
