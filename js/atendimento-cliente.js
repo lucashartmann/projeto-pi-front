@@ -1,3 +1,7 @@
+import { getCaminhoRelativo } from "./modules/utils.js";
+
+let atendimentos = [];
+
 async function listarAtendimentos() {
     try {
         let caminho = getCaminhoRelativo("/php/api/login.php?acao=get_atendimentos");
@@ -24,91 +28,40 @@ async function listarAtendimentos() {
             return null;
         }
 
+        return await res.json();
+
     } catch (erro) {
         console.error("Falha ao conectar com o backend:", erro);
         return null;
     }
 }
 
-async function carregarAtendimentos() {
-    const dados = await listarAtendimentos();
-    const section = document.getElementById("container-horizontal");
-
-    if (!section || !dados) return;
-
-    const divRecemCadastrados = document.getElementById("container-cadastrados");
-
-    for (child of divRecemCadastrados.children) {
-        child.remove();
-    }
-
-    const divEmAndamento = document.getElementById("container-andamento");
-
-    for (child of divEmAndamento.children) {
-        child.remove();
-    }
-
-    const divPendente = document.getElementById("container-esperando");
-
-    for (child of divPendente.children) {
-        child.remove();
-    }
-
-    const tamanho = dados.length < 5 ? dados.length : 5;
-
-    for (let i = 0; i < tamanho; i++) {
-        const divCard = document.createElement("div");
-        divCard.id = "card-cadastrado";
-        divCard.className = "card";
-        divCard.onclick = () => abrirAtendimento(dados[i].id);
-        // <p>Idade ${dados[i].cliente.idade}</p>
-        divCard.innerHTML = `
-            <p style="margin-top: 20px;">Nome: ${dados[i].cliente.nome}</p>
-            <p>Telefone: ${dados[i].cliente.telefones}</p>
-            <p>Email: ${dados[i].cliente.email}</p>
+function carregarAtendimentos() {
+    const section = document.querySelector("section");
+    let html = "";
+    if (atendimentos && atendimentos.length > 0) {
+        atendimentos.forEach(atendimento => {
+            html += `
+            <div class="card">
+            ${imovel.anuncio.imagens && imovel.anuncio.imagens.length > 0 ? `<img src="${imovel.anuncio.imagens[0]}" alt="Imagem do imóvel">` : ``}
+            <label>Imóvel: ${atendimento.imovel.anuncio.titulo}</label>
+            <label>Status: ${atendimento.status}</label>
+            </div>
+            `;
+        });
+    } else {
+        html = `
+        <div id="vazio">
+            <p>Nenhum atendimento encontrado.</p>
+        </div>
         `;
-        divRecemCadastrados.appendChild(divCard);
     }
-
-
-    for (const atendimento of dados) {
-        if (atendimento.status === "Em andamento") {
-            const divEmAndamento = document.getElementById("container-em-andamento");
-            if (!divEmAndamento) continue;
-            const divCard = document.createElement("div");
-            divCard.id = "card-cadastrado";
-            divCard.onclick = () => abrirAtendimento(dados[i].id);
-            divCard.innerHTML = `
-                <h2>Nome ${dados[i].cliente.nome}</h2>
-                <p>Idade ${dados[i].cliente.idade}</p>
-                <p>Telefone ${dados[i].cliente.telefone}</p>
-                <p>Email ${dados[i].cliente.email}</p>
-            `;
-            divEmAndamento.appendChild(divCard);
-        } else if (atendimento.status === "Pendente") {
-            const divPendente = document.getElementById("container-esperando");
-            if (!divPendente) continue;
-            const divCard = document.createElement("div");
-            divCard.id = "card-cadastrado";
-            divCard.onclick = () => abrirAtendimento(dados[i].id);
-            divCard.innerHTML = `
-                <h2>Nome ${dados[i].cliente.nome}</h2>
-                <p>Idade ${dados[i].cliente.idade}</p>
-                <p>Telefone ${dados[i].cliente.telefone}</p>
-                <p>Email ${dados[i].cliente.email}</p>
-            `;
-            divPendente.appendChild(divCard);
-        }
-    }
-
+    section.innerHTML = html;
 }
 
-async function abrirAtendimento(atendimentoId) {
-    sessionStorage.setItem("atendimentoId", atendimentoId);
-    window.location.href = "html/dados-atendimento.html";
-}
 
-window.addEventListener("DOMContentLoaded", () => {
+window.addEventListener("DOMContentLoaded", async () => {
+    atendimentos = await listarAtendimentos();
     carregarAtendimentos();
 });
 

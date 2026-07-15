@@ -441,14 +441,18 @@ function prevSlide() {
     }
 }
 
+window.addEventListener("beforeunload", () => {
+    sessionStorage.setItem("reloading", "true");
+});
+
 window.addEventListener("DOMContentLoaded", async () => {
-    favoritos = sessionStorage.getItem("favoritos") === "true";
-    sessionStorage.removeItem("favoritos");
+    const favoritos = "?favoritos=true" === window.location.search;
+    
     let dados = [];
 
     if (favoritos) {
         dados = await listarImoveisFavoritados();
-        if (dados.length === 0 || !dados) {
+        if (!dados || dados.length === 0) {
             const section = document.getElementById("anuncios");
             const divVazio = document.createElement("div");
             divVazio.id = "vazio";

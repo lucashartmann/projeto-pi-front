@@ -10,68 +10,110 @@
     <link rel="icon" type="image/x-icon" href="/php/projeto-pi-front/assets/logo.webp">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <link rel="icon" type="image/x-icon" href="../assets/logo.webp">
-    <script src="https://cdn.jsdelivr.net/npm/inputmask/dist/inputmask.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/labelmask/dist/labelmask.min.js"></script>
 </head>
 
 <body>
-    <div>
-        <form class="grid-container">
-            <!-- <label>Username</label>
-            <input name="username" type="text" id="inpt-username"> -->
-            <div class="vertical-separator">
-                <label id="stt-nome">Nome</label>
-                <input id="inpt-nome" type="text" name="nome">
+    <section class="grid-container">
+
+        <div id="header-cliente">
+            <img src="../assets/logo.webp" alt="">
+            <div id="dados-basicos">
+                <label for="" class="nome">Lucas Pedro Marcello</label>
+                <label for="" class="cargo">Captador</label>
             </div>
-            <div id="container-telefones">
-                <label id="stt-email">Email</label>
-                <input type="email" id="inpt-email" name="email">
-            </div>
-            <div id="container-telefones">
-                <label id="stt-telefone">Telefone</label>
-                <div id="container-telefones">
-                    <input id="inpt-telefone" type="text" class="telefone" maxlength="15">
-                    <button id="bt-mais-numero" onclick="adicionarNumeroTelefone()">+</button>
-                    <button id="bt-remover-numero" onclick="removerNumeroTelefone()">X</button>
+            <div id="email-telefone">
+                <div id="div-email">
+                    <label for="">Email:</label>
+                    <label for="" class="email">lucas.pedro.marcello@example.com</label>
+                </div>
+                <div id="div-telefone">
+                    <label for="">Numero de telefone:</label>
+                    <label for="" class="telefone">+55 51 99721-1234</label>
                 </div>
             </div>
-            <div id="container-telefones">
-                <label id="stt-data-nascimento">Data de nascimento</label>
-                <input type="date" id="inpt-data-nascimento" maxlength="10" minlength="10" name="data_nascimento">
-            </div>
-            <div id="container-telefones">
-                <label id="stt-cpf">CPF</label>
-                <input type="text" id="inpt-cpf" maxlength="14" minlength="14" name="cpf_cnpj">
-            </div>
-            <div id="container-telefones">
-                <label id="stt-rg">RG</label>
-                <input id="inpt-rg" max="9" min="7" type="number" name="rg">
-            </div>
-            <div id="container-telefones">
-                <label>Senha</label>
-                <input type="password" name="senha" id="inpt-senha" minlength="8" maxlength="255">
-            </div>
-        </form>
-        <h3 id="stt-detalhes">Detalhes do imóvel desejado:</h3>
-        <form id="detalhes">
-            <div class="detalhes-content">
-                <label>Quartos:</label>
-                <input type="text" name="quartos" id="inpt-quartos" maxlength="2">
-            </div>
-            <div class="detalhes-content">
-                <label>Banheiros:</label>
-                <input type="text" name="banheiros" id="inpt-banheiros" maxlength="2">
-            </div>
-            <div class="detalhes-content">
-                <label>CEP desejado:</label>
-                <input type="text" id="inpt-cep" minlength="9" maxlength="9">
-            </div>
-        </form>
-        <div id="ctn-botao">
-            <button onclick="salvarDados()">Salvar</button>
         </div>
-        <label id="stt-compras">Imoveis do usuário (links para os anuncios)</label>
-        <div id="imoveis"></div>
-    </div>
+
+        <div id="lala">
+            <div id="menu">
+                <ul>
+                    <li>
+                        <a href="dados-cliente.html" class="active">Editar Dados</a>
+                    </li>
+                    <li>
+                        <a href="#" onclick="alterarSrc(event, 'html/anuncios.html?favoritos=true')">Ver Favoritos</a>
+                    </li>
+                    <li>
+                        <a href="#" onclick="alterarSrc(event, 'html/atendimento-cliente.html')">Ver Atendimentos</a>
+                    </li>
+                    <li>
+                        <a href="imoveis-cliente.html">Deletar Conta</a>
+                    </li>
+                </ul>
+            </div>
+
+            <form id="dados">
+                <div class="separador">
+                    <label for="">Nome</label>
+                    <label id="inpt-nome" name="nome">José</label>
+                </div>
+                <div class="separador">
+                    <label for="">Email</label>
+                    <label id="inpt-email" name="email">jose@example.com</label>
+                </div>
+                <div class="separador">
+                    <label for="">Senha</label>
+                    <label id="inpt-senha" name="senha">********</label>
+                </div>
+                <div class="separador">
+                    <label for="">Telefone</label>
+                    <label id="inpt-telefone" name="telefone">(11) 99999-9999</label>
+                </div>
+                <div class="separador">
+                    <label for="">CPF/CNPJ</label>
+                    <label id="inpt-cpf-cnpj" name="cpf_cnpj">123.456.789-00</label>
+                </div>
+                <div class="separador">
+                    <label for="">RG</label>
+                    <label id="inpt-rg" name="rg">12.345.678-9</label>
+                </div>
+                <div class="separador">
+                    <label for="">Data de Nascimento</label>
+                    <label type="date" id="inpt-data-nascimento" name="data_nascimento">1990-01-01</label>
+                </div>
+                <div class="separador">
+                    <label for="">Rua</label>
+                    <label id="inpt-rua" name="rua">Rua Exemplo, 123</label>
+                </div>
+                <div class="separador">
+                    <label for="">Número</label>
+                    <label id="inpt-numero" name="numero">123</label>
+                </div>
+                <div class="separador">
+                    <label for="">Complemento</label>
+                    <label id="inpt-complemento" name="complemento">Apto 101</label>
+                </div>
+                <div class="separador">
+                    <label for="">CEP</label>
+                    <label id="inpt-cep" name="cep">12345-678</label>
+                </div>
+                <div class="separador">
+                    <label for="">Cidade</label>
+                    <label id="inpt-cidade" name="cidade">São Paulo</label>
+                </div>
+                <div class="separador">
+                    <label for="">UF</label>
+                    <label id="inpt-uf" name="uf">SP</label>
+                </div>
+            </form>
+
+        </div>
+
+    </section>
+
+
+    <!-- <label id="stt-compras">Imoveis do usuário (links para os anuncios)</label>
+        <div id="imoveis"></div> -->
     <footer class="">
         <p>Copyright 2025 - By Lucas Hartmann</p>
         <a href="https://github.com/lucashartmann" target="_blank"><i class="fab fa-github"></i></a>
@@ -101,6 +143,6 @@
 <script type="module" src="../js/modules/utils.js"></script>
 <script type="module" src="../js/modules/usuario.js"></script>
 <script type="module" src="../js/base.js"></script>
-<script src="../js/dados-cliente.js"></script>
+<script type="module" src="../js/dados-cliente.js"></script>
 
 </html>

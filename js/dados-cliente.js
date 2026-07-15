@@ -1,6 +1,19 @@
-
+import { usuarioLogado, carregarUser } from "./modules/usuario.js";
+import { getCaminhoRelativo } from "./modules/utils.js";
 
 var montou = false;
+
+window.adicionarNumeroTelefone = adicionarNumeroTelefone;
+window.removerNumeroTelefone = removerNumeroTelefone;
+window.salvarDados = salvarDados;
+
+function editarDados() {
+    const dados = document.querySelector('#dados');
+    for (const i = 0; i < dados.children.length; i+2) {
+        dados.children[i].remove;
+        // TODO: implementar
+    }
+}
 
 function adicionarNumeroTelefone() {
     const container = document.getElementById("container-telefones");
@@ -22,10 +35,11 @@ function removerNumeroTelefone() {
 }
 
 async function carregarDados() {
-    let dados = await carregarUser();
-    if (dados.status == "erro") {
+    let dados = usuarioLogado || await carregarUser();
+    console.log("Dados do usuário logado:", dados);
+    if (!dados) {
         alert("Usuário não encontrado. Faça login novamente.");
-        window.location.href = "../html/login.html";
+        // window.location.href = "../html/login.html";
         return;
     }
 
@@ -34,7 +48,7 @@ async function carregarDados() {
     }
 
     if (dados.usuario?.tipo != "CLIENTE" && montou == false) {
-        form = document.getElementById("grid-container");
+        let form = document.getElementById("grid-container");
         form.innerHTML += `
          <label id="stt-cep">CEP</label>
             <input type="text" id="ta-cep" maxlength="9" minlength="9" name="cep" required placeholder="00000-000">
@@ -102,8 +116,8 @@ async function salvarDados() {
         }
     }
     data["telefones"] = telefones;
-    let dados = await carregarUser();
-    if (dados.status == "sucesso" && dados.usuario) {
+    let dados = usuarioLogado || await carregarUser();
+    if (dados && dados.usuario) {
         if (dados.usuario.tipo == "CLIENTE") {
             data["tipo"] = dados.usuario.tipo;
             data["id"] = dados.usuario.id;
@@ -124,6 +138,7 @@ async function salvarDados() {
             return null;
         }
         const contentType = resposta.headers.get("content-type");
+        let dados = null;
         if (contentType && contentType.includes("application/json")) {
             dados = await resposta.json();
         } else {
@@ -149,12 +164,9 @@ async function salvarDados() {
     }
 }
 
-
-
 document.addEventListener("DOMContentLoaded", async function () {
     Inputmask("999.999.999-99").mask("#inpt-cpf");
     Inputmask("99999-999").mask("#ta-cep");
-    // TODO: possivel problema ao botar as masks aqui
     const containers = document.getElementsByClassName("telefone");
     for (let i = 0; i < containers.length; i++) {
         Inputmask("(99) 99999-9999").mask(containers[i]);

@@ -8,3 +8,63 @@ body {
     align-content: center;
     justify-items: center;
 }
+
+#vazio {
+    width: 98%;
+    justify-self: center;
+    color: var(--cor-texto);
+    text-align: center;
+    background: rgba(36, 30, 30, 0.92);
+    height: 4rem;
+    align-items: center;
+    align-content: center;
+}
+
+section {
+    display: flex;
+    flex-direction: column;
+    margin-top: 20px;
+    width: 100%;
+
+    div {
+        display: flex;
+        gap: 20px;
+        background-color: rgba(186, 174, 174, 0.5);
+        padding: 10px;
+        margin: 10px 20px;
+        cursor: pointer;
+
+
+        &:hover {
+            background-color: rgba(186, 174, 174, 0.8);
+            cursor: pointer;
+        }
+
+        li {
+            margin-left: auto;
+            justify-self: end;
+            top: 10px;
+
+        }
+
+        .fa-bars {
+            font-size: 1.8em;
+            cursor: pointer;
+        }
+    }
+
+    img {
+        height: 10%;
+        width: 30%;
+    }
+
+    .dados {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    #dados-div {
+        display: none;
+    }
+}

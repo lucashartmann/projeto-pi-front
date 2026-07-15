@@ -1,3 +1,5 @@
+import { getCaminhoRelativo } from "./modules/utils.js";
+
 async function listarAtendimentos() {
     try {
         let caminho = getCaminhoRelativo("/php/api/atendimentos.php?acao=listar_atendimentos");

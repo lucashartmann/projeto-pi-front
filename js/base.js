@@ -36,9 +36,7 @@ function modoNoturno() {
 
 function alterarSrc(event, caminho) {
     let a = event.target;
-    if (a.textContent.includes("Favoritos")) {
-        sessionStorage.setItem("favoritos", true);
-    }
+    
     if (a.tagName !== "a") {
         a = a.closest("a");
     }
@@ -157,7 +155,7 @@ function carregarTabs(usuario) {
         case "CLIENTE":
             tabs = [
                 { text: "Atendimento", href: "html/atendimento-cliente.html" },
-                { text: "Favoritos", href: "html/anuncios.html" },
+                { text: "Favoritos", href: "html/anuncios.html?favoritos=true" },
                 { text: "<i class='fas fa-user'></i>", href: "html/dados-cliente.html" },
 
             ];
