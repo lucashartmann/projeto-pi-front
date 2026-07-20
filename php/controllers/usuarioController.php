@@ -3,7 +3,6 @@
 require_once __DIR__ . '/../dao/usuarioDAO.php';
 require_once __DIR__ . '/../dao/proprietarioDAO.php';
 require_once __DIR__ . '/../dao/enderecoDAO.php';
-require_once __DIR__ . '/../model/seguranca.php';
 
 class UsuarioController
 {
@@ -16,7 +15,6 @@ class UsuarioController
 
     public function __construct()
     {
-        // Seguranca::verificarAcesso();
         $this->usuarioDAO = new UsuarioDAO();
         $this->proprietarioDAO = new ProprietarioDAO();
         $this->enderecoDAO = new EnderecoDAO();
@@ -39,7 +37,7 @@ class UsuarioController
                     "nome" => $usuario->getNome(),
                     "cpf_cnpj" => $usuario->getCpfCnpj(),
                     "rg" => $usuario->getRg(),
-                    "username" => $usuario->getUsername() ?? null,
+                    "username" => !($usuario instanceof Proprietario) ? $usuario->getUsername() ?? null : null,
                     "telefones" => [$usuario->getTelefones()],
                     "endereco" => $usuario->getEndereco() ? [
                         "rua" => $usuario->getEndereco()->rua ?? null,
@@ -53,7 +51,7 @@ class UsuarioController
                     "creci" => $usuario instanceof Corretor ? $usuario->getCreci() ?? null : null,
                     "salario" => method_exists($usuario, 'getSalario') ? $usuario->getSalario() ?? null : null,
                     "data_nascimento" => $usuario->getDataNascimento() ? $usuario->getDataNascimento()->format('d-m-Y') : null,
-                    "tipo" => $usuario->getTipo() ?? null,
+                    "tipo" => $usuario instanceof Proprietario ? "PROPRIETARIO" : $usuario->getTipo() ?? null,
                     "data_cadastro" => $usuario->getDataCadastro() ? $usuario->getDataCadastro() : null,
                     "data_modificacao" => $usuario->getDataModificacao() ? $usuario->getDataModificacao() : null,
                     "imoveis" => array_map(function ($imovel) {

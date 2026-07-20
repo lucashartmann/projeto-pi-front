@@ -85,7 +85,7 @@ export async function deslogar() {
             const texto = await resposta.text();
             alert("Resposta inesperada do servidor");
             console.error("Resposta não é JSON:", texto);
-            return;
+            return null;
         }
         if (dados.status == "sucesso") {
             const nav = document.querySelector("nav ul");
@@ -100,14 +100,14 @@ export async function deslogar() {
                 }
             } else {
                 console.warn("Elemento de navegação não encontrado para atualizar estado de login");
-                return;
+                return null;
             }
             console.log("Deslogado com sucesso!");
             usuarioLogado = null;
             imoveisCurtidos = [];
             if (window.location.pathname.endsWith("index.html") || window.location.pathname.endsWith("/")) {
                 window.location.reload();
-                return;
+                return null;
             } else {
                 window.location.href = getCaminhoRelativo("index.html");
             }
@@ -148,7 +148,7 @@ export async function carregarUser() {
             return null;
         }
         usuarioLogado = dados.usuario;
-        if (usuarioLogado.tipo && usuarioLogado.tipo === "CLIENTE") {
+        if (usuarioLogado && usuarioLogado.tipo && usuarioLogado.tipo === "CLIENTE") {
             imoveisCurtidos = dados.imoveis || [];
         }
         return dados;

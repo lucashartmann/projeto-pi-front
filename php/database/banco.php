@@ -260,6 +260,15 @@ class Banco extends PDO
                     id_vistoria INTEGER NULL,
                     descricao TEXT NULL,
                     FOREIGN KEY (id_vistoria) references vistoria(id) ON DELETE CASCADE
+                )",
+            "CREATE TABLE IF NOT EXISTS notificacao (
+                    id INTEGER PRIMARY KEY AUTO_INCREMENT,
+                    id_usuario INTEGER NULL,
+                    mensagem TEXT NULL,
+                    tipo VARCHAR(255) NULL,
+                    lida BOOLEAN DEFAULT FALSE,
+                    data_notificacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    FOREIGN KEY (id_usuario) references usuario(id) ON DELETE CASCADE
                 )"
         ];
 
@@ -267,6 +276,8 @@ class Banco extends PDO
             $this->exec($sql);
         }
     }
+
+
 
     public function remover($campoDesejado, $valor, $tabela)
     {

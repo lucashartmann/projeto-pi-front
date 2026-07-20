@@ -6,7 +6,6 @@ require_once __DIR__ . '/../dao/proprietarioDAO.php';
 require_once __DIR__ . '/../dao/enderecoDAO.php';
 require_once __DIR__ . '/../dao/condominioDAO.php';
 require_once __DIR__ . '/../dao/anuncioDAO.php';
-require_once __DIR__ . '/../model/seguranca.php';
 
 class ImovelController
 {
@@ -20,7 +19,6 @@ class ImovelController
 
     public function __construct()
     {
-        // Seguranca::verificarAcesso();
         $this->imovelDAO = new ImovelDAO();
         $this->usuarioDAO = new UsuarioDAO();
         $this->proprietarioDAO = new ProprietarioDAO();

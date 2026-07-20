@@ -6,7 +6,6 @@ require_once __DIR__ . '/../dao/imovelDAO.php';
 require_once __DIR__ . '/../dao/atendimentoDAO.php';
 require_once __DIR__ . '/usuarioController.php';
 require_once __DIR__ . '/imovelController.php';
-require_once __DIR__ . '/../model/seguranca.php';
 
 class AtendimentoController
 {   
@@ -23,7 +22,6 @@ class AtendimentoController
 
     public function __construct()
     {
-        Seguranca::verificarAcesso();
         $this->atendimentoDAO = new AtendimentoDAO();
         $this->usuarioDAO = new UsuarioDAO();
         $this->imovelDAO = new ImovelDAO();
@@ -47,7 +45,11 @@ class AtendimentoController
 
     function cadastrarAtendimento(int $idImovel)
     {
+        $usuario = $_GET['usuario'] ?? null;
 
+        if ($usuario) {
+            $this->atendimentoDAO->getConexao()->cadastrarNotificacao($usuario, "Novo atendimento cadastrado para o imóvel de ID: $idImovel", "atendimento");
+        }
         if (isset($_SESSION['usuario_id'])) {
 
             $idUsuario = $_SESSION['usuario_id'];

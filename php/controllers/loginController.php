@@ -8,7 +8,6 @@ require_once __DIR__ . '/imovelController.php';
 require_once __DIR__ . '/atendimentoController.php';
 require_once __DIR__ . '/../utils/env.php';
 require_once __DIR__ . '/../../vendor/autoload.php';
-require_once __DIR__ . '/../model/seguranca.php';
 
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
@@ -27,7 +26,6 @@ class loginController
 
     public function __construct()
     {
-        // Seguranca::verificarAcesso();
         $this->usuarioDAO = new UsuarioDAO();
         $this->imovelDAO = new ImovelDAO();
         $this->usuarioController = new UsuarioController();

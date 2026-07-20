@@ -24,7 +24,40 @@ class UsuarioDAO
         return $this->bancoDados;
     }
 
-    public function getUsuarioPorCpfCnpj($cpf)
+    public function cadastrarMensagem(int $id_usuario, string $mensagem)
+    {
+        try {
+            $sqlInsertQuery = "
+                INSERT INTO notificacao (id_usuario, mensagem)
+                VALUES (:id_usuario, :mensagem);
+            ";
+            $stmt = $this->bancoDados->prepare($sqlInsertQuery);
+            $stmt->execute([':id_usuario' => $id_usuario, ':mensagem' => $mensagem]);
+            return true;
+        } catch (Exception $e) {
+            error_log("ERRO Banco->cadastrarMensagem: " . $e->getMessage());
+            return false;
+        }
+    }
+
+    public function getMensagens(int $id_usuario)
+    {
+        try {
+            $sqlSelectQuery = "
+                SELECT * FROM notificacao
+                WHERE id_usuario = :id_usuario
+                ORDER BY data_notificacao DESC;
+            ";
+            $stmt = $this->bancoDados->prepare($sqlSelectQuery);
+            $stmt->execute([':id_usuario' => $id_usuario]);
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (Exception $e) {
+            error_log("ERRO Banco->getMensagens: " . $e->getMessage());
+            return [];
+        }
+    }
+
+    public function getUsuarioPorCpfCnpj(string $cpf)
     {
         try {
 
@@ -156,11 +189,11 @@ class UsuarioDAO
                     );
                     break;
 
-                # $stmt = $this->bancoDados->prepare("
-                #             SELECT * FROM cliente
-                #             WHERE id_usuario = ?
-                #         ", (idUsuario,))
-                # registros = $stmt->fetch(PDO::FETCH_ASSOC)
+                    # $stmt = $this->bancoDados->prepare("
+                    #             SELECT * FROM cliente
+                    #             WHERE id_usuario = ?
+                    #         ", (idUsuario,))
+                    # registros = $stmt->fetch(PDO::FETCH_ASSOC)
             }
             $usuarioObj->setId($idUsuario);
             $usuarioObj->setRg($rg);
@@ -177,7 +210,7 @@ class UsuarioDAO
         }
     }
 
-    public function atualizarUsuario($usuario)
+    public function atualizarUsuario(Usuario $usuario)
     {
         try {
 
@@ -332,7 +365,7 @@ class UsuarioDAO
     }
 
 
-    public function cadastrarUsuario($usuario)
+    public function cadastrarUsuario(Usuario $usuario)
     {
         try {
             $sql = "
@@ -865,11 +898,11 @@ class UsuarioDAO
                     );
                     break;
 
-                # $stmt = $this->bancoDados->prepare("
-                #             SELECT * FROM cliente
-                #             WHERE id_usuario = ?
-                #         ", (idUsuario,))
-                # registros = $stmt->fetch(PDO::FETCH_ASSOC)
+                    # $stmt = $this->bancoDados->prepare("
+                    #             SELECT * FROM cliente
+                    #             WHERE id_usuario = ?
+                    #         ", (idUsuario,))
+                    # registros = $stmt->fetch(PDO::FETCH_ASSOC)
             }
             $usuarioObj->setId($idUsuario);
             $usuarioObj->setRg($rg);
@@ -1061,5 +1094,4 @@ class UsuarioDAO
             return null;
         }
     }
-
 }

@@ -364,12 +364,25 @@ select {
     height: 2.5rem;
     border-radius: 2% / 30%;
 
-    &:required {
-        border: dashed 2px rgb(195, 174, 14);
+    &:not(:has(option[value=""]:not(:checked))) {
+        &:required {
+            outline: solid 2px rgb(195, 174, 14);
+
+            &:invalid {
+                outline: solid 2px red;
+                border: none;
+            }
+        }
     }
 
-    &:invalid {
-        border: 2px dashed red;
+    &:has(option[value=""]:not(:checked)) {
+        &:valid {
+            outline: none;
+        }
+        &:invalid {
+            outline: solid 2px red;
+            border: none;
+        }
     }
 
 }

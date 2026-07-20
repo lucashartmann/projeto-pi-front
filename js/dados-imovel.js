@@ -15,7 +15,7 @@ async function cadastrarAtendimento() {
     }
     alert("Um especialista irá entrar em contato por email ou whatsapp");
     try {
-        let caminho = getCaminhoRelativo("/php/api/atendimentos.php?acao=cadastrar&idImovel=" + imovel.id);
+        let caminho = getCaminhoRelativo("/php/api/atendimentos.php?acao=cadastrar&usuario=true&idImovel=" + imovel.id);
         const resposta = await fetch(caminho, {
             method: "POST",
             body: JSON.stringify(imovel)

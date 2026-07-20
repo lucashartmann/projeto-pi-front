@@ -1,5 +1,6 @@
 import { listarUsuarios } from "./modules/usuarios.js";
 import { listarImoveis } from "./modules/imoveis.js";
+import { listarProprietarios } from "./modules/proprietarios.js";
 import { formatarValor } from "./modules/utils.js";
 
 let imoveisCache = [];
@@ -342,11 +343,26 @@ async function filtrar() {
             case "cliente":
                 carregarUsuarios("CLIENTE");
                 break;
+            case "vistoriador":
+                carregarUsuarios("VISTORIADOR");
+                break;
+            case "financeiro":
+                carregarUsuarios("FINANCEIRO");
+                break;
+            case "captador":
+                carregarUsuarios("CAPTADOR");
+                break;
+            case "administrador":
+                carregarUsuarios("ADMINISTRADOR");
+                break;
+            case "gerente":
+                carregarUsuarios("GERENTE");
+                break;
             case "corretor":
                 carregarUsuarios("CORRETOR");
                 break;
             case "proprietario":
-                carregarProprietarios();
+                carregarUsuarios("PROPRIETARIO");
                 break;
             case "todos usuarios":
                 carregarUsuarios("TODOS");
@@ -368,6 +384,21 @@ function trocarCadastro() {
     nav.style.display = "flex";
     navbarImoveis.style.display = "none";
     switch (valor) {
+        case "vistoriador":
+            filtrar();
+            document.querySelector("#select-cadastro").value = "vistoriador";
+        case "financeiro":
+            filtrar();
+            document.querySelector("#select-cadastro").value = "financeiro";
+        case "captador":
+            filtrar();
+            document.querySelector("#select-cadastro").value = "captador";
+        case "administrador":
+            filtrar();
+            document.querySelector("#select-cadastro").value = "administrador";
+        case "gerente":
+            filtrar();
+            document.querySelector("#select-cadastro").value = "gerente";
         case "imovel":
             filtrar();
             nav.style.display = "none";
@@ -402,7 +433,10 @@ async function carregarUsuarios(tipo) {
         console.log("Erro: Elementos não encontrados");
         return;
     }
-    dados = dados.filter(usuario => usuario.tipo === tipo);
+
+    if (tipo !== "" ) {
+        dados = dados.filter(usuario => usuario.tipo === tipo);
+    } 
 
     if (dados.length === 0) {
         alert("Nenhum usuário encontrado para o tipo selecionado.");
@@ -687,46 +721,37 @@ function abrirCadastro(imovel = null, id = null) {
 
 window.addEventListener("DOMContentLoaded", async () => {
     let dados = [];
-    if (usuariosCache.length === 0) {
-        dados = await listarUsuarios();
-        if (dados.length === 0 || !dados) {
-            const section = document.getElementById("container-pai");
-            const divVazio = document.createElement("div");
-            divVazio.id = "vazio";
-            divVazio.textContent = "Nenhum usuário encontrado.";
-            section.innerHTML = "";
-            section.appendChild(divVazio);
-            return;
-        }
-        dados.sort((a, b) => new Date(b.data_cadastro?.date) - new Date(a.data_cadastro?.date));
-        usuariosCache.push(...dados);
-        usuariosFiltrados = usuariosCache;
-    } else {
-        dados = usuariosCache;
-        usuariosFiltrados = usuariosCache;
+    let dadosUsuarios = await listarUsuarios();
+    let dadosProprietarios = await listarProprietarios();
+    dados = [...dadosUsuarios, ...dadosProprietarios];
+    if (dados.length === 0 || !dados) {
+        const section = document.getElementById("container-pai");
+        const divVazio = document.createElement("div");
+        divVazio.id = "vazio";
+        divVazio.textContent = "Nenhum usuário encontrado.";
+        section.innerHTML = "";
+        section.appendChild(divVazio);
+        return;
     }
-
-
+    dados.sort((a, b) => new Date(b.data_cadastro?.date) - new Date(a.data_cadastro?.date));
+    usuariosCache.push(...dados);
+    usuariosFiltrados = usuariosCache;
 
     dados = [];
-    if (imoveisCache.length === 0) {
-        dados = await listarImoveis();
-        if (dados.length === 0 || !dados) {
-            const section = document.getElementById("container-pai");
-            const divVazio = document.createElement("div");
-            divVazio.id = "vazio";
-            divVazio.textContent = "Nenhum imóvel encontrado.";
-            section.innerHTML = "";
-            section.appendChild(divVazio);
-            return;
-        }
-        dados.sort((a, b) => new Date(b.data_cadastro?.date) - new Date(a.data_cadastro?.date));
-        imoveisCache.push(...dados);
-        imoveisFiltrados = imoveisCache;
-    } else {
-        dados = imoveisCache;
-        imoveisFiltrados = imoveisCache;
+    dados = await listarImoveis();
+    if (dados.length === 0 || !dados) {
+        const section = document.getElementById("container-pai");
+        const divVazio = document.createElement("div");
+        divVazio.id = "vazio";
+        divVazio.textContent = "Nenhum imóvel encontrado.";
+        section.innerHTML = "";
+        section.appendChild(divVazio);
+        return;
     }
+    dados.sort((a, b) => new Date(b.data_cadastro?.date) - new Date(a.data_cadastro?.date));
+    imoveisCache.push(...dados);
+    imoveisFiltrados = imoveisCache;
+
 
 
 

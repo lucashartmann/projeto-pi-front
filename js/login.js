@@ -148,9 +148,11 @@ async function fazerLogin(event) {
             }
             window.location.href = "../html/cadastro-imovel.html";
             return;
+        } else {
+            alert("Login invalido!");
         }
 
-        alert("Login invalido!");
+        
     } catch (erro) {
         console.error("Falha ao conectar com o backend:", erro);
     }
