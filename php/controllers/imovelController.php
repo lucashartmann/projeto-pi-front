@@ -20,7 +20,7 @@ class ImovelController
 
     public function __construct()
     {
-        Seguranca::verificarAcesso();
+        // Seguranca::verificarAcesso();
         $this->imovelDAO = new ImovelDAO();
         $this->usuarioDAO = new UsuarioDAO();
         $this->proprietarioDAO = new ProprietarioDAO();

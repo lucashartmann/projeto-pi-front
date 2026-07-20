@@ -27,7 +27,7 @@ class loginController
 
     public function __construct()
     {
-        Seguranca::verificarAcesso();
+        // Seguranca::verificarAcesso();
         $this->usuarioDAO = new UsuarioDAO();
         $this->imovelDAO = new ImovelDAO();
         $this->usuarioController = new UsuarioController();

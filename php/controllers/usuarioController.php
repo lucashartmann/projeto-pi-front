@@ -16,7 +16,7 @@ class UsuarioController
 
     public function __construct()
     {
-        Seguranca::verificarAcesso();
+        // Seguranca::verificarAcesso();
         $this->usuarioDAO = new UsuarioDAO();
         $this->proprietarioDAO = new ProprietarioDAO();
         $this->enderecoDAO = new EnderecoDAO();
