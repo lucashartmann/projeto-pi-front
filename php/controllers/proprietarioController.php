@@ -2,6 +2,7 @@
 
 require_once __DIR__ . '/../dao/proprietarioDAO.php';
 require_once __DIR__ . '/../usuarioController.php';
+require_once __DIR__ . '/../model/seguranca.php';
 
 class ProprietarioController
 {
@@ -12,6 +13,7 @@ class ProprietarioController
 
     public function __construct()
     {
+        Seguranca::verificarAcesso();
         $this->proprietarioDAO = new ProprietarioDAO();
         $this->usuarioController = new UsuarioController();
     }

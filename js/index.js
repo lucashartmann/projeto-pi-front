@@ -237,8 +237,7 @@ async function abrirAnuncio(imovel = null, id = null) {
         return;
     }
 
-    sessionStorage.setItem("dados_imovel", JSON.stringify(imovel));
-    window.location.href = "html/dados-imovel.html";
+    window.location.href = "html/dados-imovel.html?id="+imovel.id;
 }
 
 function filtrar() {

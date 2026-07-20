@@ -59,4 +59,12 @@ footer {
     color: rgb(0, 0, 0);
     font-size: 1.5rem;
     font-weight: 500;
+    h2 {
+        font-size: 1.5rem;
+        font-weight: 600;
+    }
+    p {
+        font-size: 1.2rem;
+        font-weight: 400;
+    }
 }

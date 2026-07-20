@@ -28,7 +28,7 @@ async function listarAtendimentos() {
             return null;
         }
 
-        return await res.json();
+        return res;
 
     } catch (erro) {
         console.error("Falha ao conectar com o backend:", erro);
@@ -41,10 +41,11 @@ function carregarAtendimentos() {
     let html = "";
     if (atendimentos && atendimentos.length > 0) {
         atendimentos.forEach(atendimento => {
+            console.log(atendimento);
             html += `
             <div class="card">
-            ${imovel.anuncio.imagens && imovel.anuncio.imagens.length > 0 ? `<img src="${imovel.anuncio.imagens[0]}" alt="Imagem do imóvel">` : ``}
-            <label>Imóvel: ${atendimento.imovel.anuncio.titulo}</label>
+            ${atendimento.imovel.anuncio && atendimento.imovel.anuncio.imagens ? `<img src="${atendimento.imovel.anuncio.imagens[0]}" alt="Imagem do imóvel">` : ``}
+            <label>Imóvel: ${atendimento.imovel.anuncio ? atendimento.imovel.anuncio.titulo : 'N/A'}</label>
             <label>Status: ${atendimento.status}</label>
             </div>
             `;

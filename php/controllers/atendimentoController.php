@@ -3,11 +3,14 @@
 require_once __DIR__ . '/../dao/anuncioDAO.php';
 require_once __DIR__ . '/../dao/usuarioDAO.php';
 require_once __DIR__ . '/../dao/imovelDAO.php';
+require_once __DIR__ . '/../dao/atendimentoDAO.php';
 require_once __DIR__ . '/usuarioController.php';
 require_once __DIR__ . '/imovelController.php';
+require_once __DIR__ . '/../model/seguranca.php';
 
 class AtendimentoController
-{
+{   
+
 
     private AtendimentoDAO $atendimentoDAO;
     private UsuarioDAO $usuarioDAO;
@@ -20,6 +23,7 @@ class AtendimentoController
 
     public function __construct()
     {
+        Seguranca::verificarAcesso();
         $this->atendimentoDAO = new AtendimentoDAO();
         $this->usuarioDAO = new UsuarioDAO();
         $this->imovelDAO = new ImovelDAO();
@@ -80,9 +84,9 @@ class AtendimentoController
         foreach ($listaAtendimentos as $atendimento) {
             $lista[] = [
                 "id" => $atendimento->getid(),
-                "corretor" => $atendimento->getCorretor() ? $this->usuarioController->montarJsonUsuario([$atendimento->getCorretor()]) : NULL,
-                "cliente" => $atendimento->getCliente() ? $this->usuarioController->montarJsonUsuario([$atendimento->getCliente()]) : NULL,
-                "imovel" => $atendimento->getImovel() ? $this->imovelController->montarJsonImoveis([$atendimento->getImovel()]) : NULL,
+                "corretor" => $atendimento->getCorretor() ? $this->usuarioController->montarJsonUsuario([$atendimento->getCorretor()])[0] : NULL,
+                "cliente" => $atendimento->getCliente() ? $this->usuarioController->montarJsonUsuario([$atendimento->getCliente()])[0] : NULL,
+                "imovel" => $atendimento->getImovel() ? $this->imovelController->montarJsonImoveis([$atendimento->getImovel()])[0] : NULL,
                 "status" => $atendimento->getStatus() ? $atendimento->getStatus() : NULL,
             ];
         }

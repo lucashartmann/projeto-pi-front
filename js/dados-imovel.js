@@ -1,9 +1,10 @@
 import { getCaminhoRelativo, formatarValor } from "./modules/utils.js";
-import { usuarioLogado, salvarImoveisCurtidos, curtirImovel, imoveisCurtidos } from "./modules/usuario.js";
+import { usuarioLogado, salvarImoveisCurtidos, curtirImovel, imoveisCurtidos, carregarUser } from "./modules/usuario.js";
+import { getDadosImovel } from "./modules/imoveis.js";
 
 window.abrirImagem = abrirImagem;
 let imovel = null;
-let usuario = usuarioLogado;
+let usuario = null;
 
 window.cadastrarAtendimento = cadastrarAtendimento;
 
@@ -14,10 +15,10 @@ async function cadastrarAtendimento() {
     }
     alert("Um especialista irá entrar em contato por email ou whatsapp");
     try {
-        let caminho = getCaminhoRelativo("/php/api/atendimentos.php?acao=cadastro&idImovel=" + imovel.id);
+        let caminho = getCaminhoRelativo("/php/api/atendimentos.php?acao=cadastrar&idImovel=" + imovel.id);
         const resposta = await fetch(caminho, {
             method: "POST",
-            body: JSON.stringify(data)
+            body: JSON.stringify(imovel)
         })
             .then(async response => {
                 if (response.erro) {
@@ -56,8 +57,8 @@ async function cadastrarAtendimento() {
 
 }
 
-function setupDados(dados) {
-    let imovel = JSON.parse(dados);
+function setupDados(imovel) {
+    // let imovel = JSON.parse(dados);
     var div = document.getElementById("dados-imovel");
     let imagensHtml = "";
     let swiperhtml = "";
@@ -134,16 +135,24 @@ function setupDados(dados) {
 
 
 window.addEventListener("DOMContentLoaded", async () => {
-    const dados = sessionStorage.getItem("dados_imovel") || null;
+    const id = new URLSearchParams(window.location.search).get("id");
+    if (!id) {
+        alert("ID do imóvel não fornecido!");
+        window.location.href = getCaminhoRelativo
+            ("index.html");
+        return;
+    }
+    imovel = await getDadosImovel(id);
+    usuario = usuarioLogado ?? await carregarUser();
 
-    if (JSON.parse(dados).length === 0) {
+    if (!imovel) {
         alert("Imóvel não encontrado!");
         window.location.href = getCaminhoRelativo("index.html");
         return;
     }
 
     sessionStorage.removeItem("dados_imovel");
-    await setupDados(dados);
+    await setupDados(imovel);
     await inicializarSwiper();
 
 });

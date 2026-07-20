@@ -122,6 +122,8 @@ export async function getDadosImovel(id) {
         console.log("Dados do imóvel obtidos:", resposta);
         if (resposta && Array.isArray(resposta) && resposta.length > 0) {
             return resposta[0];
+        } else if (resposta && typeof resposta === "object") {
+            return resposta;
         } else {
             console.error("Resposta inválida ao obter dados do imóvel:", resposta);
             return null;

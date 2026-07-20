@@ -10,7 +10,8 @@
     <link rel="icon" type="image/x-icon" href="/php/projeto-pi-front/assets/logo.webp">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <link rel="icon" type="image/x-icon" href="../assets/logo.webp">
-    <script src="https://cdn.jsdelivr.net/npm/labelmask/dist/labelmask.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/inputmask/dist/inputmask.min.js"></script>
+
 </head>
 
 <body>
@@ -19,18 +20,10 @@
         <div id="header-cliente">
             <img src="../assets/logo.webp" alt="">
             <div id="dados-basicos">
-                <label for="" class="nome">Lucas Pedro Marcello</label>
-                <label for="" class="cargo">Captador</label>
+                
             </div>
             <div id="email-telefone">
-                <div id="div-email">
-                    <label for="">Email:</label>
-                    <label for="" class="email">lucas.pedro.marcello@example.com</label>
-                </div>
-                <div id="div-telefone">
-                    <label for="">Numero de telefone:</label>
-                    <label for="" class="telefone">+55 51 99721-1234</label>
-                </div>
+                
             </div>
         </div>
 
@@ -38,7 +31,7 @@
             <div id="menu">
                 <ul>
                     <li>
-                        <a href="dados-cliente.html" class="active">Editar Dados</a>
+                        <a href="#" onclick="editarDados()">Editar Dados</a>
                     </li>
                     <li>
                         <a href="#" onclick="alterarSrc(event, 'html/anuncios.html?favoritos=true')">Ver Favoritos</a>
@@ -47,64 +40,14 @@
                         <a href="#" onclick="alterarSrc(event, 'html/atendimento-cliente.html')">Ver Atendimentos</a>
                     </li>
                     <li>
-                        <a href="imoveis-cliente.html">Deletar Conta</a>
+                        <a href="#" onclick="apagar()">Deletar Conta</a>
                     </li>
+                    <li><a href="#" onclick="trocarRecuperarSenha()">Trocar/Recuperar Senha</a></li>
                 </ul>
             </div>
 
             <form id="dados">
-                <div class="separador">
-                    <label for="">Nome</label>
-                    <label id="inpt-nome" name="nome">José</label>
-                </div>
-                <div class="separador">
-                    <label for="">Email</label>
-                    <label id="inpt-email" name="email">jose@example.com</label>
-                </div>
-                <div class="separador">
-                    <label for="">Senha</label>
-                    <label id="inpt-senha" name="senha">********</label>
-                </div>
-                <div class="separador">
-                    <label for="">Telefone</label>
-                    <label id="inpt-telefone" name="telefone">(11) 99999-9999</label>
-                </div>
-                <div class="separador">
-                    <label for="">CPF/CNPJ</label>
-                    <label id="inpt-cpf-cnpj" name="cpf_cnpj">123.456.789-00</label>
-                </div>
-                <div class="separador">
-                    <label for="">RG</label>
-                    <label id="inpt-rg" name="rg">12.345.678-9</label>
-                </div>
-                <div class="separador">
-                    <label for="">Data de Nascimento</label>
-                    <label type="date" id="inpt-data-nascimento" name="data_nascimento">1990-01-01</label>
-                </div>
-                <div class="separador">
-                    <label for="">Rua</label>
-                    <label id="inpt-rua" name="rua">Rua Exemplo, 123</label>
-                </div>
-                <div class="separador">
-                    <label for="">Número</label>
-                    <label id="inpt-numero" name="numero">123</label>
-                </div>
-                <div class="separador">
-                    <label for="">Complemento</label>
-                    <label id="inpt-complemento" name="complemento">Apto 101</label>
-                </div>
-                <div class="separador">
-                    <label for="">CEP</label>
-                    <label id="inpt-cep" name="cep">12345-678</label>
-                </div>
-                <div class="separador">
-                    <label for="">Cidade</label>
-                    <label id="inpt-cidade" name="cidade">São Paulo</label>
-                </div>
-                <div class="separador">
-                    <label for="">UF</label>
-                    <label id="inpt-uf" name="uf">SP</label>
-                </div>
+
             </form>
 
         </div>

@@ -63,7 +63,6 @@ async function carregarAtendimentos() {
         divCard.id = "card-cadastrado";
         divCard.className = "card";
         divCard.onclick = () => abrirAtendimento(dados[i].id);
-        // <p>Idade ${dados[i].cliente.idade}</p>
         divCard.innerHTML = `
             <p style="margin-top: 20px;">Nome: ${dados[i].cliente.nome}</p>
             <p>Telefone: ${dados[i].cliente.telefones}</p>
@@ -79,12 +78,13 @@ async function carregarAtendimentos() {
             if (!divEmAndamento) continue;
             const divCard = document.createElement("div");
             divCard.id = "card-cadastrado";
-            divCard.onclick = () => abrirAtendimento(dados[i].id);
+            divCard.className = "card";
+            divCard.onclick = () => abrirAtendimento(atendimento.id);
             divCard.innerHTML = `
-                <h2>Nome ${dados[i].cliente.nome}</h2>
-                <p>Idade ${dados[i].cliente.idade}</p>
-                <p>Telefone ${dados[i].cliente.telefone}</p>
-                <p>Email ${dados[i].cliente.email}</p>
+                <h2>Nome: ${atendimento.cliente.nome ?? 'Não informado'}</h2>
+                <p>Idade: ${atendimento.cliente.idade ?? 'Não informada'}</p>
+                <p>Telefone: ${atendimento.cliente.telefone ?? 'Não informado'}</p>
+                <p>Email: ${atendimento.cliente.email ?? 'Não informado'}</p>
             `;
             divEmAndamento.appendChild(divCard);
         } else if (atendimento.status === "Pendente") {
@@ -92,12 +92,13 @@ async function carregarAtendimentos() {
             if (!divPendente) continue;
             const divCard = document.createElement("div");
             divCard.id = "card-cadastrado";
-            divCard.onclick = () => abrirAtendimento(dados[i].id);
+            divCard.className = "card";
+            divCard.onclick = () => abrirAtendimento(atendimento.id);
             divCard.innerHTML = `
-                <h2>Nome ${dados[i].cliente.nome}</h2>
-                <p>Idade ${dados[i].cliente.idade}</p>
-                <p>Telefone ${dados[i].cliente.telefone}</p>
-                <p>Email ${dados[i].cliente.email}</p>
+                <h2>Nome: ${atendimento.cliente.nome ?? 'Não informado'}</h2>
+                <p>Idade: ${atendimento.cliente.idade ?? 'Não informada'}</p>
+                <p>Telefone: ${atendimento.cliente.telefone ?? 'Não informado'}</p>
+                <p>Email: ${atendimento.cliente.email ?? 'Não informado'}</p>
             `;
             divPendente.appendChild(divCard);
         }

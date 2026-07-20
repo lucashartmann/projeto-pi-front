@@ -3,6 +3,8 @@
 require_once __DIR__ . '/../dao/usuarioDAO.php';
 require_once __DIR__ . '/../dao/proprietarioDAO.php';
 require_once __DIR__ . '/../dao/enderecoDAO.php';
+require_once __DIR__ . '/../model/seguranca.php';
+
 class UsuarioController
 {
 
@@ -14,6 +16,7 @@ class UsuarioController
 
     public function __construct()
     {
+        Seguranca::verificarAcesso();
         $this->usuarioDAO = new UsuarioDAO();
         $this->proprietarioDAO = new ProprietarioDAO();
         $this->enderecoDAO = new EnderecoDAO();

@@ -108,17 +108,17 @@ async function apagar() {
                 })
                 .then(async (data) => {
                     if (data.status == "erro") {
-                        alert("Erro ao excluir imóvel: " + data.mensagem);
+                        alert("Erro ao excluir usuário: " + data.mensagem);
                     } else {
-                        console.log("Imóvel excluído com sucesso:", data);
+                        console.log("Usuário excluído com sucesso:", data);
                         window.location.href = "estoque.html";
                     }
                 })
                 .catch(error => {
-                    console.error("Erro ao excluir imóvel:", error);
+                    console.error("Erro ao excluir usuário:", error);
                 });
         } catch (error) {
-            console.error("Erro ao enviar dados para exclusão do imóvel:", error);
+            console.error("Erro ao enviar dados para exclusão do usuário:", error);
         }
     }
     else {

@@ -216,40 +216,9 @@ function carregarTabs(usuario) {
     }
 }
 
-// function colide(el1, el2) {
-//   const r1 = el1.getBoundingClientRect();
-//   const r2 = el2.getBoundingClientRect();
-
-//   return !(
-//     r1.right < r2.left ||
-//     r1.left > r2.right ||
-//     r1.bottom < r2.top ||
-//     r1.top > r2.bottom
-//   );
-// }
-
-// function reorganizarMenu() {
-//   const logo = document.getElementById("logo");
-//   const elementoA = document.querySelector(".item-a");
-//   const menuSecundario = document.querySelector(".menu-secundario");
-
-//   if (!logo || !elementoA) return;
-
-//   if (colide(elementoA, logo)) {
-//   } else {
-//   }
-// }
-
-// window.addEventListener("resize", reorganizarMenu);
-// window.addEventListener("load", reorganizarMenu);
-
 async function setup() {
     const usuario = usuarioLogado || await carregarUser();
     if (usuario) carregarTabs(usuario);
-    // const topNav = document.querySelector("#top-nav .fa-bars");
-    // if (topNav){
-    //     topNav.addEventListener("click", mostrarNavLeft);
-    // }
     if (document.getElementById("logo")) {
         document.getElementById("logo").src = getCaminhoRelativo("assets/logo.webp");
     }

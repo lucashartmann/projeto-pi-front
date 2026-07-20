@@ -137,7 +137,7 @@ class AtendimentoDAO
     {
         try {
             $sql = "
-            SELECT * FROM atendimento WHERE atendimento.id_usuario = :id_usuario
+            SELECT * FROM atendimento WHERE id_cliente = :id_usuario
             ";
             $stmt = $this->bancoDados->prepare($sql);
             $stmt->execute([':id_usuario' => $idUsuario]);
