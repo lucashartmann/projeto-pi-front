@@ -10,6 +10,7 @@ window.openNav = openNav;
 window.closeNav = closeNav;
 window.deslogar = deslogar;
 
+
 function aumentarFonte() {
     const root = document.documentElement;
     const style = getComputedStyle(root);
@@ -36,7 +37,7 @@ function modoNoturno() {
 
 function alterarSrc(event, caminho) {
     let a = event.target;
-    
+
     if (a.tagName !== "a") {
         a = a.closest("a");
     }
@@ -221,6 +222,15 @@ async function setup() {
     if (usuario) carregarTabs(usuario);
     if (document.getElementById("logo")) {
         document.getElementById("logo").src = getCaminhoRelativo("assets/logo.webp");
+    }
+
+    if (document.querySelector('.fa-whatsapp')) {
+        document.querySelector('.fa-whatsapp').addEventListener('click', function (event) {
+            event.preventDefault();
+            const numero = CONFIG.whatsapp;
+            const url = `https://wa.me/${numero}`;
+            window.open(url, '_blank');
+        });
     }
 }
 

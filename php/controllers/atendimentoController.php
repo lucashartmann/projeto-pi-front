@@ -3,16 +3,18 @@
 require_once __DIR__ . '/../dao/anuncioDAO.php';
 require_once __DIR__ . '/../dao/usuarioDAO.php';
 require_once __DIR__ . '/../dao/imovelDAO.php';
+require_once __DIR__ . '/../dao/notificacaoDAO.php';
 require_once __DIR__ . '/../dao/atendimentoDAO.php';
 require_once __DIR__ . '/usuarioController.php';
 require_once __DIR__ . '/imovelController.php';
 
 class AtendimentoController
-{   
+{
 
 
     private AtendimentoDAO $atendimentoDAO;
     private UsuarioDAO $usuarioDAO;
+    private NotificacaoDAO $notificacaoDAO;
 
     private ImovelDAO $imovelDAO;
 
@@ -27,6 +29,28 @@ class AtendimentoController
         $this->imovelDAO = new ImovelDAO();
         $this->usuarioController = new UsuarioController();
         $this->imovelController = new ImovelController();
+        $this->notificacaoDAO = new NotificacaoDAO();
+    }
+
+    function atualizarStatusAtendimento($idAtendimento, $novoStatus)
+    {
+        try {
+            $atendimento = $this->atendimentoDAO->getAtendimentoPorId($idAtendimento);
+            if (!$atendimento) {
+                return (["status" => "erro", "mensagem" => "Atendimento não encontrado"]);
+            }
+
+            $atendimento->setStatus(StatusAtendimento::tryFrom($novoStatus));
+            $atualizacao = $this->atendimentoDAO->atualizarAtendimento($atendimento);
+
+            if (!$atualizacao) {
+                return (["status" => "erro", "mensagem" => "Erro ao atualizar status do atendimento"]);
+            }
+
+            return (["status" => "sucesso", "mensagem" => "Status do atendimento atualizado com sucesso"]);
+        } catch (Exception $e) {
+            return (["status" => "erro", "mensagem" => "Erro ao atualizar status do atendimento: " . $e->getMessage()]);
+        }
     }
 
     function listarAtendimentos()
@@ -41,14 +65,14 @@ class AtendimentoController
             return (["status" => "erro", "mensagem" => "Erro ao listar atendimentos: " . $e->getMessage()]);
         }
     }
-    
+
 
     function cadastrarAtendimento(int $idImovel)
     {
         $usuario = $_GET['usuario'] ?? null;
 
         if ($usuario) {
-            $this->atendimentoDAO->getConexao()->cadastrarNotificacao($usuario, "Novo atendimento cadastrado para o imóvel de ID: $idImovel", "atendimento");
+            $this->notificacaoDAO->cadastrarNotificacao($usuario, "Novo atendimento cadastrado para o imóvel de ID: $idImovel");
         }
         if (isset($_SESSION['usuario_id'])) {
 

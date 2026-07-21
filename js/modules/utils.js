@@ -26,3 +26,8 @@ export function formatarValor(valor) {
     }).format(valor);
     return formatoMoeda;
 }
+
+export function getNumeroTelefone() {
+    const numero = process.env.NUMERO;
+    return numero;
+}

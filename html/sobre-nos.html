@@ -48,14 +48,11 @@
     fetch("nav.html")
         .then(response => response.text())
         .then(data => {
-            const inicio = data.lastIndexOf("<div class=");
-            const fim = data.lastIndexOf("</div>");
-            const substring = data.substring(inicio + 20, fim);
-            data = data.replace(substring, "");
-            document.body.insertAdjacentHTML('afterbegin', data);
+            const main = document.querySelector("main");
+            main.insertAdjacentHTML("afterbegin", data);
         });
-
 </script>
+
 <script type="module" src="../js/modules/utils.js"></script>
 <script type="module" src="../js/modules/usuario.js"></script>
 <script type="module" src="../js/base.js"></script>

@@ -30,17 +30,12 @@
             <button type="submit">Enviar</button>
         </form>
 
-        <div>
+        <div id="info">
             <h2>Contato</h2>
             <p><i class="fa fa-envelope"></i> Email: contato@imobiliaria.com</p>
             <p><i class="fa fa-phone"></i> Telefone: (51) 1234-5678</p>
+            <a href="#" style="text-decoration: none;" target="_blank" class="fab fa-whatsapp">Whatsapp</a> 
         </div>
-
-        <div>
-            <button id="whatsapp"><a href="https://wa.me/" style="text-decoration: none;" target="_blank"
-                    class="fab fa-whatsapp"></a> Whatsapp</button>
-        </div>
-
     </main>
     <footer>
         <p>Copyright 2025 - By Lucas Hartmann</p>
@@ -58,21 +53,20 @@
         new window.VLibras.Widget('https://vlibras.gov.br/app');
     </script>
 </body>
+
 <script type="text/javascript">
     fetch("nav.html")
         .then(response => response.text())
         .then(data => {
-            const inicio = data.lastIndexOf("<div class=");
-            const fim = data.lastIndexOf("</div>");
-            const substring = data.substring(inicio + 20, fim);
-            data = data.replace(substring, "");
-            document.body.insertAdjacentHTML('afterbegin', data);
+            const main = document.querySelector("main");
+            main.insertAdjacentHTML("afterbegin", data);
         });
-
 </script>
+
+<script src="../js/config.js"></script>
 <script type="module" src="../js/modules/utils.js"></script>
 <script type="module" src="../js/modules/usuario.js"></script>
 <script type="module" src="../js/base.js"></script>
-<script src="../js/contato.js"></script>
+<script type="module" src="../js/contato.js"></script>
 
 </html>

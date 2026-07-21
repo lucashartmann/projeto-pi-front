@@ -1,5 +1,7 @@
 import { getCaminhoRelativo } from "./modules/utils.js";
 
+let listaAtendimentos = [];
+
 async function listarAtendimentos() {
     try {
         let caminho = getCaminhoRelativo("/php/api/atendimentos.php?acao=listar_atendimentos");
@@ -33,7 +35,7 @@ async function listarAtendimentos() {
 }
 
 async function carregarAtendimentos() {
-    const dados = await listarAtendimentos();
+    const dados = listaAtendimentos;
     const section = document.getElementById("container-horizontal");
 
     if (!section || !dados) return;
@@ -107,11 +109,44 @@ async function carregarAtendimentos() {
 }
 
 async function abrirAtendimento(atendimentoId) {
-    sessionStorage.setItem("atendimentoId", atendimentoId);
-    window.location.href = "html/dados-atendimento.html";
+    let atendimento = listaAtendimentos.find(a => a.id === atendimentoId);
+    if (!atendimento) {
+        alert("Atendimento não encontrado.");
+        return;
+    }
+    let html = `
+    <div id="card-dados">
+        <h2>Nome: ${atendimento.cliente.nome ?? 'Não informado'}</h2>
+        <p>Idade: ${atendimento.cliente.idade ?? 'Não informada'}</p>
+        <p>Telefone: ${atendimento.cliente.telefone ?? 'Não informado'}</p>
+        <p>Email: ${atendimento.cliente.email ?? 'Não informado'}</p>
+        <h2>Status: ${atendimento.status ?? 'Não informado'}</h2>
+                
+    `
+
+    if (atendimento.imovel) {
+        html += `
+        <h3>Informações do Imóvel</h3>
+        <p>Endereço: ${atendimento.imovel.endereco ?? 'Não informado'}</p>
+        <p>Tipo: ${atendimento.imovel.tipo ?? 'Não informado'}</p>
+        <p>Valor: ${atendimento.imovel.valor ?? 'Não informado'}</p>
+        `;
+    }
+
+    const div = document.createElement("div");
+    div.innerHTML = html;
+
+    document.body.appendChild(div);
 }
 
-window.addEventListener("DOMContentLoaded", () => {
+window.addEventListener("DOMContentLoaded", async () => {
+    listaAtendimentos = await listarAtendimentos();
     carregarAtendimentos();
+
+    document.addEventListener("click", function (e) {
+        if (document.body.contains(document.getElementById("card-dados"))) {
+            document.getElementById("card-dados").remove();
+        }
+    });
 });
 

@@ -19,6 +19,72 @@ class AtendimentoDAO
         $this->usuarioDAO = new UsuarioDAO();
     }
 
+    public function getConexao()
+    {
+        return $this->bancoDados;
+    }
+
+    public function getAtendimentoPorId($id)
+    {
+        try {
+            $stmt = $this->bancoDados->prepare("
+                SELECT * FROM atendimento 
+                WHERE id = :id
+            ");
+            $stmt->execute([':id' => $id]);
+            $registro = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if (!$registro) {
+                throw new Exception("Não existe atendimento com ID {$id}");
+            }
+
+            return $this->montarAtendimento($registro);
+        } catch (Exception $e) {
+            $erro = "ERRO! Banco->getAtendimentoPorId: " . $e->getMessage();
+            error_log($erro);
+            return null;
+        }
+    }
+
+    public function atualizarAtendimento($atendimento)
+    {
+        try {
+            $stmt = $this->bancoDados->prepare("
+                UPDATE atendimento 
+                SET id_imovel = :id_imovel, id_corretor = :id_corretor, id_cliente = :id_cliente, status = :status
+                WHERE id = :id
+            ");
+
+            $imovelObj = $atendimento->getImovel();
+            if ($imovelObj) {
+                $imovelObj = $imovelObj->getId();
+            }
+            $corretorObj = $atendimento->getCorretor();
+            if ($corretorObj) {
+                $corretorObj = $corretorObj->getId();
+            }
+            $clienteObj = $atendimento->getCliente();
+            if ($clienteObj) {
+                $clienteObj = $clienteObj->getId();
+            }
+            $status = $atendimento->getStatus();
+            if ($status) {
+                $status = $status->value;
+            }
+
+            return $stmt->execute([
+                ':id_imovel' => $imovelObj,
+                ':id_corretor' => $corretorObj,
+                ':id_cliente' => $clienteObj,
+                ':status' => $status,
+                ':id' => $atendimento->getId()
+            ]);
+        } catch (Exception $e) {
+            error_log("ERRO! Banco->atualizarAtendimento: " . $e->getMessage());
+            return false;
+        }
+    }
+
     public function montarAtendimento($dados)
     {
 
