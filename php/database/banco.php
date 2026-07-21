@@ -267,7 +267,7 @@ class Banco extends PDO
                     mensagem TEXT NULL,
                     tipo VARCHAR(255) NULL,
                     lida BOOLEAN DEFAULT FALSE,
-                    data_notificacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    data TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                     FOREIGN KEY (id_usuario) references usuario(id) ON DELETE CASCADE
                 )"
         ];

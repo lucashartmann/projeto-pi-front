@@ -69,6 +69,10 @@ switch ($acao) {
         $resultado = $controller->carregarAtendimentos();
         break;
 
+    case "get_notificacoes":
+        $resultado = $controller->carregarNotificacoes();
+        break;
+
     case "recuperar_senha":
         $body = file_get_contents("php://input");
         $data = json_decode($body, true);

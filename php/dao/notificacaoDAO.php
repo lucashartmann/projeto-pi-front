@@ -16,12 +16,12 @@ class NotificacaoDAO
     {
         try {
             $stmt = $this->bancoDados->prepare("
-                INSERT INTO notificacoes (id_usuario, mensagem, tipo, lida)
+                INSERT INTO notificacao (id_usuario, mensagem, tipo, lida)
                 VALUES (:usuario, :mensagem, :tipo, 0)
             ");
 
             $stmt->execute([
-                ':usuario' => $usuario,
+                ':usuario' => $usuario->getId(),
                 ':mensagem' => $mensagem,
                 ':tipo' => $tipo
             ]);
@@ -37,7 +37,7 @@ class NotificacaoDAO
     {
         try {
             $stmt = $this->bancoDados->prepare("
-                UPDATE notificacoes
+                UPDATE notificacao
                 SET lida = 1
                 WHERE id = :id
             ");
@@ -55,12 +55,12 @@ class NotificacaoDAO
     {
         try {
             $stmt = $this->bancoDados->prepare("
-                SELECT * FROM notificacoes
-                WHERE id_usuario = :id OR tipo = :tipo
+                SELECT * FROM notificacao
+                WHERE (lida = 0 OR lida = null) AND (id_usuario = :id OR tipo = :tipo)
                 ORDER BY id DESC
             ");
 
-            $stmt->execute([':id' => $usuario->getId(), ':tipo' => $usuario->getTipo() ?? null]);
+            $stmt->execute([':id' => $usuario->getId(), ':tipo' => $usuario->getTipo() ? $usuario->getTipo()->value : null]);
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (Exception $e) {
             error_log("ERRO! NotificacaoDAO->getNotificacoesPorUsuario: " . $e->getMessage());

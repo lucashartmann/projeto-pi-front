@@ -1,6 +1,7 @@
 <?php
 
 require_once __DIR__ . '/../dao/usuarioDAO.php';
+require_once __DIR__ . '/../dao/notificacaoDAO.php';
 require_once __DIR__ . '/../dao/imovelDAO.php';
 require_once __DIR__ . '/../dao/atendimentoDAO.php';
 require_once __DIR__ . '/usuarioController.php';
@@ -20,7 +21,7 @@ class loginController
     private ImovelDAO $imovelDAO;
     private UsuarioController $usuarioController;
     private AtendimentoDAO $atendimentoDAO;
-
+    private NotificacaoDAO $notificacaoDAO;
     private ImovelController $imovelController;
     private AtendimentoController $atendimentoController;
 
@@ -32,6 +33,51 @@ class loginController
         $this->imovelController = new ImovelController();
         $this->atendimentoDAO = new AtendimentoDAO();
         $this->atendimentoController = new AtendimentoController();
+        $this->notificacaoDAO = new NotificacaoDAO();
+    }
+
+    function montarJsonNotificacoes($notificacoes)
+    {
+        $jsonNotificacoes = [];
+        foreach ($notificacoes as $notificacao) {
+            $jsonNotificacoes[] = [
+                "id" => $notificacao["id"],
+                "texto" => $notificacao["mensagem"] ?? $notificacao["texto"] ?? "",
+                "tipo" => $notificacao["tipo"],
+                "lida" => $notificacao["lida"],
+                "data" => $notificacao["data"]
+            ];
+        }
+        return [
+            "status" => "sucesso",
+            "notificacoes" => $jsonNotificacoes
+        ];
+    }
+
+    function carregarNotificacoes()
+    {
+        try {
+            session_start();
+            if (!isset($_SESSION['usuario_id'])) {
+                return (["status" => "erro", "mensagem" => "Usuário não logado"]);
+            }
+            $idUsuario = $_SESSION['usuario_id'];
+            $usuario = $this->usuarioDAO->getUsuarioPorId($_SESSION['usuario_id']);
+            if (!$usuario) {
+                return (["status" => "erro", "mensagem" => "Usuário não encontrado"]);
+            }
+            $notificacoes = $this->notificacaoDAO->getNotificacoesPorUsuario($usuario);
+            if (!$notificacoes) {
+                return [
+                    "status" => "erro",
+                    "mensagem" => "Nenhuma notificação encontrada para o usuário"
+                ];
+            } else {
+                return $this->montarJsonNotificacoes($notificacoes);
+            }
+        } catch (Exception $e) {
+            return (["status" => "erro", "mensagem" => "Erro ao carregar notificações: " . $e->getMessage()]);
+        }
     }
 
     function carregarAtendimentos()

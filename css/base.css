@@ -317,6 +317,16 @@ nav {
         visibility: visible;
         transform: translateY(0);
     }
+
+    .notificacoes-content {
+        font-size: 1rem;
+         display: block;
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0);
+        width: 100rem;
+        right: 60rem;
+    }
 }
 
 .fa-bars {

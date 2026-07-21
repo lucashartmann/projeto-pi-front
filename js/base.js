@@ -1,5 +1,6 @@
 import { usuarioLogado, carregarUser, deslogar } from "./modules/usuario.js";
 import { getCaminhoRelativo } from "./modules/utils.js";
+import { carregarNotificacoes } from "./modules/notificacoes.js";
 
 window.alterarSrc = alterarSrc;
 window.aumentarFonte = aumentarFonte;
@@ -211,15 +212,33 @@ function carregarTabs(usuario) {
     let div = nav.querySelector(".right");
     if (div) {
         html += `
-        <li><i class="fas fa-bell"></i></li>
+        <li class="dropdown notificacoes">
+            <a href="#"><i class="fas fa-bell"></i></a>
+            <div class="dropdown-content notificacoes-content">
+                <p>Nenhuma Notificação</p>
+            </div>
+        </li>
         <li><a href="#" onclick="deslogar()" id="logout">Sair</a></li>`;
         div.innerHTML = html;
     }
 }
 
+async function atualizarNotificacoes() {
+    const notificacoes = await carregarNotificacoes();
+    const dropdownContent = document.querySelector(".notificacoes-content");
+    if (notificacoes && notificacoes.length > 0) {
+        dropdownContent.innerHTML = notificacoes.map(n => `<p>${n.texto}</p>`).join("");
+    } else {
+        dropdownContent.innerHTML = "<p>Nenhuma Notificação</p>";
+    }
+}
+
 async function setup() {
     const usuario = usuarioLogado || await carregarUser();
-    if (usuario) carregarTabs(usuario);
+    if (usuario) { 
+        carregarTabs(usuario) 
+        atualizarNotificacoes();
+    };
     if (document.getElementById("logo")) {
         document.getElementById("logo").src = getCaminhoRelativo("assets/logo.webp");
     }
@@ -232,6 +251,7 @@ async function setup() {
             window.open(url, '_blank');
         });
     }
+
 }
 
 
