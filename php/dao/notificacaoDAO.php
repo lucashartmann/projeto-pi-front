@@ -33,16 +33,19 @@ class NotificacaoDAO
         }
     }
 
-    public function marcarComoLida($id)
+
+    public function marcarComoLido($listaIds, $usuario)
     {
         try {
-            $stmt = $this->bancoDados->prepare("
-                UPDATE notificacao
-                SET lida = 1
-                WHERE id = :id
-            ");
+            foreach ($listaIds as $id) {
+                $stmt = $this->bancoDados->prepare("
+                    UPDATE notificacao
+                    SET lida = 1
+                    WHERE id = :id AND id_usuario = :id_usuario
+                ");
 
-            $stmt->execute([':id' => $id]);
+                $stmt->execute([':id' => $id, ':id_usuario' => $usuario->getId()]);
+            }
 
             return true;
         } catch (Exception $e) {
@@ -56,11 +59,11 @@ class NotificacaoDAO
         try {
             $stmt = $this->bancoDados->prepare("
                 SELECT * FROM notificacao
-                WHERE (lida = 0 OR lida = null) AND (id_usuario = :id OR tipo = :tipo)
+                WHERE id_usuario = :id
                 ORDER BY id DESC
             ");
 
-            $stmt->execute([':id' => $usuario->getId(), ':tipo' => $usuario->getTipo() ? $usuario->getTipo()->value : null]);
+            $stmt->execute([':id' => $usuario->getId()]);
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (Exception $e) {
             error_log("ERRO! NotificacaoDAO->getNotificacoesPorUsuario: " . $e->getMessage());

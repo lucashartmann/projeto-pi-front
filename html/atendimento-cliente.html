@@ -11,6 +11,17 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <link rel="icon" type="image/x-icon" href="../assets/logo.webp">
     <script src="https://cdn.jsdelivr.net/npm/inputmask/dist/inputmask.min.js"></script>
+    <script>
+        if (localStorage.getItem("tema") === "escuro") {
+            document.documentElement.classList.add("modo-noturno");
+        }
+        if (localStorage.getItem("contraste") === "alto") {
+            document.documentElement.classList.add("alto-contraste");
+        }
+        if (localStorage.getItem("fontSize")) {
+            document.documentElement.style.fontSize = localStorage.getItem("fontSize");
+        }
+    </script>
 </head>
 
 <body>

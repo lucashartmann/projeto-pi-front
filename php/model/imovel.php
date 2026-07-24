@@ -34,7 +34,7 @@ enum Categoria: string
 
 enum Situacao: string
 {
-    case COSTRUCAO = "Em Construção";
+    case CONSTRUCAO = "Em Construção";
     case NOVO = "Novo";
     case USADO = "Usado";
 }

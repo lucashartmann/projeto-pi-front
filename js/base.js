@@ -1,6 +1,5 @@
 import { usuarioLogado, carregarUser, deslogar } from "./modules/usuario.js";
 import { getCaminhoRelativo } from "./modules/utils.js";
-import { carregarNotificacoes } from "./modules/notificacoes.js";
 
 window.alterarSrc = alterarSrc;
 window.aumentarFonte = aumentarFonte;
@@ -11,12 +10,14 @@ window.openNav = openNav;
 window.closeNav = closeNav;
 window.deslogar = deslogar;
 
+let notificacoes = [];
 
 function aumentarFonte() {
     const root = document.documentElement;
     const style = getComputedStyle(root);
     const fontSize = parseFloat(style.fontSize);
     root.style.fontSize = (fontSize + 2) + 'px';
+    localStorage.setItem("fontSize", root.style.fontSize);
 }
 
 function diminuirFonte() {
@@ -24,14 +25,27 @@ function diminuirFonte() {
     const style = window.getComputedStyle(root);
     const fontSize = parseFloat(style.fontSize);
     root.style.fontSize = (fontSize - 2) + 'px';
+    localStorage.setItem("fontSize", root.style.fontSize);
 }
 
 function altoContraste() {
-    document.body.classList.toggle("alto-contraste");
+    document.documentElement.classList.toggle("alto-contraste");
+
+    if (document.documentElement.classList.contains("alto-contraste")) {
+        localStorage.setItem("contraste", "alto");
+    } else {
+        localStorage.setItem("contraste", "normal");
+    }
 }
 
 function modoNoturno() {
-    document.body.classList.toggle("modo-noturno");
+    document.documentElement.classList.toggle("modo-noturno");
+
+    if (document.documentElement.classList.contains("modo-noturno")) {
+        localStorage.setItem("tema", "escuro");
+    } else {
+        localStorage.setItem("tema", "claro");
+    }
 }
 
 
@@ -55,34 +69,6 @@ function closeNav() {
     document.getElementById("mySidenav").style.width = "0";
     document.querySelector("main").style.opacity = "1";
 }
-
-// function removerCardPessoa(container, event) {
-//     if (document.body.contains(container) && !container.contains(event.target)) {
-//             const checkboxes = container.querySelectorAll("input[type='checkbox']");
-//             const selecionados = Array.from(checkboxes).filter(checkbox => checkbox.checked);
-//             if (selecionados.length > 0) {
-//                 for (let checkbox of selecionados) {
-//                     let containerPessoa = checkbox.closest(".resultado-pessoa");
-//                     switch (tipo) {
-//                         case "proprietario":
-//                             containerPessoa.classList.add("pessoa-selecionada");
-//                             document.getElementById("container-proprietario").appendChild(containerPessoa.cloneNode(true));
-//                             break;
-//                         case "corretor":
-//                             document.getElementById("container-corretor").appendChild(containerPessoa.cloneNode(true));
-//                             break;
-//                         case "captador":
-//                             document.getElementById("container-captador").appendChild(containerPessoa.cloneNode(true));
-//                             break;
-//                     }
-//                 }
-//             }
-//             document.body.removeChild(container);
-//             document.removeEventListener("click", removerCardPessoa);
-//             console.log("Card removido");
-//         }
-// }
-
 
 function carregarTabs(usuario) {
     const nav = document.getElementById("top-nav");
@@ -213,31 +199,153 @@ function carregarTabs(usuario) {
     if (div) {
         html += `
         <li class="dropdown notificacoes">
-            <a href="#"><i class="fas fa-bell"></i></a>
+            <a href="#"><i class="fas fa-bell"></i> ${notificacoes.some(n => !n.lida) ? '<i class="fa fa-exclamation" aria-hidden="true" style="color: red; position: absolute; top: 5px; right: 0px;"></i>' : ''}</a>
             <div class="dropdown-content notificacoes-content">
                 <p>Nenhuma Notificação</p>
             </div>
         </li>
         <li><a href="#" onclick="deslogar()" id="logout">Sair</a></li>`;
         div.innerHTML = html;
+        const dropdownContent = document.querySelector(".notificacoes-content");
+        dropdownContent.addEventListener('scroll', function (event) {
+            if (notificacoes) {
+                const elementos = dropdownContent.querySelectorAll('p');
+                elementos.forEach((elemento, index) => {
+                    const rect = elemento.getBoundingClientRect();
+                    if (rect.top >= 0 && rect.bottom <= window.innerHeight) {
+                        notificacoes[index].lida = true;
+                    }
+                });
+            }
+        });
+
+        dropdownContent.addEventListener('mouseleave', function (event) {
+            console.log("Mouse saiu do dropdown de notificações");
+            if (notificacoes) {
+                console.log("Mouse saiu do dropdown de notificações");
+                document.querySelector('.fa-exclamation').remove();
+                const elementos = dropdownContent.querySelectorAll('p');
+                elementos.forEach((elemento, index) => {
+                    const rect = elemento.getBoundingClientRect();
+                    if (rect.top >= 0 && rect.bottom <= window.innerHeight) {
+                        notificacoes[index].lida = true;
+                    }
+                });
+                atualizarNotificacoes();
+            }
+        });
     }
 }
 
-async function atualizarNotificacoes() {
-    const notificacoes = await carregarNotificacoes();
+async function marcarComoLida() {
+    try {
+        let caminho = getCaminhoRelativo("/php/api/login.php?acao=marcar_como_lido");
+        const resposta = await fetch(caminho, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ notificacoes: notificacoes })
+        })
+            .then(async (res) => {
+                if (res.erro) {
+                    alert("Erro ao marcar notificações como lidas: " + res.erro);
+                    return [];
+                }
+                const contentType = res.headers.get("content-type");
+                if (contentType && contentType.includes("application/json")) {
+                    return await res.json();
+                } else {
+                    const texto = await res.text();
+                    console.error("Resposta não é JSON:", texto);
+                    return [];
+                }
+            })
+            .then(async (data) => {
+                return await data;
+            })
+            .catch(erro => {
+                console.error("Falha ao conectar com o backend:", erro);
+                return null;
+            });
+        if (resposta) {
+            console.log("Notificações marcadas como lidas com sucesso.");
+        } else {
+            console.error("Resposta inválida ao marcar notificações como lidas:", resposta);
+        }
+    } catch (erro) {
+        console.error("Falha ao conectar com o backend:", erro);
+    }
+
+}
+
+async function carregarNotificacoes() {
+    try {
+        let caminho = getCaminhoRelativo("/php/api/login.php?acao=get_notificacoes");
+        const resposta = await fetch(caminho)
+            // .then(res => console.log(res))
+            .then(async (res) => {
+                if (res.erro) {
+                    alert("Erro ao listar notificações: " + res.erro);
+                    return [];
+                }
+                const contentType = res.headers.get("content-type");
+                if (contentType && contentType.includes("application/json")) {
+                    return await res.json();
+                } else {
+                    const texto = await res.text();
+                    // alert("Resposta inesperada do servidor");
+                    console.error("Resposta não é JSON:", texto);
+                    return [];
+                }
+            })
+            .then(async (data) => {
+                // console.log(data);
+                return await data;
+            })
+            .catch(erro => {
+                console.error("Falha ao conectar com o backend:", erro);
+                return null;
+            });
+        if (resposta) {
+
+            return resposta.notificacoes || [];
+        } else {
+            console.error("Resposta inválida ao obter dados da notificação:", resposta);
+            return [];
+        }
+    } catch (erro) {
+        console.error("Falha ao conectar com o backend:", erro);
+        return [];
+    }
+}
+
+function atualizarNotificacoes() {
     const dropdownContent = document.querySelector(".notificacoes-content");
     if (notificacoes && notificacoes.length > 0) {
-        dropdownContent.innerHTML = notificacoes.map(n => `<p>${n.texto}</p>`).join("");
+        notificacoes = notificacoes.filter(n => {
+            const dataNotificacao = new Date(n.data);
+            const dataAtual = new Date();
+            const diffDias = Math.floor((dataAtual - dataNotificacao) / (1000 * 60 * 60 * 24));
+            return diffDias <= 5;
+        });
+        dropdownContent.innerHTML = notificacoes.map(n => `<p ${n.lida ? 'style=opacity:0.5' : ''}>${n.texto}</p>`).join("");
     } else {
         dropdownContent.innerHTML = "<p>Nenhuma Notificação</p>";
     }
 }
 
+
 async function setup() {
     const usuario = usuarioLogado || await carregarUser();
-    if (usuario) { 
-        carregarTabs(usuario) 
-        atualizarNotificacoes();
+    notificacoes = await carregarNotificacoes();
+
+
+    if (usuario) {
+        carregarTabs(usuario)
+        if (notificacoes && notificacoes.length > 0) {
+            atualizarNotificacoes();
+        }
     };
     if (document.getElementById("logo")) {
         document.getElementById("logo").src = getCaminhoRelativo("assets/logo.webp");
@@ -255,4 +363,6 @@ async function setup() {
 }
 
 
-setup();
+window.addEventListener("DOMContentLoaded", setup);
+
+window.addEventListener("beforeunload", marcarComoLida);

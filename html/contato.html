@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
 
 <head>
     <meta charset="UTF-8">
@@ -9,6 +9,17 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <link rel="stylesheet" href="../css/contato.css">
     <link rel="icon" type="image/x-icon" href="../assets/logo.webp">
+    <script>
+        if (localStorage.getItem("tema") === "escuro") {
+            document.documentElement.classList.add("modo-noturno");
+        }
+        if (localStorage.getItem("contraste") === "alto") {
+            document.documentElement.classList.add("alto-contraste");
+        }
+        if (localStorage.getItem("fontSize")) {
+            document.documentElement.style.fontSize = localStorage.getItem("fontSize");
+        }
+    </script>
 </head>
 
 <body>
@@ -34,7 +45,7 @@
             <h2>Contato</h2>
             <p><i class="fa fa-envelope"></i> Email: contato@imobiliaria.com</p>
             <p><i class="fa fa-phone"></i> Telefone: (51) 1234-5678</p>
-            <a href="#" style="text-decoration: none;" target="_blank" class="fab fa-whatsapp">Whatsapp</a> 
+            <a href="#" style="text-decoration: none;" target="_blank" class="fab fa-whatsapp">Whatsapp</a>
         </div>
     </main>
     <footer>

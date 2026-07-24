@@ -10,6 +10,17 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <link rel="icon" type="image/x-icon" href="/php/projeto-pi-front/assets/logo.webp">
+    <script>
+        if (localStorage.getItem("tema") === "escuro") {
+            document.documentElement.classList.add("modo-noturno");
+        }
+        if (localStorage.getItem("contraste") === "alto") {
+            document.documentElement.classList.add("alto-contraste");
+        }
+        if (localStorage.getItem("fontSize")) {
+            document.documentElement.style.fontSize = localStorage.getItem("fontSize");
+        }
+    </script>
 </head>
 
 <body>

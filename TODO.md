@@ -1,5 +1,6 @@
-- [ ] Entrar com google
 - [ ] Esqueceu senha: mandar o email
-- [ ] continuar a tela de contato
 - [ ] quantidade de visitas/clicks no imóvel
 - [ ] Arrumar contador de imoveis
+- [ ] Média de valor do imóvel e julgar se o valor é acima ou abaixo no cadastro do imóvel
+- [ ] As notificaçoes botar q se um cliente for cadastrado mandar uma notificação para todos os corretores cadastrando por id do corretor na tabela notificacao e botar o tipo ser "atendimento', "cadastro", etc
+- [ ] Implementar enums ou tipos no banco de dados

@@ -13,6 +13,17 @@
     <link rel="stylesheet" href="../css/base.css">
     <link rel="stylesheet" href="../css/login.css">
     <link rel="icon" type="image/x-icon" href="../assets/logo.webp">
+    <script>
+        if (localStorage.getItem("tema") === "escuro") {
+            document.documentElement.classList.add("modo-noturno");
+        }
+        if (localStorage.getItem("contraste") === "alto") {
+            document.documentElement.classList.add("alto-contraste");
+        }
+        if (localStorage.getItem("fontSize")) {
+            document.documentElement.style.fontSize = localStorage.getItem("fontSize");
+        }
+    </script>
 </head>
 
 <body>

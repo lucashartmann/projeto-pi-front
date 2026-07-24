@@ -69,6 +69,17 @@ switch ($acao) {
         $resultado = $controller->carregarAtendimentos();
         break;
 
+    case "marcar_como_lido":
+        $body = file_get_contents("php://input");
+        $data = json_decode($body, true);
+
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            $resultado = (["status" => "erro", "mensagem" => "JSON inválido"]);
+            return;
+        }
+        $resultado = $controller->marcarComoLido($data);
+        break;
+
     case "get_notificacoes":
         $resultado = $controller->carregarNotificacoes();
         break;

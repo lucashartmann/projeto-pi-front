@@ -17,6 +17,32 @@
     --cor-shadow: rgb(43, 33, 33);
 }
 
+.alto-contraste {
+    --cor-texto: #000000;
+    --background-nav: rgba(255, 255, 255, 0.92);
+    --hover: #000000;
+    --hover-soft: rgba(0, 0, 0, 0.12);
+    --shadow: 0 8px 30px rgba(0, 0, 0, 0.25);
+    --transition: 0.3s ease;
+    --cor-texto-alternativa: #000000;
+    --cor-shadow: rgb(43, 33, 33);
+}
+
+.modo-noturno {
+    input[type="date"]::-webkit-calendar-picker-indicator {
+        filter: invert(1);
+    }
+
+    --background: #121212;
+    --cor-texto: #ffffff;
+    --background-nav: rgba(36, 30, 30, 0.92);
+    --hover: #d4af37;
+    --hover-soft: rgba(212, 175, 55, 0.12);
+    --transition: 0.3s ease;
+    --cor-texto-alternativa: #ffffff;
+    --cor-shadow: rgb(43, 33, 33);
+}
+
 
 .fa-github {
     color: #333;
@@ -109,13 +135,14 @@ body {
 
 html {
     overflow-y: auto;
-    background-color: #F4F5F9;
+    background: var(--background);
 }
 
 body {
     padding-top: 6rem;
     overflow-y: auto;
     height: 100%;
+    background: var(--background);
 }
 
 .fa-bars {
@@ -320,12 +347,13 @@ nav {
 
     .notificacoes-content {
         font-size: 1rem;
-         display: block;
         opacity: 1;
         visibility: visible;
         transform: translateY(0);
-        width: 100rem;
-        right: 60rem;
+        overflow-y: auto;
+        right: 0;
+        left: auto;
+        width: 25rem;
     }
 }
 
@@ -582,31 +610,6 @@ main {
     }
 }
 
-.alto-contraste {
-    --cor-texto: #000000;
-    --background-nav: rgba(255, 255, 255, 0.92);
-    --hover: #000000;
-    --hover-soft: rgba(0, 0, 0, 0.12);
-    --shadow: 0 8px 30px rgba(0, 0, 0, 0.25);
-    --transition: 0.3s ease;
-    --cor-texto-alternativa: #000000;
-    --cor-shadow: rgb(43, 33, 33);
-}
-
-.modo-noturno {
-    input[type="date"]::-webkit-calendar-picker-indicator {
-        filter: invert(1);
-    }
-
-    --background: #121212;
-    --cor-texto: #ffffff;
-    --background-nav: rgba(36, 30, 30, 0.92);
-    --hover: #d4af37;
-    --hover-soft: rgba(212, 175, 55, 0.12);
-    --transition: 0.3s ease;
-    --cor-texto-alternativa: #ffffff;
-    --cor-shadow: rgb(43, 33, 33);
-}
 
 .curtido {
     color: red !important;
