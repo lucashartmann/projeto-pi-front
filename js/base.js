@@ -145,7 +145,6 @@ function carregarTabs(usuario) {
                 { text: "Atendimento", href: "html/atendimento-cliente.html" },
                 { text: "Favoritos", href: "html/anuncios.html?favoritos=true" },
                 { text: "<i class='fas fa-user'></i>", href: "html/dados-cliente.html" },
-
             ];
             break;
     }
@@ -351,13 +350,25 @@ async function setup() {
         document.getElementById("logo").src = getCaminhoRelativo("assets/logo.webp");
     }
 
-    if (document.querySelector('.fa-whatsapp')) {
+    if (document.querySelector('.fa-whatsapp') && CONFIG.whatsapp) {
         document.querySelector('.fa-whatsapp').addEventListener('click', function (event) {
             event.preventDefault();
             const numero = CONFIG.whatsapp;
             const url = `https://wa.me/${numero}`;
             window.open(url, '_blank');
         });
+    }
+
+    if (document.querySelector(".fa-phone") && CONFIG.whatsapp) {
+        const p = document.querySelector(".fa-phone").closest("p");
+        p.addEventListener("click", function (event) {
+            event.preventDefault();
+            const numero = CONFIG.whatsapp;
+            const url = `tel:${numero}`;
+            window.open(url, '_blank');
+        });
+        const telefoneFormatado = CONFIG.whatsapp.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3');
+        p.innerHTML = `<i class="fas fa-phone"></i> ${telefoneFormatado}`;
     }
 
 }

@@ -3,10 +3,28 @@ import { usuarioLogado, salvarImoveisCurtidos, curtirImovel, imoveisCurtidos, ca
 import { getDadosImovel } from "./modules/imoveis.js";
 
 window.abrirImagem = abrirImagem;
+window.curtirImovel = curtirImovel;
 let imovel = null;
 let usuario = null;
 
 window.cadastrarAtendimento = cadastrarAtendimento;
+window.compartilharImovel = compartilharImovel;
+
+async function compartilharImovel() {
+    if (!navigator.share) {
+        alert("Compartilhamento não suportado por este navegador.");
+        return;
+    }
+    try {
+        await navigator.share({
+            title: imovel.anuncio.titulo,
+            text: imovel.anuncio.descricao,
+            url: window.location.href
+        });
+    } catch (error) {
+        console.error("Erro ao compartilhar o imóvel:", error);
+    }
+}
 
 async function cadastrarAtendimento() {
     if (!usuario) {

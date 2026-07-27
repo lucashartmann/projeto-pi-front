@@ -90,8 +90,7 @@ async function abrirAnuncio(imovel = null, id = null) {
         return;
     }
 
-    sessionStorage.setItem("dados_imovel", JSON.stringify(imovel));
-    window.location.href = "dados-imovel.html";
+    window.location.href = "dados-imovel.html?id=" + imovel.id;
 }
 
 
@@ -376,15 +375,15 @@ async function carregarAnuncios() {
         }
         const classe = favoritos ? "curtido" : "";
         html += `
-            <div class="anuncio-imovel" onclick="abrirAnuncio(null, ${imovel.id})">
+            <a href="dados-imovel.html?id=${imovel.id}" class="anuncio-link anuncio-imovel" >
+                <i class="fas fa-heart ${classe}" onclick="curtirImovel(event, ${imovel.id})"></i>
                 <div class="swiper">
                     <div class="swiper-wrapper">
-                    <i class="fas fa-heart ${classe}" onclick="curtirImovel(event, ${imovel.id})"></i>
-                    ${imovel.anuncio.imagens.map(img => `
-                        <div class="swiper-slide" style="background-image: url(${img})">
+                        ${imovel.anuncio.imagens.map(img => `
+                            <div class="swiper-slide" style="background-image: url(${img})">
+                            </div>
+                        `).join('')}
                         </div>
-                    `).join('')}
-                    </div>
                     <div class="swiper-button-prev" onclick="prevSlide()"></div>
                     <div class="swiper-button-next" onclick="nextSlide()"></div>
                 </div>
@@ -399,9 +398,10 @@ async function carregarAnuncios() {
                     <i class="fas fa-couch"><p>${imovel.quantidade_salas || 0}</p></i> 
                     <i class="fas fa-bed"><p>${imovel.quantidade_quartos || 0}</p></i>
                     <i class="fas fa-car"><p>${imovel.quantidade_vagas || 0}</p></i>
-                    <a href="https://wa.me/" style="text-decoration: none;" target="_blank" class="fab fa-whatsapp"></a>
+                
                 </div>
-            </div>
+           
+            </a>
         `;
     }
     if (html.length === 0) {
@@ -447,7 +447,7 @@ window.addEventListener("beforeunload", () => {
 
 window.addEventListener("DOMContentLoaded", async () => {
     const favoritos = "?favoritos=true" === window.location.search;
-    
+
     let dados = [];
 
     if (favoritos) {

@@ -87,7 +87,7 @@ class UsuarioDAO
 
                 $dataNascimento = DateTime::createFromFormat('Y-m-d', $dataNascimento);
             }
-            $tipoUsuario = $registro['tipo_usuario'];
+            $tipoUsuario = $registro['tipo'];
             if ($tipoUsuario) {
                 $tipoUsuario = Tipo::tryFrom($tipoUsuario);
             }
@@ -226,7 +226,7 @@ class UsuarioDAO
                     rg = :rg,
                     id_endereco = :endereco,
                     data_nascimento = :data,
-                    tipo_usuario = :tipo,
+                    tipo = :tipo,
                     data_modificacao = NOW(),
                 WHERE cpf_cnpj = :cpf_where OR id_usuario = :id
             ";
@@ -369,7 +369,7 @@ class UsuarioDAO
     {
         try {
             $sql = "
-                    INSERT INTO usuario (username, senha, email, nome, cpf_cnpj, rg, id_endereco, data_nascimento, tipo_usuario, data_cadastro, data_modificacao) 
+                    INSERT INTO usuario (username, senha, email, nome, cpf_cnpj, rg, id_endereco, data_nascimento, tipo, data_cadastro, data_modificacao) 
                     VALUES(:username, :senha, :email, :nome, :cpf_cnpj, :rg, :endereco, :data_nascimento, :tipo, :data_cadastro, :data_modificacao)
                 ";
             $stmt = $this->bancoDados->prepare($sql);
@@ -564,7 +564,7 @@ class UsuarioDAO
                 $nome = $registro['nome'];
                 $cpf = $registro['cpf_cnpj'];
                 $rg = $registro['rg'];
-                $tipo = $registro['tipo_usuario'];
+                $tipo = $registro['tipo'];
                 $dataCadastro = $registro['data_cadastro'] ? new DateTime($registro['data_cadastro']) : null;
                 $dataModificacao = $registro['data_modificacao'] ? new DateTime($registro['data_modificacao']) : null;
 
@@ -785,7 +785,7 @@ class UsuarioDAO
             if ($dataNascimento) {
                 $dataNascimento = DateTime::createFromFormat('Y-m-d', $dataNascimento);
             }
-            $tipoUsuario = $registro['tipo_usuario'];
+            $tipoUsuario = $registro['tipo'];
             if ($tipoUsuario) {
                 $tipoUsuario = Tipo::tryFrom($tipoUsuario) ?? null;
             }
@@ -955,7 +955,7 @@ class UsuarioDAO
             $rg = $registro['rg'];
             $idEndereco = $registro['id_endereco'];
             $dataNascimento = $registro['data_nascimento'] ? DateTime::createFromFormat('Y-m-d', $registro['data_nascimento']) : null;
-            $tipo = $registro['tipo_usuario'];
+            $tipo = $registro['tipo'];
             $dataCadastro = $registro['data_cadastro'] ? new DateTime($registro['data_cadastro']) : null;
             $dataModificacao = $registro['data_modificacao'] ? new DateTime($registro['data_modificacao']) : null;
 

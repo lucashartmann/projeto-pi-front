@@ -9,9 +9,12 @@
     align-content: center;
 }
 
+
+
 #contador-imoveis {
     font-size: 1.2rem;
     margin-left: auto;
+    color: var(--cor-texto-alternativa);
 }
 
 #container-pai {
@@ -82,6 +85,8 @@ section {
     flex-direction: column;
     justify-content: flex-start;
     width: 20rem;
+    background: #414141;
+    backdrop-filter: blur(40px) !important;
 
     &>:nth-child(n) {
         margin-top: 20px;
@@ -148,6 +153,8 @@ section {
 }
 
 .anuncio-imovel {
+    color: inherit;
+    text-decoration: none;
     display: flex;
     flex-direction: column;
     background: rgba(203, 199, 199, 0.2);
@@ -157,17 +164,24 @@ section {
     font-weight: 400;
     font-size: 120%;
     border-radius: 2%;
-    box-shadow: 2px 1px 19px -13px var(--cor-shadow);
+    box-shadow: 2px 1px 19px -13px rgb(43, 33, 33);
     border: solid rgba(47, 45, 45, 0.2) 2px;
     max-width: 500px;
     max-height: 550px;
+    z-index: 2;
+
 
     .swiper {
         width: 100%;
         margin: 0 auto;
         height: 14rem;
-        border: none;
         border-radius: 1.1% 1.1% 0% 0%;
+        overflow: hidden hidden;
+        z-index: 0;
+
+        .swiper-wrapper {
+            max-width: 100%;
+        }
 
         .swiper-button-prev {
             color: #000 !important;
@@ -180,14 +194,17 @@ section {
         .swiper-slide {
             cursor: pointer;
             background: rgb(135, 126, 126, 0.2);
-            width: 90%;
-            border-radius: 2px;
-            box-shadow: 0.1px 0.1px 3px black;
             display: flex;
             background-repeat: no-repeat;
             background-size: cover;
             background-position: center;
-            height: 100%;
+            overflow: hidden hidden;
+            border-radius: 0;
+            border: none;
+            box-shadow: none;
+            margin: 0;
+            padding: 0;
+            width: 100% !important;
         }
     }
 
@@ -198,8 +215,8 @@ section {
         color: var(--cor-texto);
         background: transparent;
         font-size: 1.5rem;
-        margin: 10px;
-        right: 0px;
+        margin-left: 17%;
+        margin-top: 2px;
 
         &:hover {
             color: rgb(255, 0, 0);
@@ -211,7 +228,7 @@ section {
         margin: 10px;
     }
 
-    p:nth-child(3) {
+    p:nth-child(4) {
         text-align: center;
         align-self: center;
         font-size: 1.1rem;
@@ -229,7 +246,7 @@ section {
         width: 85%;
         justify-self: center;
         align-self: center;
-        text-align: center;
+        text-align: left;
         overflow: hidden;
         text-overflow: ellipsis;
         font-size: 1rem;
@@ -288,6 +305,8 @@ section {
                 color: var(--cor-texto-alternativa) !important;
                 margin: 0;
                 margin-left: 5px;
+                font-size: 0.8rem;
+                padding-top: 4px;
             }
         }
     }

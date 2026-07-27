@@ -122,15 +122,15 @@ async function carregarAnuncios(dados) {
     for (const imovel of dados) {
         const b64 = imovel.anuncio?.imagens?.[0] || null;
         if (!b64) continue;
-        let precoVenda = document.createElement("span");
-        let precoAluguel = document.createElement("span");
+        let precoVenda = "";
+        let precoAluguel = "";
         if (imovel.valor_aluguel && imovel.valor_venda) {
-            precoVenda.innerHTML = `Venda: <p class="preco">${formatarValor(imovel.valor_venda)}</p>`;
-            precoAluguel.innerHTML = `Aluguel: <p class="preco">${formatarValor(imovel.valor_aluguel)}</p>`;
-        } else if (imovel.valor_venda) {
-            precoVenda.innerHTML = `Venda: <p class="preco">${formatarValor(imovel.valor_venda)}</p>`;
+            precoVenda = `<span>Venda: <span class="preco">${formatarValor(imovel.valor_venda)}</span></span>`;
+            precoAluguel = `<span>Aluguel: <span class="preco">${formatarValor(imovel.valor_aluguel)}</span></span>`;
+        } else if (imovel.valor_venda) {     
+            precoVenda = `<span>Venda: <span class="preco">${formatarValor(imovel.valor_venda)}</span></span>`;
         } else {
-            precoAluguel.innerHTML = `Aluguel: <p class="preco">${formatarValor(imovel.valor_aluguel)}</p>`;
+            precoAluguel = `<span>Aluguel: <span class="preco">${formatarValor(imovel.valor_aluguel)}</span></span>`;
         }
 
         const classe = $usuario && $usuario.favoritos && $usuario.favoritos.includes(imovel.id) ? "curtido" : "";
@@ -138,7 +138,7 @@ async function carregarAnuncios(dados) {
         // TODO: Botar os ids dos imóveis favoritados na lista imoveisCurtidos
 
         html += `
-            <div class="anuncio-imovel" onclick="abrirAnuncio(null, ${imovel.id})">
+            <a href="dados-imovel.html?id=${imovel.id}" class="anuncio-link anuncio-imovel" >
                 <i class="fas fa-heart ${classe}" onclick="curtirImovel(event, ${imovel.id})"></i>
                 <div class="swiper swiper-anuncio">
                     <div class="swiper-wrapper">
@@ -152,8 +152,8 @@ async function carregarAnuncios(dados) {
                 </div>
                 <h2>${imovel.anuncio?.titulo}</h2>
                 <p>${imovel.endereco?.rua}, ${imovel.endereco?.numero}, ${imovel.endereco?.bairro}</p>
-                ${precoVenda.outerHTML}
-                ${precoAluguel.outerHTML}
+                ${precoVenda}
+                ${precoAluguel}
                 <p class="descricao">${imovel.anuncio?.descricao}</p>
                 <div class="emojis">
                     <i class="fas fa-ruler-combined"><p>${imovel.area_total || 'N/A'} m²</p></i> 
@@ -161,9 +161,8 @@ async function carregarAnuncios(dados) {
                     <i class="fas fa-couch"><p>${imovel.quantidade_salas || 'N/A'}</p></i> 
                     <i class="fas fa-bed"><p>${imovel.quantidade_quartos || 'N/A'}</p></i>
                     <i class="fas fa-car"><p>${imovel.quantidade_vagas || 'N/A'}</p></i>
-                    <a href="https://wa.me/" style="text-decoration: none;" target="_blank" class="fab fa-whatsapp"></a>
                 </div>
-            </div>
+            </a>
         `;
     }
     if (html.length === 0) {
