@@ -225,7 +225,8 @@ label {
     flex-direction: column;
     border: 2px groove #414141;
     width: 90%;
-    margin: 50px auto;
+    margin: 0 auto;
+    margin-bottom: 50px;
     position: relative;
 }
 
@@ -234,7 +235,8 @@ label {
     align-self: center;
     /* justify-content: center; */
     /* justify-items: center; */
-    margin: 50px auto;
+    /* margin: 0 auto; */
+    margin-bottom: 50px;
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(14%, 2fr));
     row-gap: 30px;

@@ -2,7 +2,7 @@ import { getDadosImovel } from "./modules/imoveis.js";
 
 let imovel = null;
 
-window.openTab = openTab;
+window.abrirTab = abrirTab;
 
 async function preencherEndereco(event) {
     const cep = event.target.value.replace(/\D/g, "");
@@ -470,51 +470,32 @@ async function excluir() {
 
 }
 
-var tabDisplays = {};
+function abrirTab(posicao) {
+    const divTabs = document.querySelector(".seaTabs_switch");
 
-function hideAllTabContents() {
-    var tabcontent = document.getElementsByClassName("tabcontent");
-    for (var i = 0; i < tabcontent.length; i++) {
-        tabcontent[i].style.display = "none";
-    }
-}
-
-function clearActiveTabLinks() {
-    var tablinks = document.getElementsByClassName("tablinks");
-    for (var i = 0; i < tablinks.length; i++) {
-        tablinks[i].classList.remove("active");
-    }
-}
-
-function findTabButtonByTarget(tabId) {
-    var selector = ".tablinks[onclick*=\"'" + tabId + "'\"], .tablinks[onclick*=\"\\\"" + tabId + "\\\"\"]";
-    return document.querySelector(selector);
-}
-
-function activateTab(tabId, tabButton) {
-    var tabPanel = document.getElementById(tabId);
-    if (!tabPanel) {
-        return;
+    for (let i = 0; i < divTabs.children.length; i++) {
+        if (divTabs.children[i].classList.contains("seaTabs_active")) {
+            divTabs.children[i].classList.remove("seaTabs_active");
+        }
     }
 
-    hideAllTabContents();
-    clearActiveTabLinks();
-
-    tabPanel.style.display = tabDisplays[tabId] || "flex";
-
-    if (tabButton) {
-        tabButton.classList.add("active");
-    } else {
-        findTabButtonByTarget(tabId)?.classList.add("active");
+    switch (posicao) {
+        case 0:
+            divTabs.children[0].classList.toggle("seaTabs_active");
+            document.getElementById("container-cadastro").style.display = "grid";
+            document.getElementById("container-anuncio").style.display = "none";
+            break;
+        case 1:
+            divTabs.children[1].classList.toggle("seaTabs_active");
+            document.getElementById("container-anuncio").style.display = "flex";
+            document.getElementById("container-cadastro").style.display = "none";
+            break;
+        default:
+            break;
     }
 
-    sessionStorage.setItem("activeTab", tabId);
+    sessionStorage.setItem("cadastro-imovel: abaAtiva", posicao);
 }
-
-function openTab(evento, tabId) {
-    activateTab(tabId, evento?.currentTarget || evento?.target || null);
-}
-
 
 
 async function abrirCadastro(imovel) {
@@ -934,26 +915,8 @@ function adicionarAnexo(event) {
 let imovelId = null;
 
 window.addEventListener("DOMContentLoaded", async function () {
-    var tabcontent = document.getElementsByClassName("tabcontent");
 
-    for (var i = 0; i < tabcontent.length; i++) {
-        var panel = tabcontent[i];
-        var inlineDisplay = panel.style.display;
-        if (inlineDisplay && inlineDisplay !== "none") {
-            tabDisplays[panel.id] = inlineDisplay;
-        } else {
-            var computedDisplay = window.getComputedStyle(panel).display;
-            tabDisplays[panel.id] = computedDisplay !== "none" ? computedDisplay : "flex";
-        }
-    }
-
-    var savedTabId = sessionStorage.getItem("activeTab");
-    var defaultTabId = tabcontent.length > 0 ? tabcontent[0].id : null;
-    var initialTabId = savedTabId && document.getElementById(savedTabId) ? savedTabId : defaultTabId;
-
-    if (initialTabId) {
-        activateTab(initialTabId, null);
-    }
+    sessionStorage.getItem("cadastro-imovel: abaAtiva") ? abrirTab(parseInt(sessionStorage.getItem("cadastro-imovel: abaAtiva"))) : abrirTab(0);
 
     const id = new URLSearchParams(window.location.search).get("id");
     imovel = id ? await getDadosImovel(id) : null;
