@@ -2,6 +2,7 @@ import { getDadosImovel } from "./modules/imoveis.js";
 
 let imovel = null;
 
+window.openTab = openTab;
 
 async function preencherEndereco(event) {
     const cep = event.target.value.replace(/\D/g, "");

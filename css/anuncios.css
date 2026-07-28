@@ -169,7 +169,7 @@ section {
     max-width: 500px;
     max-height: 550px;
     z-index: 2;
-    gap: 15px;
+    gap: 6px;
 
     .swiper {
         width: 100%;
@@ -251,6 +251,7 @@ section {
         text-overflow: ellipsis;
         font-size: 1rem;
         margin-bottom: 40px !important;
+        height: auto;
     }
 
     &:hover {

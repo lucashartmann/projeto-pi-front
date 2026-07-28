@@ -212,6 +212,8 @@ class ImovelDAO
             $imovelObj->setDataModificacao($dataModificacao);
             $imovelObj->setAnuncio($anuncio);
             $imovelObj->setCondominio($condominio);
+            $imovelObj->setDestacado((bool) $dados['destacado']);
+            $imovelObj->setQuantClicks($dados['quant_clicks'] !== null ? (int) $dados['quant_clicks'] : 0);
 
             $stmt = $this->bancoDados->prepare("
                 SELECT
@@ -661,6 +663,8 @@ class ImovelDAO
             imovel.data_modificacao AS data_modificacao,
             imovel.id_anuncio AS id_anuncio,
             imovel.id_condominio AS id_condominio,
+            imovel.destacado AS destacado,
+            imovel.quant_clicks AS quant_clicks,
 
             endereco.id AS endereco_id,
             endereco.rua AS endereco_rua,
@@ -932,7 +936,9 @@ class ImovelDAO
                 data_cadastro = :data_cadastro,
                 data_modificacao = :data_modificacao,
                 id_anuncio = :anuncio,
-                id_condominio = :condominio
+                id_condominio = :condominio,
+                destacado = :destacado,
+                quant_clicks = :quant_clicks
             WHERE id = :id
         ";
 
@@ -964,6 +970,8 @@ class ImovelDAO
                 ':data_modificacao' => $dataModificacao,
                 ':anuncio' => $anuncio,
                 ':condominio' => $condominio,
+                ':destacado' => $imovel->isDestacado() ? 1 : 0,
+                ':quant_clicks' => $imovel->getQuantClicks(),
                 ':id' => $imovel->getId()
             ]);
             return $this->bancoDados->commit();
@@ -991,9 +999,9 @@ class ImovelDAO
                 iptu, valor_condominio, andar, estado, bloco, ano_construcao,
                 area_total, area_privativa, situacao, ocupacao,
                 id_corretor, id_captador,
-                data_cadastro, data_modificacao, id_anuncio, id_condominio
+                data_cadastro, data_modificacao, id_anuncio, id_condominio, destacado, quant_clicks
             ) 
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         ";
 
 
@@ -1069,7 +1077,9 @@ class ImovelDAO
                 $dataCadastro,
                 $dataModificacao,
                 $idAnuncio,
-                $idCondominio
+                $idCondominio,
+                $imovel->isDestacado() ? 1 : 0,
+                $imovel->getQuantClicks()
             ]);
 
             $idImovel = $this->bancoDados->lastInsertId();

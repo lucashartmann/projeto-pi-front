@@ -131,6 +131,7 @@ class Imovel
         $this->filtros = [];
         $this->complemento = "";
         $this->quantClicks = 0;
+        $this->destacado = false;
     }
 
     public function isDestacado(): bool
