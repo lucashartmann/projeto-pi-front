@@ -4,7 +4,7 @@ let listaAtendimentos = [];
 
 async function listarAtendimentos() {
     try {
-        let caminho = getCaminhoRelativo("/php/api/atendimentos.php?acao=listar_atendimentos");
+        let caminho = getCaminhoRelativo("/php/api/atendimentos.php?acao=listar");
 
         const res = await fetch(caminho);
 

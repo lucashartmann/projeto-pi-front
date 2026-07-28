@@ -10,7 +10,7 @@ $controller = new ProprietarioController();
 switch ($acao) {
 
     case "listar":
-        $resultado = $controller->listarProprietarios();
+        $resultado = $controller->listar();
         break;
 
     default:

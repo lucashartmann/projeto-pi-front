@@ -50,13 +50,13 @@ class ControllerTest extends TestCase
             public function __construct($p)
             {
                 $this->p = $p; }
-            public function getListaProprietarios()
+            public function listar()
             {
                 return [$this->p]; }
         };
 
         $ctrl = new ProprietarioController();
-        $res = $ctrl->listarProprietarios();
+        $res = $ctrl->listar();
 
         $this->assertEquals('sucesso', $res['status']);
         $this->assertIsArray($res['dados']);
@@ -75,13 +75,13 @@ class ControllerTest extends TestCase
             public function __construct($u)
             {
                 $this->u = $u; }
-            public function getListaUsuarios()
+            public function listar()
             {
                 return [$this->u]; }
         };
 
         $ctrl = new UsuarioController();
-        $res = $ctrl->listarUsuarios();
+        $res = $ctrl->listar();
 
         $this->assertEquals('sucesso', $res['status']);
         $this->assertEquals('Usu', $res['dados'][0]['nome']);
@@ -97,7 +97,7 @@ class ControllerTest extends TestCase
             public function __construct($u)
             {
                 $this->u = $u; }
-            public function verificarUsuario($username, $senha)
+            public function verificar($username, $senha)
             {
                 return $this->u; }
         };
@@ -128,7 +128,7 @@ class ControllerTest extends TestCase
             public function __construct($u)
             {
                 $this->u = $u; }
-            public function getUsuarioPorId($id)
+            public function buscarPorId($id)
             {
                 return $this->u; }
         };
@@ -161,7 +161,7 @@ class ControllerTest extends TestCase
             public function __construct($i)
             {
                 $this->i = $i; }
-            public function getListaImoveis()
+            public function listar()
             {
                 return [$this->i]; }
         };
@@ -177,7 +177,7 @@ class ControllerTest extends TestCase
         };
 
         $ctrl = new ImovelController();
-        $res = $ctrl->getListaImoveis();
+        $res = $ctrl->listar();
 
         $this->assertIsArray($res);
         $this->assertEquals(2, $res[0]['id']);
@@ -194,7 +194,7 @@ class ControllerTest extends TestCase
             public function __construct($i)
             {
                 $this->i = $i; }
-            public function getImovelPorId($id)
+            public function buscarPorId($id)
             {
                 return $this->i; }
             public function remover($campo, $valor, $tabela)
@@ -203,7 +203,7 @@ class ControllerTest extends TestCase
         };
 
         $ctrl = new ImovelController();
-        $res = $ctrl->apagarImovel(5);
+        $res = $ctrl->apagar(5);
 
         $this->assertEquals('sucesso', $res['status']);
     }

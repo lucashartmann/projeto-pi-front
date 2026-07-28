@@ -24,7 +24,7 @@ class AtendimentoDAO
         return $this->bancoDados;
     }
 
-    public function getAtendimentoPorId($id)
+    public function buscarPorId($id)
     {
         try {
             $stmt = $this->bancoDados->prepare("
@@ -38,15 +38,15 @@ class AtendimentoDAO
                 throw new Exception("Não existe atendimento com ID {$id}");
             }
 
-            return $this->montarAtendimento($registro);
+            return $this->montar($registro);
         } catch (Exception $e) {
-            $erro = "ERRO! Banco->getAtendimentoPorId: " . $e->getMessage();
+            $erro = "ERRO! Banco->buscarPorId: " . $e->getMessage();
             error_log($erro);
             return null;
         }
     }
 
-    public function atualizarAtendimento($atendimento)
+    public function atualizar($atendimento)
     {
         try {
             $stmt = $this->bancoDados->prepare("
@@ -80,12 +80,12 @@ class AtendimentoDAO
                 ':id' => $atendimento->getId()
             ]);
         } catch (Exception $e) {
-            error_log("ERRO! Banco->atualizarAtendimento: " . $e->getMessage());
+            error_log("ERRO! Banco->atualizar: " . $e->getMessage());
             return false;
         }
     }
 
-    public function montarAtendimento($dados)
+    public function montar($dados)
     {
 
         $idImovel = $dados['id_imovel'];
@@ -95,17 +95,17 @@ class AtendimentoDAO
         $atendimento = new Atendimento();
 
         if ($idImovel) {
-            $imovel = $this->imovelDAO->getImovelPorId($idImovel);
+            $imovel = $this->imovelDAO->buscarPorId($idImovel);
             $atendimento->setImovel($imovel);
         }
 
         if ($idCorretor) {
-            $corretor = $this->usuarioDAO->getUsuarioPorId($idCorretor);
+            $corretor = $this->usuarioDAO->buscarPorId($idCorretor);
             $atendimento->setCorretor($corretor);
         }
 
         if ($idCliente) {
-            $cliente = $this->usuarioDAO->getUsuarioPorId($idCliente);
+            $cliente = $this->usuarioDAO->buscarPorId($idCliente);
             $atendimento->setCliente($cliente);
         }
 
@@ -115,7 +115,7 @@ class AtendimentoDAO
         return $atendimento;
     }
 
-    public function cadastrarAtendimento($atendimento)
+    public function cadastrar($atendimento)
     {
         try {
 
@@ -149,13 +149,13 @@ class AtendimentoDAO
                 ":status" => $status
             ]);
         } catch (Exception $e) {
-            $erro = "ERRO! Banco->cadastrarAtendimento: " . $e->getMessage();
+            $erro = "ERRO! Banco->cadastrar: " . $e->getMessage();
             error_log($erro);
             return False;
         }
     }
 
-    public function getListaAtendimentos()
+    public function listar()
     {
         try {
 
@@ -173,13 +173,13 @@ class AtendimentoDAO
                 $comprador = $registro['id_cliente'];
                 $status = $registro['status'];
                 if ($imovel) {
-                    $imovel = $this->imovelDAO->getImovelPorId($imovel);
+                    $imovel = $this->imovelDAO->buscarPorId($imovel);
                 }
                 if ($corretor) {
-                    $corretor = $this->usuarioDAO->getUsuarioPorId($corretor);
+                    $corretor = $this->usuarioDAO->buscarPorId($corretor);
                 }
                 if ($comprador) {
-                    $comprador = $this->usuarioDAO->getUsuarioPorId($comprador);
+                    $comprador = $this->usuarioDAO->buscarPorId($comprador);
                 }
                 if ($status) {
                     $status = StatusAtendimento::tryFrom($status);
@@ -194,12 +194,12 @@ class AtendimentoDAO
             }
             return $lista;
         } catch (Exception $e) {
-            $erro = "ERRO! Banco->getListaAtendimentos: " . $e->getMessage();
+            $erro = "ERRO! Banco->listar: " . $e->getMessage();
             error_log($erro);
             return [];
         }
     }
-    public function getAtendimentosPorUsuario(int $idUsuario)
+    public function listarPorUsuario(int $idUsuario)
     {
         try {
             $sql = "
@@ -213,12 +213,12 @@ class AtendimentoDAO
             }
             $listaAtendimentos = [];
             foreach ($atendimentos as $dados) {
-                $atendimento = self::montarAtendimento($dados);
+                $atendimento = self::montar($dados);
                 $listaAtendimentos[] = $atendimento;
             }
             return $listaAtendimentos;
         } catch (Exception $e) {
-            $erro = "ERRO! Banco->getAtendimentosPorUsuario: " . $e->getMessage();
+            $erro = "ERRO! Banco->listarPorUsuario: " . $e->getMessage();
             error_log($erro);
             return [];
         }

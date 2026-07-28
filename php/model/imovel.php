@@ -95,7 +95,7 @@ class Imovel
     public ?Condominio $condominio;
     public array $filtros;
     public string $complemento;
-
+    public bool $destacado;
     public int $quantClicks;
 
     public function __construct(?Endereco $endereco, Status $status, Categoria $categoria)
@@ -131,6 +131,26 @@ class Imovel
         $this->filtros = [];
         $this->complemento = "";
         $this->quantClicks = 0;
+    }
+
+    public function isDestacado(): bool
+    {
+        return $this->destacado;
+    }
+
+    public function setDestacado(bool $destacado)
+    {
+        $this->destacado = $destacado;
+    }
+
+    public function getQuantClicks(): int
+    {
+        return $this->quantClicks;
+    }
+
+    public function setQuantClicks(int $quantClicks)
+    {
+        $this->quantClicks = $quantClicks;
     }
 
     public function getComplemento()

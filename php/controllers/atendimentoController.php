@@ -32,16 +32,16 @@ class AtendimentoController
         $this->notificacaoDAO = new NotificacaoDAO();
     }
 
-    function atualizarStatusAtendimento($idAtendimento, $novoStatus)
+    function atualizarStatus($idAtendimento, $novoStatus)
     {
         try {
-            $atendimento = $this->atendimentoDAO->getAtendimentoPorId($idAtendimento);
+            $atendimento = $this->atendimentoDAO->buscarPorId($idAtendimento);
             if (!$atendimento) {
                 return (["status" => "erro", "mensagem" => "Atendimento não encontrado"]);
             }
 
             $atendimento->setStatus(StatusAtendimento::tryFrom($novoStatus));
-            $atualizacao = $this->atendimentoDAO->atualizarAtendimento($atendimento);
+            $atualizacao = $this->atendimentoDAO->atualizar($atendimento);
 
             if (!$atualizacao) {
                 return (["status" => "erro", "mensagem" => "Erro ao atualizar status do atendimento"]);
@@ -53,37 +53,43 @@ class AtendimentoController
         }
     }
 
-    function listarAtendimentos()
+    function listar()
     {
         try {
-            $atendimentos = $this->atendimentoDAO->getListaAtendimentos();
+            $atendimentos = $this->atendimentoDAO->listar();
             if (!$atendimentos) {
                 return (["status" => "erro", "mensagem" => "Nenhum atendimento encontrado"]);
             }
-            return self::montarJsonAtendimentos($atendimentos);
+            return self::montarJson($atendimentos);
         } catch (Exception $e) {
             return (["status" => "erro", "mensagem" => "Erro ao listar atendimentos: " . $e->getMessage()]);
         }
     }
 
 
-    function cadastrarAtendimento(int $idImovel)
+    function cadastrar(int $idImovel)
     {
         $usuario = $_GET['usuario'] ?? null;
 
         if ($usuario) {
-            $this->notificacaoDAO->cadastrarNotificacao($usuario, "Novo atendimento cadastrado para o imóvel de ID: $idImovel");
+            $listaUsuarios = $this->usuarioDAO->listar();
+            $corretores = array_filter($listaUsuarios, function ($usuario) {
+                return $usuario->getTipo() === Tipo::CORRETOR;
+            });
+            foreach ($corretores as $corretor) {
+                $this->notificacaoDAO->cadastrar($corretor, "Cliente $usuario->getNome() quer atendimento para o imóvel de ID $idImovel", "atendimento");
+            }
         }
         if (isset($_SESSION['usuario_id'])) {
 
             $idUsuario = $_SESSION['usuario_id'];
 
             $atendimento = new Atendimento();
-            $atendimento->setCliente($this->usuarioDAO->getUsuarioPorId($idUsuario));
-            $atendimento->setImovel($this->imovelDAO->getImovelPorId($idImovel));
+            $atendimento->setCliente($this->usuarioDAO->buscarPorId($idUsuario));
+            $atendimento->setImovel($this->imovelDAO->buscarPorId($idImovel));
             $atendimento->setStatus(StatusAtendimento::PENDENTE);
 
-            $cadastro = $this->atendimentoDAO->cadastrarAtendimento($atendimento);
+            $cadastro = $this->atendimentoDAO->cadastrar($atendimento);
             if (!$cadastro) {
                 return ([
                     "status" => "erro",
@@ -103,16 +109,16 @@ class AtendimentoController
         }
     }
 
-    function montarJsonAtendimentos(array $listaAtendimentos)
+    function montarJson(array $listaAtendimentos)
     {
 
         $lista = [];
         foreach ($listaAtendimentos as $atendimento) {
             $lista[] = [
                 "id" => $atendimento->getid(),
-                "corretor" => $atendimento->getCorretor() ? $this->usuarioController->montarJsonUsuario([$atendimento->getCorretor()])[0] : NULL,
-                "cliente" => $atendimento->getCliente() ? $this->usuarioController->montarJsonUsuario([$atendimento->getCliente()])[0] : NULL,
-                "imovel" => $atendimento->getImovel() ? $this->imovelController->montarJsonImoveis([$atendimento->getImovel()])[0] : NULL,
+                "corretor" => $atendimento->getCorretor() ? $this->usuarioController->montarJson([$atendimento->getCorretor()])[0] : NULL,
+                "cliente" => $atendimento->getCliente() ? $this->usuarioController->montarJson([$atendimento->getCliente()])[0] : NULL,
+                "imovel" => $atendimento->getImovel() ? $this->imovelController->montarJson([$atendimento->getImovel()])[0] : NULL,
                 "status" => $atendimento->getStatus() ? $atendimento->getStatus() : NULL,
             ];
         }

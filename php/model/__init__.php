@@ -428,11 +428,11 @@ function initialize()
     if (empty($imovelDAO->getConexao()->getListaFiltrosApartamento())) {
         $imovelDAO->getConexao()->cadastrarListaFiltros($filtrosImovel, "filtros_imovel");
     }
-    if (empty($condominioDAO->getListaFiltrosCondominio())) {
+    if (empty($condominioDAO->listarFiltros())) {
         $imovelDAO->getConexao()->cadastrarListaFiltros($filtrosCondominio, "filtros_condominio");
     }
 
-    if (count($imovelDAO->getListaImoveis()) == 0) {
+    if (count($imovelDAO->listar()) == 0) {
         for ($i = 1; $i <= 50; $i++) {
             $sequencial = ($i - 1) * 8;
             $cpfVistoriador = str_pad((string) ($sequencial + 1), 11, '0', STR_PAD_LEFT);
@@ -652,49 +652,49 @@ function initialize()
             ];
             $proprietario->setDataModificacao($opcoes[array_rand($opcoes)]);
 
-            $idCorretor = $usuarioDAO->cadastrarUsuario($corretor);
+            $idCorretor = $usuarioDAO->cadastrar($corretor);
             if ($idCorretor) {
                 $corretor->setId($idCorretor);
             } else {
                 $corretor = null;
             }
-            $idCaptador = $usuarioDAO->cadastrarUsuario($captador);
+            $idCaptador = $usuarioDAO->cadastrar($captador);
             if ($idCaptador) {
                 $captador->setId($idCaptador);
             } else {
                 $captador = null;
             }
-            $idGerente = $usuarioDAO->cadastrarUsuario($gerente);
+            $idGerente = $usuarioDAO->cadastrar($gerente);
             if ($idGerente) {
                 $gerente->setId($idGerente);
             } else {
                 $gerente = null;
             }
-            $idCliente = $usuarioDAO->cadastrarUsuario($cliente);
+            $idCliente = $usuarioDAO->cadastrar($cliente);
             if ($idCliente) {
                 $cliente->setId($idCliente);
             } else {
                 $cliente = null;
             }
-            $idAdministrador = $usuarioDAO->cadastrarUsuario($administrador);
+            $idAdministrador = $usuarioDAO->cadastrar($administrador);
             if ($idAdministrador) {
                 $administrador->setId($idAdministrador);
             } else {
                 $administrador = null;
             }
-            $idVistoriador = $usuarioDAO->cadastrarUsuario($vistoriador);
+            $idVistoriador = $usuarioDAO->cadastrar($vistoriador);
             if ($idVistoriador) {
                 $vistoriador->setId($idVistoriador);
             } else {
                 $vistoriador = null;
             }
-            $idFinanceiro = $usuarioDAO->cadastrarUsuario($financeiro);
+            $idFinanceiro = $usuarioDAO->cadastrar($financeiro);
             if ($idFinanceiro) {
                 $financeiro->setId($idFinanceiro);
             } else {
                 $financeiro = null;
             }
-            $proprietarioDAO->cadastrarProprietario($proprietario);
+            $proprietarioDAO->cadastrar($proprietario);
 
             $numeroAleatorioEndereco = rand(0, count($enderecos) - 1);
 
@@ -708,12 +708,12 @@ function initialize()
 
             $endereco->setNumero($i);
 
-            $verificarEndereco = $enderecoDAO->verificarEndereco($endereco);
+            $verificar = $enderecoDAO->verificar($endereco);
 
-            if ($verificarEndereco) {
-                $endereco = $verificarEndereco;
+            if ($verificar) {
+                $endereco = $verificar;
             } else {
-                $idEndereco = $enderecoDAO->cadastrarEndereco($endereco) ?? null;
+                $idEndereco = $enderecoDAO->cadastrar($endereco) ?? null;
                 if ($idEndereco) {
                     $endereco->setId($idEndereco);
                 } else {
@@ -748,7 +748,7 @@ function initialize()
                 array_slice($filtros, 0, rand(0, $limiteMaximo))
             ];
             $imovel->setFiltros($opcao[array_rand($opcao)]);
-            $listaProprietarios = $proprietarioDAO->getListaProprietarios();
+            $listaProprietarios = $proprietarioDAO->listar();
             $listaProprietarios = array_values($listaProprietarios);
             $limiteMaximo = min(
                 count($listaProprietarios) - 1,
@@ -796,7 +796,7 @@ function initialize()
 
             $anuncio->setTitulo($titulo);
             $anuncio->setDescricao($descricao);
-            $idAnuncio = $anuncioDAO->cadastrarAnuncio($anuncio);
+            $idAnuncio = $anuncioDAO->cadastrar($anuncio);
 
 
             if ($idAnuncio > 0) {
@@ -807,12 +807,12 @@ function initialize()
                     TipoAnexo::IMAGEM
                 );
                 $anuncio->setImagens([$imagem, $imagem, $imagem, $imagem, $imagem, $imagem, $imagem, $imagem, $imagem, $imagem, $imagem, $imagem, $imagem, $imagem, $imagem]);
-                $anuncioDAO->atualizarAnuncio($anuncio);
+                $anuncioDAO->atualizar($anuncio);
             }
 
             $imovel->setAnuncio($anuncio ?? null);
 
-            $imovelDAO->cadastrarImovel($imovel);
+            $imovelDAO->cadastrar($imovel);
 
             // $condominio = new Condominio($nomesCondominio[array_rand($nomesCondominio)], $endereco);
             // $limiteMaximo = isset($i) ? $i - 1 : count($filtrosCondominio);
@@ -822,7 +822,7 @@ function initialize()
             //     array_slice($filtrosCondominio, 0, rand(0, $limiteMaximo))
             // ];
             // $condominio->setFiltros($opcao[array_rand($opcao)]);
-            // ->cadastrarCondominio($condominio);
+            // ->cadastrar($condominio);
         }
     }
 }

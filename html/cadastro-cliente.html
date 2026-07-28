@@ -24,6 +24,12 @@
 </head>
 
 <body>
+    <div id="acessibilidade">
+        <button onclick="aumentarFonte()">A+</button>
+        <button onclick="diminuirFonte()">A-</button>
+        <button onclick="altoContraste()"><i class="fas fa-adjust"></i></button>
+        <button onclick="modoNoturno()"><i class="fas fa-moon"></i></button>
+    </div>
     <div id="h-buttons">
         <button id="bt-apagar-cadastro" class="bt-delete" onclick="apagar()">Apagar</button>
         <button id="bt-salvar-alteracoes" class="bt-success" onclick="salvar()">Salvar</button>
@@ -173,6 +179,7 @@
 </script>
 <script type="module" src="../js/modules/utils.js"></script>
 <script type="module" src="../js/modules/usuario.js"></script>
+<script type="module" src="../js/modules/usuarios.js"></script>
 <script type="module" src="js/modules/notificacoes.js"></script>
 <script type="module" src="../js/base.js"></script>
 <script type="module" src="../js/cadastro-cliente.js"></script>

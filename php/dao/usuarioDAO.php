@@ -40,7 +40,7 @@ class UsuarioDAO
         }
     }
 
-    public function getMensagens(int $id_usuario)
+    public function listarMensagens(int $id_usuario)
     {
         try {
             $sqlSelectQuery = "
@@ -52,12 +52,12 @@ class UsuarioDAO
             $stmt->execute([':id_usuario' => $id_usuario]);
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (Exception $e) {
-            error_log("ERRO Banco->getMensagens: " . $e->getMessage());
+            error_log("ERRO Banco->listarMensagens: " . $e->getMessage());
             return [];
         }
     }
 
-    public function getUsuarioPorCpfCnpj(string $cpf)
+    public function buscarPorCpfCnpj(string $cpf)
     {
         try {
 
@@ -80,7 +80,7 @@ class UsuarioDAO
             $dataCadastro = $registro['data_cadastro'] ? new DateTime($registro['data_cadastro']) : null;
             $dataModificacao = $registro['data_modificacao'] ? new DateTime($registro['data_modificacao']) : null;
             if ($endereco) {
-                $endereco = $this->enderecoDAO->getEnderecoPorId((int) ($registro['id_endereco']));
+                $endereco = $this->enderecoDAO->buscarPorId((int) ($registro['id_endereco']));
             }
             $dataNascimento = $registro['data_nascimento'];
             if ($dataNascimento) {
@@ -204,13 +204,13 @@ class UsuarioDAO
             $usuarioObj->setDataModificacao($dataModificacao);
             return $usuarioObj;
         } catch (Exception $e) {
-            $erro = "ERRO! Banco->getUsuarioPorCpfCnpj: " . $e->getMessage();
+            $erro = "ERRO! Banco->buscarPorCpfCnpj: " . $e->getMessage();
             error_log($erro);
             return NULL;
         }
     }
 
-    public function atualizarUsuario(Usuario $usuario)
+    public function atualizar(Usuario $usuario)
     {
         try {
 
@@ -261,9 +261,9 @@ class UsuarioDAO
             ]);
 
 
-            $usuarioDb = $usuario->getCpfCnpj() ? $this->getUsuarioPorCpfCnpj(
+            $usuarioDb = $usuario->getCpfCnpj() ? $this->buscarPorCpfCnpj(
                 $usuario->getCpfCnpj()
-            ) : $this->getUsuarioPorId($usuario->getId());
+            ) : $this->buscarPorId($usuario->getId());
 
             $telefonesAntigos = $usuarioDb ? ($usuarioDb->getTelefones() ?? []) : [];
             $telefonesNovos = $usuarioDb ? ($usuario->getTelefones() ?? []) : [];
@@ -359,13 +359,13 @@ class UsuarioDAO
             if ($this->bancoDados->inTransaction()) {
                 $this->bancoDados->rollBack();
             }
-            error_log("ERRO Banco->atualizarUsuario: " . $e->getMessage());
+            error_log("ERRO Banco->atualizar: " . $e->getMessage());
             return false;
         }
     }
 
 
-    public function cadastrarUsuario(Usuario $usuario)
+    public function cadastrar(Usuario $usuario)
     {
         try {
             $sql = "
@@ -461,7 +461,7 @@ class UsuarioDAO
                             ]);
                         }
                     } catch (Exception $e) {
-                        // error_log("ERRO Banco->cadastrarUsuario TELEFONE: " . $e->getMessage());
+                        // error_log("ERRO Banco->cadastrar TELEFONE: " . $e->getMessage());
                     }
                 }
             }
@@ -480,7 +480,7 @@ class UsuarioDAO
                             ':creci' => $usuario->getCreci()
                         ]);
                     } catch (Exception $e) {
-                        error_log("ERRO Banco->cadastrarUsuario CORRETOR: " . $e->getMessage());
+                        error_log("ERRO Banco->cadastrar CORRETOR: " . $e->getMessage());
                         return False;
                     }
                     break;
@@ -495,7 +495,7 @@ class UsuarioDAO
                             ':salario' => $usuario->getSalario()
                         ]);
                     } catch (Exception $e) {
-                        error_log("ERRO Banco->cadastrarUsuario CAPTADOR: " . $e->getMessage());
+                        error_log("ERRO Banco->cadastrar CAPTADOR: " . $e->getMessage());
                         return False;
                     }
                     break;
@@ -510,7 +510,7 @@ class UsuarioDAO
                             ':salario' => $usuario->getSalario()
                         ]);
                     } catch (Exception $e) {
-                        error_log("ERRO Banco->cadastrarUsuario GERENTE: " . $e->getMessage());
+                        error_log("ERRO Banco->cadastrar GERENTE: " . $e->getMessage());
                         return False;
                     }
                     break;
@@ -524,21 +524,21 @@ class UsuarioDAO
                             ':id_usuario' => $id,
                         ]);
                     } catch (Exception $e) {
-                        error_log("ERRO Banco->cadastrarUsuario CLIENTE: " . $e->getMessage());
+                        error_log("ERRO Banco->cadastrar CLIENTE: " . $e->getMessage());
                         return False;
                     }
                     break;
             }
             return $this->bancoDados->lastInsertId();
         } catch (Exception $e) {
-            $erro = "ERRO! Banco->cadastrarUsuario " . $e->getMessage();
+            $erro = "ERRO! Banco->cadastrar " . $e->getMessage();
             error_log($erro);
             return False;
         }
     }
 
 
-    public function getListaUsuarios()
+    public function listar()
     {
 
         try {
@@ -570,7 +570,7 @@ class UsuarioDAO
 
                 $endereco = null;
                 if ($registro['id_endereco']) {
-                    $endereco = $this->enderecoDAO->getEnderecoPorId((int) $registro['id_endereco']);
+                    $endereco = $this->enderecoDAO->buscarPorId((int) $registro['id_endereco']);
                 }
 
                 $data = $registro['data_nascimento']
@@ -687,12 +687,12 @@ class UsuarioDAO
 
             return $lista;
         } catch (Exception $e) {
-            error_log("ERRO Banco->getListaUsuarios: " . $e->getMessage());
+            error_log("ERRO Banco->listar: " . $e->getMessage());
             return [];
         }
     }
 
-    public function getListaClientes()
+    public function listarClientes()
     {
 
         try {
@@ -721,7 +721,7 @@ class UsuarioDAO
 
                 $endereco = null;
                 if ($registro['id_endereco']) {
-                    $endereco = $this->enderecoDAO->getEnderecoPorId((int) $registro['id_endereco']);
+                    $endereco = $this->enderecoDAO->buscarPorId((int) $registro['id_endereco']);
                 }
 
                 $data = $registro['data_nascimento']
@@ -756,12 +756,12 @@ class UsuarioDAO
 
             return $lista;
         } catch (Exception $e) {
-            error_log("ERRO Banco->getListaClientes: " . $e->getMessage());
+            error_log("ERRO Banco->listarClientes: " . $e->getMessage());
             return [];
         }
     }
 
-    public function getUsuarioPorId($id)
+    public function buscarPorId($id)
     {
         try {
             $sql = "SELECT * FROM usuario WHERE id = ?";
@@ -780,7 +780,7 @@ class UsuarioDAO
             $rg = $registro['rg'];
             $dataModificacao = $registro['data_modificacao'] ? new DateTime($registro['data_modificacao']) : null;
             $dataCadastro = $registro['data_cadastro'] ? new DateTime($registro['data_cadastro']) : null;
-            $endereco = $registro['id_endereco'] !== null ? $this->enderecoDAO->getEnderecoPorId((int) $registro['id_endereco']) : null;
+            $endereco = $registro['id_endereco'] !== null ? $this->enderecoDAO->buscarPorId((int) $registro['id_endereco']) : null;
             $dataNascimento = $registro['data_nascimento'];
             if ($dataNascimento) {
                 $dataNascimento = DateTime::createFromFormat('Y-m-d', $dataNascimento);
@@ -913,13 +913,13 @@ class UsuarioDAO
             $usuarioObj->setDataModificacao($dataModificacao);
             return $usuarioObj;
         } catch (Exception $e) {
-            error_log("ERRO Banco->getUsuarioPorId: " . $e->getMessage());
+            error_log("ERRO Banco->buscarPorId: " . $e->getMessage());
             return null;
         }
     }
 
 
-    public function verificarUsuario($username, $senha, bool $google = false)
+    public function verificar($username, $senha, bool $google = false)
     {
         try {
 
@@ -961,7 +961,7 @@ class UsuarioDAO
 
             $endereco = null;
             if ($idEndereco) {
-                $endereco = $this->enderecoDAO->getEnderecoPorId($idEndereco);
+                $endereco = $this->enderecoDAO->buscarPorId($idEndereco);
             }
 
             $telefones = [];
@@ -1089,7 +1089,7 @@ class UsuarioDAO
 
             return $usuarioObj;
         } catch (Exception $e) {
-            $erro = "ERRO! Banco->verificarUsuario: " . $e->getMessage();
+            $erro = "ERRO! Banco->verificar: " . $e->getMessage();
             error_log($erro);
             return null;
         }

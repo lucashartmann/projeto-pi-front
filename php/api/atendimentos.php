@@ -15,11 +15,11 @@ switch ($acao) {
 
     case "cadastrar":
         $idImovel = $_GET['idImovel'] ?? null;
-        $resultado = $controller->cadastrarAtendimento($idImovel);
+        $resultado = $controller->cadastrar($idImovel);
         break;
 
-    case "listar_atendimentos":
-        $resultado = $controller->listarAtendimentos();
+    case "listar":
+        $resultado = $controller->listar();
         break;
 
     default:

@@ -1,3 +1,5 @@
+import { getDadosImovel } from "./modules/imoveis.js";
+
 let imovel = null;
 
 
@@ -369,7 +371,7 @@ async function salvar() {
 
     if (JSON.stringify(formData).length > 0) {
         try {
-            let caminho = getCaminhoRelativo("/php/api/imoveis.php?acao=cadastrar_imovel");
+            let caminho = getCaminhoRelativo("/php/api/imoveis.php?acao=cadastrar");
             await fetch(caminho, {
                 method: "POST",
                 body: formData
@@ -421,7 +423,7 @@ async function excluir() {
     confirmar = confirm("Tem certeza que deseja excluir este imóvel?");
     if (imovelId && confirmar) {
         try {
-            let caminho = getCaminhoRelativo("/php/api/imoveis.php?acao=apagar_imovel&id=" + imovelId);
+            let caminho = getCaminhoRelativo("/php/api/imoveis.php?acao=apagar&id=" + imovelId);
             const response = await fetch(caminho, {
                 method: "POST",
                 headers: {
@@ -515,7 +517,7 @@ function openTab(evento, tabId) {
 
 
 async function abrirCadastro(imovel) {
-    imovel = JSON.parse(imovel);
+    // imovel = JSON.parse(imovel);
     console.log("Abrindo cadastro do imóvel:", imovel);
     if (imovel) {
         let containerImagens = document.getElementById("container-imagens");
@@ -952,9 +954,9 @@ window.addEventListener("DOMContentLoaded", async function () {
         activateTab(initialTabId, null);
     }
 
-    imovel = this.sessionStorage.getItem("imovel") || null;
+    const id = new URLSearchParams(window.location.search).get("id");
+    imovel = id ? await getDadosImovel(id) : null;
     if (imovel) {
-        sessionStorage.removeItem("imovel");
         await abrirCadastro(imovel);
     }
 

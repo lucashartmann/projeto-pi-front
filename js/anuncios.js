@@ -363,15 +363,15 @@ async function carregarAnuncios() {
     for (const imovel of dados) {
         const b64 = imovel.anuncio?.imagens?.[0] || null;
         if (!b64) continue;
-        let precoVenda = document.createElement("span");
-        let precoAluguel = document.createElement("span");
+        let precoVenda = '';
+        let precoAluguel = '';
         if (imovel.valor_aluguel && imovel.valor_venda) {
-            precoVenda.innerHTML = `Venda: <p class="preco">${formatarValor(imovel.valor_venda)}</p>`;
-            precoAluguel.innerHTML = `Aluguel: <p class="preco">${formatarValor(imovel.valor_aluguel)}</p>`;
+            precoVenda = `<span>Venda: <span class="preco">${formatarValor(imovel.valor_venda)}</span></span>`;
+            precoAluguel = `<span>Aluguel: <span class="preco">${formatarValor(imovel.valor_aluguel)}</span></span>`;
         } else if (imovel.valor_venda) {
-            precoVenda.innerHTML = `Venda: <p class="preco">${formatarValor(imovel.valor_venda)}</p>`;
+            precoVenda = `<span>Venda: <span class="preco">${formatarValor(imovel.valor_venda)}</span></span>`;
         } else {
-            precoAluguel.innerHTML = `Aluguel: <p class="preco">${formatarValor(imovel.valor_aluguel)}</p>`;
+            precoAluguel = `<span>Aluguel: <span class="preco">${formatarValor(imovel.valor_aluguel)}</span></span>`;
         }
         const classe = favoritos ? "curtido" : "";
         html += `
@@ -389,8 +389,8 @@ async function carregarAnuncios() {
                 </div>
                 <h2>${imovel.anuncio?.titulo}</h2>
                 <p>${imovel.endereco?.rua}, ${imovel.endereco?.numero}, ${imovel.endereco?.bairro}</p>
-                ${precoVenda.outerHTML}
-                ${precoAluguel.outerHTML}
+                ${precoVenda}
+                ${precoAluguel}
                 <p class="descricao">${imovel.anuncio?.descricao}</p>
                 <div class="emojis">
                     <i class="fas fa-ruler-combined"><p>${imovel.area_total || 0.00} m²</p></i> 

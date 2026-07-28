@@ -106,11 +106,16 @@ table {
     border-collapse: collapse;
     margin-bottom: 20px;
     letter-spacing: 1px;
-
+    
     caption {
         caption-side: bottom;
         padding: 10px;
         font-weight: bold;
+    }
+
+    a {
+        text-decoration: none;
+        color: var(--cor-texto-alternativa);
     }
 
     th,
@@ -149,11 +154,13 @@ table {
     .resultado {
         display: flex;
         gap: 20px;
-        background-color: rgba(186, 174, 174, 0.5);
+        /* background-color: #414141; */
+        border: #414141 2px groove;
         padding: 10px;
         margin: 10px 20px;
         cursor: pointer;
-
+        text-decoration: none;
+        color: var(--cor-texto-alternativa);
 
         &:hover {
             background-color: rgba(186, 174, 174, 0.8);
@@ -174,8 +181,9 @@ table {
     }
 
     img {
-        height: 10%;
-        width: 30%;
+        height: 12rem;
+        width: 16rem;
+        align-self: center;
     }
 
     .dados {
@@ -197,7 +205,7 @@ body {
 
 .menu-opcoes {
     position: fixed;
-    background: rgba(36, 30, 30, 0.5);
+    background: #414141;
     backdrop-filter: blur(40px) !important;
     min-width: 20rem;
     min-height: 5rem;
@@ -224,6 +232,7 @@ body {
 
 #sidebar-pessoas {
     display: none;
+    background-color: #414141;
 }
 
 .sidebar-anuncios {
@@ -231,6 +240,7 @@ body {
     flex-direction: column;
     justify-content: flex-start;
     width: 20rem;
+    background-color: #414141;
 
     &>:nth-child(n) {
         margin-top: 20px;

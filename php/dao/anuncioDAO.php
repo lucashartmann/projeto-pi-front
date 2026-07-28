@@ -15,7 +15,7 @@ class AnuncioDAO
         $this->anexoDAO = new AnexoDAO();
     }
 
-    public function cadastrarAnuncio($anuncio)
+    public function cadastrar($anuncio)
     {
         try {
 
@@ -33,30 +33,30 @@ class AnuncioDAO
 
             if ($anuncio->getImagens()) {
                 foreach ($anuncio->getImagens() as $img) {
-                    $this->anexoDAO->cadastrarAnexo($img);
+                    $this->anexoDAO->cadastrar($img);
                 }
             }
 
             if ($anuncio->getVideos()) {
                 foreach ($anuncio->getVideos() as $video) {
-                    $this->anexoDAO->cadastrarAnexo($video);
+                    $this->anexoDAO->cadastrar($video);
                 }
             }
 
             if ($anuncio->getAnexos()) {
                 foreach ($anuncio->getAnexos() as $anexo) {
-                    $this->anexoDAO->cadastrarAnexo($anexo);
+                    $this->anexoDAO->cadastrar($anexo);
                 }
             }
 
             return $this->bancoDados->lastInsertId();
         } catch (Exception $e) {
-            error_log("ERRO! Banco->cadastrarAnuncio: " . $e->getMessage());
+            error_log("ERRO! Banco->cadastrar: " . $e->getMessage());
             return false;
         }
     }
 
-    public function atualizarAnuncio($anuncio)
+    public function atualizar($anuncio)
     {
 
         try {
@@ -124,11 +124,11 @@ class AnuncioDAO
             if ($this->bancoDados->inTransaction()) {
                 $this->bancoDados->rollBack();
             }
-            error_log("ERRO Banco->atualizarAnuncio: " . $e->getMessage());
+            error_log("ERRO Banco->atualizar: " . $e->getMessage());
             return false;
         }
     }
-    public function getAnuncioPorId($idAnuncio)
+    public function buscarPorId($idAnuncio)
     {
         try {
 
@@ -151,7 +151,7 @@ class AnuncioDAO
             $anuncioObj->setId($idAnuncio);
             $anuncioObj->setDescricao($descricao);
             $anuncioObj->setTitulo($titulo);
-            $mapaAnexos = $this->anexoDAO->getListaAnexosPorIdAnuncio($idAnuncio);
+            $mapaAnexos = $this->anexoDAO->listarPorIdAnuncio($idAnuncio);
             if ($mapaAnexos && isset($mapaAnexos["Imagens"])) {
                 $anuncioObj->setImagens($mapaAnexos["Imagens"]);
             }
@@ -163,7 +163,7 @@ class AnuncioDAO
             }
             return $anuncioObj;
         } catch (Exception $e) {
-            $erro = "ERRO! Banco->getAnuncioPorId: " . $e->getMessage();
+            $erro = "ERRO! Banco->buscarPorId: " . $e->getMessage();
             error_log($erro);
             return NULL;
         }

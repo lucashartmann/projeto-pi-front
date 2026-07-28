@@ -19,7 +19,7 @@ switch ($acao) {
             $resultado = (["status" => "erro", "mensagem" => "JSON inválido"]);
             return;
         }
-        $resultado = $controller->atualizarUsuario($data);
+        $resultado = $controller->atualizar($data);
         break;
 
     case "apagar":
@@ -31,7 +31,7 @@ switch ($acao) {
             return;
         }
 
-        $resultado = $controller->apagarUsuario($data);
+        $resultado = $controller->apagar($data);
         break;
 
     case "atualizar":
@@ -43,12 +43,21 @@ switch ($acao) {
             return;
         }
 
-        $resultado = $controller->atualizarUsuario($data);
+        $resultado = $controller->atualizar($data);
+        break;
+
+    case "buscar":
+        $id = $_GET['id'] ?? '';
+        if (empty($id)) {
+            $resultado = (["status" => "erro", "mensagem" => "ID do usuário não fornecido"]);
+            return;
+        }
+        $resultado = $controller->buscarPorId($id);
         break;
 
 
     case "listar":
-        $resultado = $controller->listarUsuarios();
+        $resultado = $controller->listar();
         break;
 
     default:

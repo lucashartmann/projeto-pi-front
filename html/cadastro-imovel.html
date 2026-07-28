@@ -24,6 +24,12 @@
 </head>
 
 <body>
+    <div id="acessibilidade">
+        <button onclick="aumentarFonte()">A+</button>
+        <button onclick="diminuirFonte()">A-</button>
+        <button onclick="altoContraste()"><i class="fas fa-adjust"></i></button>
+        <button onclick="modoNoturno()"><i class="fas fa-moon"></i></button>
+    </div>
     <div id="h-buttons">
         <button class="bt-delete" onclick="excluir()">Apagar</button>
         <button class="bt-success" type="submit" onclick="salvarMultiplosForms()">Salvar</button>
@@ -375,8 +381,9 @@
 </script>
 <script type="module" src="../js/modules/utils.js"></script>
 <script type="module" src="../js/modules/usuario.js"></script>
+<script type="module" src="../js/modules/imoveis.js"></script>
 <script type="module" src="js/modules/notificacoes.js"></script>
 <script type="module" src="../js/base.js"></script>
-<script src="../js/cadastro-imovel.js"></script>
+<script type="module" src="../js/cadastro-imovel.js"></script>
 
 </html>

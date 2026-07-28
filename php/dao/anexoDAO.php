@@ -13,7 +13,7 @@ class AnexoDAO
         $this->bancoDados = Banco::getInstance();
     }
 
-    public function getAnexoPorCaminho($caminho)
+    public function buscarPorCaminho($caminho)
     {
         try {
             $stmt = $this->bancoDados->prepare("
@@ -36,13 +36,13 @@ class AnexoDAO
 
             return $anexoObj;
         } catch (Exception $e) {
-            $erro = "ERRO! Banco->getAnexoPorCaminho: " . $e->getMessage();
+            $erro = "ERRO! Banco->buscarPorCaminho: " . $e->getMessage();
             error_log($erro);
             return null;
         }
     }
 
-    public function getListaAnexosPorIdAnuncio($idAnuncio)
+    public function listarPorIdAnuncio($idAnuncio)
     {
         try {
 
@@ -78,20 +78,20 @@ class AnexoDAO
             $mapa["Documentos"] = $documentos;
             return $mapa;
         } catch (Exception $e) {
-            $erro = "ERRO! Banco->getListaAnexosPorIdAnuncio: " . $e->getMessage();
+            $erro = "ERRO! Banco->listarPorIdAnuncio: " . $e->getMessage();
             error_log($erro);
             return [];
         }
     }
 
-    public function getMidiaPorId($id)
+    public function buscarMidiaPorId($id)
     {
         $stmt = $this->bancoDados->prepare("SELECT midia FROM midia_anuncio WHERE id = ?");
         $stmt->execute([$id]);
         return $stmt->fetchColumn();
     }
 
-    public function cadastrarAnexo($anexo)
+    public function cadastrar($anexo)
     {
         try {
             $sqlQuery = " 
@@ -106,7 +106,7 @@ class AnexoDAO
                 ':tipo' => $anexo->getTipo() ? $anexo->getTipo()->value : null
             ]);
         } catch (Exception $e) {
-            $erro = "ERRO! Banco->cadastrarAnexo: " . $e->getMessage();
+            $erro = "ERRO! Banco->cadastrar: " . $e->getMessage();
             error_log($erro);
             return False;
         }

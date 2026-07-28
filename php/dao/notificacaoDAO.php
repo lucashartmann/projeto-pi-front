@@ -12,7 +12,7 @@ class NotificacaoDAO
         $this->bancoDados = Banco::getInstance();
     }
 
-    public function cadastrarNotificacao($usuario, $mensagem, $tipo = null)
+    public function cadastrar($usuario, $mensagem, $tipo = null)
     {
         try {
             $stmt = $this->bancoDados->prepare("
@@ -28,7 +28,7 @@ class NotificacaoDAO
 
             return true;
         } catch (Exception $e) {
-            error_log("ERRO! NotificacaoDAO->cadastrarNotificacao: " . $e->getMessage());
+            error_log("ERRO! NotificacaoDAO->cadastrar: " . $e->getMessage());
             return false;
         }
     }
@@ -54,7 +54,7 @@ class NotificacaoDAO
         }
     }
 
-    public function getNotificacoesPorUsuario($usuario)
+    public function buscarPorUsuario($usuario)
     {
         try {
             $stmt = $this->bancoDados->prepare("
@@ -66,7 +66,7 @@ class NotificacaoDAO
             $stmt->execute([':id' => $usuario->getId()]);
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (Exception $e) {
-            error_log("ERRO! NotificacaoDAO->getNotificacoesPorUsuario: " . $e->getMessage());
+            error_log("ERRO! NotificacaoDAO->buscarPorUsuario: " . $e->getMessage());
             return [];
         }
     }

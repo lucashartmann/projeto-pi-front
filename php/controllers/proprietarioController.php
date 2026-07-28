@@ -15,11 +15,11 @@ class ProprietarioController
         $this->proprietarioDAO = new ProprietarioDAO();
         $this->usuarioController = new UsuarioController();
     }
-    function listarProprietarios()
+    function listar()
     {
         try {
-            $proprietarios = $this->proprietarioDAO->getListaProprietarios();
-            return $this->usuarioController->montarJsonUsuario($proprietarios);
+            $proprietarios = $this->proprietarioDAO->listar();
+            return $this->usuarioController->montarJson($proprietarios);
         } catch (Exception $e) {
             return (["status" => "erro", "mensagem" => "Erro ao listar proprietários"]);
         }

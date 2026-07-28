@@ -2,7 +2,7 @@ import { getCaminhoRelativo } from "./utils.js";
 
 export async function listarImoveis() {
     try {
-        let caminho = getCaminhoRelativo("/php/api/imoveis.php?acao=listar_imoveis");
+        let caminho = getCaminhoRelativo("/php/api/imoveis.php?acao=listar");
         const resposta = await fetch(caminho)
             .then(async (res) => {
                 const contentType = res.headers.get("content-type");
@@ -40,7 +40,7 @@ export async function listarImoveis() {
 
 export async function listarImoveisDisponiveis() {
     try {
-        let caminho = getCaminhoRelativo("/php/api/imoveis.php?acao=listar_imoveis_disponiveis");
+        let caminho = getCaminhoRelativo("/php/api/imoveis.php?acao=listar_disponiveis");
         const resposta = await fetch(caminho)
             // .then(res => console.log(res))
             .then(async (res) => {
@@ -93,7 +93,7 @@ export async function listarImoveisDisponiveis() {
 
 export async function getDadosImovel(id) {
     try {
-        let caminho = getCaminhoRelativo("/php/api/imoveis.php?acao=get_dados_imovel&id=" + id);
+        let caminho = getCaminhoRelativo("/php/api/imoveis.php?acao=get_imovel&id=" + id);
         const resposta = await fetch(caminho)
             // .then(res => console.log(res))
             .then(async (res) => {

@@ -13,7 +13,7 @@ class ProprietarioDAO
     }
 
 
-    public function atualizarProprietario($proprietario)
+    public function atualizar($proprietario)
     {
 
         try {
@@ -50,7 +50,7 @@ class ProprietarioDAO
                 ':cpf_where' => $proprietario->getCpfCnpj()
             ]);
 
-            $proprietarioDb = $this->getProprietarioPorCpfCnpj(
+            $proprietarioDb = $this->buscarPorCpfCnpj(
                 $proprietario->getCpfCnpj()
             );
 
@@ -111,12 +111,12 @@ class ProprietarioDAO
             if ($this->bancoDados->inTransaction()) {
                 $this->bancoDados->rollBack();
             }
-            error_log("ERRO Banco->atualizarProprietario: " . $e->getMessage());
+            error_log("ERRO Banco->atualizar: " . $e->getMessage());
             return false;
         }
     }
 
-    public function getProprietarioPorCpfCnpj($cpfCnpj)
+    public function buscarPorCpfCnpj($cpfCnpj)
     {
         try {
 
@@ -150,12 +150,12 @@ class ProprietarioDAO
 
             return $proprietario;
         } catch (Exception $e) {
-            error_log("ERRO! Banco->getProprietarioPorCpfCnpj: " . $e->getMessage());
+            error_log("ERRO! Banco->buscarPorCpfCnpj: " . $e->getMessage());
             return null;
         }
     }
 
-    public function cadastrarProprietario($proprietario)
+    public function cadastrar($proprietario)
     {
         try {
 
@@ -210,12 +210,12 @@ class ProprietarioDAO
 
             return true;
         } catch (Exception $e) {
-            error_log("ERRO! Banco->cadastrarProprietario: " . $e->getMessage());
+            error_log("ERRO! Banco->cadastrar: " . $e->getMessage());
             return false;
         }
     }
 
-    public function getListaProprietarios()
+    public function listar()
     {
 
         try {
@@ -255,12 +255,12 @@ class ProprietarioDAO
 
             return $lista;
         } catch (Exception $e) {
-            error_log("ERRO Banco->getListaProprietarios: " . $e->getMessage());
+            error_log("ERRO Banco->listar: " . $e->getMessage());
             return [];
         }
     }
 
-    public function getProprietarioPorId($id)
+    public function buscarPorId($id)
     {
         try {
             $sql = "SELECT * FROM proprietario WHERE id = ?";
@@ -278,7 +278,7 @@ class ProprietarioDAO
             $proprietario->setId($registro['id']);
             return $proprietario;
         } catch (Exception $e) {
-            error_log("ERRO Banco->getProprietarioPorId: " . $e->getMessage());
+            error_log("ERRO Banco->buscarPorId: " . $e->getMessage());
             return null;
         }
     }

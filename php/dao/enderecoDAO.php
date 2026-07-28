@@ -12,7 +12,7 @@ class EnderecoDAO
         $this->bancoDados = Banco::getInstance();
     }
 
-    public function getListaEnderecos()
+    public function listar()
     {
 
         try {
@@ -50,12 +50,12 @@ class EnderecoDAO
 
             return $lista;
         } catch (Exception $e) {
-            error_log("ERRO! Banco->getListaEnderecos: " . $e->getMessage());
+            error_log("ERRO! Banco->listar: " . $e->getMessage());
             return [];
         }
     }
 
-    public function verificarEndereco($enderecoObj)
+    public function verificar($enderecoObj)
     {
         try {
 
@@ -94,7 +94,7 @@ class EnderecoDAO
 
             return $endereco_resultado;
         } catch (Exception $e) {
-            $erro = "ERRO! Banco->verificarEndereco: " . $e->getMessage();
+            $erro = "ERRO! Banco->verificar: " . $e->getMessage();
             error_log($erro);
             return null;
         }
@@ -104,7 +104,7 @@ class EnderecoDAO
 
 
 
-    public function getEnderecoPorId($id)
+    public function buscarPorId($id)
     {
         try {
 
@@ -135,12 +135,12 @@ class EnderecoDAO
 
             return $endereco;
         } catch (Exception $e) {
-            error_log("ERRO! Banco->getEnderecoPorId: " . $e->getMessage());
+            error_log("ERRO! Banco->buscarPorId: " . $e->getMessage());
             return null;
         }
     }
 
-    public function cadastrarEndereco($endereco)
+    public function cadastrar($endereco)
     {
         try {
 
@@ -165,7 +165,7 @@ class EnderecoDAO
 
             return $this->bancoDados->lastInsertId();
         } catch (Exception $e) {
-            error_log("ERRO! Banco->cadastrarEndereco: " . $e->getMessage());
+            error_log("ERRO! Banco->cadastrar: " . $e->getMessage());
             return false;
         }
     }

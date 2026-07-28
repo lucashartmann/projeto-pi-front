@@ -1,5 +1,6 @@
 import { getCaminhoRelativo } from "./modules/utils.js";
 import { usuarioLogado, carregarUser } from "./modules/usuario.js";
+import { getUsuario } from "./modules/usuarios.js";
 
 Inputmask("(99) 99999-9999").mask("#inpt-telefone");
 Inputmask("999.999.999-99").mask("#inpt-cpf");
@@ -174,7 +175,6 @@ async function abrirImovel(imovel = null) {
 }
 
 async function abrirCadastro(usuario) {
-    usuario = JSON.parse(usuario);
     if (usuario) {
         document.getElementById("inpt-nome").value = usuario.nome || "";
         // document.getElementById("inpt-username").value = usuario.username || "";
@@ -288,9 +288,9 @@ window.addEventListener('DOMContentLoaded', async function (event) {
         }
     }
 
-    let usuario2 = this.sessionStorage.getItem("usuario");
+    const id = new URLSearchParams(window.location.search).get("id");
+    let usuario2 = id ? await getDadosUsuario(id) : null;
     if (usuario2) {
-        this.sessionStorage.removeItem("usuario");
         await abrirCadastro(usuario2);
     }
 });

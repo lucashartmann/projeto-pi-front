@@ -17,7 +17,7 @@ class VisitaDAO
         $this->imovelDAO = new ImovelDAO();
         $this->usuarioDAO = new UsuarioDAO();
     }
-    public function getListaVisitasPorCorretor($corretor)
+    public function listarPorCorretor($corretor)
     {
         $lista = [];
         $visitas = $this->bancoDados->prepare("SELECT * from visita WHERE id_corretor = :id_corretor");
@@ -26,15 +26,15 @@ class VisitaDAO
         foreach ($visitas as $visita) {
             $novaVisita = new Visita();
             $novaVisita->setId($visita['id_visita']);
-            $novaVisita->setImovel($this->imovelDAO->getImovelPorId($visita['id_imovel']));
-            $novaVisita->setCliente($this->usuarioDAO->getUsuarioPorId($visita['id_cliente']));
+            $novaVisita->setImovel($this->imovelDAO->buscarPorId($visita['id_imovel']));
+            $novaVisita->setCliente($this->usuarioDAO->buscarPorId($visita['id_cliente']));
             $lista[] = $novaVisita;
         }
 
         return $lista;
     }
 
-    public function cadastrarVisita($visita)
+    public function cadastrar($visita)
     {
         return $this->bancoDados->exec("
             INSERT INTO visita (id_cliente, id_imovel, id_corretor, data_visita, status) 

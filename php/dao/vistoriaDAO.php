@@ -14,7 +14,7 @@ class VistoriaDAO
         $this->bancoDados = Banco::getInstance();
         $this->imovelDAO = new ImovelDAO();
     }
-    public function getListaVistoriasPorVistoriador($vistoriador)
+    public function listarPorVistoriador($vistoriador)
     {
         $lista = [];
         $vistorias = $this->bancoDados->prepare("SELECT * from vistoria WHERE id_vistoriador = $vistoriador");
@@ -22,13 +22,13 @@ class VistoriaDAO
         foreach ($vistorias as $vistoria) {
             $novaVistoria = new Vistoria();
             $novaVistoria->setId($vistoria['id_vistoria']);
-            $novaVistoria->setImovel($this->imovelDAO->getImovelPorId($vistoria['id_imovel']));
+            $novaVistoria->setImovel($this->imovelDAO->buscarPorId($vistoria['id_imovel']));
             $lista[] = $novaVistoria;
         }
 
         return $lista;
     }
-    public function cadastrarVistoria($vistoria)
+    public function cadastrar($vistoria)
     {
         return $this->bancoDados->exec("
             INSERT INTO vistoria (id_imovel, data_vistoria, status) 

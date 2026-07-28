@@ -11,45 +11,49 @@ $controller = new ImovelController();
 
 switch ($acao) {
 
-    case "cadastrar_imovel":
-        // $body = file_get_contents("php://input");
+    case "cadastrar":
         $data = $_POST;
-
-        // if (json_last_error() !== JSON_ERROR_NONE) {
-        //     $resultado = (["status" => "erro", "mensagem" => "JSON inválido"]);
-        //     return;
-        // }
-
-        $resultado = $controller->cadastrarImovel($data);
-
+        $resultado = $controller->cadastrar($data);
         break;
 
-    case 'listar_imoveis':
-        $resultado = $controller->getListaImoveis();
+    case 'listar':
+        $resultado = $controller->listar();
         break;
 
-    case 'listar_imoveis_disponiveis':
-        $resultado = $controller->getListaImoveisDisponiveis();
+    case 'listar_disponiveis':
+        $resultado = $controller->listarDisponiveis();
         break;
 
-    case "get_dados_imovel":
+    case "get_imovel":
         $id = $_GET['id'] ?? null;
         if ($id) {
-            $resultado = $controller->getImovelPorId($id);
+            $resultado = $controller->buscarPorId($id);
         } else {
             $resultado = (["status" => "erro", "mensagem" => "ID do imóvel não fornecido"]);
         }
         break;
 
-    case "apagar_imovel":
+    case "apagar":
         $id = $_GET['id'] ?? null;
         if ($id) {
-            $resultado = $controller->apagarImovel($id);
+            $resultado = $controller->apagar($id);
         } else {
             $resultado = (["status" => "erro", "mensagem" => "ID do imóvel não fornecido"]);
         }
         break;
 
+    case "get_destacados":
+        $resultado = $controller->listarDestacados();
+        break;
+
+    case "destacar":
+        $id = $_GET['id'] ?? null;
+        if ($id) {
+            $resultado = $controller->destacar($id);
+        } else {
+            $resultado = (["status" => "erro", "mensagem" => "ID do imóvel não fornecido"]);
+        }
+        break;
 
     default:
         $resultado = (["status" => "erro", "mensagem" => "Ação inválida"]);

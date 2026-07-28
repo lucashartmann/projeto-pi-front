@@ -39,7 +39,7 @@ switch ($acao) {
             $resultado = (["status" => "erro", "mensagem" => "JSON inválido"]);
             return;
         }
-        $resultado = $controller->atualizarUsuario($data);
+        $resultado = $controller->atualizar($data);
         break;
 
     case "deslogar":

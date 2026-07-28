@@ -57,19 +57,19 @@ function bannerImoveis(dados) {
         if (!imovel) continue;
         var b64 = imovel.anuncio?.imagens?.[0];
         if (!b64) continue;
-        let precoVenda = document.createElement("span");
-        let precoAluguel = document.createElement("span");
+        let precoVenda = '';
+        let precoAluguel = '';
         if (imovel.valor_aluguel && imovel.valor_venda) {
-            precoVenda.innerHTML = `Venda: <p class="preco">${formatarValor(imovel.valor_venda)}</p>`;
-            precoAluguel.innerHTML = `Aluguel: <p class="preco">${formatarValor(imovel.valor_aluguel)}</p>`;
+            precoVenda = `<span>Venda: <span class="preco">${formatarValor(imovel.valor_venda)}</span></span>`;
+            precoAluguel = `<span>Aluguel: <span class="preco">${formatarValor(imovel.valor_aluguel)}</span></span>`;
         } else if (imovel.valor_venda) {
-            precoVenda.innerHTML = `Venda: <p class="preco">${formatarValor(imovel.valor_venda)}</p>`;
+            precoVenda = `<span>Venda: <span class="preco">${formatarValor(imovel.valor_venda)}</span></span>`;
         } else {
-            precoAluguel.innerHTML = `Aluguel: <p class="preco">${formatarValor(imovel.valor_aluguel)}</p>`;
+            precoAluguel = `<span>Aluguel: <span class="preco">${formatarValor(imovel.valor_aluguel)}</span></span>`;
         }
         wrapper.innerHTML += `
         <div class="swiper-slide"  onclick="abrirAnuncio(null, ${imovel.id})"> 
-        <img src="${b64}" alt="${imovel.anuncio.titulo}"><div><h2>${imovel.anuncio.titulo}</h2>${precoVenda.outerHTML}${precoAluguel.outerHTML}<p>${imovel.anuncio.descricao}</p></div></div>
+        <img src="${b64}" alt="${imovel.anuncio.titulo}"><div><h2>${imovel.anuncio.titulo}</h2>${precoVenda}${precoAluguel}<p>${imovel.anuncio.descricao}</p></div></div>
         `
     }
 }
@@ -127,7 +127,7 @@ async function carregarAnuncios(dados) {
         if (imovel.valor_aluguel && imovel.valor_venda) {
             precoVenda = `<span>Venda: <span class="preco">${formatarValor(imovel.valor_venda)}</span></span>`;
             precoAluguel = `<span>Aluguel: <span class="preco">${formatarValor(imovel.valor_aluguel)}</span></span>`;
-        } else if (imovel.valor_venda) {     
+        } else if (imovel.valor_venda) {
             precoVenda = `<span>Venda: <span class="preco">${formatarValor(imovel.valor_venda)}</span></span>`;
         } else {
             precoAluguel = `<span>Aluguel: <span class="preco">${formatarValor(imovel.valor_aluguel)}</span></span>`;
@@ -236,7 +236,7 @@ async function abrirAnuncio(imovel = null, id = null) {
         return;
     }
 
-    window.location.href = "html/dados-imovel.html?id="+imovel.id;
+    window.location.href = "html/dados-imovel.html?id=" + imovel.id;
 }
 
 function filtrar() {

@@ -19,7 +19,7 @@ class UsuarioController
         $this->proprietarioDAO = new ProprietarioDAO();
         $this->enderecoDAO = new EnderecoDAO();
     }
-    function montarJsonUsuario(array $listaUsuarios)
+    function montarJson(array $listaUsuarios)
     {
 
         if (!$listaUsuarios) {
@@ -85,17 +85,17 @@ class UsuarioController
         return ($lista);
     }
 
-    function listarUsuarios()
+    function listar()
     {
         try {
-            $usuarios = $this->usuarioDAO->getListaUsuarios();
-            return self::montarJsonUsuario($usuarios);
+            $usuarios = $this->usuarioDAO->listar();
+            return self::montarJson($usuarios);
         } catch (Exception $e) {
             return (["status" => "erro", "mensagem" => "Erro ao listar usuários"]);
         }
     }
 
-    function atualizarUsuario($dados)
+    function atualizar($dados)
     {
         try {
             $nome = array_key_exists('nome', $dados) ? $dados['nome'] : "";
@@ -120,7 +120,7 @@ class UsuarioController
             $complemento = array_key_exists('complemento', $dados) ? $dados['complemento'] : "";
 
             if ($id > 0) {
-                $usuario = $this->usuarioDAO->getUsuarioPorId($id);
+                $usuario = $this->usuarioDAO->buscarPorId($id);
             } else {
                 switch ($tipo) {
                     case "CORRETOR":
@@ -173,11 +173,11 @@ class UsuarioController
                 );
                 $endereco->setNumero($numero ?? null);
                 $endereco->setComplemento($complemento ?? null);
-                $verificar_endereco = $this->enderecoDAO->verificarEndereco($endereco);
+                $verificar_endereco = $this->enderecoDAO->verificar($endereco);
                 if ($verificar_endereco) {
                     $endereco = $verificar_endereco;
                 } else {
-                    $idEndereco = $this->enderecoDAO->cadastrarEndereco($endereco);
+                    $idEndereco = $this->enderecoDAO->cadastrar($endereco);
                     $endereco->setId($idEndereco);
                 }
             } else {
@@ -190,9 +190,9 @@ class UsuarioController
             $usuario->setDataModificacao(DateTime::createFromFormat('Y-m-d H:i:s', date('Y-m-d H:i:s')));
             if ($id > 0) {
                 if ($tipo == "PROPRIETARIO") {
-                    $atualizacao = $this->proprietarioDAO->atualizarProprietario($usuario);
+                    $atualizacao = $this->proprietarioDAO->atualizar($usuario);
                 } else {
-                    $atualizacao = $this->usuarioDAO->atualizarUsuario($usuario);
+                    $atualizacao = $this->usuarioDAO->atualizar($usuario);
                 }
                 if ($atualizacao) {
                     return (["status" => "sucesso", "mensagem" => "Usuário atualizado com sucesso"]);
@@ -202,9 +202,9 @@ class UsuarioController
             } else {
                 $usuario->setDataCadastro(DateTime::createFromFormat('Y-m-d H:i:s', date('Y-m-d H:i:s')));
                 if ($tipo == "PROPRIETARIO") {
-                    $atualizacao = $this->proprietarioDAO->cadastrarProprietario($usuario);
+                    $atualizacao = $this->proprietarioDAO->cadastrar($usuario);
                 } else {
-                    $atualizacao = $this->usuarioDAO->cadastrarUsuario($usuario);
+                    $atualizacao = $this->usuarioDAO->cadastrar($usuario);
                 }
                 if ($atualizacao) {
                     return (["status" => "sucesso", "mensagem" => "Usuário cadastrado com sucesso"]);
@@ -217,10 +217,24 @@ class UsuarioController
         }
     }
 
-    function apagarUsuario(int $id)
+    function buscarPorId(int $id)
     {
         try {
-            $usuario = $this->usuarioDAO->getUsuarioPorId($id);
+            $usuario = $this->usuarioDAO->buscarPorId($id);
+            if ($usuario) {
+                return self::montarJson([$usuario]);
+            } else {
+                return (["status" => "erro", "mensagem" => "Usuário não encontrado"]);
+            }
+        } catch (Exception $e) {
+            return (["status" => "erro", "mensagem" => "Erro ao buscar usuário: " . $e->getMessage()]);
+        }
+    }
+
+    function apagar(int $id)
+    {
+        try {
+            $usuario = $this->usuarioDAO->buscarPorId($id);
             if ($usuario) {
                 $remocao = $this->usuarioDAO->getConexao()->remover("id", $id, "usuario");
                 if ($remocao) {

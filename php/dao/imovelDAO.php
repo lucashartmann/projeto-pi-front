@@ -24,7 +24,48 @@ class ImovelDAO
         return $this->bancoDados;
     }
 
-    public function montarImovel($dados, $idImovel)
+    public function destacar($idImovel)
+    {
+        try {
+            $sql = "UPDATE imovel SET destacado = NOT destacado WHERE id = :id";
+            $stmt = $this->bancoDados->prepare($sql);
+            $stmt->execute([':id' => $idImovel]);
+            return true;
+        } catch (Exception $e) {
+            error_log("ERRO! Banco->destacar: " . $e->getMessage());
+            return false;
+        }
+    }
+
+    public function listarDestacados()
+    {
+        try {
+            $sql = "SELECT * FROM imovel d WHERE d.destacado = 1 AND d.tipo != 'Pendente'";
+            $stmt = $this->bancoDados->prepare($sql);
+            $stmt->execute();
+            $resultados = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            if (empty($resultados)) {
+                throw new Exception("Não há imóveis destacados");
+            }
+
+            $imoveisDestacados = [];
+            foreach ($resultados as $row) {
+                $idImovel = (int) $row['id_imovel'];
+                $imovel = $this->montar($row, $idImovel);
+                if ($imovel) {
+                    $imoveisDestacados[] = $imovel;
+                }
+            }
+
+            return $imoveisDestacados;
+        } catch (Exception $e) {
+            error_log("ERRO! Banco->listarDestacados: " . $e->getMessage());
+            return [];
+        }
+    }
+
+    public function montar($dados, $idImovel)
     {
         try {
 
@@ -248,12 +289,12 @@ class ImovelDAO
 
             return $imovelObj;
         } catch (Exception $e) {
-            error_log("ERRO! Banco-> montarImovel: " . $e->getMessage());
+            error_log("ERRO! Banco-> montar: " . $e->getMessage());
             return null;
         }
     }
 
-    public function getListaImoveis()
+    public function listar()
     {
 
         try {
@@ -346,7 +387,7 @@ class ImovelDAO
             foreach ($resultados as $dados) {
 
                 $id = (int) $dados['id'];
-                $imovel = $this->montarImovel($dados, $id);
+                $imovel = $this->montar($dados, $id);
                 if ($imovel) {
                     $lista[] = $imovel;
                 }
@@ -354,12 +395,12 @@ class ImovelDAO
 
             return $lista;
         } catch (Exception $e) {
-            error_log("ERRO Banco->getListaImoveis: " . $e->getMessage());
+            error_log("ERRO Banco->listar: " . $e->getMessage());
             return [];
         }
     }
 
-    public function getListaImoveisDisponiveis()
+    public function listarDisponiveis()
     {
 
         try {
@@ -454,7 +495,7 @@ class ImovelDAO
 
                 $id = (int) $dados['id'];
 
-                $imovel = $this->montarImovel($dados, $id);
+                $imovel = $this->montar($dados, $id);
                 if ($imovel) {
                     $lista[] = $imovel;
                 }
@@ -462,11 +503,11 @@ class ImovelDAO
 
             return $lista;
         } catch (Exception $e) {
-            error_log("ERRO Banco->getListaImoveisDisponiveis: " . $e->getMessage());
+            error_log("ERRO Banco->listarDisponiveis: " . $e->getMessage());
             return [];
         }
     }
-    public function getImovelPorId($idImovel)
+    public function buscarPorId($idImovel)
     {
         try {
             $sql = "
@@ -553,14 +594,14 @@ class ImovelDAO
                 throw new Exception("Imóvel não encontrado");
             }
 
-            return $this->montarImovel($dados, $idImovel);
+            return $this->montar($dados, $idImovel);
         } catch (Exception $e) {
-            error_log("ERRO! Banco->getImovelPorId: " . $e->getMessage());
+            error_log("ERRO! Banco->buscarPorId: " . $e->getMessage());
             return null;
         }
     }
 
-    public function getImoveisPorProprietario($idProprietario)
+    public function listarPorProprietario($idProprietario)
     {
         try {
             $stmt = $this->bancoDados->prepare("SELECT id_imovel FROM proprietario_imovel WHERE id_proprietario = ?");
@@ -572,20 +613,20 @@ class ImovelDAO
             $imoveis = [];
             foreach ($dados as $row) {
                 $id = (int) $row['id_imovel'];
-                $imovel = $this->getImovelPorId($id);
+                $imovel = $this->buscarPorId($id);
                 if ($imovel) {
                     $imoveis[] = $imovel;
                 }
             }
             return $imoveis;
         } catch (Exception $e) {
-            $erro = "ERRO! Banco->getImoveisPorProprietario: " . $e->getMessage();
+            $erro = "ERRO! Banco->listarPorProprietario: " . $e->getMessage();
             error_log($erro);
             return [];
         }
     }
 
-    function getImoveisFavoritos(int $idCliente)
+    function listarFavoritos(int $idCliente)
     {
         try {
             $sql = "
@@ -707,14 +748,14 @@ class ImovelDAO
 
             foreach ($dados as $registro) {
                 $idImovel = (int) $registro['id'];
-                $imovel = $this->montarImovel($registro, $idImovel);
+                $imovel = $this->montar($registro, $idImovel);
                 if ($imovel) {
                     $lista[] = $imovel;
                 }
             }
             return $lista;
         } catch (Exception $e) {
-            error_log("ERRO Banco->getImoveisFavoritos: " . $e->getMessage());
+            error_log("ERRO Banco->listarFavoritos: " . $e->getMessage());
             return [];
         }
     }
@@ -778,7 +819,7 @@ class ImovelDAO
         }
     }
 
-    public function atualizarImovel($imovel)
+    public function atualizar($imovel)
     {
 
         try {
@@ -808,7 +849,7 @@ class ImovelDAO
             $dataCadastro = $dataCadastro ? $dataCadastro->format("Y-m-d") : null;
             $dataModificacao = $imovel->getDataModificacao();
             $dataModificacao = $dataModificacao ? $dataModificacao->format("Y-m-d") : null;
-            $imovelDb = $this->getImovelPorId($imovel->getId());
+            $imovelDb = $this->buscarPorId($imovel->getId());
             $propsAntigos = $imovelDb ? $imovelDb->getProprietarios() : [];
             $propsNovos = $imovel->getProprietarios() ?: [];
 
@@ -849,7 +890,7 @@ class ImovelDAO
                 if (!in_array($f, $filtrosNovos)) {
                     $id = $this->getIdFiltroImovelPorNome($f);
                     if ($id !== null) {
-                        $this->removerFiltroDoImovel($imovel->getId(), $id);
+                        $this->removerFiltro($imovel->getId(), $id);
                     }
                 }
             }
@@ -858,7 +899,7 @@ class ImovelDAO
                 if (!in_array($f, $filtrosAntigos)) {
                     $id = $this->getIdFiltroImovelPorNome($f);
                     if ($id !== null) {
-                        $this->cadastrarFiltroImovel($imovel->getId(), $id);
+                        $this->cadastrarFiltro($imovel->getId(), $id);
                     }
                 }
             }
@@ -930,13 +971,13 @@ class ImovelDAO
             if ($this->bancoDados->inTransaction()) {
                 $this->bancoDados->rollBack();
             }
-            error_log("ERRO Banco->atualizarImovel: " . $e->getMessage());
+            error_log("ERRO Banco->atualizar: " . $e->getMessage());
             return false;
         }
     }
 
 
-    public function cadastrarImovel($imovel)
+    public function cadastrar($imovel)
     {
         try {
 
@@ -1084,7 +1125,7 @@ class ImovelDAO
             if ($this->bancoDados->inTransaction()) {
                 $this->bancoDados->rollBack();
             }
-            error_log("ERRO! Banco->cadastrarImovel: " . $e->getMessage());
+            error_log("ERRO! Banco->cadastrar: " . $e->getMessage());
             return false;
         }
     }
@@ -1110,7 +1151,7 @@ class ImovelDAO
         }
     }
 
-    public function cadastrarFiltroImovel($idImovel, $idFiltro)
+    public function cadastrarFiltro($idImovel, $idFiltro)
     {
         try {
 
@@ -1122,15 +1163,14 @@ class ImovelDAO
             return $stmt->execute([
                 ':id_imovel' => $idImovel,
                 ':id_filtro' => $idFiltro
-            ]);
-            ;
+            ]);;
         } catch (Exception $e) {
-            error_log("ERRO Banco->cadastrarFiltroImovel: " . $e->getMessage());
+            error_log("ERRO Banco->cadastrarFiltro: " . $e->getMessage());
             return false;
         }
     }
 
-    public function removerFiltroDoImovel($idImovel, $idFiltro)
+    public function removerFiltro($idImovel, $idFiltro)
     {
         try {
 
@@ -1144,9 +1184,8 @@ class ImovelDAO
                 ':id_filtro' => $idFiltro
             ]);
         } catch (Exception $e) {
-            error_log("ERRO Banco->removerFiltroDoImovel: " . $e->getMessage());
+            error_log("ERRO Banco->removerFiltro: " . $e->getMessage());
             return false;
         }
     }
-
 }

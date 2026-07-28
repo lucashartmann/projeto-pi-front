@@ -14,6 +14,7 @@ let seta = "";
 window.filtroOrdenado = filtroOrdenado;
 window.filtrar = filtrar;
 window.trocarCadastro = trocarCadastro;
+window.openMenu = openMenu;
 
 async function filtroOrdenado() {
     seta = event.target;
@@ -434,9 +435,9 @@ async function carregarUsuarios(tipo) {
         return;
     }
 
-    if (tipo !== "" ) {
+    if (tipo !== "") {
         dados = dados.filter(usuario => usuario.tipo === tipo);
-    } 
+    }
 
     if (dados.length === 0) {
         alert("Nenhum usuário encontrado para o tipo selecionado.");
@@ -488,14 +489,17 @@ async function carregarUsuarios(tipo) {
         });
 
         html += `
-                    <tr onclick="abrirCadastroUsuario(null, ${usuario.id})">
-                        <td>${usuario.id}</td>
-                        <td>${usuario.nome}</td>
-                        <td>${usuario.email}</td>
-                        <td class="telefones">${telefonesFormatados.join('<br>')}</td>
-                        <td>${usuario.data_cadastro ? new Date(usuario.data_cadastro?.date).toLocaleDateString() : ''}</td>
-                        <td>${usuario.data_modificacao ? new Date(usuario.data_modificacao?.date).toLocaleDateString() : ''}</td>
-                    </tr>
+                    
+                        <tr onclick="window.location.href='cadastro-cliente.html?id=${usuario.id}'" style="cursor: pointer;">
+                            <td><a href="cadastro-cliente.html?id=${usuario.id}">${usuario.id}</a></td>
+                            <td><a href="cadastro-cliente.html?id=${usuario.id}">${usuario.nome}</a></td>
+                            <td><a href="cadastro-cliente.html?id=${usuario.id}">${usuario.email}</a></td>
+                            <td class="telefones"><a href="cadastro-cliente.html?id=${usuario.id}">${telefonesFormatados.join('<br>')}</a></td>
+                            <td><a href="cadastro-cliente.html?id=${usuario.id}">${usuario.data_cadastro ? new Date(usuario.data_cadastro?.date).toLocaleDateString() : ''}</a></td>
+                            <td><a href="cadastro-cliente.html?id=${usuario.id}">${usuario.data_modificacao ? new Date(usuario.data_modificacao?.date).toLocaleDateString() : ''}</a></td>
+                            <td><button>Deletar</button></td>
+                        </tr>
+                    
         `;
     }
     html += `</tbody></table>`;
@@ -544,6 +548,7 @@ function carregarAnuncios() {
                 <button id="selecionar-todos" onclick="selecionarTodos()">Selecionar Todos</button>
                 <button id="abrir-multiplos" style="display: none;" onclick="abrirMultiplos()">Abrir</button>
                 <button id="apagar-multiplos" style="display: none;" onclick="apagarMultiplos()">Apagar</button>
+                <button id="destaque-multiplos" style="display: none;" onclick="tornarDestaqueMultiplos()">Tornar Destaque</button>
                 <p id="contador-imoveis">${dados.length} imóveis</p>
             </div>
             <section id="container-resultado">
@@ -552,10 +557,10 @@ function carregarAnuncios() {
     for (let imovel of dados) {
         const b64 = imovel.anuncio?.imagens?.[0] || null;
         html += `
-            <div class="resultado">
+            <a class="resultado" href="cadastro-imovel.html?id=${imovel.id}">
                 <input type="checkbox" class="checkbox-selecionar" onclick="montarOpcoes()">
                 <img src="${b64}" alt="">
-                <div class="dados" onclick="abrirCadastro(null, ${imovel.id})">
+                <div class="dados">
                     <label>Ref: ${imovel.id}</label>
                     <label for="">Rua: ${imovel.endereco?.rua}, ${imovel.endereco?.numero}, ${imovel.endereco?.bairro}, ${imovel.endereco?.cep}</label>
                     <label for="">Categoria: ${imovel.categoria}</label>
@@ -568,7 +573,7 @@ function carregarAnuncios() {
                 <li style="list-style: none;">
                     <i class="fas fa-bars" onclick="openMenu(this)"></i>
                 </li>
-            </div>
+            </a>
         `;
     }
     html += `</section>`;
@@ -576,6 +581,13 @@ function carregarAnuncios() {
 }
 
 let barra = null;
+
+function tornarDestaque(imovelId) {
+}
+
+function tornarDestaqueMultiplos() {
+
+}
 
 function openMenu(element) {
     if (document.querySelector(".menu-opcoes")) {
@@ -595,6 +607,7 @@ function openMenu(element) {
         <button onclick="abrirCadastro(null, ${element.closest('.resultado').querySelector('.dados label').textContent.split('Ref: ')[1]})">Editar</button>
         <button onclick="apagarImovel(${element.closest('.resultado').querySelector('.dados label').textContent.split('Ref: ')[1]})">Apagar</button>
         <button onclick="duplicarImovel(${element.closest('.resultado').querySelector('.dados label').textContent.split('Ref: ')[1]})">Duplicar</button>
+        <button onclick="tornarDestaque(${element.closest('.resultado').querySelector('.dados label').textContent.split('Ref: ')[1]})">Tornar Destaque</button>
     `;
     document.body.appendChild(menu);
     let posicao = element.getBoundingClientRect();
@@ -626,7 +639,7 @@ async function apagarImovel(imovelId) {
     confirmar = confirm("Tem certeza que deseja excluir este imóvel?");
     if (imovelId && confirmar) {
         try {
-            let caminho = getCaminhoRelativo("/php/api/imoveis.php?acao=apagar_imovel&id=" + imovelId);
+            let caminho = getCaminhoRelativo("/php/api/imoveis.php?acao=apagar&id=" + imovelId);
             const response = await fetch(caminho, {
                 method: "POST",
                 headers: {
@@ -676,15 +689,18 @@ function montarOpcoes() {
     const checkboxes = document.querySelectorAll(".checkbox-selecionar:checked");
     const botaoApagar = filtro.querySelector("#apagar-multiplos");
     const botaoAbrir = filtro.querySelector("#abrir-multiplos");
+    const botaoDestaque = filtro.querySelector("#destaque-multiplos");
     if (checkboxes.length > 0) {
         const filtro = document.getElementById("h-filtro");
         filtro.innerHTML = "";
         botaoApagar.style.display = "block";
         botaoAbrir.style.display = "block";
+        botaoDestaque.style.display = "block";
     } else {
         const filtro = document.getElementById("h-filtro");
         botaoApagar.style.display = "none";
         botaoAbrir.style.display = "none";
+        botaoDestaque.style.display = "none";
     }
 }
 
@@ -694,30 +710,6 @@ function selecionarTodos() {
     checkboxes.forEach(checkbox => checkbox.checked = !todosSelecionados);
     montarOpcoes();
 }
-
-function abrirCadastroUsuario(usuario = null, id = null) {
-    if (id && !usuario) {
-        usuario = usuariosCache.find(usuario => usuario.id == id);
-    } else if (!usuario && !id) {
-        usuario = null;
-        return
-    }
-    sessionStorage.setItem("usuario", JSON.stringify(usuario));
-    window.location.href = "cadastro-cliente.html";
-}
-
-
-function abrirCadastro(imovel = null, id = null) {
-    if (id && !imovel) {
-        imovel = imoveisCache.find(imovel => imovel.id == id);
-    } else if (!imovel && !id) {
-        imovel = null;
-        return
-    }
-    sessionStorage.setItem("imovel", JSON.stringify(imovel));
-    window.location.href = "cadastro-imovel.html";
-}
-
 
 window.addEventListener("DOMContentLoaded", async () => {
     let dados = [];

@@ -13,10 +13,10 @@ $acao = $_GET['acao'] ?? '';
 switch ($acao) {
 
     case "cadastrar_visita":
-        // cadastrarVisita();
+        // cadastrar();
         break;
     case "cadastrar_vistoria":
-        // cadastrarVistoria();
+        // cadastrar();
         break;
 
     default:

@@ -153,6 +153,8 @@ class Banco extends PDO
                 data_modificacao DATETIME NULL,
                 id_anuncio INT NULL,
                 id_condominio INT NULL,
+                quant_clicks INTEGER DEFAULT 0,
+                destacado BOOLEAN DEFAULT FALSE,
                 FOREIGN KEY (id_anuncio) REFERENCES anuncio(id),
                 FOREIGN KEY (id_endereco) REFERENCES endereco(id),
                 FOREIGN KEY (id_corretor) REFERENCES corretor(id_usuario),
@@ -171,7 +173,7 @@ class Banco extends PDO
                 id INTEGER PRIMARY KEY AUTO_INCREMENT,
                 id_anuncio INTEGER NULL,
                 nome_arquivo VARCHAR(255) NULL,
-                tipo VARCHAR(255) NULL,
+                tipo ENUM('imagem', 'video', 'documento') NULL,
                 FOREIGN KEY (id_anuncio) REFERENCES anuncio(id) ON DELETE CASCADE
             )",
 
@@ -202,7 +204,7 @@ class Banco extends PDO
                     id_imovel INTEGER  NULL,
                     id_corretor INT  NULL,
                     id_cliente INT NULL,
-                    status VARCHAR(255) NULL,
+                    status ENUM('Em Andamento', 'Pendente') NULL,
                     FOREIGN KEY (id_imovel) REFERENCES imovel(id),
                     FOREIGN KEY (id_corretor) references corretor(id_usuario),
                     FOREIGN KEY (id_cliente) references cliente(id_usuario) ON DELETE CASCADE
