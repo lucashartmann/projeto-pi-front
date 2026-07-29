@@ -6,3 +6,5 @@
 - [ ] Adicionar opçao de tornar destaque no estoque 
 - [ ] Adicionar opção de tornar destaque no estoque ao selecionar todos, tambem de apagar ou abrir
 - [ ] adicionar whats no anuncio no index e no anuncios 
+- [ ] Melhorar tempo de carregamento de dados na dados-imovel
+- [ ] Melhorar o background das setas do primeiro swiper do index

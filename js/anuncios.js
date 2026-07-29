@@ -11,7 +11,6 @@ let filtroUsuario = "";
 let seta = "";
 var favoritos = false;
 
-window.abrirAnuncio = abrirAnuncio;
 window.curtirImovel = curtirImovel;
 window.filtrar = filtrar;
 window.filtroOrdenado = filtroOrdenado;
@@ -73,26 +72,6 @@ async function listarImoveisFavoritados() {
     }
 
 }
-
-async function abrirAnuncio(imovel = null, id = null) {
-    if (id && !imovel) {
-        imovel = imoveisCache.find(imovel => imovel.id == id);
-    } else if (!imovel && !id) {
-        imovel = null;
-        return
-    }
-
-    if (event.target.classList.contains("swiper-button-prev") || event.target.classList.contains("swiper-button-next") || event.target.classList.contains("fa-heart") || event.target.classList.contains("fa-whatsapp")) {
-        return;
-    }
-
-    if (event.target.classList.contains("swiper-slide") && !event.target.classList.contains("swiper-slide-active")) {
-        return;
-    }
-
-    window.location.href = "dados-imovel.html?id=" + imovel.id;
-}
-
 
 async function filtroOrdenado() {
     seta = event.target;
@@ -393,11 +372,11 @@ async function carregarAnuncios() {
                 ${precoAluguel}
                 <p class="descricao">${imovel.anuncio?.descricao}</p>
                 <div class="emojis">
-                    <i class="fas fa-ruler-combined"><p>${imovel.area_total || 0.00} m²</p></i> 
-                    <i class="fas fa-bath"><p>${imovel.quantidade_banheiros || 0}</p></i> 
-                    <i class="fas fa-couch"><p>${imovel.quantidade_salas || 0}</p></i> 
-                    <i class="fas fa-bed"><p>${imovel.quantidade_quartos || 0}</p></i>
-                    <i class="fas fa-car"><p>${imovel.quantidade_vagas || 0}</p></i>
+                    <i class="fas fa-ruler-combined"><p>${imovel.area_total != null ? imovel.area_total : 0.00} m²</p></i> 
+                    <i class="fas fa-bath"><p>${imovel.quantidade_banheiros != null ? imovel.quantidade_banheiros : 0}</p></i> 
+                    <i class="fas fa-couch"><p>${imovel.quantidade_salas != null ? imovel.quantidade_salas : 0}</p></i> 
+                    <i class="fas fa-bed"><p>${imovel.quantidade_quartos != null ? imovel.quantidade_quartos : 0}</p></i>
+                    <i class="fas fa-car"><p>${imovel.quantidade_vagas != null ? imovel.quantidade_vagas : 0}</p></i>
                 
                 </div>
            
@@ -507,4 +486,10 @@ window.addEventListener('beforeunload', async function (event) {
         await salvarImoveisCurtidos();
     }
 
+});
+
+window.addEventListener("onclick", async () => {
+    if (event.target.classList.contains("swiper-button-prev") || event.target.classList.contains("swiper-button-next") || event.target.classList.contains("fa-heart") || event.target.classList.contains("fa-whatsapp")) {
+        event.stopPropagation();
+    }
 });

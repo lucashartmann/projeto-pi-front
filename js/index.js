@@ -3,14 +3,11 @@ import { carregarUser, salvarImoveisCurtidos, curtirImovel, imoveisCurtidos } fr
 import { getCaminhoRelativo, formatarValor } from "./modules/utils.js";
 import { usuarioLogado } from "./modules/usuario.js";
 
-window.abrirAnuncio = abrirAnuncio;
 window.curtirImovel = curtirImovel;
 window.filtrar = filtrar;
 
-
 let dadosImoveis = [];
 let imoveisFiltrados = [];
-
 
 function imovelPrincipal(dados) {
     if (!Array.isArray(dados) || dados.length === 0) return;
@@ -30,20 +27,20 @@ function imovelPrincipal(dados) {
     }
 
     document.querySelector("#gallery").innerHTML = `
-        <img src="${lista[0].anuncio.imagens[0]}"  onclick="abrirAnuncio(null, ${lista[0].id})">
-        <img src="${lista[1].anuncio.imagens[0]}"  onclick="abrirAnuncio(null, ${lista[1].id})">
+        <img src="${lista[0].anuncio.imagens[0]}"  onclick="html/dados-imovel.html?id=${lista[0].id}">
+        <img src="${lista[1].anuncio.imagens[0]}"  onclick="html/dados-imovel.html?id=${lista[1].id}">
     `
 
     document.querySelector("#gallery3").innerHTML = `
-        <img src="${lista[2].anuncio.imagens[0]}"  onclick="abrirAnuncio(null, ${lista[2].id})">
-        <img src="${lista[3].anuncio.imagens[0]}"  onclick="abrirAnuncio(null, ${lista[3].id})">
+        <img src="${lista[2].anuncio.imagens[0]}"  onclick="html/dados-imovel.html?id=${lista[2].id}">
+        <img src="${lista[3].anuncio.imagens[0]}"  onclick="html/dados-imovel.html?id=${lista[3].id}">
     `
 
     document.querySelector("#gallery2").innerHTML = `
-        <img src="${lista[4].anuncio.imagens[0]}"  onclick="abrirAnuncio(null, ${lista[4].id})">
-        <img src="${lista[5].anuncio.imagens[0]}"  onclick="abrirAnuncio(null, ${lista[5].id})">
-        <img src="${lista[6].anuncio.imagens[0]}"  onclick="abrirAnuncio(null, ${lista[6].id})">
-        <img src="${lista[7].anuncio.imagens[0]}"  onclick="abrirAnuncio(null, ${lista[7].id})">
+        <img src="${lista[4].anuncio.imagens[0]}"  onclick="html/dados-imovel.html?id=${lista[4].id}">
+        <img src="${lista[5].anuncio.imagens[0]}"  onclick="html/dados-imovel.html?id=${lista[5].id}">
+        <img src="${lista[6].anuncio.imagens[0]}"  onclick="html/dados-imovel.html?id=${lista[6].id}">
+        <img src="${lista[7].anuncio.imagens[0]}"  onclick="html/dados-imovel.html?id=${lista[7].id}">
     `
 
 }
@@ -68,7 +65,7 @@ function bannerImoveis(dados) {
             precoAluguel = `<span>Aluguel: <span class="preco">${formatarValor(imovel.valor_aluguel)}</span></span>`;
         }
         wrapper.innerHTML += `
-        <div class="swiper-slide"  onclick="abrirAnuncio(null, ${imovel.id})"> 
+        <div class="swiper-slide"  onclick="html/dados-imovel.html?id=${imovel.id}"> 
         <img src="${b64}" alt="${imovel.anuncio.titulo}"><div><h2>${imovel.anuncio.titulo}</h2>${precoVenda}${precoAluguel}<p>${imovel.anuncio.descricao}</p></div></div>
         `
     }
@@ -138,7 +135,7 @@ async function carregarAnuncios(dados) {
         // TODO: Botar os ids dos imóveis favoritados na lista imoveisCurtidos
 
         html += `
-            <a href="dados-imovel.html?id=${imovel.id}" class="anuncio-link anuncio-imovel" >
+            <a href="html/dados-imovel.html?id=${imovel.id}" class="anuncio-link anuncio-imovel" >
                 <i class="fas fa-heart ${classe}" onclick="curtirImovel(event, ${imovel.id})"></i>
                 <div class="swiper swiper-anuncio">
                     <div class="swiper-wrapper">
@@ -156,11 +153,11 @@ async function carregarAnuncios(dados) {
                 ${precoAluguel}
                 <p class="descricao">${imovel.anuncio?.descricao}</p>
                 <div class="emojis">
-                    <i class="fas fa-ruler-combined"><p>${imovel.area_total || 'N/A'} m²</p></i> 
-                    <i class="fas fa-bath"><p>${imovel.quantidade_banheiros || 'N/A'}</p></i> 
-                    <i class="fas fa-couch"><p>${imovel.quantidade_salas || 'N/A'}</p></i> 
-                    <i class="fas fa-bed"><p>${imovel.quantidade_quartos || 'N/A'}</p></i>
-                    <i class="fas fa-car"><p>${imovel.quantidade_vagas || 'N/A'}</p></i>
+                    <i class="fas fa-ruler-combined"><p>${imovel.area_total != null ? imovel.area_total : 'N/A'} m²</p></i> 
+                    <i class="fas fa-bath"><p>${imovel.quantidade_banheiros != null ? imovel.quantidade_banheiros : 'N/A'}</p></i> 
+                    <i class="fas fa-couch"><p>${imovel.quantidade_salas != null ? imovel.quantidade_salas : 'N/A'}</p></i> 
+                    <i class="fas fa-bed"><p>${imovel.quantidade_quartos != null ? imovel.quantidade_quartos : 'N/A'}</p></i>
+                    <i class="fas fa-car"><p>${imovel.quantidade_vagas != null ? imovel.quantidade_vagas : 'N/A'}</p></i>
                 </div>
             </a>
         `;
@@ -220,24 +217,6 @@ function pesquisarCEP(event) {
     }
 }
 
-async function abrirAnuncio(imovel = null, id = null) {
-    if (id && !imovel) {
-        imovel = dadosImoveis.find(imovel => imovel.id == id);
-    } else if (!imovel && !id) {
-        imovel = null;
-        return
-    }
-
-    if (event.target.classList.contains("swiper-button-prev") || event.target.classList.contains("swiper-button-next") || event.target.classList.contains("fa-heart") || event.target.classList.contains("fa-whatsapp")) {
-        return;
-    }
-
-    if (event.target.classList.contains("swiper-slide") && !event.target.classList.contains("swiper-slide-active")) {
-        return;
-    }
-
-    window.location.href = "html/dados-imovel.html?id=" + imovel.id;
-}
 
 function filtrar() {
 
@@ -294,45 +273,45 @@ function filtrar() {
 
 function estilizarDiv() {
     document.querySelectorAll(".swiper-slide > div").forEach(card => {
-    let dragging = false;
-    let startX, startY;
-    let x = 20;
-    let y = 20;
+        let dragging = false;
+        let startX, startY;
+        let x = 20;
+        let y = 20;
 
-    card.addEventListener("pointerdown", e => {
-        e.stopPropagation();
+        card.addEventListener("pointerdown", e => {
+            e.stopPropagation();
+        });
+
+        card.addEventListener("click", e => {
+            e.stopPropagation();
+        });
+
+        card.addEventListener("pointerdown", e => {
+            dragging = true;
+            card.setPointerCapture(e.pointerId);
+            startX = e.clientX;
+            startY = e.clientY;
+            card.style.cursor = "grabbing";
+        });
+
+        card.addEventListener("pointermove", e => {
+            if (!dragging) return;
+
+            x -= startX - e.clientX;
+            y -= startY - e.clientY;
+
+            startX = e.clientX;
+            startY = e.clientY;
+
+            card.style.right = `${20 - x}px`;
+            card.style.bottom = `${20 - y}px`;
+        });
+
+        card.addEventListener("pointerup", () => {
+            dragging = false;
+            card.style.cursor = "grab";
+        });
     });
-
-    card.addEventListener("click", e => {
-        e.stopPropagation();
-    });
-
-    card.addEventListener("pointerdown", e => {
-        dragging = true;
-        card.setPointerCapture(e.pointerId);
-        startX = e.clientX;
-        startY = e.clientY;
-        card.style.cursor = "grabbing";
-    });
-
-    card.addEventListener("pointermove", e => {
-        if (!dragging) return;
-
-        x -= startX - e.clientX;
-        y -= startY - e.clientY;
-
-        startX = e.clientX;
-        startY = e.clientY;
-
-        card.style.right = `${20 - x}px`;
-        card.style.bottom = `${20 - y}px`;
-    });
-
-    card.addEventListener("pointerup", () => {
-        dragging = false;
-        card.style.cursor = "grab";
-    });
-});
 }
 
 window.addEventListener("DOMContentLoaded", async () => {
@@ -347,12 +326,12 @@ window.addEventListener("DOMContentLoaded", async () => {
     }
     inicializarSwiper();
     estilizarDiv();
-    // setInterval(() => {
-    //     const swiper = document.querySelector('.swiper-destaque').swiper;
-    //     if (swiper) {
-    //         swiper.slideNext();
-    //     }
-    // }, 7500);
+    setInterval(() => {
+        const swiper = document.querySelector('.swiper-destaque').swiper;
+        if (swiper) {
+            swiper.slideNext();
+        }
+    }, 7500);
 });
 
 window.addEventListener('beforeunload', async function (event) {
@@ -362,4 +341,11 @@ window.addEventListener('beforeunload', async function (event) {
         await salvarImoveisCurtidos();
     }
 
+});
+
+
+window.addEventListener("onclick", async () => {
+    if (event.target.classList.contains("swiper-button-prev") || event.target.classList.contains("swiper-button-next") || event.target.classList.contains("fa-heart") || event.target.classList.contains("fa-whatsapp")) {
+        event.stopPropagation();
+    }
 });

@@ -89,15 +89,16 @@ section#anuncios {
         .swiper-button-next {
             color: white;
             width: 42px;
-            height: 42px;
+            height: 42px !important;
             border-radius: 50%;
-            /* background: rgba(0, 0, 0, .25); */
-            /* backdrop-filter: blur(6px); */
+            background: rgba(65, 65, 65, 0.2);
+            backdrop-filter: blur(3px);
         }
 
         .swiper-button-prev::after,
         .swiper-button-next::after {
             font-size: 1rem;
+            align-content: center !important;
         }
     }
 
@@ -146,7 +147,7 @@ section#anuncios {
         font-size: 1.2rem;
         font-weight: 600;
         opacity: .8;
-        
+
     }
 
     .preco {
@@ -156,6 +157,7 @@ section#anuncios {
         font-weight: 700;
         color: rgb(11, 85, 7);
         width: auto;
+        min-width: 2rem;
     }
 
     .descricao {
@@ -198,7 +200,7 @@ section#anuncios {
             p {
                 margin: 0;
                 color: var(--cor-texto-alternativa);
-                font-size: .82rem;
+                font-size: 1rem;
                 font-weight: 600;
             }
         }
@@ -348,7 +350,7 @@ section#anuncios {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 10px;
+    gap: 30px;
     margin-top: 30px;
     width: 50%;
     font-size: 140%;
@@ -358,7 +360,7 @@ section#anuncios {
         padding: 10px;
         border: solid rgba(47, 45, 45, 0.2) 2px;
         box-shadow: 0.1px 0.1px 3px black;
-        border-radius: 2% / 30%;
+        border-radius: 5% / 30%;
     }
 
     input {
@@ -366,7 +368,7 @@ section#anuncios {
         padding: 10px;
         border: solid rgba(47, 45, 45, 0.2) 2px;
         box-shadow: 0.1px 0.1px 3px black;
-        border-radius: 2% / 30%;
+        border-radius: 5% / 30%;
     }
 }
 
@@ -391,6 +393,16 @@ section#anuncios {
 
     .swiper-button-next {
         color: #000;
+    }
+
+    .swiper-button-prev,
+    .swiper-button-next {
+        color: white;
+        width: 42px;
+        height: 42px !important;
+        border-radius: 50%;
+        background: rgba(65, 65, 65, 0.2);
+        backdrop-filter: blur(3px);
     }
 
     .swiper-slide {
