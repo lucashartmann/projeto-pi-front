@@ -233,9 +233,6 @@ label {
 #container-cadastro {
     justify-self: center;
     align-self: center;
-    /* justify-content: center; */
-    /* justify-items: center; */
-    /* margin: 0 auto; */
     margin-bottom: 50px;
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(14%, 2fr));
@@ -243,7 +240,6 @@ label {
     column-gap: 20px;
     width: 100%;
     padding: 60px;
-    /* background-color: rgba(65, 65, 65, 0.7); */
 
     textarea {
         height: 1.6rem;
@@ -292,7 +288,6 @@ label {
         width: 100%;
         gap: 40px;
         background: rgba(92, 78, 78, 0.92);
-        ;
         backdrop-filter: blur(40px) !important;
         height: 3rem;
 

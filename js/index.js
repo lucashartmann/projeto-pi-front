@@ -292,6 +292,49 @@ function filtrar() {
     carregarAnuncios(imoveisFiltrados);
 }
 
+function estilizarDiv() {
+    document.querySelectorAll(".swiper-slide > div").forEach(card => {
+    let dragging = false;
+    let startX, startY;
+    let x = 20;
+    let y = 20;
+
+    card.addEventListener("pointerdown", e => {
+        e.stopPropagation();
+    });
+
+    card.addEventListener("click", e => {
+        e.stopPropagation();
+    });
+
+    card.addEventListener("pointerdown", e => {
+        dragging = true;
+        card.setPointerCapture(e.pointerId);
+        startX = e.clientX;
+        startY = e.clientY;
+        card.style.cursor = "grabbing";
+    });
+
+    card.addEventListener("pointermove", e => {
+        if (!dragging) return;
+
+        x -= startX - e.clientX;
+        y -= startY - e.clientY;
+
+        startX = e.clientX;
+        startY = e.clientY;
+
+        card.style.right = `${20 - x}px`;
+        card.style.bottom = `${20 - y}px`;
+    });
+
+    card.addEventListener("pointerup", () => {
+        dragging = false;
+        card.style.cursor = "grab";
+    });
+});
+}
+
 window.addEventListener("DOMContentLoaded", async () => {
     const dados = await listarImoveisDisponiveis() || NaN;
     dadosImoveis = dados;
@@ -303,12 +346,13 @@ window.addEventListener("DOMContentLoaded", async () => {
         console.error("Não foi possível carregar os imóveis");
     }
     inicializarSwiper();
-    setInterval(() => {
-        const swiper = document.querySelector('.swiper-destaque').swiper;
-        if (swiper) {
-            swiper.slideNext();
-        }
-    }, 7500);
+    estilizarDiv();
+    // setInterval(() => {
+    //     const swiper = document.querySelector('.swiper-destaque').swiper;
+    //     if (swiper) {
+    //         swiper.slideNext();
+    //     }
+    // }, 7500);
 });
 
 window.addEventListener('beforeunload', async function (event) {

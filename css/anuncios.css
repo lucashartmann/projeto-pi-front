@@ -170,7 +170,7 @@ section {
     max-height: 550px;
     z-index: 2;
     gap: 6px;
-
+    
     .swiper {
         width: 100%;
         margin: 0 auto;
