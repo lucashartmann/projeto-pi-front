@@ -32,12 +32,11 @@ require_once __DIR__ . '/../dao/vistoriaDAO.php';
 function initialize()
 {
 
-    $imobiliaria;
-    $usuarioAtual;
+
     $filtrosImovel = [
         "Aceita Pet",
         "Churrasqueira",
-        "Armarios Embutidos",
+        "Armários Embutidos",
         "Cozinha Americana",
         "Área de Serviço",
         "Suíte Master",

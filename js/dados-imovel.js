@@ -106,16 +106,25 @@ function setupDados(imovel) {
         document.querySelectorAll("#div-titulo h3")[1].innerText = formatarValor(imovel.valor_venda) + " | " + formatarValor(imovel.valor_aluguel);
         document.querySelector("#entrar-contato #valor-venda").innerText = formatarValor(imovel.valor_venda);
         document.querySelector("#entrar-contato #valor-aluguel").innerText = formatarValor(imovel.valor_aluguel);
+
+        document.querySelector("#entrar-contato #label-venda").style.marginTop = "40px";
+        document.querySelector("#entrar-contato #label-aluguel").style.marginTop = "10px";
+        document.querySelector("#entrar-contato #valor-aluguel").style.marginBottom = "50px";
+
     } else if (imovel.valor_venda) {
         document.querySelectorAll("#div-titulo h3")[1].innerText = formatarValor(imovel.valor_venda);
         document.querySelector("#entrar-contato #valor-venda").innerText = formatarValor(imovel.valor_venda);
         document.querySelector("#entrar-contato #valor-aluguel").style.display = "none";
         document.querySelector("#entrar-contato #label-aluguel").style.display = "none";
+        document.querySelector("#entrar-contato #label-venda").style.marginTop = "20px";
+        document.querySelector("#entrar-contato #valor-venda").style.marginBottom = "50px";
     } else if (imovel.valor_aluguel) {
         document.querySelectorAll("#div-titulo h3")[1].innerText = formatarValor(imovel.valor_aluguel);
         document.querySelector("#entrar-contato #valor-aluguel").innerText = formatarValor(imovel.valor_aluguel);
         document.querySelector("#entrar-contato #valor-venda").style.display = "none";
         document.querySelector("#entrar-contato #label-venda").style.display = "none";
+        document.querySelector("#entrar-contato #label-aluguel").style.marginTop = "20px";
+        document.querySelector("#entrar-contato #valor-aluguel").style.marginBottom = "50px";
     }
 
     document.querySelector("#entrar-contato #condominio").innerText = formatarValor(imovel.valor_condominio != null ? imovel.valor_condominio : "n/a");
@@ -133,6 +142,9 @@ function setupDados(imovel) {
         for (const filtro of imovel.filtros) {
             divFiltros.innerHTML += `<input type="checkbox" checked disabled><label>${filtro}</label>`;
         }
+        const h3Filtros = document.createElement("h3");
+        h3Filtros.innerText = "Características do imóvel";
+        divPai.appendChild(h3Filtros);
         divPai.appendChild(divFiltros);
     }
 
@@ -142,6 +154,9 @@ function setupDados(imovel) {
         for (const filtro of imovel.condominio.filtros) {
             divFiltros.innerHTML += `<input type="checkbox" checked disabled><label>${filtro}</label>`;
         }
+        const h3Filtros = document.createElement("h3");
+        h3Filtros.innerText = "Características do condomínio";
+        divPai.appendChild(h3Filtros);
         divPai.appendChild(divFiltros);
     }
 

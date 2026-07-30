@@ -97,6 +97,7 @@ body>hr {
         width: auto;
         height: auto;
         margin: 50px auto;
+        margin-top: 12px;
         row-gap: 20px;
         justify-items: center;
         justify-content: center;
@@ -137,10 +138,17 @@ body>hr {
     flex-direction: column;
     top: 1rem;
 
-    label,
+  
     p {
         font-size: 1.2rem;
         color: var(--cor-texto-alternativa) !important;
+    }
+
+   
+    label {
+        font-size: 1.2rem;
+        color: color-mix(in srgb, var(--cor-texto-alternativa) 35%, #9a9a9a) !important;
+        
     }
 
     #whatsapp {
@@ -174,11 +182,6 @@ body>hr {
 
     hr {
         margin-bottom: 20px;
-    }
-
-    #label-venda,
-    #label-aluguel {
-        margin-top: 20px;
     }
 
     button {
@@ -268,7 +271,7 @@ img {
 
 .swiper-galeria {
     width: 90%;
-    height: 14rem;
+    height: 10rem;
     margin-top: 50px;
 
     .swiper-pagination-bullet {

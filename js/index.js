@@ -1,4 +1,4 @@
-import { listarImoveisDisponiveis } from "./modules/imoveis.js";
+import { listarImoveisDisponiveis, listarImoveisDestacados } from "./modules/imoveis.js";
 import { carregarUser, salvarImoveisCurtidos, curtirImovel, imoveisCurtidos } from "./modules/usuario.js";
 import { getCaminhoRelativo, formatarValor } from "./modules/utils.js";
 import { usuarioLogado } from "./modules/usuario.js";
@@ -49,7 +49,8 @@ function bannerImoveis(dados) {
     var wrapper = document.querySelector(".swiper-destaque .swiper-wrapper");
     if (!wrapper) return;
     wrapper.innerHTML = "";
-    for (var i = 0; i < 5; i++) {
+    const tamanho = dados.length < 5 ? dados.length : 5;
+    for (var i = 0; i < tamanho; i++) {
         var imovel = dados[i];
         if (!imovel) continue;
         var b64 = imovel.anuncio?.imagens?.[0];
@@ -315,15 +316,21 @@ function estilizarDiv() {
 }
 
 window.addEventListener("DOMContentLoaded", async () => {
-    const dados = await listarImoveisDisponiveis() || NaN;
+    const dados = await listarImoveisDisponiveis() || null;
+    const destacados = await listarImoveisDestacados() || null;
+
     dadosImoveis = dados;
     if (dados) {
         carregarAnuncios(dados);
         imovelPrincipal(dados);
-        bannerImoveis(dados);
     } else {
         console.error("Não foi possível carregar os imóveis");
     }
+
+    if (dados || destacados) {
+        bannerImoveis(destacados ?? dados);
+    }
+
     inicializarSwiper();
     estilizarDiv();
     setInterval(() => {

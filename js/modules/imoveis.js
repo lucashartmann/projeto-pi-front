@@ -71,6 +71,69 @@ export async function listarImoveisDisponiveis() {
                 return null;
             });
 
+        if (!resposta || !Array.isArray(resposta)) {
+            console.error("Resposta inválida ao listar imóveis disponíveis:", resposta);
+            return null;
+        }
+
+        resposta.forEach(imovel => {
+            switch (imovel.status) {
+                case "Venda":
+                    imovel.valor_aluguel = null;
+                    break;
+                case "Aluguel":
+                    imovel.valor_venda = null;
+                    break;
+                default:
+                    break;
+            }
+        });
+
+        return resposta;
+    } catch (erro) {
+        console.error("Falha ao conectar com o backend:", erro);
+        return null;
+    }
+}
+
+export async function listarImoveisDestacados() {
+    try {
+        let caminho = getCaminhoRelativo("/php/api/imoveis.php?acao=listar_destacados");
+        const resposta = await fetch(caminho)
+            // .then(res => console.log(res))
+            .then(async (res) => {
+                if (res.erro) {
+                    // alert("Erro ao listar imoveis destacados: " + res.erro);
+                    return null;
+                }
+                const contentType = res.headers.get("content-type");
+                if (contentType && contentType.includes("application/json")) {
+                    return await res.json();
+                } else {
+                    const texto = await res.text();
+                    // alert("Resposta inesperada do servidor");
+                    console.error("Resposta não é JSON:", texto);
+                    return null;
+                }
+            })
+            .then(async (data) => {
+                // console.log(data);
+                if (data.status == "erro") {
+                    // alert("Erro ao listar imóveis: " + data.mensagem);
+                    return null;
+                }
+                return await data;
+            })
+            .catch(erro => {
+                console.error("Falha ao conectar com o backend:", erro);
+                return null;
+            });
+
+        if (!resposta || !Array.isArray(resposta)) {
+            console.error("Resposta inválida ao listar imóveis destacados:", resposta);
+            return null;
+        }
+
         resposta.forEach(imovel => {
             switch (imovel.status) {
                 case "Venda":

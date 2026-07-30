@@ -54,28 +54,41 @@ label {
 #h-buttons {
     display: flex;
     margin: 10px auto;
+    margin-top: 40px;
     width: 20%;
     height: 45px;
     justify-self: center;
     gap: 10px;
-}
 
-#h-buttons button {
-    width: 50%;
-    height: 100%;
+    button {
+        width: 50%;
+        height: 100%;
+        border-radius: 6% / 30%;
+    }
 }
 
 #container-anuncio {
-    justify-self: center;
-    align-self: center;
-    margin: 50px auto;
-    width: 80%;
-    justify-items: center;
-    justify-content: center;
-    text-align: center;
     display: flex;
+    margin: 0 auto;
     flex-direction: column;
-    margin-top: 15px;
+    gap: 28px;
+    padding: 32px;
+    width: 90%;
+
+
+    div:first-of-type {
+        text-align: center;
+    }
+
+    >div {
+        display: flex;
+        flex-direction: column;
+        gap: 18px;
+        padding: 24px;
+        border: 1px groove color-mix(in srgb, var(--background-claro) 60%, black);
+        border-radius: 10px;
+        background: color-mix(in srgb, var(--background-claro) 60%, #464141);
+    }
 
     textarea {
         width: 50%;
@@ -205,7 +218,7 @@ label {
     flex-direction: column;
     width: 90%;
     margin: 0 auto 50px;
-    border: 1px solid color-mix(in srgb, var(--background-claro) 60%, black);
+    border: 1px groove color-mix(in srgb, var(--background-claro) 60%, black);
     border-radius: 12px;
     background: var(--background-claro);
 }
@@ -223,7 +236,7 @@ label {
         flex-direction: column;
         gap: 18px;
         padding: 24px;
-        border: 1px solid color-mix(in srgb, var(--background-claro) 60%, black);
+        border: 1px groove color-mix(in srgb, var(--background-claro) 60%, black);
         border-radius: 10px;
         background: color-mix(in srgb, var(--background-claro) 60%, #464141);
     }
@@ -265,7 +278,7 @@ label {
 
         &:read-only {
             background: #ececec;
-            color: color-mix(in srgb, var(--cor-texto) 50%, #666) ;
+            color: color-mix(in srgb, var(--cor-texto) 50%, #666);
         }
 
         &:focus {
@@ -347,6 +360,8 @@ label {
     justify-self: center;
     justify-content: center;
     justify-items: center;
+    color: var(--cor-texto-alternativa);
+    /* border: 0.3px groove color-mix(in srgb, var(--background-claro) 60%, rgba(255, 255, 255, 0.001)); */
 
     header {
         grid-column: 1 / -1;
@@ -356,6 +371,7 @@ label {
         background: var(--background-claro);
         backdrop-filter: blur(40px) !important;
         height: 3rem;
+        align-items: center;
 
         #selecionar-todos {
             display: none;

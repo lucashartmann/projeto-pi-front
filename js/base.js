@@ -53,7 +53,7 @@ function modoNoturno() {
 function alterarSrc(event, caminho) {
     let a = event.target;
 
-    if (a.tagName !== "a") {
+    if (a.tagName !== "A") {
         a = a.closest("a");
     }
     let caminhoRelativo = getCaminhoRelativo(caminho);
@@ -149,7 +149,7 @@ function carregarTabs(usuario) {
             break;
     }
     let html = tabs.map(tab =>
-        `<li><a href="#" onclick="alterarSrc(event, '${tab.href}')">${tab.text}</a></li>`
+        `<li><a href="${getCaminhoRelativo(tab.href)}">${tab.text}</a></li>`
     ).join("");
     if (dados.length > 0 && cadastros.length > 0) {
         html += `
@@ -157,7 +157,7 @@ function carregarTabs(usuario) {
             <a href="#">Cadastro ▾</a>
             <div class="dropdown-content">
                 ${cadastros.map(c =>
-            `<a href="#" onclick="alterarSrc(event, '${c.href}')">${c.text}</a>`
+            `<a href="${getCaminhoRelativo(c.href)}">${c.text}</a>`
         ).join("")}
             </div>
         </li>
@@ -165,7 +165,7 @@ function carregarTabs(usuario) {
             <a href="#">Dados ▾</a>
             <div class="dropdown-content">
                 ${dados.map(d =>
-            `<a href="#" onclick="alterarSrc(event, '${d.href}')">${d.text}</a>`
+            `<a href="${getCaminhoRelativo(d.href)}">${d.text}</a>`
         ).join("")}
             </div>
         </li>
@@ -177,7 +177,8 @@ function carregarTabs(usuario) {
             <a href="#">Cadastro ▾</a>
             <div class="dropdown-content">
                 ${cadastros.map(c =>
-            `<a href="#" onclick="alterarSrc(event, '${c.href}')">${c.text}</a>`
+            `<a href="${getCaminhoRelativo(c.href)}">${c.text}</a>`
+            
         ).join("")}
             </div>
         </li>
@@ -188,7 +189,7 @@ function carregarTabs(usuario) {
             <a href="#">Dados ▾</a>
             <div class="dropdown-content">
                 ${dados.map(d =>
-            `<a href="#" onclick="alterarSrc(event, '${d.href}')">${d.text}</a>`
+            `<a href="${getCaminhoRelativo(d.href)}">${d.text}</a>`
         ).join("")}
             </div>
         </li>

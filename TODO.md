@@ -10,3 +10,5 @@
 - [ ] Ver se os destaques estao sendo salvos, e carregar eles no Index
 - [ ] Salvar na sessao o filtro usado no estoque
 - [ ] Melhorar design de cadastro-imovel.html
+- [ ] Melhorar tela de contrato
+- [ ] Melhorar tela de dados imobiliaria

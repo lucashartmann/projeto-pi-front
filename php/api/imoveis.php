@@ -42,7 +42,7 @@ switch ($acao) {
         }
         break;
 
-    case "get_destacados":
+    case "listar_destacados":
         $resultado = $controller->listarDestacados();
         break;
 

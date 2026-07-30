@@ -233,102 +233,107 @@
                 </div>
             </form>
             <form id="container-anuncio" style="display: none;" role="tabpanel" class="tabcontent">
-                <label class="titulo">Titulo</label>
-                <textarea name="titulo" id="ta-titulo-anuncio" placeholder=""></textarea>
-                <label class="titulo">Descriçao</label>
-                <textarea name="descricao" id="ta-descricao-anuncio" placeholder=""></textarea>
-                <label class="titulo">Apartamento</label>
-                <div id="container-info-imovel">
-                    <input type="checkbox" id="filtro-aceita-pet" value="Aceita Pet">
-                    <label for="filtro-aceita-pet">Aceita Pet</label>
-                    <input type="checkbox" id="filtro-churrasqueira" value="Churrasqueira">
-                    <label for="filtro-churrasqueira">Churrasqueira</label>
-                    <input type="checkbox" id="filtro-armarios-embutidos" value="Armarios Embutidos">
-                    <label for="filtro-armarios-embutidos">Armarios Embutidos</label>
-                    <input type="checkbox" id="filtro-cozinha-americana" value="Cozinha Americana">
-                    <label for="filtro-cozinha-americana">Cozinha Americana</label>
-                    <input type="checkbox" id="filtro-area-de-servico" value="Área de Serviço">
-                    <label for="filtro-area-de-servico">Área de Serviço</label>
-                    <input type="checkbox" id="filtro-suíte-master" value="Suíte Master">
-                    <label for="filtro-suíte-master">Suíte Master</label>
-                    <input type="checkbox" id="filtro-banheiro-com-janela" value="Banheiro com Janela">
-                    <label for="filtro-banheiro-com-janela">Banheiro com Janela</label>
-                    <input type="checkbox" id="filtro-piscina" value="Piscina">
-                    <label for="filtro-piscina">Piscina</label>
-                    <input type="checkbox" id="filtro-lareira" value="Lareira">
-                    <label for="filtro-lareira">Lareira</label>
-                    <input type="checkbox" id="filtro-ar-condicionado" value="Ar Condicionado">
-                    <label for="filtro-ar-condicionado">Ar Condicionado</label>
-                    <input type="checkbox" id="filtro-semi-mobiliado" value="Semi Mobiliado">
-                    <label for="filtro-semi-mobiliado">Semi Mobiliado</label>
-                    <input type="checkbox" id="filtro-mobiliado" value="Mobiliado">
-                    <label for="filtro-mobiliado">Mobiliado</label>
-                    <input type="checkbox" id="filtro-dependencia-de-empregada" value="Dependência de Empregada">
-                    <label for="filtro-dependencia-de-empregada">Dependência de Empregada</label>
-                    <input type="checkbox" id="filtro-despensa" value="Despensa">
-                    <label for="filtro-despensa">Despensa</label>
-                    <input type="checkbox" id="filtro-deposito" value="Depósito">
-                    <label for="filtro-deposito">Depósito</label>
+                <div>
+                    <label class="titulo">Titulo</label>
+                    <textarea name="titulo" id="ta-titulo-anuncio" placeholder=""></textarea>
+                    <label class="titulo">Descrição</label>
+                    <textarea name="descricao" id="ta-descricao-anuncio" placeholder=""></textarea>
                 </div>
-
-                <label for="" class="titulo">Condomínio</label>
-                <div id="container-info-condominio">
-                    <input type="checkbox" id="filtro-churrasqueira-coletiva" value="Churrasqueira Coletiva">
-                    <label for="filtro-churrasqueira-coletiva">Churrasqueira Coletiva</label>
-                    <input type="checkbox" id="filtro-piscina" value="Piscina">
-                    <label for="filtro-piscina">Piscina</label>
-                    <input type="checkbox" id="filtro-piscina-infantil" value="Piscina Infantil">
-                    <label for="filtro-piscina-infantil">Piscina Infantil</label>
-                    <input type="checkbox" id="filtro-piscina-aquecida" value="Piscina Aquecida">
-                    <label for="filtro-piscina-aquecida">Piscina Aquecida</label>
-                    <input type="checkbox" id="filtro-quiostique" value="Quiosque">
-                    <label for="filtro-quiostique">Quiosque</label>
-                    <input type="checkbox" id="filtro-sauna" value="Sauna">
-                    <label for="filtro-sauna">Sauna</label>
-                    <input type="checkbox" id="filtro-quadra-de-esportes" value="Quadra de Esportes">
-                    <label for="filtro-quadra-de-esportes">Quadra de Esportes</label>
-                    <input type="checkbox" id="filtro-jardim" value="Jardim">
-                    <label for="filtro-jardim">Jardim</label>
-                    <input type="checkbox" id="filtro-salao-de-festas" value="Salão de Festas">
-                    <label for="filtro-salao-de-festas">Salão de Festas</label>
-                    <input type="checkbox" id="filtro-academia" value="Academia">
-                    <label for="filtro-academia">Academia</label>
-                    <input type="checkbox" id="filtro-sala-de-jogos" value="Sala de Jogos">
-                    <label for="filtro-sala-de-jogos">Sala de Jogos</label>
-                    <input type="checkbox" id="filtro-playground" value="Playground">
-                    <label for="filtro-playground">Playground</label>
-                    <input type="checkbox" id="filtro-brinquedoteca" value="Brinquedoteca">
-                    <label for="filtro-brinquedoteca">Brinquedoteca</label>
-                    <input type="checkbox" id="filtro-vaga-coberta" value="Vaga Coberta">
-                    <label for="filtro-vaga-coberta">Vaga Coberta</label>
-                    <input type="checkbox" id="filtro-estacionamento" value="Estacionamento">
-                    <label for="filtro-estacionamento">Estacionamento</label>
-                    <input type="checkbox" id="filtro-vaga-para-visitantes" value="Vaga para Visitantes">
-                    <label for="filtro-vaga-para-visitantes">Vaga para Visitantes</label>
-                    <input type="checkbox" id="filtro-mercado" value="Mercado">
-                    <label for="filtro-mercado">Mercado</label>
-                    <input type="checkbox" id="filtro-mesa-de-sinuca" value="Mesa de Sinuca">
-                    <label for="filtro-mesa-de-sinuca">Mesa de Sinuca</label>
-                    <input type="checkbox" id="filtro-mesa-de-ping-pong" value="Mesa de Ping Pong">
-                    <label for="filtro-mesa-de-ping-pong">Mesa de Ping Pong</label>
-                    <input type="checkbox" id="filtro-mesa-de-pebolim" value="Mesa de Pebolim">
-                    <label for="filtro-mesa-de-pebolim">Mesa de Pebolim</label>
-                    <input type="checkbox" id="filtro-quadra-de-tenis" value="Quadra de Tenis">
-                    <label for="filtro-quadra-de-tenis">Quadra de Tenis</label>
-                    <input type="checkbox" id="filtro-quadra-de-futebol" value="Quadra de Futebol">
-                    <label for="filtro-quadra-de-futebol">Quadra de Futebol</label>
-                    <input type="checkbox" id="filtro-quadra-de-basquete" value="Quadra de Basquete">
-                    <label for="filtro-quadra-de-basquete">Quadra de Basquete</label>
-                    <input type="checkbox" id="filtro-quadra-de-volei" value="Quadra de Volei">
-                    <label for="filtro-quadra-de-volei">Quadra de Volei</label>
-                    <input type="checkbox" id="filtro-quadra-de-areia" value="Quadra de Areia">
-                    <label for="filtro-quadra-de-areia">Quadra de Areia</label>
-                    <input type="checkbox" id="filtro-bicicletario" value="Bicicletario">
-                    <label for="filtro-bicicletario">Bicicletario</label>
-                    <input type="checkbox" id="filtro-heliponto" value="Heliponto">
-                    <label for="filtro-heliponto">Heliponto</label>
-                    <input type="checkbox" id="filtro-elevador-de-servico" value="Elevador de Serviço">
-                    <label for="filtro-elevador-de-servico">Elevador de Serviço</label>
+                <div>
+                    <label class="titulo">Apartamento</label>
+                    <div id="container-info-imovel">
+                        <input type="checkbox" id="filtro-aceita-pet" value="Aceita Pet">
+                        <label for="filtro-aceita-pet">Aceita Pet</label>
+                        <input type="checkbox" id="filtro-churrasqueira" value="Churrasqueira">
+                        <label for="filtro-churrasqueira">Churrasqueira</label>
+                        <input type="checkbox" id="filtro-armarios-embutidos" value="Armarios Embutidos">
+                        <label for="filtro-armarios-embutidos">Armarios Embutidos</label>
+                        <input type="checkbox" id="filtro-cozinha-americana" value="Cozinha Americana">
+                        <label for="filtro-cozinha-americana">Cozinha Americana</label>
+                        <input type="checkbox" id="filtro-area-de-servico" value="Área de Serviço">
+                        <label for="filtro-area-de-servico">Área de Serviço</label>
+                        <input type="checkbox" id="filtro-suíte-master" value="Suíte Master">
+                        <label for="filtro-suíte-master">Suíte Master</label>
+                        <input type="checkbox" id="filtro-banheiro-com-janela" value="Banheiro com Janela">
+                        <label for="filtro-banheiro-com-janela">Banheiro com Janela</label>
+                        <input type="checkbox" id="filtro-piscina" value="Piscina">
+                        <label for="filtro-piscina">Piscina</label>
+                        <input type="checkbox" id="filtro-lareira" value="Lareira">
+                        <label for="filtro-lareira">Lareira</label>
+                        <input type="checkbox" id="filtro-ar-condicionado" value="Ar Condicionado">
+                        <label for="filtro-ar-condicionado">Ar Condicionado</label>
+                        <input type="checkbox" id="filtro-semi-mobiliado" value="Semi Mobiliado">
+                        <label for="filtro-semi-mobiliado">Semi Mobiliado</label>
+                        <input type="checkbox" id="filtro-mobiliado" value="Mobiliado">
+                        <label for="filtro-mobiliado">Mobiliado</label>
+                        <input type="checkbox" id="filtro-dependencia-de-empregada" value="Dependência de Empregada">
+                        <label for="filtro-dependencia-de-empregada">Dependência de Empregada</label>
+                        <input type="checkbox" id="filtro-despensa" value="Despensa">
+                        <label for="filtro-despensa">Despensa</label>
+                        <input type="checkbox" id="filtro-deposito" value="Depósito">
+                        <label for="filtro-deposito">Depósito</label>
+                    </div>
+                </div>
+                <div>
+                    <label for="" class="titulo">Condomínio</label>
+                    <div id="container-info-condominio">
+                        <input type="checkbox" id="filtro-churrasqueira-coletiva" value="Churrasqueira Coletiva">
+                        <label for="filtro-churrasqueira-coletiva">Churrasqueira Coletiva</label>
+                        <input type="checkbox" id="filtro-piscina" value="Piscina">
+                        <label for="filtro-piscina">Piscina</label>
+                        <input type="checkbox" id="filtro-piscina-infantil" value="Piscina Infantil">
+                        <label for="filtro-piscina-infantil">Piscina Infantil</label>
+                        <input type="checkbox" id="filtro-piscina-aquecida" value="Piscina Aquecida">
+                        <label for="filtro-piscina-aquecida">Piscina Aquecida</label>
+                        <input type="checkbox" id="filtro-quiostique" value="Quiosque">
+                        <label for="filtro-quiostique">Quiosque</label>
+                        <input type="checkbox" id="filtro-sauna" value="Sauna">
+                        <label for="filtro-sauna">Sauna</label>
+                        <input type="checkbox" id="filtro-quadra-de-esportes" value="Quadra de Esportes">
+                        <label for="filtro-quadra-de-esportes">Quadra de Esportes</label>
+                        <input type="checkbox" id="filtro-jardim" value="Jardim">
+                        <label for="filtro-jardim">Jardim</label>
+                        <input type="checkbox" id="filtro-salao-de-festas" value="Salão de Festas">
+                        <label for="filtro-salao-de-festas">Salão de Festas</label>
+                        <input type="checkbox" id="filtro-academia" value="Academia">
+                        <label for="filtro-academia">Academia</label>
+                        <input type="checkbox" id="filtro-sala-de-jogos" value="Sala de Jogos">
+                        <label for="filtro-sala-de-jogos">Sala de Jogos</label>
+                        <input type="checkbox" id="filtro-playground" value="Playground">
+                        <label for="filtro-playground">Playground</label>
+                        <input type="checkbox" id="filtro-brinquedoteca" value="Brinquedoteca">
+                        <label for="filtro-brinquedoteca">Brinquedoteca</label>
+                        <input type="checkbox" id="filtro-vaga-coberta" value="Vaga Coberta">
+                        <label for="filtro-vaga-coberta">Vaga Coberta</label>
+                        <input type="checkbox" id="filtro-estacionamento" value="Estacionamento">
+                        <label for="filtro-estacionamento">Estacionamento</label>
+                        <input type="checkbox" id="filtro-vaga-para-visitantes" value="Vaga para Visitantes">
+                        <label for="filtro-vaga-para-visitantes">Vaga para Visitantes</label>
+                        <input type="checkbox" id="filtro-mercado" value="Mercado">
+                        <label for="filtro-mercado">Mercado</label>
+                        <input type="checkbox" id="filtro-mesa-de-sinuca" value="Mesa de Sinuca">
+                        <label for="filtro-mesa-de-sinuca">Mesa de Sinuca</label>
+                        <input type="checkbox" id="filtro-mesa-de-ping-pong" value="Mesa de Ping Pong">
+                        <label for="filtro-mesa-de-ping-pong">Mesa de Ping Pong</label>
+                        <input type="checkbox" id="filtro-mesa-de-pebolim" value="Mesa de Pebolim">
+                        <label for="filtro-mesa-de-pebolim">Mesa de Pebolim</label>
+                        <input type="checkbox" id="filtro-quadra-de-tenis" value="Quadra de Tenis">
+                        <label for="filtro-quadra-de-tenis">Quadra de Tenis</label>
+                        <input type="checkbox" id="filtro-quadra-de-futebol" value="Quadra de Futebol">
+                        <label for="filtro-quadra-de-futebol">Quadra de Futebol</label>
+                        <input type="checkbox" id="filtro-quadra-de-basquete" value="Quadra de Basquete">
+                        <label for="filtro-quadra-de-basquete">Quadra de Basquete</label>
+                        <input type="checkbox" id="filtro-quadra-de-volei" value="Quadra de Volei">
+                        <label for="filtro-quadra-de-volei">Quadra de Volei</label>
+                        <input type="checkbox" id="filtro-quadra-de-areia" value="Quadra de Areia">
+                        <label for="filtro-quadra-de-areia">Quadra de Areia</label>
+                        <input type="checkbox" id="filtro-bicicletario" value="Bicicletario">
+                        <label for="filtro-bicicletario">Bicicletario</label>
+                        <input type="checkbox" id="filtro-heliponto" value="Heliponto">
+                        <label for="filtro-heliponto">Heliponto</label>
+                        <input type="checkbox" id="filtro-elevador-de-servico" value="Elevador de Serviço">
+                        <label for="filtro-elevador-de-servico">Elevador de Serviço</label>
+                    </div>
                 </div>
             </form>
         </div>
