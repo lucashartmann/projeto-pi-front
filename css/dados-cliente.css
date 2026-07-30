@@ -59,6 +59,7 @@ body {
 
         #div-email {
             display: flex;
+
             .email {
                 margin-left: 5px;
                 font-weight: bold;
@@ -67,6 +68,7 @@ body {
 
         #div-telefone {
             display: flex;
+
             .telefone {
                 margin-left: 5px;
                 font-weight: bold;
@@ -92,10 +94,12 @@ body {
     justify-items: center;
     align-content: center;
     width: 25rem;
+
     ul {
         list-style: none;
+
         li {
-            margin:10px;
+            margin: 10px;
             border: solid 2px var(--cor-texto-alternativa);
             border-radius: 5px;
             background-color: var(--cor-texto);
@@ -104,6 +108,7 @@ body {
             text-align: center;
             align-content: center;
         }
+
         a {
             text-decoration: none;
             color: var(--cor-texto-alternativa);
@@ -119,6 +124,7 @@ body {
 .separador {
     display: flex;
     flex-direction: column;
+
     label:nth-child(even) {
         font-weight: bold;
     }

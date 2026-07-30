@@ -7,7 +7,7 @@ class Seguranca
         return htmlspecialchars(trim($entrada), ENT_QUOTES, 'UTF-8');
     }
     public static function verificarAcesso()
-    {   
+    {
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
         }

@@ -169,5 +169,4 @@ class EnderecoDAO
             return false;
         }
     }
-
 }

@@ -94,7 +94,7 @@
         }
     }
 
-     select {
+    select {
         width: 10rem;
         height: 1.6rem;
     }
@@ -106,7 +106,7 @@ table {
     border-collapse: collapse;
     margin-bottom: 20px;
     letter-spacing: 1px;
-    
+
     caption {
         caption-side: bottom;
         padding: 10px;

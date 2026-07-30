@@ -45,14 +45,16 @@ class ControllerTest extends TestCase
         $prop->setEndereco($end);
         $prop->setImoveis([$imovel]);
 
-        Init::$imobiliaria = new class ($prop) {
+        Init::$imobiliaria = new class($prop) {
             private $p;
             public function __construct($p)
             {
-                $this->p = $p; }
+                $this->p = $p;
+            }
             public function listar()
             {
-                return [$this->p]; }
+                return [$this->p];
+            }
         };
 
         $ctrl = new ProprietarioController();
@@ -70,14 +72,16 @@ class ControllerTest extends TestCase
         $user->setId(9);
         $user->setRg('RGU');
 
-        Init::$imobiliaria = new class ($user) {
+        Init::$imobiliaria = new class($user) {
             private $u;
             public function __construct($u)
             {
-                $this->u = $u; }
+                $this->u = $u;
+            }
             public function listar()
             {
-                return [$this->u]; }
+                return [$this->u];
+            }
         };
 
         $ctrl = new UsuarioController();
@@ -92,14 +96,16 @@ class ControllerTest extends TestCase
         $user = new Usuario('u', 's', 'u@e.com', 'Usu', '123', Tipo::ADMINISTRADOR);
         $user->setId(77);
 
-        Init::$imobiliaria = new class ($user) {
+        Init::$imobiliaria = new class($user) {
             private $u;
             public function __construct($u)
             {
-                $this->u = $u; }
+                $this->u = $u;
+            }
             public function verificar($username, $senha)
             {
-                return $this->u; }
+                return $this->u;
+            }
         };
 
         $ctrl = new LoginController();
@@ -123,14 +129,16 @@ class ControllerTest extends TestCase
         $user->setId(88);
         $user->setNome('NomeX');
 
-        Init::$imobiliaria = new class ($user) {
+        Init::$imobiliaria = new class($user) {
             private $u;
             public function __construct($u)
             {
-                $this->u = $u; }
+                $this->u = $u;
+            }
             public function buscarPorId($id)
             {
-                return $this->u; }
+                return $this->u;
+            }
         };
 
         $_SESSION = [];
@@ -156,24 +164,28 @@ class ControllerTest extends TestCase
         $imovel->setId(2);
         $imovel->setAnuncio($an);
 
-        $estoque = new class ($imovel) {
+        $estoque = new class($imovel) {
             private $i;
             public function __construct($i)
             {
-                $this->i = $i; }
+                $this->i = $i;
+            }
             public function listar()
             {
-                return [$this->i]; }
+                return [$this->i];
+            }
         };
 
-        Init::$imobiliaria = new class ($estoque) {
+        Init::$imobiliaria = new class($estoque) {
             private $e;
             public function __construct($e)
             {
-                $this->e = $e; }
+                $this->e = $e;
+            }
             public function getEstoque()
             {
-                return $this->e; }
+                return $this->e;
+            }
         };
 
         $ctrl = new ImovelController();
@@ -189,17 +201,20 @@ class ControllerTest extends TestCase
         $imovel = new Imovel(null, Status::VENDA, Categoria::CASA);
         $imovel->setId(5);
 
-        Init::$imobiliaria = new class ($imovel) {
+        Init::$imobiliaria = new class($imovel) {
             private $i;
             public function __construct($i)
             {
-                $this->i = $i; }
+                $this->i = $i;
+            }
             public function buscarPorId($id)
             {
-                return $this->i; }
+                return $this->i;
+            }
             public function remover($campo, $valor, $tabela)
             {
-                return True; }
+                return True;
+            }
         };
 
         $ctrl = new ImovelController();

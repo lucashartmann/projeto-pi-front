@@ -282,6 +282,4 @@ class ProprietarioDAO
             return null;
         }
     }
-
-
 }

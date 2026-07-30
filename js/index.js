@@ -27,20 +27,20 @@ function imovelPrincipal(dados) {
     }
 
     document.querySelector("#gallery").innerHTML = `
-        <img src="${lista[0].anuncio.imagens[0]}"  onclick="html/dados-imovel.html?id=${lista[0].id}">
-        <img src="${lista[1].anuncio.imagens[0]}"  onclick="html/dados-imovel.html?id=${lista[1].id}">
+        <a href="html/dados-imovel.html?id=${lista[0].id}"><img src="${lista[0].anuncio.imagens[0]}"  onclick="html/dados-imovel.html?id=${lista[0].id}"></a>
+        <a href="html/dados-imovel.html?id=${lista[1].id}"><img src="${lista[1].anuncio.imagens[0]}"  onclick="html/dados-imovel.html?id=${lista[1].id}"></a>
     `
 
     document.querySelector("#gallery3").innerHTML = `
-        <img src="${lista[2].anuncio.imagens[0]}"  onclick="html/dados-imovel.html?id=${lista[2].id}">
-        <img src="${lista[3].anuncio.imagens[0]}"  onclick="html/dados-imovel.html?id=${lista[3].id}">
+        <a href="html/dados-imovel.html?id=${lista[2].id}"><img src="${lista[2].anuncio.imagens[0]}"  onclick="html/dados-imovel.html?id=${lista[2].id}"></a>
+        <a href="html/dados-imovel.html?id=${lista[3].id}"><img src="${lista[3].anuncio.imagens[0]}"  onclick="html/dados-imovel.html?id=${lista[3].id}"></a>
     `
 
     document.querySelector("#gallery2").innerHTML = `
-        <img src="${lista[4].anuncio.imagens[0]}"  onclick="html/dados-imovel.html?id=${lista[4].id}">
-        <img src="${lista[5].anuncio.imagens[0]}"  onclick="html/dados-imovel.html?id=${lista[5].id}">
-        <img src="${lista[6].anuncio.imagens[0]}"  onclick="html/dados-imovel.html?id=${lista[6].id}">
-        <img src="${lista[7].anuncio.imagens[0]}"  onclick="html/dados-imovel.html?id=${lista[7].id}">
+        <a href="html/dados-imovel.html?id=${lista[4].id}"><img src="${lista[4].anuncio.imagens[0]}"  onclick="html/dados-imovel.html?id=${lista[4].id}"></a>
+        <a href="html/dados-imovel.html?id=${lista[5].id}"><img src="${lista[5].anuncio.imagens[0]}"  onclick="html/dados-imovel.html?id=${lista[5].id}"></a>
+        <a href="html/dados-imovel.html?id=${lista[6].id}"><img src="${lista[6].anuncio.imagens[0]}"  onclick="html/dados-imovel.html?id=${lista[6].id}"></a>
+        <a href="html/dados-imovel.html?id=${lista[7].id}"><img src="${lista[7].anuncio.imagens[0]}"  onclick="html/dados-imovel.html?id=${lista[7].id}"></a>
     `
 
 }
@@ -65,8 +65,8 @@ function bannerImoveis(dados) {
             precoAluguel = `<span>Aluguel: <span class="preco">${formatarValor(imovel.valor_aluguel)}</span></span>`;
         }
         wrapper.innerHTML += `
-        <div class="swiper-slide"  onclick="html/dados-imovel.html?id=${imovel.id}"> 
-        <img src="${b64}" alt="${imovel.anuncio.titulo}"><div><h2>${imovel.anuncio.titulo}</h2>${precoVenda}${precoAluguel}<p>${imovel.anuncio.descricao}</p></div></div>
+        <a class="swiper-slide" href="html/dados-imovel.html?id=${imovel.id}"> 
+        <img src="${b64}" alt="${imovel.anuncio.titulo}"><div><h2>${imovel.anuncio.titulo}</h2>${precoVenda}${precoAluguel}<p>${imovel.anuncio.descricao}</p></div></a>
         `
     }
 }

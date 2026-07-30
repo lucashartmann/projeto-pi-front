@@ -34,6 +34,4 @@ class Anexo
     {
         return $this->tipoAnexo;
     }
-
-
 }

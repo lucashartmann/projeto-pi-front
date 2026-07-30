@@ -118,18 +118,14 @@ function setupDados(imovel) {
         document.querySelector("#entrar-contato #label-venda").style.display = "none";
     }
 
-
-    document.querySelector("#entrar-contato #condominio").innerText = formatarValor(imovel.valor_condominio ?? 0);
-    document.querySelector("#entrar-contato #iptu").innerText = formatarValor(imovel.valor_iptu ?? 0);
-    document.querySelector("#entrar-contato #area-total").innerText = `${imovel.area_total ?? '0.00'} m²`;
-    document.querySelector("#entrar-contato #area-privativa").innerText = `${imovel.area_privativa ?? '0.00'} m²`;
-    document.querySelector("#entrar-contato #quartos").innerText = imovel.quantidade_quartos ?? 0;
+    document.querySelector("#entrar-contato #condominio").innerText = formatarValor(imovel.valor_condominio != null ? imovel.valor_condominio : "n/a");
+    document.querySelector("#entrar-contato #iptu").innerText = formatarValor(imovel.valor_iptu != null ? imovel.valor_iptu : "n/a");
+    document.querySelector("#entrar-contato #area-total").innerText = `${imovel.area_total != null ? imovel.area_total : 'n/a'} m²`;
+    document.querySelector("#entrar-contato #area-privativa").innerText = `${imovel.area_privativa != null ? imovel.area_privativa : 'n/a'} m²`;
+    document.querySelector("#entrar-contato #quartos").innerText = imovel.quantidade_quartos != null ? imovel.quantidade_quartos : 'n/a';
     // document.querySelector("#entrar-contato #suite").innerText = imovel.suite;
-    document.querySelector("#entrar-contato #banheiros").innerText = imovel.quantidade_banheiros ?? 0;
-    document.querySelector("#entrar-contato #vagas").innerText = imovel.quantidade_vagas ?? 0;
-
-
-    // console.log(imovel.filtros);
+    document.querySelector("#entrar-contato #banheiros").innerText = imovel.quantidade_banheiros != null ? imovel.quantidade_banheiros : 'n/a';
+    document.querySelector("#entrar-contato #vagas").innerText = imovel.quantidade_vagas != null ? imovel.quantidade_vagas : "n/a";
 
     if (imovel.filtros) {
         const divFiltros = document.createElement("div");
@@ -177,20 +173,11 @@ window.addEventListener("DOMContentLoaded", async () => {
 
 function abrirImagem(src) {
     var modal = document.createElement("div");
-    modal.style.position = "fixed";
-    modal.style.top = "0";
-    modal.style.left = "0";
-    modal.style.width = "100%";
-    modal.style.height = "100%";
-    modal.style.backgroundColor = "rgba(0, 0, 0, 0.8)";
-    modal.style.display = "flex";
-    modal.style.justifyContent = "center";
-    modal.style.alignItems = "center";
-    modal.style.zIndex = "1000";
+    modal.id = "modal-imagem";
+
     var img = document.createElement("img");
     img.src = src;
-    img.style.maxWidth = "90%";
-    img.style.maxHeight = "90%";
+
     modal.appendChild(img);
     document.body.appendChild(modal);
     modal.addEventListener("click", function () {
@@ -233,14 +220,13 @@ function inicializarSwiper() {
             nextEl: '.swiper-galeria .swiper-button-next',
             prevEl: '.swiper-galeria .swiper-button-prev'
         },
-        slidesPerView: 2,
         spaceBetween: 30,
         centeredSlides: true,
         breakpoints: {
-            0: { slidesPerView: 2 },
-            640: { slidesPerView: 3 },
-            768: { slidesPerView: 4 },
-            1024: { slidesPerView: 5 },
+            0: { slidesPerView: 1 },
+            640: { slidesPerView: 2 },
+            768: { slidesPerView: 3 },
+            1024: { slidesPerView: 4 },
         },
     });
 

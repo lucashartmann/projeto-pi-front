@@ -6,7 +6,7 @@
 }
 
 body>hr {
-    color: rgba(253, 13, 13, 0.92);
+    color: var(--cor-texto-alternativa);
     margin-top: 30px;
     opacity: 0.3;
     margin-bottom: 0px;
@@ -49,7 +49,6 @@ body>hr {
         align-self: flex-start;
         gap: 10px;
 
-
         >button:hover {
             .fa-heart {
                 color: red;
@@ -58,13 +57,13 @@ body>hr {
         }
 
         .fa-heart {
-            color: var(--cor-texto-alternativa);
+            color: #000000;
             font-size: 1rem;
             margin: 2px;
         }
 
         .fa-share-alt {
-            color: var(--cor-texto-alternativa);
+            color: #000000;
             font-size: 1rem;
             margin: 2px;
 
@@ -113,14 +112,15 @@ body>hr {
             width: 100% !important;
             text-align: left !important;
             margin-left: 110px !important;
+            color: var(--cor-texto-alternativa);
         }
 
         input[type="checkbox"] {
             width: 15px;
             height: 20px;
 
-            &:hover {
-                cursor: pointer;
+            &:checked {
+                background-color: green !important;
             }
         }
 
@@ -140,10 +140,12 @@ body>hr {
     label,
     p {
         font-size: 1.2rem;
+        color: var(--cor-texto-alternativa) !important;
     }
 
     #whatsapp {
         color: var(--cor-texto) !important;
+        margin-left: 0 !important;
 
         i {
             color: var(--cor-texto) !important;
@@ -157,7 +159,6 @@ body>hr {
 
         &:first-child {
             margin-top: 30px;
-
         }
 
         &:nth-child(n + 2) {
@@ -185,11 +186,13 @@ body>hr {
         min-width: 8rem;
         min-height: 3rem;
         margin: 5px;
+        border-radius: 0%;
     }
 
     i {
-        color: var(--cor-texto-alternativa);
+        color: var(--cor-texto-alternativa) !important;
         margin: auto;
+        margin-right: 2px;
     }
 
     span {
@@ -245,6 +248,22 @@ img {
         background-size: cover;
         background-position: center;
     }
+
+    .swiper-button-prev,
+    .swiper-button-next {
+        color: white;
+        width: 50px;
+        height: 50px !important;
+        border-radius: 50%;
+        background: rgba(65, 65, 65, 0.2);
+        backdrop-filter: blur(3px);
+    }
+
+    .swiper-button-prev::after,
+    .swiper-button-next::after {
+        /* font-size: 1rem; */
+        align-content: center !important;
+    }
 }
 
 .swiper-galeria {
@@ -276,4 +295,49 @@ img {
         background-position: center;
     }
 
+    .swiper-button-prev,
+    .swiper-button-next {
+        color: white;
+        width: 42px;
+        height: 42px !important;
+        border-radius: 50%;
+        background: rgba(65, 65, 65, 0.2);
+        backdrop-filter: blur(3px);
+    }
+
+    .swiper-button-prev::after,
+    .swiper-button-next::after {
+        font-size: 1.8rem;
+        align-content: center !important;
+    }
+
+}
+
+#modal-imagem {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    display: flex;
+    align-self: center;
+    align-items: center;
+    z-index: 1000;
+    flex-direction: column;
+    justify-content: center;
+    align-content: center;
+    justify-self: center;
+    justify-items: center;
+    margin-top: auto;
+    margin-bottom: 0;
+
+    img {
+        width: auto;
+        height: auto;
+        transform: translate(0%, 5%);
+        max-width: 90%;
+        max-height: 80%;
+        justify-self: center;
+    }
 }

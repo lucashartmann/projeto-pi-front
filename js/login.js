@@ -152,7 +152,7 @@ async function fazerLogin(event) {
             alert("Login invalido!");
         }
 
-        
+
     } catch (erro) {
         console.error("Falha ao conectar com o backend:", erro);
     }

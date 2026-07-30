@@ -3,8 +3,10 @@
 - [ ] Arrumar contador de imoveis
 - [ ] Média de valor do imóvel e julgar se o valor é acima ou abaixo no cadastro do imóvel
 - [ ] As notificaçoes botar q se um cliente for cadastrado mandar uma notificação para todos os corretores cadastrando por id do corretor na tabela notificacao e botar o tipo ser "atendimento', "cadastro", etc
-- [ ] Adicionar opçao de tornar destaque no estoque 
+- [ ] Adicionar opçao de tornar destaque no estoque
 - [ ] Adicionar opção de tornar destaque no estoque ao selecionar todos, tambem de apagar ou abrir
-- [ ] adicionar whats no anuncio no index e no anuncios 
+- [ ] adicionar whats no anuncio no index e no anuncios
 - [ ] Melhorar tempo de carregamento de dados na dados-imovel
-- [ ] Melhorar o background das setas do primeiro swiper do index
+- [ ] Ver se os destaques estao sendo salvos, e carregar eles no Index
+- [ ] Salvar na sessao o filtro usado no estoque
+- [ ] Melhorar design de cadastro-imovel.html

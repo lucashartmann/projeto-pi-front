@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="../css/base.css">
     <link rel="stylesheet" href="../css/cadastro-imovel.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.minlength.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/inputmask/dist/inputmask.min.js"></script>
     <link rel="icon" type="image/x-icon" href="../assets/logo.webp">
     <script>
@@ -44,167 +45,191 @@
         <div id="cadastro-pai">
             <form id="container-cadastro" style="display: grid;" role="tabpanel" class="tabcontent"
                 value="cadastro_imovel">
-                <div class="vertical-separator">
-                    <label id="stt-ref" for="">ref:</label>
-                    <textarea name="ref" id="ta-ref" readonly=True placeholder=""></textarea>
+                <div id="informacoes-gerais">
+                    <div class="linha">
+                        <div class="vertical-separator">
+                            <label id="stt-ref" for="">ref:</label>
+                            <textarea name="ref" id="ta-ref" readonly=True placeholder=""></textarea>
+                        </div>
+                        <div class="vertical-separator">
+                            <label for="" id="stt-categoria">Categoria:</label>
+                            <select name="categoria" id="select-categoria" required>
+                                <option value="" selected>Selecione uma opção...</option>
+                                <option value="Sala Comercial">Sala Comercial</option>
+                                <option value="Apartamento">Apartamento</option>
+                                <option value="Casa">Casa</option>
+                                <option value="Chácara">Chácara</option>
+                                <option value="Fazenda">Fazenda</option>
+                                <option value="Casa em Condomínio">Casa em Condomínio</option>
+                                <option value="Empreendimento">Empreendimento</option>
+                                <option value="Ponto Comercial">Ponto Comercial</option>
+                                <option value="Prédio Comercial">Prédio Comercial</option>
+                                <option value="Galpão">Galpão</option>
+                                <option value="Depósito">Depósito</option>
+                                <option value="Apartamento">Apartamento</option>
+                                <option value="Loja">Loja</option>
+                                <option value="Cobertura">Cobertura</option>
+                                <option value="Loft">Loft</option>
+                                <option value="Terreno">Terreno</option>
+                                <option value="Kitnet">Kitnet</option>
+                                <option value="Sobrado">Sobrado</option>
+                                <option value="Pavilhão">Pavilhão</option>
+                                <option value="Depósito">Depósito</option>
+                                <option value="Studio">Studio</option>
+                                <option value="Sítio">Sítio</option>
+                            </select>
+                        </div>
+                        <div class="vertical-separator">
+                            <label for="" id="stt-situacao">Situação</label>
+                            <select name="situacao" id="select-situacao">
+                                <option value="" selected>Selecione uma opção...</option>
+                                <option value="Em Construção">Em Construção</option>
+                                <option value="Novo">Novo</option>
+                                <option value="Usado">Usado</option>
+                            </select>
+                        </div>
+
+
+                        <div class="vertical-separator">
+                            <label for="" id="stt-estado-select">Estado:</label>
+                            <select name="estado_imovel" id="select-estado">
+                                <option value="" selected>Selecione uma opção...</option>
+                                <option value="Bom">Bom</option>
+                                <option value="Ótimo">Ótimo</option>
+                                <option value="Regular">Regular</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="linha">
+                        <div class="vertical-separator">
+                            <label for="" id="stt-ocupacao">Ocupação:</label>
+                            <select name="ocupacao" id="select-ocupacao">
+                                <option value="" selected>Selecione uma opção...</option>
+                                <option value="Desocupado">Desocupado</option>
+                                <option value="Inquilino">Inquilino</option>
+                                <option value="Proprietário">Proprietário</option>
+                            </select>
+                        </div>
+                        <div class="vertical-separator">
+                            <label for="" id="stt-status">Status:</label>
+                            <select name="status" id="select-status" required>
+                                <option value="" selected>Selecione uma opção...</option>
+                                <option value="Venda">Venda</option>
+                                <option value="Aluguel">Aluguel</option>
+                                <option value="Venda e Aluguel">Venda e Aluguel</option>
+                                <option value="Alugado">Alugado</option>
+                                <option value="Vendido">Vendido</option>
+                                <option value="Pendente">Pendente</option>
+                            </select>
+                        </div>
+                        <div class="vertical-separator">
+                            <label for="" id="stt-nome-condominio">Nome do Condomínio</label>
+                            <textarea name="nome_condominio" id="ta-nome-condominio" placeholder=""></textarea>
+                        </div>
+                        <div class="vertical-separator">
+                            <label for="" id="stt-ano-construcao">Ano de Construção</label>
+                            <input type="number" id="ta-ano-construcao" min="1800" max="2026" name="ano_construcao"
+                                placeholder="">
+                        </div>
+                    </div>
                 </div>
-                <div class="vertical-separator">
-                    <label for="" id="stt-categoria">Categoria:</label>
-                    <select name="categoria" id="select-categoria" required>
-                        <option value="" selected>Selecione uma opção...</option>
-                        <option value="Sala Comercial">Sala Comercial</option>
-                        <option value="Apartamento">Apartamento</option>
-                        <option value="Casa">Casa</option>
-                        <option value="Chácara">Chácara</option>
-                        <option value="Fazenda">Fazenda</option>
-                        <option value="Casa em Condomínio">Casa em Condomínio</option>
-                        <option value="Empreendimento">Empreendimento</option>
-                        <option value="Ponto Comercial">Ponto Comercial</option>
-                        <option value="Prédio Comercial">Prédio Comercial</option>
-                        <option value="Galpão">Galpão</option>
-                        <option value="Depósito">Depósito</option>
-                        <option value="Apartamento">Apartamento</option>
-                        <option value="Loja">Loja</option>
-                        <option value="Cobertura">Cobertura</option>
-                        <option value="Loft">Loft</option>
-                        <option value="Terreno">Terreno</option>
-                        <option value="Kitnet">Kitnet</option>
-                        <option value="Sobrado">Sobrado</option>
-                        <option value="Pavilhão">Pavilhão</option>
-                        <option value="Depósito">Depósito</option>
-                        <option value="Studio">Studio</option>
-                        <option value="Sítio">Sítio</option>
-                    </select>
+
+                <div id="endereco">
+                    <div class="linha">
+                        <div class="vertical-separator">
+                            <label for="" id="stt-rua">Rua</label>
+                            <textarea id="ta-rua" placeholder="" readonly=True name="rua"></textarea>
+                        </div>
+                        <div class="vertical-separator">
+                            <label for="" id="stt-numero">Número</label>
+                            <input type="number" placeholder="" id="ta-numero" name="numero" required>
+                        </div>
+                        <div class="vertical-separator">
+                            <label for="" id="stt-complemento">Complemento</label>
+                            <textarea name="complemento" placeholder="" id="ta-complemento"></textarea>
+                        </div>
+                        <div class="vertical-separator">
+                            <label for="" id="stt-bloco">Bloco</label>
+                            <textarea name="bloco" placeholder="" id="ta-bloco"></textarea>
+                        </div>
+                        <div class="vertical-separator">
+                            <label for="" id="stt-andar">Andar</label>
+                            <input type="number" id="ta-andar" placeholder="" min="0" max="99" name="andar">
+                        </div>
+                    </div>
+                    <div class="linha">
+                        <div class="vertical-separator">
+                            <label for="" id="stt-bairro">Bairro</label>
+                            <textarea id="ta-bairro" placeholder="" readonly=True name="bairro"></textarea>
+                        </div>
+                        <div class="vertical-separator">
+                            <label for="" id="stt-cidade">Cidade</label>
+                            <textarea id="ta-cidade" placeholder="" readonly=True name="cidade"></textarea>
+                        </div>
+                        <div class="vertical-separator">
+                            <label for="" id="stt-estado">Estado</label>
+                            <input type="text" readonly=True id="ta-estado" minlength="2" maxlength="2" name="uf"
+                                placeholder="">
+                        </div>
+                        <div class="vertical-separator">
+                            <label for="" id="stt-cep">CEP</label>
+                            <input type="text" id="ta-cep" name="cep" required oninput="preencherEndereco(event)"
+                                minlength="14" maxlength="14" placeholder="">
+                        </div>
+                    </div>
                 </div>
-                <div class="vertical-separator">
-                    <label for="" id="stt-situacao">Situação</label>
-                    <select name="situacao" id="select-situacao">
-                        <option value="" selected>Selecione uma opção...</option>
-                        <option value="Em Construção">Em Construção</option>
-                        <option value="Novo">Novo</option>
-                        <option value="Usado">Usado</option>
-                    </select>
-                </div>
-                <div class="vertical-separator">
-                    <label for="" id="stt-estado-select">Estado:</label>
-                    <select name="estado_imovel" id="select-estado">
-                        <option value="" selected>Selecione uma opção...</option>
-                        <option value="Bom">Bom</option>
-                        <option value="Ótimo">Ótimo</option>
-                        <option value="Regular">Regular</option>
-                    </select>
-                </div>
-                <div class="vertical-separator">
-                    <label for="" id="stt-ocupacao">Ocupação:</label>
-                    <select name="ocupacao" id="select-ocupacao">
-                        <option value="" selected>Selecione uma opção...</option>
-                        <option value="Desocupado">Desocupado</option>
-                        <option value="Inquilino">Inquilino</option>
-                        <option value="Proprietário">Proprietário</option>
-                    </select>
-                </div>
-                <div class="vertical-separator">
-                    <label for="" id="stt-status">Status:</label>
-                    <select name="status" id="select-status" required>
-                        <option value="" selected>Selecione uma opção...</option>
-                        <option value="Venda">Venda</option>
-                        <option value="Aluguel">Aluguel</option>
-                        <option value="Venda e Aluguel">Venda e Aluguel</option>
-                        <option value="Alugado">Alugado</option>
-                        <option value="Vendido">Vendido</option>
-                        <option value="Pendente">Pendente</option>
-                    </select>
-                </div>
-                <div class="vertical-separator">
-                    <label for="" id="stt-nome-condominio">Nome do Condomínio</label>
-                    <textarea name="nome_condominio" id="ta-nome-condominio" placeholder=""></textarea>
-                </div>
-                <div class="vertical-separator">
-                    <label for="" id="stt-ano-construcao">Ano de Construção</label>
-                    <input type="number" id="ta-ano-construcao" min="1800" max="2026" name="ano_construcao"
-                        placeholder="">
-                </div>
-                <div class="vertical-separator">
-                    <label for="" id="stt-cep">CEP</label>
-                    <input type="text" id="ta-cep" name="cep" required oninput="preencherEndereco(event)" minlength="14"
-                        maxlength="14" placeholder="">
-                </div>
-                <div class="vertical-separator">
-                    <label for="" id="stt-rua">Rua</label>
-                    <textarea id="ta-rua" placeholder="" readonly=True name="rua"></textarea>
-                </div>
-                <div class="vertical-separator">
-                    <label for="" id="stt-numero">Número</label>
-                    <input type="number" placeholder="" id="ta-numero" name="numero" required>
-                </div>
-                <div class="vertical-separator">
-                    <label for="" id="stt-complemento">Complemento</label>
-                    <textarea name="complemento" placeholder="" id="ta-complemento"></textarea>
-                </div>
-                <div class="vertical-separator">
-                    <label for="" id="stt-bloco">Bloco</label>
-                    <textarea name="bloco" placeholder="" id="ta-bloco"></textarea>
-                </div>
-                <div class="vertical-separator">
-                    <label for="" id="stt-andar">Andar</label>
-                    <input type="number" id="ta-andar" placeholder="" min="0" max="99" name="andar">
-                </div>
-                <div class="vertical-separator">
-                    <label for="" id="stt-bairro">Bairro</label>
-                    <textarea id="ta-bairro" placeholder="" readonly=True name="bairro"></textarea>
-                </div>
-                <div class="vertical-separator">
-                    <label for="" id="stt-cidade">Cidade</label>
-                    <textarea id="ta-cidade" placeholder="" readonly=True name="cidade"></textarea>
-                </div>
-                <div class="vertical-separator">
-                    <label for="" id="stt-estado">Estado</label>
-                    <input type="text" readonly=True id="ta-estado" minlength="2" maxlength="2" name="uf"
-                        placeholder="">
-                </div>
-                <div class="vertical-separator">
-                    <label for="" id="stt-salas">Salas</label>
-                    <input type="number" id="ta-salas" name="quantidade_salas" min="0" max="99" placeholder="">
-                </div>
-                <div class="vertical-separator">
-                    <label for="" id="stt-banheiros">Banheiros</label>
-                    <input type="number" id="ta-banheiros" name="quantidade_banheiros" min="0" max="99" placeholder="">
-                </div>
-                <div class="vertical-separator">
-                    <label for="" id="stt-vagas">Vagas</label>
-                    <input type="number" id="ta-vagas" name="quantidade_vagas" min="0" max="99" placeholder="">
-                </div>
-                <div class="vertical-separator">
-                    <label for="" id="stt-varandas">Varandas</label>
-                    <input type="number" id="ta-varandas" name="quantidade_varandas" min="0" max="99" placeholder="">
-                </div>
-                <div class="vertical-separator">
-                    <label for="" id="stt-quartos">Quartos</label>
-                    <input type="number" id="ta-quartos" name="quantidade_quartos" min="0" max="99" placeholder="">
-                </div>
-                <div class="vertical-separator">
-                    <label for="" id="stt-area-total">Área Total</label>
-                    <input type="text" id="ta-area-total" name="area_total" placeholder="">
-                </div>
-                <div class="vertical-separator">
-                    <label for="" id="stt-area-privativa">Área Privativa</label>
-                    <input type="text" id="ta-area-privativa" name="area_privativa" placeholder="">
-                </div>
-                <div class="vertical-separator">
-                    <label for="" id="stt-venda">Valor Venda:</label>
-                    <input type="text" id="ta-venda" name="valor_venda" placeholder="">
-                </div>
-                <div class="vertical-separator">
-                    <label for="" id="stt-aluguel">Valor Aluguel:</label>
-                    <input type="text" id="ta-aluguel" name="valor_aluguel" placeholder="">
-                </div>
-                <div class="vertical-separator">
-                    <label for="" id="stt-condominio">Valor Condomínio:</label>
-                    <input type="text" id="ta-condominio" name="valor_condominio" placeholder="">
-                </div>
-                <div class="vertical-separator">
-                    <label for="" id="stt-iptu">Valor IPTU:</label>
-                    <input type="text" name="iptu" id="ta-iptu" placeholder="">
+                <div id="quantidades">
+                    <div class="linha">
+                        <div class="vertical-separator">
+                            <label for="" id="stt-quartos">Quartos</label>
+                            <input type="number" id="ta-quartos" name="quantidade_quartos" min="0" max="99"
+                                placeholder="">
+                        </div>
+                        <div class="vertical-separator">
+                            <label for="" id="stt-banheiros">Banheiros</label>
+                            <input type="number" id="ta-banheiros" name="quantidade_banheiros" min="0" max="99"
+                                placeholder="">
+                        </div>
+                        <div class="vertical-separator">
+                            <label for="" id="stt-salas">Salas</label>
+                            <input type="number" id="ta-salas" name="quantidade_salas" min="0" max="99" placeholder="">
+                        </div>
+                        <div class="vertical-separator">
+                            <label for="" id="stt-vagas">Vagas</label>
+                            <input type="number" id="ta-vagas" name="quantidade_vagas" min="0" max="99" placeholder="">
+                        </div>
+
+                        <div class="vertical-separator">
+                            <label for="" id="stt-varandas">Varandas</label>
+                            <input type="number" id="ta-varandas" name="quantidade_varandas" min="0" max="99"
+                                placeholder="">
+                        </div>
+
+                        <div class="vertical-separator">
+                            <label for="" id="stt-area-total">Área Total</label>
+                            <input type="text" id="ta-area-total" name="area_total" placeholder="">
+                        </div>
+                        <div class="vertical-separator">
+                            <label for="" id="stt-area-privativa">Área Privativa</label>
+                            <input type="text" id="ta-area-privativa" name="area_privativa" placeholder="">
+                        </div>
+                        <div class="vertical-separator">
+                            <label for="" id="stt-venda">Valor Venda:</label>
+                            <input type="text" id="ta-venda" name="valor_venda" placeholder="">
+                        </div>
+                        <div class="vertical-separator">
+                            <label for="" id="stt-aluguel">Valor Aluguel:</label>
+                            <input type="text" id="ta-aluguel" name="valor_aluguel" placeholder="">
+                        </div>
+                        <div class="vertical-separator">
+                            <label for="" id="stt-condominio">Valor Condomínio:</label>
+                            <input type="text" id="ta-condominio" name="valor_condominio" placeholder="">
+                        </div>
+                        <div class="vertical-separator">
+                            <label for="" id="stt-iptu">Valor IPTU:</label>
+                            <input type="text" name="iptu" id="ta-iptu" placeholder="">
+                        </div>
+                    </div>
                 </div>
             </form>
             <form id="container-anuncio" style="display: none;" role="tabpanel" class="tabcontent">

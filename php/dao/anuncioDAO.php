@@ -168,5 +168,4 @@ class AnuncioDAO
             return NULL;
         }
     }
-
 }

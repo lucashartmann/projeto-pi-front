@@ -474,19 +474,19 @@ function abrirTab(posicao) {
     const divTabs = document.querySelector(".seaTabs_switch");
 
     for (let i = 0; i < divTabs.children.length; i++) {
-        if (divTabs.children[i].classList.contains("seaTabs_active")) {
-            divTabs.children[i].classList.remove("seaTabs_active");
+        if (divTabs.children[i].classList.contains("seaTabs_switch_active")) {
+            divTabs.children[i].classList.remove("seaTabs_switch_active");
         }
     }
 
     switch (posicao) {
         case 0:
-            divTabs.children[0].classList.toggle("seaTabs_active");
+            divTabs.children[0].classList.toggle("seaTabs_switch_active");
             document.getElementById("container-cadastro").style.display = "grid";
             document.getElementById("container-anuncio").style.display = "none";
             break;
         case 1:
-            divTabs.children[1].classList.toggle("seaTabs_active");
+            divTabs.children[1].classList.toggle("seaTabs_switch_active");
             document.getElementById("container-anuncio").style.display = "flex";
             document.getElementById("container-cadastro").style.display = "none";
             break;

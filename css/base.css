@@ -8,7 +8,10 @@
 
 :root {
     --cor-texto: #ffffff;
-    --background-nav: rgba(36, 30, 30, 0.92);
+    --preco: rgb(11, 85, 7);
+    --background-claro: #f8f8f8;
+    --background-escuro: rgba(65, 65, 65, 0.7);
+    --background-nav: rgba(65, 65, 65, 0.7);
     --hover: #d4af37;
     --hover-soft: rgba(212, 175, 55, 0.12);
     --shadow: 0 8px 30px rgba(0, 0, 0, 0.25);
@@ -29,18 +32,21 @@
 }
 
 .modo-noturno {
-    input[type="date"]::-webkit-calendar-picker-indicator {
-        filter: invert(1);
-    }
-
+    --preco: rgb(30, 179, 22);
+    --background-claro: rgba(65, 65, 65, 0.7);
+    --background-escuro: #f8f8f8;
     --background: #121212;
-    --cor-texto: #ffffff;
+    --cor-texto: #ffffff; /* TODO: Arrumar? */
     --background-nav: rgba(36, 30, 30, 0.92);
     --hover: #d4af37;
     --hover-soft: rgba(212, 175, 55, 0.12);
     --transition: 0.3s ease;
     --cor-texto-alternativa: #ffffff;
     --cor-shadow: rgb(43, 33, 33);
+
+    input[type="date"]::-webkit-calendar-picker-indicator {
+        filter: invert(1);
+    }
 }
 
 
@@ -303,7 +309,7 @@ nav {
         min-width: 220px;
         padding: 0.6rem;
         border-radius: 14px;
-        background: rgba(44, 35, 35, 0.98);
+        background: rgba(65, 65, 65, 1);
         backdrop-filter: blur(14px);
         box-shadow: 0 15px 40px rgba(0, 0, 0, 0.35);
         border: 1px solid rgba(255, 255, 255, 0.05);
@@ -416,6 +422,7 @@ select {
         &:valid {
             outline: none;
         }
+
         &:invalid {
             outline: solid 2px red;
             border: none;
@@ -442,6 +449,7 @@ input {
         &:valid {
             outline: none;
         }
+
         &:invalid {
             outline: solid 2px red;
             border: none;
@@ -468,6 +476,7 @@ textarea {
         &:valid {
             outline: none;
         }
+
         &:invalid {
             outline: solid 2px red;
             border: none;
@@ -613,4 +622,9 @@ main {
 
 .curtido {
     color: red !important;
+}
+
+div[vw-access-button] {
+    border: none !important;
+    background: none !important;
 }
