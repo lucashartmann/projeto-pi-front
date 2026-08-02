@@ -159,6 +159,7 @@ label {
     overflow: hidden;
     width: 90%;
     justify-self: center;
+    margin: 0 auto;
 }
 
 .seaTabs_tab {
@@ -175,7 +176,8 @@ label {
 }
 
 .seaTabs_content_active {
-    display: block;
+    display: flex;
+    flex-direction: column;
 }
 
 .seaTabs_tab {
