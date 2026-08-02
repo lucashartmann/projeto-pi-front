@@ -40,7 +40,7 @@ class ImovelDAO
     public function listarDestacados()
     {
         try {
-            $sql = "SELECT * FROM imovel d WHERE d.destacado = 1 AND d.tipo != 'Pendente'";
+            $sql = "SELECT * FROM imovel d WHERE d.destacado = 1 AND d.status != 'Pendente'";
             $stmt = $this->bancoDados->prepare($sql);
             $stmt->execute();
             $resultados = $stmt->fetchAll(PDO::FETCH_ASSOC);

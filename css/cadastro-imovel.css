@@ -278,7 +278,7 @@ label {
 
         &:read-only {
             background: #ececec;
-            color: color-mix(in srgb, var(--cor-texto) 50%, #666);
+            color: color-mix(in srgb, var(--cor-texto-alternativa) 10%, #666);
         }
 
         &:focus {
@@ -333,7 +333,7 @@ label {
     }
 
     .vertical-separator:has(#ta-area-total),
-    .vertical-separator:has(#ta-area-privativa) {
+    .vertical-separator:has(#ta-area-privativa), .vertical-separator:has(#ta-ano-construcao) {
         flex: 0 0 120px;
     }
 
