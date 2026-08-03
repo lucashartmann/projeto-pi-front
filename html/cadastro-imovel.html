@@ -31,366 +31,408 @@
         <button onclick="altoContraste()"><i class="fas fa-adjust"></i></button>
         <button onclick="modoNoturno()"><i class="fas fa-moon"></i></button>
     </div>
-    <div id="h-buttons">
-        <button class="bt-delete" onclick="excluir()">Apagar</button>
-        <button class="bt-success" type="submit" onclick="salvarMultiplosForms()">Salvar</button>
-    </div>
 
 
-    <div class="seaTabs">
-        <div class="seaTabs_switch">
-            <div class="seaTabs_tab seaTabs_switch_active" onclick="abrirTab(0)">Cadastro</div>
-            <div class="seaTabs_tab" onclick="abrirTab(1)">Anuncio</div>
+    <div id="tataravo">
+        <div id="avo">
+            <div class="seaTabs">
+                <div class="seaTabs_switch">
+                    <div class="seaTabs_tab seaTabs_switch_active" onclick="abrirTab(0)">Cadastro</div>
+                    <div class="seaTabs_tab" onclick="abrirTab(1)">Anuncio</div>
+                </div>
+                <div id="cadastro-pai">
+                    <form id="container-cadastro" style="display: grid;" role="tabpanel" class="tabcontent"
+                        value="cadastro_imovel">
+                        <div id="informacoes-gerais">
+                            <div class="linha">
+                                <div class="vertical-separator">
+                                    <label id="stt-ref" for="">ref:</label>
+                                    <textarea name="ref" id="ta-ref" readonly=True placeholder=""></textarea>
+                                </div>
+                                <div class="vertical-separator">
+                                    <label for="" id="stt-categoria">Categoria:</label>
+                                    <select name="categoria" id="select-categoria" required>
+                                        <option value="" selected>Selecione uma opção...</option>
+                                        <option value="Sala Comercial">Sala Comercial</option>
+                                        <option value="Apartamento">Apartamento</option>
+                                        <option value="Casa">Casa</option>
+                                        <option value="Chácara">Chácara</option>
+                                        <option value="Fazenda">Fazenda</option>
+                                        <option value="Casa em Condomínio">Casa em Condomínio</option>
+                                        <option value="Empreendimento">Empreendimento</option>
+                                        <option value="Ponto Comercial">Ponto Comercial</option>
+                                        <option value="Prédio Comercial">Prédio Comercial</option>
+                                        <option value="Galpão">Galpão</option>
+                                        <option value="Depósito">Depósito</option>
+                                        <option value="Apartamento">Apartamento</option>
+                                        <option value="Loja">Loja</option>
+                                        <option value="Cobertura">Cobertura</option>
+                                        <option value="Loft">Loft</option>
+                                        <option value="Terreno">Terreno</option>
+                                        <option value="Kitnet">Kitnet</option>
+                                        <option value="Sobrado">Sobrado</option>
+                                        <option value="Pavilhão">Pavilhão</option>
+                                        <option value="Depósito">Depósito</option>
+                                        <option value="Studio">Studio</option>
+                                        <option value="Sítio">Sítio</option>
+                                    </select>
+                                </div>
+                                <div class="vertical-separator">
+                                    <label for="" id="stt-situacao">Situação</label>
+                                    <select name="situacao" id="select-situacao">
+                                        <option value="" selected>Selecione uma opção...</option>
+                                        <option value="Em Construção">Em Construção</option>
+                                        <option value="Novo">Novo</option>
+                                        <option value="Usado">Usado</option>
+                                    </select>
+                                </div>
+
+
+                                <div class="vertical-separator">
+                                    <label for="" id="stt-estado-select">Estado:</label>
+                                    <select name="estado_imovel" id="select-estado">
+                                        <option value="" selected>Selecione uma opção...</option>
+                                        <option value="Bom">Bom</option>
+                                        <option value="Ótimo">Ótimo</option>
+                                        <option value="Regular">Regular</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="linha">
+                                <div class="vertical-separator">
+                                    <label for="" id="stt-ocupacao">Ocupação:</label>
+                                    <select name="ocupacao" id="select-ocupacao">
+                                        <option value="" selected>Selecione uma opção...</option>
+                                        <option value="Desocupado">Desocupado</option>
+                                        <option value="Inquilino">Inquilino</option>
+                                        <option value="Proprietário">Proprietário</option>
+                                    </select>
+                                </div>
+                                <div class="vertical-separator">
+                                    <label for="" id="stt-status">Status:</label>
+                                    <select name="status" id="select-status" required>
+                                        <option value="" selected>Selecione uma opção...</option>
+                                        <option value="Venda">Venda</option>
+                                        <option value="Aluguel">Aluguel</option>
+                                        <option value="Venda e Aluguel">Venda e Aluguel</option>
+                                        <option value="Alugado">Alugado</option>
+                                        <option value="Vendido">Vendido</option>
+                                        <option value="Pendente">Pendente</option>
+                                    </select>
+                                </div>
+                                <div class="vertical-separator">
+                                    <label for="" id="stt-nome-condominio">Nome do Condomínio</label>
+                                    <textarea name="nome_condominio" id="ta-nome-condominio" placeholder=""></textarea>
+                                </div>
+                                <div class="vertical-separator">
+                                    <label for="" id="stt-ano-construcao">Ano de Construção</label>
+                                    <input type="number" id="ta-ano-construcao" min="1800" max="2026"
+                                        name="ano_construcao" placeholder="">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="endereco">
+                            <div class="linha">
+                                <div class="vertical-separator">
+                                    <label for="" id="stt-rua">Rua</label>
+                                    <textarea id="ta-rua" placeholder="" readonly=True name="rua"></textarea>
+                                </div>
+                                <div class="vertical-separator">
+                                    <label for="" id="stt-numero">Número</label>
+                                    <input type="number" placeholder="" id="ta-numero" name="numero" required>
+                                </div>
+                                <div class="vertical-separator">
+                                    <label for="" id="stt-complemento">Complemento</label>
+                                    <textarea name="complemento" placeholder="" id="ta-complemento"></textarea>
+                                </div>
+                                <div class="vertical-separator">
+                                    <label for="" id="stt-bloco">Bloco</label>
+                                    <textarea name="bloco" placeholder="" id="ta-bloco"></textarea>
+                                </div>
+                                <div class="vertical-separator">
+                                    <label for="" id="stt-andar">Andar</label>
+                                    <input type="number" id="ta-andar" placeholder="" min="0" max="99" name="andar">
+                                </div>
+                            </div>
+                            <div class="linha">
+                                <div class="vertical-separator">
+                                    <label for="" id="stt-bairro">Bairro</label>
+                                    <textarea id="ta-bairro" placeholder="" readonly=True name="bairro"></textarea>
+                                </div>
+                                <div class="vertical-separator">
+                                    <label for="" id="stt-cidade">Cidade</label>
+                                    <textarea id="ta-cidade" placeholder="" readonly=True name="cidade"></textarea>
+                                </div>
+                                <div class="vertical-separator">
+                                    <label for="" id="stt-estado">Estado</label>
+                                    <input type="text" readonly=True id="ta-estado" minlength="2" maxlength="2"
+                                        name="uf" placeholder="">
+                                </div>
+                                <div class="vertical-separator">
+                                    <label for="" id="stt-cep">CEP</label>
+                                    <input type="text" id="ta-cep" name="cep" required
+                                        oninput="preencherEndereco(event)" minlength="14" maxlength="14" placeholder="">
+                                </div>
+                            </div>
+                        </div>
+                        <div id="quantidades">
+                            <div class="linha">
+                                <div class="vertical-separator">
+                                    <label for="" id="stt-quartos">Quartos</label>
+                                    <input type="number" id="ta-quartos" name="quantidade_quartos" min="0" max="99"
+                                        placeholder="">
+                                </div>
+                                <div class="vertical-separator">
+                                    <label for="" id="stt-banheiros">Banheiros</label>
+                                    <input type="number" id="ta-banheiros" name="quantidade_banheiros" min="0" max="99"
+                                        placeholder="">
+                                </div>
+                                <div class="vertical-separator">
+                                    <label for="" id="stt-salas">Salas</label>
+                                    <input type="number" id="ta-salas" name="quantidade_salas" min="0" max="99"
+                                        placeholder="">
+                                </div>
+                                <div class="vertical-separator">
+                                    <label for="" id="stt-vagas">Vagas</label>
+                                    <input type="number" id="ta-vagas" name="quantidade_vagas" min="0" max="99"
+                                        placeholder="">
+                                </div>
+
+                                <div class="vertical-separator">
+                                    <label for="" id="stt-varandas">Varandas</label>
+                                    <input type="number" id="ta-varandas" name="quantidade_varandas" min="0" max="99"
+                                        placeholder="">
+                                </div>
+
+                                <div class="vertical-separator">
+                                    <label for="" id="stt-area-total">Área Total</label>
+                                    <input type="text" id="ta-area-total" name="area_total" placeholder="">
+                                </div>
+                                <div class="vertical-separator">
+                                    <label for="" id="stt-area-privativa">Área Privativa</label>
+                                    <input type="text" id="ta-area-privativa" name="area_privativa" placeholder="">
+                                </div>
+                                <div class="vertical-separator">
+                                    <label for="" id="stt-venda">Valor Venda:</label>
+                                    <input type="text" id="ta-venda" name="valor_venda" placeholder="">
+                                </div>
+                                <div class="vertical-separator">
+                                    <label for="" id="stt-aluguel">Valor Aluguel:</label>
+                                    <input type="text" id="ta-aluguel" name="valor_aluguel" placeholder="">
+                                </div>
+                                <div class="vertical-separator">
+                                    <label for="" id="stt-condominio">Valor Condomínio:</label>
+                                    <input type="text" id="ta-condominio" name="valor_condominio" placeholder="">
+                                </div>
+                                <div class="vertical-separator">
+                                    <label for="" id="stt-iptu">Valor IPTU:</label>
+                                    <input type="text" name="iptu" id="ta-iptu" placeholder="">
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                    <form id="container-anuncio" style="display: none;" role="tabpanel" class="tabcontent">
+                        <div class="campo">
+                            <label class="titulo">Título</label>
+                            <textarea name="titulo" id="ta-titulo-anuncio"></textarea>
+                        </div>
+
+                        <div class="campo">
+                            <label class="titulo">Descrição</label>
+                            <textarea name="descricao" id="ta-descricao-anuncio"></textarea>
+                        </div>
+
+                        <div>
+                            <label class="titulo">Apartamento</label>
+                            <div id="container-info-imovel">
+                                <input type="checkbox" id="filtro-aceita-pet" value="Aceita Pet">
+                                <label for="filtro-aceita-pet">Aceita Pet</label>
+                                <input type="checkbox" id="filtro-churrasqueira" value="Churrasqueira">
+                                <label for="filtro-churrasqueira">Churrasqueira</label>
+                                <input type="checkbox" id="filtro-armarios-embutidos" value="Armarios Embutidos">
+                                <label for="filtro-armarios-embutidos">Armarios Embutidos</label>
+                                <input type="checkbox" id="filtro-cozinha-americana" value="Cozinha Americana">
+                                <label for="filtro-cozinha-americana">Cozinha Americana</label>
+                                <input type="checkbox" id="filtro-area-de-servico" value="Área de Serviço">
+                                <label for="filtro-area-de-servico">Área de Serviço</label>
+                                <input type="checkbox" id="filtro-suíte-master" value="Suíte Master">
+                                <label for="filtro-suíte-master">Suíte Master</label>
+                                <input type="checkbox" id="filtro-banheiro-com-janela" value="Banheiro com Janela">
+                                <label for="filtro-banheiro-com-janela">Banheiro com Janela</label>
+                                <input type="checkbox" id="filtro-piscina" value="Piscina">
+                                <label for="filtro-piscina">Piscina</label>
+                                <input type="checkbox" id="filtro-lareira" value="Lareira">
+                                <label for="filtro-lareira">Lareira</label>
+                                <input type="checkbox" id="filtro-ar-condicionado" value="Ar Condicionado">
+                                <label for="filtro-ar-condicionado">Ar Condicionado</label>
+                                <input type="checkbox" id="filtro-semi-mobiliado" value="Semi Mobiliado">
+                                <label for="filtro-semi-mobiliado">Semi Mobiliado</label>
+                                <input type="checkbox" id="filtro-mobiliado" value="Mobiliado">
+                                <label for="filtro-mobiliado">Mobiliado</label>
+                                <input type="checkbox" id="filtro-dependencia-de-empregada"
+                                    value="Dependência de Empregada">
+                                <label for="filtro-dependencia-de-empregada">Dependência de Empregada</label>
+                                <input type="checkbox" id="filtro-despensa" value="Despensa">
+                                <label for="filtro-despensa">Despensa</label>
+                                <input type="checkbox" id="filtro-deposito" value="Depósito">
+                                <label for="filtro-deposito">Depósito</label>
+                            </div>
+                        </div>
+                        <div>
+                            <label for="" class="titulo">Condomínio</label>
+                            <div id="container-info-condominio">
+                                <input type="checkbox" id="filtro-churrasqueira-coletiva"
+                                    value="Churrasqueira Coletiva">
+                                <label for="filtro-churrasqueira-coletiva">Churrasqueira Coletiva</label>
+                                <input type="checkbox" id="filtro-piscina" value="Piscina">
+                                <label for="filtro-piscina">Piscina</label>
+                                <input type="checkbox" id="filtro-piscina-infantil" value="Piscina Infantil">
+                                <label for="filtro-piscina-infantil">Piscina Infantil</label>
+                                <input type="checkbox" id="filtro-piscina-aquecida" value="Piscina Aquecida">
+                                <label for="filtro-piscina-aquecida">Piscina Aquecida</label>
+                                <input type="checkbox" id="filtro-quiostique" value="Quiosque">
+                                <label for="filtro-quiostique">Quiosque</label>
+                                <input type="checkbox" id="filtro-sauna" value="Sauna">
+                                <label for="filtro-sauna">Sauna</label>
+                                <input type="checkbox" id="filtro-quadra-de-esportes" value="Quadra de Esportes">
+                                <label for="filtro-quadra-de-esportes">Quadra de Esportes</label>
+                                <input type="checkbox" id="filtro-jardim" value="Jardim">
+                                <label for="filtro-jardim">Jardim</label>
+                                <input type="checkbox" id="filtro-salao-de-festas" value="Salão de Festas">
+                                <label for="filtro-salao-de-festas">Salão de Festas</label>
+                                <input type="checkbox" id="filtro-academia" value="Academia">
+                                <label for="filtro-academia">Academia</label>
+                                <input type="checkbox" id="filtro-sala-de-jogos" value="Sala de Jogos">
+                                <label for="filtro-sala-de-jogos">Sala de Jogos</label>
+                                <input type="checkbox" id="filtro-playground" value="Playground">
+                                <label for="filtro-playground">Playground</label>
+                                <input type="checkbox" id="filtro-brinquedoteca" value="Brinquedoteca">
+                                <label for="filtro-brinquedoteca">Brinquedoteca</label>
+                                <input type="checkbox" id="filtro-vaga-coberta" value="Vaga Coberta">
+                                <label for="filtro-vaga-coberta">Vaga Coberta</label>
+                                <input type="checkbox" id="filtro-estacionamento" value="Estacionamento">
+                                <label for="filtro-estacionamento">Estacionamento</label>
+                                <input type="checkbox" id="filtro-vaga-para-visitantes" value="Vaga para Visitantes">
+                                <label for="filtro-vaga-para-visitantes">Vaga para Visitantes</label>
+                                <input type="checkbox" id="filtro-mercado" value="Mercado">
+                                <label for="filtro-mercado">Mercado</label>
+                                <input type="checkbox" id="filtro-mesa-de-sinuca" value="Mesa de Sinuca">
+                                <label for="filtro-mesa-de-sinuca">Mesa de Sinuca</label>
+                                <input type="checkbox" id="filtro-mesa-de-ping-pong" value="Mesa de Ping Pong">
+                                <label for="filtro-mesa-de-ping-pong">Mesa de Ping Pong</label>
+                                <input type="checkbox" id="filtro-mesa-de-pebolim" value="Mesa de Pebolim">
+                                <label for="filtro-mesa-de-pebolim">Mesa de Pebolim</label>
+                                <input type="checkbox" id="filtro-quadra-de-tenis" value="Quadra de Tenis">
+                                <label for="filtro-quadra-de-tenis">Quadra de Tenis</label>
+                                <input type="checkbox" id="filtro-quadra-de-futebol" value="Quadra de Futebol">
+                                <label for="filtro-quadra-de-futebol">Quadra de Futebol</label>
+                                <input type="checkbox" id="filtro-quadra-de-basquete" value="Quadra de Basquete">
+                                <label for="filtro-quadra-de-basquete">Quadra de Basquete</label>
+                                <input type="checkbox" id="filtro-quadra-de-volei" value="Quadra de Volei">
+                                <label for="filtro-quadra-de-volei">Quadra de Volei</label>
+                                <input type="checkbox" id="filtro-quadra-de-areia" value="Quadra de Areia">
+                                <label for="filtro-quadra-de-areia">Quadra de Areia</label>
+                                <input type="checkbox" id="filtro-bicicletario" value="Bicicletario">
+                                <label for="filtro-bicicletario">Bicicletario</label>
+                                <input type="checkbox" id="filtro-heliponto" value="Heliponto">
+                                <label for="filtro-heliponto">Heliponto</label>
+                                <input type="checkbox" id="filtro-elevador-de-servico" value="Elevador de Serviço">
+                                <label for="filtro-elevador-de-servico">Elevador de Serviço</label>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+
+
+            <div id="container-imagens" class="container">
+                <header><label for="">Imagens:</label>
+                    <button id="bt-adicionar-imagens" onclick="adicionarAnexo(event)">Adicionar</button>
+                    <button class="selecionar-todos" onclick="selecionarTodos(event)">Selecionar Todos</button>
+                    <button class="abrir-multiplos" style="display: none;"
+                        onclick="abrirMultiplos(event)">Abrir</button>
+                    <button class="apagar-multiplos" style="display: none;"
+                        onclick="apagarMultiplos(event)">Apagar</button>
+                    <p id="contador-imagens">0 imagens</p>
+                </header>
+
+            </div>
+            <div id="container-anexos" class="container">
+                <header><label for="">Anexos:</label>
+                    <button class="bt-adicionar-anexos" onclick="adicionarAnexo(event)">Adicionar</button>
+                    <button class="selecionar-todos" onclick="selecionarTodos(event)">Selecionar Todos</button>
+                    <button class="abrir-multiplos" style="display: none;"
+                        onclick="abrirMultiplos(event)">Abrir</button>
+                    <button class="apagar-multiplos" style="display: none;"
+                        onclick="apagarMultiplos(event)">Apagar</button>
+                    <p id="contador-documentos">0 anexos</p>
+                </header>
+            </div>
+            <div id="container-proprietario" class="container">
+                <header><label for="" classes="stt-container-titulo">Proprietário: </label>
+                    <button classes="bt-editar-pessoa" id="br-editar-proprietario"
+                        onclick="editarPessoa('proprietario')">Editar</button>
+
+                </header>
+            </div>
+            <div id="container-corretor" class="container">
+                <header><label for="" classes="stt-container-titulo">Corretor: </label>
+                    <button id="br-editar-corretor" classes="bt-editar-pessoa"
+                        onclick="editarPessoa('corretor')">Editar</button>
+                </header>
+            </div>
+            <div id="container-captador" class="container">
+                <header><label for="" classes="stt-container-titulo">Captador: </label>
+                    <button classes="bt-editar-pessoa" id="br-editar-captador"
+                        onclick="editarPessoa('captador')">Editar</button>
+                </header>
+            </div>
+            <div id="container-portais" class="container">
+                <header><label for="" classes="stt-container-titulo">Portais: </label>
+                    <button>Cadastrar Portal</button>
+                </header>
+            </div>
+            <div id="container-mapa" class="container">
+                <gmp-map center="41.027748173921374, -92.41852445367961" zoom="13" map-id="DEMO_MAP_ID"
+                    style="height: 400px"></gmp-map>
+            </div>
+
         </div>
-        <div id="cadastro-pai">
-            <form id="container-cadastro" style="display: grid;" role="tabpanel" class="tabcontent"
-                value="cadastro_imovel">
-                <div id="informacoes-gerais">
-                    <div class="linha">
-                        <div class="vertical-separator">
-                            <label id="stt-ref" for="">ref:</label>
-                            <textarea name="ref" id="ta-ref" readonly=True placeholder=""></textarea>
-                        </div>
-                        <div class="vertical-separator">
-                            <label for="" id="stt-categoria">Categoria:</label>
-                            <select name="categoria" id="select-categoria" required>
-                                <option value="" selected>Selecione uma opção...</option>
-                                <option value="Sala Comercial">Sala Comercial</option>
-                                <option value="Apartamento">Apartamento</option>
-                                <option value="Casa">Casa</option>
-                                <option value="Chácara">Chácara</option>
-                                <option value="Fazenda">Fazenda</option>
-                                <option value="Casa em Condomínio">Casa em Condomínio</option>
-                                <option value="Empreendimento">Empreendimento</option>
-                                <option value="Ponto Comercial">Ponto Comercial</option>
-                                <option value="Prédio Comercial">Prédio Comercial</option>
-                                <option value="Galpão">Galpão</option>
-                                <option value="Depósito">Depósito</option>
-                                <option value="Apartamento">Apartamento</option>
-                                <option value="Loja">Loja</option>
-                                <option value="Cobertura">Cobertura</option>
-                                <option value="Loft">Loft</option>
-                                <option value="Terreno">Terreno</option>
-                                <option value="Kitnet">Kitnet</option>
-                                <option value="Sobrado">Sobrado</option>
-                                <option value="Pavilhão">Pavilhão</option>
-                                <option value="Depósito">Depósito</option>
-                                <option value="Studio">Studio</option>
-                                <option value="Sítio">Sítio</option>
-                            </select>
-                        </div>
-                        <div class="vertical-separator">
-                            <label for="" id="stt-situacao">Situação</label>
-                            <select name="situacao" id="select-situacao">
-                                <option value="" selected>Selecione uma opção...</option>
-                                <option value="Em Construção">Em Construção</option>
-                                <option value="Novo">Novo</option>
-                                <option value="Usado">Usado</option>
-                            </select>
-                        </div>
+        <div id="h-buttons">
+            <button class="bt-success" type="submit" onclick="salvarMultiplosForms()">Salvar</button>
+            <button class="bt-delete" onclick="excluir()">Apagar</button>
+            <button class="bt-open" onclick="abrirAnuncio()">Abrir anúncio</button>
+            <button onclick="compartilhar('anuncio')"><i class="fas fa-share-alt"></i> Compartilhar anúncio</button>
+            <button onclick="compartilhar('cadastro')"><i class="fas fa-share-alt"></i> Compartilhar cadastro</button>
 
-
-                        <div class="vertical-separator">
-                            <label for="" id="stt-estado-select">Estado:</label>
-                            <select name="estado_imovel" id="select-estado">
-                                <option value="" selected>Selecione uma opção...</option>
-                                <option value="Bom">Bom</option>
-                                <option value="Ótimo">Ótimo</option>
-                                <option value="Regular">Regular</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="linha">
-                        <div class="vertical-separator">
-                            <label for="" id="stt-ocupacao">Ocupação:</label>
-                            <select name="ocupacao" id="select-ocupacao">
-                                <option value="" selected>Selecione uma opção...</option>
-                                <option value="Desocupado">Desocupado</option>
-                                <option value="Inquilino">Inquilino</option>
-                                <option value="Proprietário">Proprietário</option>
-                            </select>
-                        </div>
-                        <div class="vertical-separator">
-                            <label for="" id="stt-status">Status:</label>
-                            <select name="status" id="select-status" required>
-                                <option value="" selected>Selecione uma opção...</option>
-                                <option value="Venda">Venda</option>
-                                <option value="Aluguel">Aluguel</option>
-                                <option value="Venda e Aluguel">Venda e Aluguel</option>
-                                <option value="Alugado">Alugado</option>
-                                <option value="Vendido">Vendido</option>
-                                <option value="Pendente">Pendente</option>
-                            </select>
-                        </div>
-                        <div class="vertical-separator">
-                            <label for="" id="stt-nome-condominio">Nome do Condomínio</label>
-                            <textarea name="nome_condominio" id="ta-nome-condominio" placeholder=""></textarea>
-                        </div>
-                        <div class="vertical-separator">
-                            <label for="" id="stt-ano-construcao">Ano de Construção</label>
-                            <input type="number" id="ta-ano-construcao" min="1800" max="2026" name="ano_construcao"
-                                placeholder="">
-                        </div>
-                    </div>
+            <div id="historico">
+                <h3>Historico de Alterações</h3>
+                <div id="container-historico" class="container">
+                    <table id="historico-table">
+                        <thead>
+                            <tr>
+                                <th>Data</th>
+                                <th>Usuário</th>
+                                <th>Alteração</th>
+                            </tr>
+                        </thead>
+                        <tbody id="historico-body">
+                            <tr>
+                                <td>2023-01-01</td>
+                                <td>João Silva</td>
+                                <td>Alteração no endereço</td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
-
-                <div id="endereco">
-                    <div class="linha">
-                        <div class="vertical-separator">
-                            <label for="" id="stt-rua">Rua</label>
-                            <textarea id="ta-rua" placeholder="" readonly=True name="rua"></textarea>
-                        </div>
-                        <div class="vertical-separator">
-                            <label for="" id="stt-numero">Número</label>
-                            <input type="number" placeholder="" id="ta-numero" name="numero" required>
-                        </div>
-                        <div class="vertical-separator">
-                            <label for="" id="stt-complemento">Complemento</label>
-                            <textarea name="complemento" placeholder="" id="ta-complemento"></textarea>
-                        </div>
-                        <div class="vertical-separator">
-                            <label for="" id="stt-bloco">Bloco</label>
-                            <textarea name="bloco" placeholder="" id="ta-bloco"></textarea>
-                        </div>
-                        <div class="vertical-separator">
-                            <label for="" id="stt-andar">Andar</label>
-                            <input type="number" id="ta-andar" placeholder="" min="0" max="99" name="andar">
-                        </div>
-                    </div>
-                    <div class="linha">
-                        <div class="vertical-separator">
-                            <label for="" id="stt-bairro">Bairro</label>
-                            <textarea id="ta-bairro" placeholder="" readonly=True name="bairro"></textarea>
-                        </div>
-                        <div class="vertical-separator">
-                            <label for="" id="stt-cidade">Cidade</label>
-                            <textarea id="ta-cidade" placeholder="" readonly=True name="cidade"></textarea>
-                        </div>
-                        <div class="vertical-separator">
-                            <label for="" id="stt-estado">Estado</label>
-                            <input type="text" readonly=True id="ta-estado" minlength="2" maxlength="2" name="uf"
-                                placeholder="">
-                        </div>
-                        <div class="vertical-separator">
-                            <label for="" id="stt-cep">CEP</label>
-                            <input type="text" id="ta-cep" name="cep" required oninput="preencherEndereco(event)"
-                                minlength="14" maxlength="14" placeholder="">
-                        </div>
-                    </div>
-                </div>
-                <div id="quantidades">
-                    <div class="linha">
-                        <div class="vertical-separator">
-                            <label for="" id="stt-quartos">Quartos</label>
-                            <input type="number" id="ta-quartos" name="quantidade_quartos" min="0" max="99"
-                                placeholder="">
-                        </div>
-                        <div class="vertical-separator">
-                            <label for="" id="stt-banheiros">Banheiros</label>
-                            <input type="number" id="ta-banheiros" name="quantidade_banheiros" min="0" max="99"
-                                placeholder="">
-                        </div>
-                        <div class="vertical-separator">
-                            <label for="" id="stt-salas">Salas</label>
-                            <input type="number" id="ta-salas" name="quantidade_salas" min="0" max="99" placeholder="">
-                        </div>
-                        <div class="vertical-separator">
-                            <label for="" id="stt-vagas">Vagas</label>
-                            <input type="number" id="ta-vagas" name="quantidade_vagas" min="0" max="99" placeholder="">
-                        </div>
-
-                        <div class="vertical-separator">
-                            <label for="" id="stt-varandas">Varandas</label>
-                            <input type="number" id="ta-varandas" name="quantidade_varandas" min="0" max="99"
-                                placeholder="">
-                        </div>
-
-                        <div class="vertical-separator">
-                            <label for="" id="stt-area-total">Área Total</label>
-                            <input type="text" id="ta-area-total" name="area_total" placeholder="">
-                        </div>
-                        <div class="vertical-separator">
-                            <label for="" id="stt-area-privativa">Área Privativa</label>
-                            <input type="text" id="ta-area-privativa" name="area_privativa" placeholder="">
-                        </div>
-                        <div class="vertical-separator">
-                            <label for="" id="stt-venda">Valor Venda:</label>
-                            <input type="text" id="ta-venda" name="valor_venda" placeholder="">
-                        </div>
-                        <div class="vertical-separator">
-                            <label for="" id="stt-aluguel">Valor Aluguel:</label>
-                            <input type="text" id="ta-aluguel" name="valor_aluguel" placeholder="">
-                        </div>
-                        <div class="vertical-separator">
-                            <label for="" id="stt-condominio">Valor Condomínio:</label>
-                            <input type="text" id="ta-condominio" name="valor_condominio" placeholder="">
-                        </div>
-                        <div class="vertical-separator">
-                            <label for="" id="stt-iptu">Valor IPTU:</label>
-                            <input type="text" name="iptu" id="ta-iptu" placeholder="">
-                        </div>
-                    </div>
-                </div>
-            </form>
-            <form id="container-anuncio" style="display: none;" role="tabpanel" class="tabcontent">
-                <div>
-                    <label class="titulo">Titulo</label>
-                    <textarea name="titulo" id="ta-titulo-anuncio" placeholder=""></textarea>
-                    <label class="titulo">Descrição</label>
-                    <textarea name="descricao" id="ta-descricao-anuncio" placeholder=""></textarea>
-                </div>
-                <div>
-                    <label class="titulo">Apartamento</label>
-                    <div id="container-info-imovel">
-                        <input type="checkbox" id="filtro-aceita-pet" value="Aceita Pet">
-                        <label for="filtro-aceita-pet">Aceita Pet</label>
-                        <input type="checkbox" id="filtro-churrasqueira" value="Churrasqueira">
-                        <label for="filtro-churrasqueira">Churrasqueira</label>
-                        <input type="checkbox" id="filtro-armarios-embutidos" value="Armarios Embutidos">
-                        <label for="filtro-armarios-embutidos">Armarios Embutidos</label>
-                        <input type="checkbox" id="filtro-cozinha-americana" value="Cozinha Americana">
-                        <label for="filtro-cozinha-americana">Cozinha Americana</label>
-                        <input type="checkbox" id="filtro-area-de-servico" value="Área de Serviço">
-                        <label for="filtro-area-de-servico">Área de Serviço</label>
-                        <input type="checkbox" id="filtro-suíte-master" value="Suíte Master">
-                        <label for="filtro-suíte-master">Suíte Master</label>
-                        <input type="checkbox" id="filtro-banheiro-com-janela" value="Banheiro com Janela">
-                        <label for="filtro-banheiro-com-janela">Banheiro com Janela</label>
-                        <input type="checkbox" id="filtro-piscina" value="Piscina">
-                        <label for="filtro-piscina">Piscina</label>
-                        <input type="checkbox" id="filtro-lareira" value="Lareira">
-                        <label for="filtro-lareira">Lareira</label>
-                        <input type="checkbox" id="filtro-ar-condicionado" value="Ar Condicionado">
-                        <label for="filtro-ar-condicionado">Ar Condicionado</label>
-                        <input type="checkbox" id="filtro-semi-mobiliado" value="Semi Mobiliado">
-                        <label for="filtro-semi-mobiliado">Semi Mobiliado</label>
-                        <input type="checkbox" id="filtro-mobiliado" value="Mobiliado">
-                        <label for="filtro-mobiliado">Mobiliado</label>
-                        <input type="checkbox" id="filtro-dependencia-de-empregada" value="Dependência de Empregada">
-                        <label for="filtro-dependencia-de-empregada">Dependência de Empregada</label>
-                        <input type="checkbox" id="filtro-despensa" value="Despensa">
-                        <label for="filtro-despensa">Despensa</label>
-                        <input type="checkbox" id="filtro-deposito" value="Depósito">
-                        <label for="filtro-deposito">Depósito</label>
-                    </div>
-                </div>
-                <div>
-                    <label for="" class="titulo">Condomínio</label>
-                    <div id="container-info-condominio">
-                        <input type="checkbox" id="filtro-churrasqueira-coletiva" value="Churrasqueira Coletiva">
-                        <label for="filtro-churrasqueira-coletiva">Churrasqueira Coletiva</label>
-                        <input type="checkbox" id="filtro-piscina" value="Piscina">
-                        <label for="filtro-piscina">Piscina</label>
-                        <input type="checkbox" id="filtro-piscina-infantil" value="Piscina Infantil">
-                        <label for="filtro-piscina-infantil">Piscina Infantil</label>
-                        <input type="checkbox" id="filtro-piscina-aquecida" value="Piscina Aquecida">
-                        <label for="filtro-piscina-aquecida">Piscina Aquecida</label>
-                        <input type="checkbox" id="filtro-quiostique" value="Quiosque">
-                        <label for="filtro-quiostique">Quiosque</label>
-                        <input type="checkbox" id="filtro-sauna" value="Sauna">
-                        <label for="filtro-sauna">Sauna</label>
-                        <input type="checkbox" id="filtro-quadra-de-esportes" value="Quadra de Esportes">
-                        <label for="filtro-quadra-de-esportes">Quadra de Esportes</label>
-                        <input type="checkbox" id="filtro-jardim" value="Jardim">
-                        <label for="filtro-jardim">Jardim</label>
-                        <input type="checkbox" id="filtro-salao-de-festas" value="Salão de Festas">
-                        <label for="filtro-salao-de-festas">Salão de Festas</label>
-                        <input type="checkbox" id="filtro-academia" value="Academia">
-                        <label for="filtro-academia">Academia</label>
-                        <input type="checkbox" id="filtro-sala-de-jogos" value="Sala de Jogos">
-                        <label for="filtro-sala-de-jogos">Sala de Jogos</label>
-                        <input type="checkbox" id="filtro-playground" value="Playground">
-                        <label for="filtro-playground">Playground</label>
-                        <input type="checkbox" id="filtro-brinquedoteca" value="Brinquedoteca">
-                        <label for="filtro-brinquedoteca">Brinquedoteca</label>
-                        <input type="checkbox" id="filtro-vaga-coberta" value="Vaga Coberta">
-                        <label for="filtro-vaga-coberta">Vaga Coberta</label>
-                        <input type="checkbox" id="filtro-estacionamento" value="Estacionamento">
-                        <label for="filtro-estacionamento">Estacionamento</label>
-                        <input type="checkbox" id="filtro-vaga-para-visitantes" value="Vaga para Visitantes">
-                        <label for="filtro-vaga-para-visitantes">Vaga para Visitantes</label>
-                        <input type="checkbox" id="filtro-mercado" value="Mercado">
-                        <label for="filtro-mercado">Mercado</label>
-                        <input type="checkbox" id="filtro-mesa-de-sinuca" value="Mesa de Sinuca">
-                        <label for="filtro-mesa-de-sinuca">Mesa de Sinuca</label>
-                        <input type="checkbox" id="filtro-mesa-de-ping-pong" value="Mesa de Ping Pong">
-                        <label for="filtro-mesa-de-ping-pong">Mesa de Ping Pong</label>
-                        <input type="checkbox" id="filtro-mesa-de-pebolim" value="Mesa de Pebolim">
-                        <label for="filtro-mesa-de-pebolim">Mesa de Pebolim</label>
-                        <input type="checkbox" id="filtro-quadra-de-tenis" value="Quadra de Tenis">
-                        <label for="filtro-quadra-de-tenis">Quadra de Tenis</label>
-                        <input type="checkbox" id="filtro-quadra-de-futebol" value="Quadra de Futebol">
-                        <label for="filtro-quadra-de-futebol">Quadra de Futebol</label>
-                        <input type="checkbox" id="filtro-quadra-de-basquete" value="Quadra de Basquete">
-                        <label for="filtro-quadra-de-basquete">Quadra de Basquete</label>
-                        <input type="checkbox" id="filtro-quadra-de-volei" value="Quadra de Volei">
-                        <label for="filtro-quadra-de-volei">Quadra de Volei</label>
-                        <input type="checkbox" id="filtro-quadra-de-areia" value="Quadra de Areia">
-                        <label for="filtro-quadra-de-areia">Quadra de Areia</label>
-                        <input type="checkbox" id="filtro-bicicletario" value="Bicicletario">
-                        <label for="filtro-bicicletario">Bicicletario</label>
-                        <input type="checkbox" id="filtro-heliponto" value="Heliponto">
-                        <label for="filtro-heliponto">Heliponto</label>
-                        <input type="checkbox" id="filtro-elevador-de-servico" value="Elevador de Serviço">
-                        <label for="filtro-elevador-de-servico">Elevador de Serviço</label>
-                    </div>
-                </div>
-            </form>
+            </div>
         </div>
     </div>
 
 
 
-    <div id="container-imagens" class="container">
-        <header><label for="">Imagens:</label>
-            <button id="bt-adicionar-imagens" onclick="adicionarAnexo(event)">Adicionar</button>
-            <button class="selecionar-todos" onclick="selecionarTodos(event)">Selecionar Todos</button>
-            <button class="abrir-multiplos" style="display: none;" onclick="abrirMultiplos(event)">Abrir</button>
-            <button class="apagar-multiplos" style="display: none;" onclick="apagarMultiplos(event)">Apagar</button>
-            <p id="contador-imagens">0 imagens</p>
-        </header>
-
-    </div>
-    <div id="container-anexos" class="container">
-        <header><label for="">Anexos:</label>
-            <button class="bt-adicionar-anexos" onclick="adicionarAnexo(event)">Adicionar</button>
-            <button class="selecionar-todos" onclick="selecionarTodos(event)">Selecionar Todos</button>
-            <button class="abrir-multiplos" style="display: none;" onclick="abrirMultiplos(event)">Abrir</button>
-            <button class="apagar-multiplos" style="display: none;" onclick="apagarMultiplos(event)">Apagar</button>
-            <p id="contador-documentos">0 anexos</p>
-        </header>
-    </div>
-    <div id="container-proprietario" class="container">
-        <header><label for="" classes="stt-container-titulo">Proprietário: </label>
-            <button classes="bt-editar-pessoa" id="br-editar-proprietario"
-                onclick="editarPessoa('proprietario')">Editar</button>
-
-        </header>
-    </div>
-    <div id="container-corretor" class="container">
-        <header><label for="" classes="stt-container-titulo">Corretor: </label>
-            <button id="br-editar-corretor" classes="bt-editar-pessoa"
-                onclick="editarPessoa('corretor')">Editar</button>
-        </header>
-    </div>
-    <div id="container-captador" class="container">
-        <header><label for="" classes="stt-container-titulo">Captador: </label>
-            <button classes="bt-editar-pessoa" id="br-editar-captador"
-                onclick="editarPessoa('captador')">Editar</button>
-        </header>
-    </div>
-    <div id="container-portais" class="container">
-        <header><label for="" classes="stt-container-titulo">Portais: </label>
-            <button>Cadastrar Portal</button>
-        </header>
-    </div>
-    <!-- <div id="container-mapa" class="container">
-        <gmp-map center="41.027748173921374, -92.41852445367961" zoom="13" map-id="DEMO_MAP_ID"
-            style="height: 400px"></gmp-map>
-    </div> -->
-    <!-- <div>
-        <h3>Historico de Alterações</h3>
-    </div> -->
     <footer>
         <p>Copyright 2025 - By Lucas Hartmann</p>
         <a href="https://github.com/lucashartmann" target="_blank"><i class="fab fa-github"></i></a>

@@ -111,7 +111,7 @@ class ProprietarioDAO
             if ($this->bancoDados->inTransaction()) {
                 $this->bancoDados->rollBack();
             }
-            error_log("ERRO Banco->atualizar: " . $e->getMessage());
+            error_log("ERRO proprietarioDAO->atualizar: " . $e->getMessage());
             return false;
         }
     }
@@ -150,7 +150,7 @@ class ProprietarioDAO
 
             return $proprietario;
         } catch (Exception $e) {
-            error_log("ERRO! Banco->buscarPorCpfCnpj: " . $e->getMessage());
+            error_log("ERRO! proprietarioDAO->buscarPorCpfCnpj: " . $e->getMessage());
             return null;
         }
     }
@@ -210,7 +210,7 @@ class ProprietarioDAO
 
             return true;
         } catch (Exception $e) {
-            error_log("ERRO! Banco->cadastrar: " . $e->getMessage());
+            error_log("ERRO! proprietarioDAO->cadastrar: " . $e->getMessage());
             return false;
         }
     }
@@ -255,7 +255,7 @@ class ProprietarioDAO
 
             return $lista;
         } catch (Exception $e) {
-            error_log("ERRO Banco->listar: " . $e->getMessage());
+            error_log("ERRO proprietarioDAO->listar: " . $e->getMessage());
             return [];
         }
     }
@@ -278,7 +278,7 @@ class ProprietarioDAO
             $proprietario->setId($registro['id']);
             return $proprietario;
         } catch (Exception $e) {
-            error_log("ERRO Banco->buscarPorId: " . $e->getMessage());
+            error_log("ERRO proprietarioDAO->buscarPorId: " . $e->getMessage());
             return null;
         }
     }

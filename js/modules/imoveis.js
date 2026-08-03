@@ -7,21 +7,20 @@ export async function listarImoveis() {
             .then(async (res) => {
                 const contentType = res.headers.get("content-type");
                 if (res.erro) {
-                    alert("Erro ao listar atendimentos: " + res.erro);
+                    console.error("Erro ao listar atendimentos: " + res.erro);
                     return null;
                 }
                 if (contentType && contentType.includes("application/json")) {
                     return await res.json();
                 } else {
                     const texto = await res.text();
-                    alert("Resposta inesperada do servidor");
                     console.error("Resposta não é JSON:", texto);
-                    return;
+                    return null;
                 }
             })
             .then(async (data) => {
                 if (data.status == "erro") {
-                    alert("Erro ao listar imóveis: " + data.mensagem);
+                    console.error(data.mensagem);
                     return null;
                 }
                 return data;
@@ -42,10 +41,9 @@ export async function listarImoveisDisponiveis() {
     try {
         let caminho = getCaminhoRelativo("/php/api/imoveis.php?acao=listar_disponiveis");
         const resposta = await fetch(caminho)
-            // .then(res => console.log(res))
             .then(async (res) => {
                 if (res.erro) {
-                    alert("Erro ao listar atendimentos: " + res.erro);
+                    console.error("Erro ao listar atendimentos: " + res.erro);
                     return null;
                 }
                 const contentType = res.headers.get("content-type");
@@ -53,15 +51,13 @@ export async function listarImoveisDisponiveis() {
                     return await res.json();
                 } else {
                     const texto = await res.text();
-                    // alert("Resposta inesperada do servidor");
                     console.error("Resposta não é JSON:", texto);
                     return null;
                 }
             })
             .then(async (data) => {
-                // console.log(data);
                 if (data.status == "erro") {
-                    alert("Erro ao listar imóveis: " + data.mensagem);
+                    console.error(data.mensagem);
                     return null;
                 }
                 return await data;
@@ -89,7 +85,10 @@ export async function listarImoveisDisponiveis() {
             }
         });
 
-        return resposta;
+        let imoveis = [];
+        imoveis = resposta.filter(imovel => imovel.anuncio && imovel.anuncio.imagens && imovel.anuncio.imagens.length > 0);
+
+        return imoveis;
     } catch (erro) {
         console.error("Falha ao conectar com o backend:", erro);
         return null;
@@ -100,10 +99,9 @@ export async function listarImoveisDestacados() {
     try {
         let caminho = getCaminhoRelativo("/php/api/imoveis.php?acao=listar_destacados");
         const resposta = await fetch(caminho)
-            // .then(res => console.log(res))
             .then(async (res) => {
                 if (res.erro) {
-                    // alert("Erro ao listar imoveis destacados: " + res.erro);
+                    console.error("Erro ao listar imoveis destacados: " + res.erro);
                     return null;
                 }
                 const contentType = res.headers.get("content-type");
@@ -111,15 +109,13 @@ export async function listarImoveisDestacados() {
                     return await res.json();
                 } else {
                     const texto = await res.text();
-                    // alert("Resposta inesperada do servidor");
                     console.error("Resposta não é JSON:", texto);
                     return null;
                 }
             })
             .then(async (data) => {
-                // console.log(data);
                 if (data.status == "erro") {
-                    // alert("Erro ao listar imóveis: " + data.mensagem);
+                    console.error(data.mensagem);
                     return null;
                 }
                 return await data;
@@ -147,7 +143,10 @@ export async function listarImoveisDestacados() {
             }
         });
 
-        return resposta;
+        let imoveis = [];
+        imoveis = resposta.filter(imovel => imovel.anuncio && imovel.anuncio.imagens && imovel.anuncio.imagens.length > 0);
+
+        return imoveis;
     } catch (erro) {
         console.error("Falha ao conectar com o backend:", erro);
         return null;
@@ -158,10 +157,9 @@ export async function getDadosImovel(id) {
     try {
         let caminho = getCaminhoRelativo("/php/api/imoveis.php?acao=get_imovel&id=" + id);
         const resposta = await fetch(caminho)
-            // .then(res => console.log(res))
             .then(async (res) => {
                 if (res.erro) {
-                    alert("Erro ao listar atendimentos: " + res.erro);
+                    console.error("Erro ao listar atendimentos: " + res.erro);
                     return null;
                 }
                 const contentType = res.headers.get("content-type");
@@ -169,20 +167,21 @@ export async function getDadosImovel(id) {
                     return await res.json();
                 } else {
                     const texto = await res.text();
-                    // alert("Resposta inesperada do servidor");
                     console.error("Resposta não é JSON:", texto);
                     return null;
                 }
             })
             .then(async (data) => {
-                // console.log(data);
+                if (data.status == "erro") {
+                    console.error(data.mensagem);
+                    return null;
+                }
                 return await data;
             })
             .catch(erro => {
                 console.error("Falha ao conectar com o backend:", erro);
                 return null;
             });
-        console.log("Dados do imóvel obtidos:", resposta);
         if (resposta && Array.isArray(resposta) && resposta.length > 0) {
             return resposta[0];
         } else if (resposta && typeof resposta === "object") {

@@ -136,19 +136,19 @@ body>hr {
     display: flex;
     align-self: flex-start;
     flex-direction: column;
-    top: 1rem;
+    top: 15%;
 
-  
+
     p {
         font-size: 1.2rem;
         color: var(--cor-texto-alternativa) !important;
     }
 
-   
+
     label {
         font-size: 1.2rem;
         color: color-mix(in srgb, var(--cor-texto-alternativa) 35%, #9a9a9a) !important;
-        
+
     }
 
     #whatsapp {

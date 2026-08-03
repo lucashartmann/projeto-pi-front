@@ -103,11 +103,12 @@ body {
             margin: 10px;
             border: solid 2px var(--cor-texto-alternativa);
             border-radius: 5px;
-            background-color: var(--cor-texto);
+            /* background-color: var(--cor-texto); */
             width: 11rem;
             height: 2rem;
             text-align: center;
             align-content: center;
+            color: var(--cor-texto-alternativa);
         }
 
         a {
@@ -181,7 +182,7 @@ textarea {
 
 
 
-.separador > :nth-child(1) {
-        /* font-size: 1.2rem; */
-        color: color-mix(in srgb, var(--cor-texto-alternativa) 35%, #9a9a9a) !important;
+.separador> :nth-child(1) {
+    /* font-size: 1.2rem; */
+    color: color-mix(in srgb, var(--cor-texto-alternativa) 35%, #9a9a9a) !important;
 }

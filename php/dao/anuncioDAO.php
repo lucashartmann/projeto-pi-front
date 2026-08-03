@@ -51,7 +51,7 @@ class AnuncioDAO
 
             return $this->bancoDados->lastInsertId();
         } catch (Exception $e) {
-            error_log("ERRO! Banco->cadastrar: " . $e->getMessage());
+            error_log("ERRO! anuncioDAO->cadastrar: " . $e->getMessage());
             return false;
         }
     }
@@ -124,7 +124,7 @@ class AnuncioDAO
             if ($this->bancoDados->inTransaction()) {
                 $this->bancoDados->rollBack();
             }
-            error_log("ERRO Banco->atualizar: " . $e->getMessage());
+            error_log("ERRO anuncioDAO->atualizar: " . $e->getMessage());
             return false;
         }
     }
@@ -163,7 +163,7 @@ class AnuncioDAO
             }
             return $anuncioObj;
         } catch (Exception $e) {
-            $erro = "ERRO! Banco->buscarPorId: " . $e->getMessage();
+            $erro = "ERRO! anuncioDAO->buscarPorId: " . $e->getMessage();
             error_log($erro);
             return NULL;
         }

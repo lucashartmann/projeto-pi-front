@@ -26,6 +26,7 @@ footer {
 .titulo {
     font-weight: 600;
     font-size: 125%;
+    color: var(--cor-texto-alternativa);
 }
 
 #container-horizontal>div {

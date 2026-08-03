@@ -15,6 +15,7 @@ window.filtroOrdenado = filtroOrdenado;
 window.filtrar = filtrar;
 window.trocarCadastro = trocarCadastro;
 window.openMenu = openMenu;
+window.selecionarTodos = selecionarTodos;
 
 async function filtroOrdenado() {
     seta = event.target;
@@ -191,11 +192,33 @@ async function filtrar() {
             }
         });
 
+        let containerFiltrosApartamento = document.getElementById("container-info-imovel");
+        if (containerFiltrosApartamento) {
+            let filtros = containerFiltrosApartamento.querySelectorAll("input[type='checkbox']");
+            let filtrosSelecionados = Array.from(filtros).filter(checkbox => checkbox.checked);
+            filtrosSelecionados.forEach(checkbox => {
+                imoveisFiltrados = imoveisFiltrados.filter(imovel => imovel.filtros.includes(checkbox.value));
+
+            });
+        }
+
+        let containerFiltrosCondominio = document.getElementById("container-info-condominio");
+        if (containerFiltrosCondominio) {
+            let filtros2 = containerFiltrosCondominio.querySelectorAll("input[type='checkbox']");
+            let filtrosSelecionados2 = Array.from(filtros2).filter(checkbox => checkbox.checked);
+            filtrosSelecionados2.forEach(checkbox => {
+                imoveisFiltrados = imoveisFiltrados.filter(imovel => imovel.condominio.filtros.includes(checkbox.value));
+            });
+        }
+
         let seta = document.querySelector("#seta");
         let nome = document.getElementById("select-filtro") ? document.getElementById("select-filtro").value : null;
 
+
+
         if (seta && nome) {
             switch (nome) {
+                case "referencia":
                 case "ref":
                 case "id":
                     if (seta.classList.contains("fa-arrow-down")) {
@@ -237,6 +260,20 @@ async function filtrar() {
                         imoveisFiltrados.sort((a, b) => new Date(a.data_cadastro?.date) - new Date(b.data_cadastro?.date));
                     } else {
                         imoveisFiltrados.sort((a, b) => new Date(b.data_cadastro?.date) - new Date(a.data_cadastro?.date));
+                    }
+                    break;
+                case "venda":
+                    if (seta.classList.contains("fa-arrow-down")) {
+                        imoveisFiltrados.sort((a, b) => a.valor_venda - b.valor_venda);
+                    } else {
+                        imoveisFiltrados.sort((a, b) => b.valor_venda - a.valor_venda);
+                    }
+                    break;
+                case "aluguel":
+                    if (seta.classList.contains("fa-arrow-down")) {
+                        imoveisFiltrados.sort((a, b) => a.valor_aluguel - b.valor_aluguel);
+                    } else {
+                        imoveisFiltrados.sort((a, b) => b.valor_aluguel - a.valor_aluguel);
                     }
                     break;
                 case "data_modificacao":
@@ -687,12 +724,12 @@ async function apagarImovel(imovelId) {
 
 function montarOpcoes() {
     const checkboxes = document.querySelectorAll(".checkbox-selecionar:checked");
-    const botaoApagar = filtro.querySelector("#apagar-multiplos");
-    const botaoAbrir = filtro.querySelector("#abrir-multiplos");
-    const botaoDestaque = filtro.querySelector("#destaque-multiplos");
+    const botaoApagar = document.querySelector("#apagar-multiplos");
+    const botaoAbrir = document.querySelector("#abrir-multiplos");
+    const botaoDestaque = document.querySelector("#destaque-multiplos");
     if (checkboxes.length > 0) {
-        const filtro = document.getElementById("h-filtro");
-        filtro.innerHTML = "";
+        // const filtro = document.getElementById("h-filtro");
+        // filtro.innerHTML = "";
         botaoApagar.style.display = "block";
         botaoAbrir.style.display = "block";
         botaoDestaque.style.display = "block";

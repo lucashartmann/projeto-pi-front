@@ -255,11 +255,31 @@ async function filtrar() {
         }
     });
 
+    let containerFiltrosApartamento = document.getElementById("container-info-imovel");
+    if (containerFiltrosApartamento) {
+        let filtros = containerFiltrosApartamento.querySelectorAll("input[type='checkbox']");
+        let filtrosSelecionados = Array.from(filtros).filter(checkbox => checkbox.checked);
+        filtrosSelecionados.forEach(checkbox => {
+            imoveisFiltrados = imoveisFiltrados.filter(imovel => imovel.filtros.includes(checkbox.value));
+
+        });
+    }
+
+    let containerFiltrosCondominio = document.getElementById("container-info-condominio");
+    if (containerFiltrosCondominio) {
+        let filtros2 = containerFiltrosCondominio.querySelectorAll("input[type='checkbox']");
+        let filtrosSelecionados2 = Array.from(filtros2).filter(checkbox => checkbox.checked);
+        filtrosSelecionados2.forEach(checkbox => {
+            imoveisFiltrados = imoveisFiltrados.filter(imovel => imovel.condominio.filtros.includes(checkbox.value));
+        });
+    }
+
     let seta = document.querySelector("#seta");
     let nome = document.getElementById("select-filtro") ? document.getElementById("select-filtro").value : null;
 
     if (seta && nome) {
         switch (nome) {
+            case "referencia":
             case "ref":
             case "id":
                 if (seta.classList.contains("fa-arrow-down")) {

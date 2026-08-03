@@ -32,7 +32,7 @@ class ImovelDAO
             $stmt->execute([':id' => $idImovel]);
             return true;
         } catch (Exception $e) {
-            error_log("ERRO! Banco->destacar: " . $e->getMessage());
+            error_log("ERRO! imovelDAO->destacar: " . $e->getMessage());
             return false;
         }
     }
@@ -60,7 +60,7 @@ class ImovelDAO
 
             return $imoveisDestacados;
         } catch (Exception $e) {
-            error_log("ERRO! Banco->listarDestacados: " . $e->getMessage());
+            error_log("ERRO! imovelDAO->listarDestacados: " . $e->getMessage());
             return [];
         }
     }
@@ -291,7 +291,7 @@ class ImovelDAO
 
             return $imovelObj;
         } catch (Exception $e) {
-            error_log("ERRO! Banco-> montar: " . $e->getMessage());
+            error_log("ERRO! imovelDAO-> montar: " . $e->getMessage());
             return null;
         }
     }
@@ -397,7 +397,7 @@ class ImovelDAO
 
             return $lista;
         } catch (Exception $e) {
-            error_log("ERRO Banco->listar: " . $e->getMessage());
+            error_log("ERRO imovelDAO->listar: " . $e->getMessage());
             return [];
         }
     }
@@ -505,7 +505,7 @@ class ImovelDAO
 
             return $lista;
         } catch (Exception $e) {
-            error_log("ERRO Banco->listarDisponiveis: " . $e->getMessage());
+            error_log("ERRO imovelDAO->listarDisponiveis: " . $e->getMessage());
             return [];
         }
     }
@@ -598,7 +598,7 @@ class ImovelDAO
 
             return $this->montar($dados, $idImovel);
         } catch (Exception $e) {
-            error_log("ERRO! Banco->buscarPorId: " . $e->getMessage());
+            error_log("ERRO! imovelDAO->buscarPorId: " . $e->getMessage());
             return null;
         }
     }
@@ -622,7 +622,7 @@ class ImovelDAO
             }
             return $imoveis;
         } catch (Exception $e) {
-            $erro = "ERRO! Banco->listarPorProprietario: " . $e->getMessage();
+            $erro = "ERRO! imovelDAO->listarPorProprietario: " . $e->getMessage();
             error_log($erro);
             return [];
         }
@@ -759,7 +759,7 @@ class ImovelDAO
             }
             return $lista;
         } catch (Exception $e) {
-            error_log("ERRO Banco->listarFavoritos: " . $e->getMessage());
+            error_log("ERRO imovelDAO->listarFavoritos: " . $e->getMessage());
             return [];
         }
     }
@@ -818,7 +818,7 @@ class ImovelDAO
                 $this->bancoDados->rollBack();
             }
 
-            error_log("ERRO Banco->cadastrarImoveisCliente: " . $e->getMessage());
+            error_log("ERRO imovelDAO->cadastrarImoveisCliente: " . $e->getMessage());
             return false;
         }
     }
@@ -979,7 +979,7 @@ class ImovelDAO
             if ($this->bancoDados->inTransaction()) {
                 $this->bancoDados->rollBack();
             }
-            error_log("ERRO Banco->atualizar: " . $e->getMessage());
+            error_log("ERRO imovelDAO->atualizar: " . $e->getMessage());
             return false;
         }
     }
@@ -1135,7 +1135,7 @@ class ImovelDAO
             if ($this->bancoDados->inTransaction()) {
                 $this->bancoDados->rollBack();
             }
-            error_log("ERRO! Banco->cadastrar: " . $e->getMessage());
+            error_log("ERRO! imovelDAO->cadastrar: " . $e->getMessage());
             return false;
         }
     }
@@ -1146,7 +1146,7 @@ class ImovelDAO
         try {
 
             $stmt = $this->bancoDados->prepare("
-                SELECT id_filtros_imovel 
+                SELECT id 
                 FROM filtros_imovel 
                 WHERE nome = :nome
             ");
@@ -1154,9 +1154,9 @@ class ImovelDAO
 
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
-            return $row ? (int) $row['id_filtros_imovel'] : null;
+            return $row ? (int) $row['id'] : null;
         } catch (Exception $e) {
-            error_log("ERRO Banco->getIdFiltroImovelPorNome: " . $e->getMessage());
+            error_log("ERRO imovelDAO->getIdFiltroImovelPorNome: " . $e->getMessage());
             return null;
         }
     }
@@ -1175,7 +1175,7 @@ class ImovelDAO
                 ':id_filtro' => $idFiltro
             ]);;
         } catch (Exception $e) {
-            error_log("ERRO Banco->cadastrarFiltro: " . $e->getMessage());
+            error_log("ERRO imovelDAO->cadastrarFiltro: " . $e->getMessage());
             return false;
         }
     }
@@ -1194,7 +1194,7 @@ class ImovelDAO
                 ':id_filtro' => $idFiltro
             ]);
         } catch (Exception $e) {
-            error_log("ERRO Banco->removerFiltro: " . $e->getMessage());
+            error_log("ERRO imovelDAO->removerFiltro: " . $e->getMessage());
             return false;
         }
     }

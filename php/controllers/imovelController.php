@@ -6,6 +6,7 @@ require_once __DIR__ . '/../dao/proprietarioDAO.php';
 require_once __DIR__ . '/../dao/enderecoDAO.php';
 require_once __DIR__ . '/../dao/condominioDAO.php';
 require_once __DIR__ . '/../dao/anuncioDAO.php';
+require_once __DIR__ . '/../utils/imagem.php';
 
 class ImovelController
 {
@@ -98,7 +99,6 @@ class ImovelController
         try {
             $id = array_key_exists("ref", $data) ? $data["ref"] : 0;
             $nomeCondominio = array_key_exists("nome_condominio", $data) ? $data["nome_condominio"] : "";
-
             $valorVenda = array_key_exists("valor_venda", $data) ? $data["valor_venda"] : 0.0;
             $valorVenda = $valorVenda ? str_replace(".", "", $valorVenda ?? 0.0) : 0.0;
             $valorVenda = $valorVenda ? str_replace(",", ".", $valorVenda ?? 0.0) : 0.0;
@@ -157,13 +157,13 @@ class ImovelController
             isset($data["situacao"]) ? $situacao = Situacao::tryFrom($data["situacao"]) : null;
             $ocupacao = null;
             isset($data["ocupacao"]) ? $ocupacao = Ocupacao::tryFrom($data["ocupacao"]) : null;
-            $proprietarios = array_key_exists("proprietarios", $data) ? $data["proprietarios"] : [];
-            $corretor = array_key_exists("corretor", $data) ? (int) $data["corretor"] : null;
-            $captador = array_key_exists("captador", $data) ? (int) $data["captador"] : null;
+            $proprietarios = array_key_exists("proprietarios", $data) ? (array) $data["proprietarios"] : [];
+            $idCorretor = array_key_exists("corretor", $data) ? (int) $data["corretor"] : null;
+            $idCaptador = array_key_exists("captador", $data) ? (int) $data["captador"] : null;
             $cep = array_key_exists("cep", $data) ? $data["cep"] : "";
             $imagens = $_FILES["imagens"] ?? [];
             $documentos = $_FILES["documentos"] ?? [];
-            // $video = $_FILES["videos"] ?? [];
+            $videos = $_FILES["videos"] ?? [];
             if ($cep) {
                 $cep = trim(str_replace("-", "", $cep));
             }
@@ -185,36 +185,96 @@ class ImovelController
                 $enderecoObj
             );
 
-            if ($corretor) {
-                $corretor = $this->usuarioDAO->buscarPorId($corretor) ?? null;
+            $corretor = null;
+            $captador = null;
+
+            if ($idCorretor != null && $idCorretor > 0) {
+                $corretor = $this->usuarioDAO->buscarPorId($idCorretor) ?? null;
             }
 
-            if ($captador) {
-                $captador = $this->usuarioDAO->buscarPorId($captador) ?? null;
+            if ($idCaptador != null && $idCaptador > 0) {
+                $captador = $this->usuarioDAO->buscarPorId($idCaptador) ?? null;
             }
 
-            if ($proprietarios) {
+            if ($proprietarios != null && count($proprietarios) > 0) {
                 $proprietariosObjs = [];
-                foreach ($proprietarios as $proprietario) {
-                    if (isset($proprietario["id"])) {
-                        $proprietarioObj = $this->proprietarioDAO->buscarPorId($proprietario["id"]);
-                        if ($proprietarioObj) {
-                            $proprietariosObjs[] = $proprietarioObj;
-                        }
+                foreach ($proprietarios as $idProprietario) {
+                    if (!is_numeric($idProprietario)) {
+                        continue;
+                    }
+                    $proprietarioObj = $this->proprietarioDAO->buscarPorId($idProprietario);
+                    if ($proprietarioObj) {
+                        $proprietariosObjs[] = $proprietarioObj;
                     }
                 }
                 $proprietarios = $proprietariosObjs;
             }
-            //  filtros = data->get("filtros", [])
 
+            $filtros_apartamento = array_key_exists("filtros_apartamento", $data) ? (array)
+            str_replace(['[', ']', '"'], '', $data["filtros_apartamento"]) : [];
+            $filtros_condominio = array_key_exists("filtros_condominio", $data) ?  (array) str_replace(['[', ']', '"'], '', $data["filtros_condominio"]) : [];
+
+            error_log("Filtros apartamento: " . json_encode($filtros_apartamento));
+            error_log("Filtros condominio: " . json_encode($filtros_condominio));
+            $anuncioObj = new Anuncio();
             $imovelObj = NULL;
             if ($id) {
                 $imovelObj = $this->imovelDAO->buscarPorId($id);
+                if (!$imovelObj) {
+                    return (["status" => "erro", "mensagem" => "ERRO ao atualizar imóvel! Imóvel não encontrado"]);
+                }
                 $imovelObj->setDataModificacao(DateTime::createFromFormat('Y-m-d H:i:s', date('Y-m-d H:i:s')));
+                if ($imovelObj->getAnuncio()) {
+                    $anuncioObj = $imovelObj->getAnuncio();
+                }
+                if ($imovelObj->getCondominio()) {
+                    $condominioObj = $imovelObj->getCondominio();
+                }
+                if ($imovelObj->getEndereco()) {
+                    if ($enderecoObj->getCep() == $imovelObj->getEndereco()->getCep() && $enderecoObj->getNumero() == $imovelObj->getEndereco()->getNumero() && $enderecoObj->getComplemento() == $imovelObj->getEndereco()->getComplemento()) {
+                        $enderecoObj = $imovelObj->getEndereco();
+                    } else {
+                        $consultarEndereco = $this->enderecoDAO->verificar(
+                            $enderecoObj
+                        );
+                        if ($consultarEndereco) {
+                            return (["status" => "erro", "mensagem" => "ERRO ao atualizar imóvel! Já existe um imóvel cadastrado com este endereço"]);
+                        } else {
+                            $cadastroEndereco = $this->enderecoDAO->cadastrar(
+                                $imovelObj->getEndereco()
+                            );
+                            if (!$cadastroEndereco) {
+                                $imovelObj->setEndereco(NULL);
+                                return (["status" => "erro", "mensagem" => "ERRO ao cadastrar imóvel! Erro ao cadastrar endereço, contate o administrador"]);
+                            } else {
+                                $imovelObj->getEndereco()->setId($cadastroEndereco);
+                            }
+                        }
+                    }
+                }
             } else {
                 $imovelObj = new Imovel($enderecoObj, $status, $categoria);
+                $consultarEndereco = $this->enderecoDAO->verificar(
+                    $enderecoObj
+                );
+                if ($consultarEndereco) {
+                    return (["status" => "erro", "mensagem" => "ERRO ao cadastrar imóvel! Já existe um imóvel cadastrado com este endereço"]);
+                } else {
+                    $imovelObj->setEndereco($enderecoObj);
+                    $cadastroEndereco = $this->enderecoDAO->cadastrar(
+                        $imovelObj->getEndereco()
+                    );
+                    if (!$cadastroEndereco) {
+                        $imovelObj->setEndereco(NULL);
+                        return (["status" => "erro", "mensagem" => "ERRO ao cadastrar imóvel! Erro ao cadastrar endereço, contate o administrador"]);
+                    } else {
+                        $imovelObj->getEndereco()->setId($cadastroEndereco);
+                    }
+                }
             }
-            $anuncioObj = new Anuncio();
+            $imovelObj->setProprietarios($proprietarios);
+            $imovelObj->setFiltros($filtros_apartamento);
+            $condominioObj->setFiltros($filtros_condominio);
             $anuncioObj->setTitulo($titulo);
             $anuncioObj->setDescricao($descricao);
             $imovelObj->setValorVenda($valorVenda);
@@ -225,7 +285,6 @@ class ImovelController
             $imovelObj->setQuantBanheiros($quantBanheiros);
             $imovelObj->setQuantVarandas($quantVarandas);
             $imovelObj->setCategoria($categoria);
-            $imovelObj->setEndereco($enderecoObj);
             $imovelObj->setStatus($status);
             $imovelObj->setIptu($iptu);
             $imovelObj->setValorCondominio($valorCondominio);
@@ -237,62 +296,35 @@ class ImovelController
             $imovelObj->setAreaPrivativa($areaPrivativa);
             $imovelObj->setSituacao($situacao);
             $imovelObj->setOcupacao($ocupacao);
-            # imovelObj->setCorretor(corretor)
-            # imovelObj->setCaptador(captador)
-            if (!$imovelObj->getAnuncio() || $imovelObj->getAnuncio() && ($imovelObj->getAnuncio()->getId() === null || $imovelObj->getAnuncio()->getId() === 0)) {
-                $imovelObj->setAnuncio($anuncioObj);
-            } else {
-                $anuncioObj->setId($imovelObj->getAnuncio()->getId());
-                $imovelObj->setAnuncio($anuncioObj);
-            }
+            $imovelObj->setCorretor($corretor);
+            $imovelObj->setCaptador($captador);
             $imovelObj->setAnuncio($anuncioObj);
             $imovelObj->setCondominio($condominioObj);
 
-            $consultarEndereco = $this->enderecoDAO->verificar(
-                $imovelObj->getEndereco()
-            );
-
-            $endereco = NULL;
-
-            if ($consultarEndereco) {
-                $endereco = $consultarEndereco;
+            if (!$imovelObj->getEndereco() || !$imovelObj->getEndereco()->getId()) {
+                return (["status" => "erro", "mensagem" => "ERRO ao cadastrar imóvel! Endereço nulo, contate o administrador"]);
             } else {
-                $cadastroEndereco = $this->enderecoDAO->cadastrar(
+                $consultarCondominio = $this->condominioDAO->buscarPorEndereco(
                     $imovelObj->getEndereco()
                 );
-                if ($cadastroEndereco) {
-                    $endereco = $this->enderecoDAO->verificar(
-                        $imovelObj->getEndereco()
-                    );
-                }
-            }
 
-            if (!$endereco) {
-                return (["status" => "erro", "mensagem" => "ERRO ao cadastrar imóvel! Problema com o endereço"]);
-            } else {
-                $imovelObj->getEndereco()->setId($endereco->getId());
-                $consultarCondominio = $this->condominioDAO->buscarPorEndereco(
-                    $endereco->getId()
-                );
-
-                if (!$consultarCondominio) {
+                if ($consultarCondominio == null) {
                     $cadastrar = $this->condominioDAO->cadastrar(
                         $imovelObj->getCondominio()
                     );
-                    if ($cadastrar) {
-                        $consultarCondominio = $this->condominioDAO->buscarPorEndereco(
-                            $endereco->getId()
-                        );
-                        if ($consultarCondominio) {
-                            $imovelObj->setCondominio($consultarCondominio);
-                        } else {
-                            $imovelObj->setCondominio(NULL);
-                        }
+                    if (!$cadastrar) {
+                        $imovelObj->setCondominio(NULL);
+                    } else {
+                        $imovelObj->getCondominio()->setId($cadastrar);
                     }
                 } else {
-                    $imovelObj->setCondominio($consultarCondominio);
+                    $atualizacao = $this->condominioDAO->atualizar($imovelObj->getCondominio());
+                    if ($atualizacao != false) {
+                        $imovelObj->setCondominio(NULL);
+                    } else {
+                        $imovelObj->getCondominio()->setId($consultarCondominio->getId());
+                    }
                 }
-
 
                 if ($imovelObj->getAnuncio()->getId() === null || $imovelObj->getAnuncio()->getId() === 0) {
                     $cadastroAnuncio = $this->anuncioDAO->cadastrar(
@@ -300,19 +332,23 @@ class ImovelController
                     );
                     if ($cadastroAnuncio) {
                         $imovelObj->getAnuncio()->setId($cadastroAnuncio);
+                    } else {
+                        $imovelObj->setAnuncio(NULL);
                     }
                 } else {
-
                     $cadastroAnuncio = $this->anuncioDAO->atualizar($anuncioObj);
+                    if (!$cadastroAnuncio) {
+                        $imovelObj->setAnuncio(NULL);
+                    }
                 }
 
                 $imovelObj->setDataCadastro(DateTime::createFromFormat('Y-m-d H:i:s', date('Y-m-d H:i:s')));
                 if ($id) {
                     $atualizado = $this->imovelDAO->atualizar($imovelObj);
-                    if ($atualizado) {
+                    if ($atualizado != false) {
                         $cadastrado = $id;
                     } else {
-                        $cadastrado = null;
+                        $cadastrado = false;
                     }
 
                     limparPasta($imovelObj->getAnuncio()->getImagens(), $imovelObj->getId());
@@ -320,7 +356,7 @@ class ImovelController
                 } else {
                     $cadastrado = $this->imovelDAO->cadastrar($imovelObj);
                 }
-                if ($cadastrado && $cadastroAnuncio && $imagens) {
+                if ($cadastrado != false && $cadastroAnuncio != false && $imagens) {
                     $imagensObjetos = [];
                     foreach ($imagens['tmp_name'] as $i => $nomeTemporario) {
                         try {
@@ -344,7 +380,7 @@ class ImovelController
                     $anuncioObj->setImagens($imagensObjetos);
                     $this->anuncioDAO->atualizar($anuncioObj);
                 }
-                if ($cadastrado && $cadastroAnuncio && $documentos) {
+                if ($cadastrado != false && $cadastroAnuncio != false && $documentos) {
                     $documentosObjetos = [];
                     foreach ($documentos['tmp_name'] as $i => $nomeTemporario) {
                         try {
@@ -370,7 +406,7 @@ class ImovelController
                     $anuncioObj->setAnexos($documentosObjetos);
                     $this->anuncioDAO->atualizar($anuncioObj);
                 }
-                if ($cadastrado) {
+                if ($cadastrado != false) {
                     if ($id) {
                         return (["status" => "sucesso", "mensagem" => "imovel atualizado!\n"]);
                     }

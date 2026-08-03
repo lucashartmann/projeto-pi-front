@@ -6,7 +6,7 @@ export async function getUsuario(id) {
         const resposta = await fetch(caminho)
             .then(async (res) => {
                 if (res.erro) {
-                    alert("Erro ao buscar usuário: " + res.erro);
+                    console.error("Erro ao buscar usuário: " + res.erro);
                     return null;
                 }
                 const contentType = res.headers.get("content-type");
@@ -14,14 +14,13 @@ export async function getUsuario(id) {
                     return await res.json();
                 } else {
                     const texto = await res.text();
-                    alert("Resposta inesperada do servidor");
                     console.error("Resposta não é JSON:", texto);
-                    return;
+                    return null;
                 }
             })
             .then(async (data) => {
                 if (data.status == "erro") {
-                    alert("Erro ao buscar usuário: " + data.mensagem);
+                    console.error("Erro ao buscar usuário: " + data.mensagem);
                     return null;
                 }
                 return data;
@@ -43,7 +42,7 @@ export async function listarUsuarios() {
         const resposta = await fetch(caminho)
             .then(async (res) => {
                 if (res.erro) {
-                    alert("Erro ao listar usuários: " + res.erro);
+                    console.error("Erro ao listar usuários: " + res.erro);
                     return null;
                 }
                 const contentType = res.headers.get("content-type");
@@ -51,14 +50,13 @@ export async function listarUsuarios() {
                     return await res.json();
                 } else {
                     const texto = await res.text();
-                    alert("Resposta inesperada do servidor");
                     console.error("Resposta não é JSON:", texto);
-                    return;
+                    return null;
                 }
             })
             .then(async (data) => {
                 if (data.status == "erro") {
-                    alert("Erro ao listar usuários: " + data.mensagem);
+                    console.error("Erro ao listar usuários: " + data.mensagem);
                     return null;
                 }
                 return data;

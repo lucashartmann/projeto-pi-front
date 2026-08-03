@@ -35,7 +35,7 @@ class UsuarioDAO
             $stmt->execute([':id_usuario' => $id_usuario, ':mensagem' => $mensagem]);
             return true;
         } catch (Exception $e) {
-            error_log("ERRO Banco->cadastrarMensagem: " . $e->getMessage());
+            error_log("ERRO usuarioDAO->cadastrarMensagem: " . $e->getMessage());
             return false;
         }
     }
@@ -52,7 +52,7 @@ class UsuarioDAO
             $stmt->execute([':id_usuario' => $id_usuario]);
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (Exception $e) {
-            error_log("ERRO Banco->listarMensagens: " . $e->getMessage());
+            error_log("ERRO usuarioDAO->listarMensagens: " . $e->getMessage());
             return [];
         }
     }
@@ -204,7 +204,7 @@ class UsuarioDAO
             $usuarioObj->setDataModificacao($dataModificacao);
             return $usuarioObj;
         } catch (Exception $e) {
-            $erro = "ERRO! Banco->buscarPorCpfCnpj: " . $e->getMessage();
+            $erro = "ERRO! usuarioDAO->buscarPorCpfCnpj: " . $e->getMessage();
             error_log($erro);
             return NULL;
         }
@@ -359,7 +359,7 @@ class UsuarioDAO
             if ($this->bancoDados->inTransaction()) {
                 $this->bancoDados->rollBack();
             }
-            error_log("ERRO Banco->atualizar: " . $e->getMessage());
+            error_log("ERRO usuarioDAO->atualizar: " . $e->getMessage());
             return false;
         }
     }
@@ -461,7 +461,7 @@ class UsuarioDAO
                             ]);
                         }
                     } catch (Exception $e) {
-                        // error_log("ERRO Banco->cadastrar TELEFONE: " . $e->getMessage());
+                        // error_log("ERRO usuarioDAO->cadastrar TELEFONE: " . $e->getMessage());
                     }
                 }
             }
@@ -480,7 +480,7 @@ class UsuarioDAO
                             ':creci' => $usuario->getCreci()
                         ]);
                     } catch (Exception $e) {
-                        error_log("ERRO Banco->cadastrar CORRETOR: " . $e->getMessage());
+                        error_log("ERRO usuarioDAO->cadastrar CORRETOR: " . $e->getMessage());
                         return False;
                     }
                     break;
@@ -495,7 +495,7 @@ class UsuarioDAO
                             ':salario' => $usuario->getSalario()
                         ]);
                     } catch (Exception $e) {
-                        error_log("ERRO Banco->cadastrar CAPTADOR: " . $e->getMessage());
+                        error_log("ERRO usuarioDAO->cadastrar CAPTADOR: " . $e->getMessage());
                         return False;
                     }
                     break;
@@ -510,7 +510,7 @@ class UsuarioDAO
                             ':salario' => $usuario->getSalario()
                         ]);
                     } catch (Exception $e) {
-                        error_log("ERRO Banco->cadastrar GERENTE: " . $e->getMessage());
+                        error_log("ERRO usuarioDAO->cadastrar GERENTE: " . $e->getMessage());
                         return False;
                     }
                     break;
@@ -524,14 +524,14 @@ class UsuarioDAO
                             ':id_usuario' => $id,
                         ]);
                     } catch (Exception $e) {
-                        error_log("ERRO Banco->cadastrar CLIENTE: " . $e->getMessage());
+                        error_log("ERRO usuarioDAO->cadastrar CLIENTE: " . $e->getMessage());
                         return False;
                     }
                     break;
             }
             return $this->bancoDados->lastInsertId();
         } catch (Exception $e) {
-            $erro = "ERRO! Banco->cadastrar " . $e->getMessage();
+            $erro = "ERRO! usuarioDAO->cadastrar " . $e->getMessage();
             error_log($erro);
             return False;
         }
@@ -687,7 +687,7 @@ class UsuarioDAO
 
             return $lista;
         } catch (Exception $e) {
-            error_log("ERRO Banco->listar: " . $e->getMessage());
+            error_log("ERRO usuarioDAO->listar: " . $e->getMessage());
             return [];
         }
     }
@@ -756,7 +756,7 @@ class UsuarioDAO
 
             return $lista;
         } catch (Exception $e) {
-            error_log("ERRO Banco->listarClientes: " . $e->getMessage());
+            error_log("ERRO usuarioDAO->listarClientes: " . $e->getMessage());
             return [];
         }
     }
@@ -913,7 +913,7 @@ class UsuarioDAO
             $usuarioObj->setDataModificacao($dataModificacao);
             return $usuarioObj;
         } catch (Exception $e) {
-            error_log("ERRO Banco->buscarPorId: " . $e->getMessage());
+            error_log("ERRO usuarioDAO->buscarPorId: " . $e->getMessage());
             return null;
         }
     }
@@ -1089,7 +1089,7 @@ class UsuarioDAO
 
             return $usuarioObj;
         } catch (Exception $e) {
-            $erro = "ERRO! Banco->verificar: " . $e->getMessage();
+            $erro = "ERRO! usuarioDAO->verificar: " . $e->getMessage();
             error_log($erro);
             return null;
         }

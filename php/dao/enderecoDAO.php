@@ -60,49 +60,44 @@ class EnderecoDAO
         try {
 
             $sql = "
-                SELECT * 
-                FROM endereco 
-                WHERE cep = :cep
-                AND numero = :numero
-            ";
+            SELECT *
+            FROM endereco
+            WHERE cep = :cep
+              AND numero <=> :numero
+              AND complemento <=> :complemento
+        ";
 
             $stmt = $this->bancoDados->prepare($sql);
             $stmt->execute([
                 ':cep' => $enderecoObj->getCep(),
-                ':numero' => $enderecoObj->getNumero()
+                ':numero' => $enderecoObj->getNumero(),
+                ':complemento' => $enderecoObj->getComplemento()
             ]);
 
             $registro = $stmt->fetch(PDO::FETCH_ASSOC);
 
             if (!$registro) {
-                throw new Exception("Não existe imóvel com este endereço");
+                throw new Exception("Não existe endereço com estes dados.");
             }
 
-            $idEndereco = (int) $registro['id'];
-            $rua = $registro['rua'];
-            $numero = $registro['numero'] ? (int) $registro['numero'] : 0;
-            $bairro = $registro['bairro'];
-            $cep = $registro['cep'] ? (int) $registro['cep'] : "";
-            $complemento = $registro['complemento'];
-            $cidade = $registro['cidade'];
-            $uf = $registro['uf'];
+            $endereco = new Endereco(
+                $registro['rua'],
+                $registro['bairro'],
+                $registro['cep'],
+                $registro['cidade'],
+                $registro['uf']
+            );
 
-            $endereco_resultado = new Endereco($rua, $bairro, $cep, $cidade, $uf);
-            $endereco_resultado->setId($idEndereco);
-            $endereco_resultado->setNumero($numero);
-            $endereco_resultado->setComplemento($complemento);
+            $endereco->setId((int)$registro['id']);
+            $endereco->setNumero($registro['numero']);
+            $endereco->setComplemento($registro['complemento']);
 
-            return $endereco_resultado;
+            return $endereco;
         } catch (Exception $e) {
-            $erro = "ERRO! Banco->verificar: " . $e->getMessage();
-            error_log($erro);
+            error_log("ERRO! enderecoDAO->verificar: " . $e->getMessage());
             return null;
         }
     }
-
-
-
-
 
     public function buscarPorId($id)
     {
@@ -166,6 +161,41 @@ class EnderecoDAO
             return $this->bancoDados->lastInsertId();
         } catch (Exception $e) {
             error_log("ERRO! Banco->cadastrar: " . $e->getMessage());
+            return false;
+        }
+    }
+
+    public function atualizar($endereco)
+    {
+        try {
+            $sql = "
+            UPDATE endereco 
+            SET rua = ?, 
+                numero = ?, 
+                bairro = ?, 
+                cep = ?, 
+                complemento = ?, 
+                cidade = ?, 
+                uf = ? 
+            WHERE id = ?
+        ";
+
+            $stmt = $this->bancoDados->prepare($sql);
+
+            $stmt->execute([
+                $endereco->getRua(),
+                $endereco->getNumero(),
+                $endereco->getBairro(),
+                $endereco->getCep(),
+                $endereco->getComplemento(),
+                $endereco->getCidade(),
+                $endereco->getUf(),
+                $endereco->getId()
+            ]);
+
+            return true;
+        } catch (Exception $e) {
+            error_log("ERRO! Banco->atualizar: " . $e->getMessage());
             return false;
         }
     }

@@ -9,17 +9,49 @@ body {
     justify-items: center;
 }
 
+#avo {
+    display: flex;
+    margin-top: 0px;
+    gap: 50px;
+    width: 100%;
+    height: auto;
+}
+
 #pai {
     display: flex;
     flex-direction: column;
-    width: 90%;
-    margin: 0 auto 50px;
-    border: 1px solid color-mix(in srgb, var(--background-claro) 60%, black);
-    border-radius: 12px;
+    width: 60%;
+    margin: 0 auto;
+    border: 1px groove color-mix(in srgb, var(--background-claro) 60%, black);
+    border-radius: 0px 12px 12px 12px;
     background: var(--background-claro);
-    align-self: center;
-    margin: auto auto;
+    height: auto;
+    margin-top: 10px;
 }
+
+#h-buttons {
+    display: flex;
+    flex-direction: column;
+    margin: 10px auto;
+    width: 17%;
+    justify-self: center;
+    gap: 10px;
+    position: sticky !important;
+    height: 18rem;
+    top: 40% !important;
+
+    button {
+        width: 70%;
+        min-height: 3rem;
+        height: auto;
+        border-radius: 6% / 30%;
+
+        i {
+            margin-right: 10px;
+        }
+    }
+}
+
 
 #campo-dados {
     display: flex;
@@ -27,16 +59,17 @@ body {
     flex-direction: column;
     gap: 28px;
     padding: 32px;
-    width: 90%;
+    width: 100%;
+    height: auto;
 
     >div {
         display: flex;
         flex-direction: column;
         gap: 18px;
         padding: 24px;
-        border: 1px solid color-mix(in srgb, var(--background-claro) 60%, black);
+        border: 1px groove color-mix(in srgb, var(--background-claro) 60%, black);
         border-radius: 10px;
-        background: color-mix(in srgb, var(--background-claro) 60%, #464141);
+        background: var(--background-custom);
     }
 
     .linha {
@@ -57,9 +90,17 @@ body {
     label {
         font-size: .8rem;
         font-weight: 500;
-        color: color-mix(in srgb, var(--cor-texto-alternativa) 80%, #9a9a9a);
+        color: var(--cor-texto);
         text-transform: uppercase;
         letter-spacing: .5px;
+    }
+
+    input,
+    textarea {
+        &:read-only {
+            background: color-mix(in srgb, var(--background-custom) 45%, #cbcaca);
+            color: color-mix(in srgb, var(--cor-texto-alternativa) 10%, #000000);
+        }
     }
 
     input,
@@ -73,11 +114,6 @@ body {
         background: #f5f5f5;
         transition: .15s;
         resize: none;
-
-        &:read-only {
-            background: #ececec;
-            color: color-mix(in srgb, var(--cor-texto) 50%, #666);
-        }
 
         &:focus {
             outline: none;
@@ -116,6 +152,10 @@ body {
         flex: 1 1 240px;
     }
 
+    .vertical-separator:has(#inpt-telefone2) {
+        flex: 1 1 150px !important;
+    }
+
     .vertical-separator:has(#ta-bloco),
     .vertical-separator:has(#ta-andar),
     .vertical-separator:has(#ta-numero),
@@ -147,22 +187,6 @@ input {
     height: 1.6rem;
     font-size: 100%;
     text-indent: 0.3rem !important;
-}
-
-#h-buttons {
-    display: flex;
-    margin: 10px auto;
-    margin-top: 40px;
-    width: 20%;
-    height: 45px;
-    justify-self: center;
-    gap: 10px;
-
-    button {
-        width: 50%;
-        height: 100%;
-        border-radius: 6% / 30%;
-    }
 }
 
 

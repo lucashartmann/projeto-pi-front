@@ -15,7 +15,7 @@ export async function salvarImoveisCurtidos() {
         })
             .then(async (response) => {
                 if (response.erro) {
-                    alert("Erro ao cadastrar favoritos: " + response.erro);
+                    console.error("Erro ao cadastrar favoritos: " + response.erro);
                     return null;
                 }
                 const contentType = response.headers.get("content-type");
@@ -23,7 +23,6 @@ export async function salvarImoveisCurtidos() {
                     return await response.json();
                 } else {
                     const texto = await response.text();
-                    alert("Resposta inesperada do servidor");
                     console.error("Resposta não é JSON:", texto);
                     return null;
                 }
@@ -73,7 +72,7 @@ export async function deslogar() {
             method: "POST"
         });
         if (resposta.erro) {
-            alert("Erro ao listar atendimentos: " + resposta.erro);
+            console.error("Erro ao listar atendimentos: " + resposta.erro);
             return null;
         }
         if (!resposta.ok) throw new Error(`HTTP ${resposta.status}`);
@@ -83,7 +82,6 @@ export async function deslogar() {
             dados = await resposta.json();
         } else {
             const texto = await resposta.text();
-            alert("Resposta inesperada do servidor");
             console.error("Resposta não é JSON:", texto);
             return null;
         }
@@ -129,7 +127,7 @@ export async function carregarUser() {
             method: "GET"
         });
         if (resposta.erro) {
-            alert("Erro ao listar atendimentos: " + resposta.erro);
+            console.error("Erro ao listar atendimentos: " + resposta.erro);
             return null;
         }
         if (!resposta.ok) throw new Error(`HTTP ${resposta.status}`);
@@ -139,7 +137,6 @@ export async function carregarUser() {
             dados = await resposta.json();
         } else {
             const texto = await resposta.text();
-            // alert("Resposta inesperada do servidor");
             console.error("Resposta não é JSON:", texto);
             return null;
         }

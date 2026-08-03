@@ -48,6 +48,7 @@
 #contador-imoveis {
     font-size: 1.2rem;
     margin-left: auto;
+    color: var(--cor-texto-alternativa);
 }
 
 #h-filtro {
@@ -75,7 +76,7 @@
     }
 
     #filtro-seta {
-        background-color: rgba(228, 217, 217, 0.5);
+        background: -webkit-linear-gradient(top, #ffffff, #e5e5e5);
         border-radius: 5% / 30%;
         border: solid 1px black;
 
@@ -205,7 +206,7 @@ body {
 
 .menu-opcoes {
     position: fixed;
-    background: #414141;
+    background: var(--background-custom);
     backdrop-filter: blur(40px) !important;
     min-width: 20rem;
     min-height: 5rem;

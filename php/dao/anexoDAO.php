@@ -36,7 +36,7 @@ class AnexoDAO
 
             return $anexoObj;
         } catch (Exception $e) {
-            $erro = "ERRO! Banco->buscarPorCaminho: " . $e->getMessage();
+            $erro = "ERRO! anexoDAO->buscarPorCaminho: " . $e->getMessage();
             error_log($erro);
             return null;
         }
@@ -78,7 +78,7 @@ class AnexoDAO
             $mapa["Documentos"] = $documentos;
             return $mapa;
         } catch (Exception $e) {
-            $erro = "ERRO! Banco->listarPorIdAnuncio: " . $e->getMessage();
+            $erro = "ERRO! anexoDAO->listarPorIdAnuncio: " . $e->getMessage();
             error_log($erro);
             return [];
         }
@@ -106,7 +106,7 @@ class AnexoDAO
                 ':tipo' => $anexo->getTipo() ? $anexo->getTipo()->value : null
             ]);
         } catch (Exception $e) {
-            $erro = "ERRO! Banco->cadastrar: " . $e->getMessage();
+            $erro = "ERRO! anexoDAO->cadastrar: " . $e->getMessage();
             error_log($erro);
             return False;
         }

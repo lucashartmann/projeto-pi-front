@@ -14,7 +14,6 @@ export function getCaminhoRelativo(destino) {
         caminho += "/";
     }
     const regex = new RegExp("/" + "$");
-    // console.log(caminho)
     caminho = caminho.replace(regex, destino);
     return caminho;
 }

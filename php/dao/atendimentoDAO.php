@@ -40,7 +40,7 @@ class AtendimentoDAO
 
             return $this->montar($registro);
         } catch (Exception $e) {
-            $erro = "ERRO! Banco->buscarPorId: " . $e->getMessage();
+            $erro = "ERRO! atendimentoDAO->buscarPorId: " . $e->getMessage();
             error_log($erro);
             return null;
         }
@@ -80,7 +80,7 @@ class AtendimentoDAO
                 ':id' => $atendimento->getId()
             ]);
         } catch (Exception $e) {
-            error_log("ERRO! Banco->atualizar: " . $e->getMessage());
+            error_log("ERRO! atendimentoDAO->atualizar: " . $e->getMessage());
             return false;
         }
     }
@@ -149,7 +149,7 @@ class AtendimentoDAO
                 ":status" => $status
             ]);
         } catch (Exception $e) {
-            $erro = "ERRO! Banco->cadastrar: " . $e->getMessage();
+            $erro = "ERRO! atendimentoDAO->cadastrar: " . $e->getMessage();
             error_log($erro);
             return False;
         }
@@ -194,7 +194,7 @@ class AtendimentoDAO
             }
             return $lista;
         } catch (Exception $e) {
-            $erro = "ERRO! Banco->listar: " . $e->getMessage();
+            $erro = "ERRO! atendimentoDAO->listar: " . $e->getMessage();
             error_log($erro);
             return [];
         }
@@ -218,7 +218,7 @@ class AtendimentoDAO
             }
             return $listaAtendimentos;
         } catch (Exception $e) {
-            $erro = "ERRO! Banco->listarPorUsuario: " . $e->getMessage();
+            $erro = "ERRO! atendimentoDAO->listarPorUsuario: " . $e->getMessage();
             error_log($erro);
             return [];
         }

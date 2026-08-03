@@ -9,8 +9,6 @@
     align-content: center;
 }
 
-
-
 #contador-imoveis {
     font-size: 1.2rem;
     margin-left: auto;
@@ -159,7 +157,7 @@ section {
     width: 90%;
     max-width: 500px;
     min-height: 540px;
-    background: #f8f8f8;
+    background: var(--background-claro);
     color: var(--cor-texto-alternativa);
     text-decoration: none;
     border-radius: 18px;
@@ -179,7 +177,7 @@ section {
             0 18px 35px rgba(0, 0, 0, .15),
             0 8px 18px rgba(0, 0, 0, .08);
         cursor: pointer;
-        border: 1px groove rgba(47, 45, 45, 0.6);
+        border: 1px groove var(--background-escuro);
     }
 
     .swiper {
@@ -300,7 +298,7 @@ section {
         margin: 0;
         font-size: 1.5rem;
         font-weight: 700;
-        color: rgb(11, 85, 7);
+        color: var(--preco);
         width: auto;
         min-width: 2rem;
     }

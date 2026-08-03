@@ -48,7 +48,6 @@ class loginController
             if (!$usuario) {
                 return (["status" => "erro", "mensagem" => "Usuário não encontrado"]);
             }
-            error_log("Chamando marcarComoLido com notificações: " . json_encode($dados['notificacoes']) . " para usuário: " . $usuario->getId());
             $listaIds = array_map(function ($notificacao) {
                 return $notificacao['id'];
             }, $dados['notificacoes']);

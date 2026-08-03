@@ -1,8 +1,53 @@
 import { getDadosImovel } from "./modules/imoveis.js";
+import { getCaminhoRelativo } from "./modules/utils.js";
 
 let imovel = null;
 
 window.abrirTab = abrirTab;
+window.preencherEndereco = preencherEndereco;
+window.salvarMultiplosForms = salvarMultiplosForms;
+window.excluir = excluir;
+window.editarPessoa = editarPessoa;
+window.apagarMultiplos = apagarMultiplos;
+window.adicionarAnexo = adicionarAnexo;
+window.selecionarTodos = selecionarTodos;
+window.compartilhar = compartilhar;
+window.abrirAnuncio = abrirAnuncio;
+
+function abrirAnuncio() {
+    let urlAtual = window.location.href;
+    urlAtual = urlAtual.replace("cadastro-imovel.html", "dados-imovel.html");
+    window.open(urlAtual);
+}
+
+async function compartilhar(tipo) {
+    if (!navigator.share) {
+        alert("Compartilhamento não suportado por este navegador.");
+        return;
+    }
+    try {
+        switch (tipo) {
+            case "cadastro":
+                await navigator.share({
+                    title: imovel.anuncio.titulo,
+                    text: imovel.anuncio.descricao,
+                    url: window.location.href
+                });
+                break;
+            case "anuncio":
+                let urlAtual = window.location.href;
+                urlAtual = urlAtual.replace("cadastro-imovel.html", "dados-imovel.html");
+                await navigator.share({
+                    title: imovel.anuncio.titulo,
+                    text: imovel.anuncio.descricao,
+                    url: urlAtual
+                });
+                break;
+        }
+    } catch (error) {
+        console.error("Erro ao compartilhar o imóvel:", error);
+    }
+}
 
 async function preencherEndereco(event) {
     const cep = event.target.value.replace(/\D/g, "");
@@ -287,6 +332,7 @@ async function getOutrosDados(formData) {
 
     formData.append("imagens", []);
     formData.append("documentos", []);
+    formData.append("proprietarios", []);
     console.log("Imagens a serem enviadas:", imagens);
 
     if (imagens.length > 0) {
@@ -324,8 +370,6 @@ async function getOutrosDados(formData) {
         if (idProprietario) {
             formData.append("proprietarios[]", idProprietario);
         }
-    } else {
-        formData.append("proprietarios", []);
     }
 
     if (containerCorretor && containerCorretor.querySelectorAll(".resultado-pessoa").length > 0) {
@@ -345,6 +389,21 @@ async function getOutrosDados(formData) {
     } else {
         formData.append("corretor", null);
     }
+
+    let containerFiltrosApartamento = document.getElementById("container-info-imovel");
+    if (containerFiltrosApartamento) {
+        const filtros = containerFiltrosApartamento.querySelectorAll("input[type='checkbox']");
+        const filtrosSelecionados = Array.from(filtros).filter(checkbox => checkbox.checked).map(checkbox => checkbox.value);
+        formData.append("filtros_apartamento", JSON.stringify(filtrosSelecionados));
+    }
+
+    let containerFiltrosCondominio = document.getElementById("container-info-condominio");
+    if (containerFiltrosCondominio) {
+        const filtros = containerFiltrosCondominio.querySelectorAll("input[type='checkbox']");
+        const filtrosSelecionados = Array.from(filtros).filter(checkbox => checkbox.checked).map(checkbox => checkbox.value);
+        formData.append("filtros_condominio", JSON.stringify(filtrosSelecionados));
+    }
+
 
     return formData;
 }
@@ -421,7 +480,8 @@ async function salvar() {
 }
 
 async function excluir() {
-    confirmar = confirm("Tem certeza que deseja excluir este imóvel?");
+    let confirmar = confirm("Tem certeza que deseja excluir este imóvel?");
+    let imovelId = imovel.id;
     if (imovelId && confirmar) {
         try {
             let caminho = getCaminhoRelativo("/php/api/imoveis.php?acao=apagar&id=" + imovelId);
@@ -450,9 +510,11 @@ async function excluir() {
                 .then(async (data) => {
                     if (data.status == "erro") {
                         alert("Erro ao excluir imóvel: " + data.mensagem);
-                    } else {
-                        console.log("Imóvel excluído com sucesso:", data);
+                    } else if (data.status == "sucesso") {
+                        console.log(data.mensagem);
                         window.location.href = "estoque.html";
+                    } else {
+                        alert("Erro ao excluir imóvel: " + data.mensagem);
                     }
                 })
                 .catch(error => {
@@ -463,8 +525,8 @@ async function excluir() {
         }
     }
     else {
-        // alert("Nenhum imóvel selecionado para exclusão!");
-        window.location.href = "estoque.html";
+        alert("Nenhum imóvel selecionado para exclusão!");
+        // window.location.href = "estoque.html";
     }
 
 
@@ -595,7 +657,7 @@ async function abrirCadastro(imovel) {
             containerDocumentos.querySelector(".apagar-multiplos").style.display = "inline-block";
             document.getElementById("contador-documentos").textContent = contadorDocumentos + " documento(s)";
         }
-        pessoas = {};
+        let pessoas = {};
         if (imovel.proprietarios) {
             pessoas["proprietarios"] = imovel.proprietarios;
         }
@@ -665,6 +727,29 @@ async function abrirCadastro(imovel) {
             }
         }
 
+        if (imovel.filtros && imovel.filtros.length > 0) {
+            let containerFiltrosApartamento = document.getElementById("container-info-imovel");
+            if (containerFiltrosApartamento) {
+                const filtros = containerFiltrosApartamento.querySelectorAll("input[type='checkbox']");
+                filtros.forEach(checkbox => {
+                    if (imovel.filtros.includes(checkbox.value)) {
+                        checkbox.checked = true;
+                    }
+                });
+            }
+        }
+
+        if (imovel.condominio && imovel.condominio.filtros && imovel.condominio.filtros.length > 0) {
+            let containerFiltrosCondominio = document.getElementById("container-info-condominio");
+            if (containerFiltrosCondominio) {
+                const filtros = containerFiltrosCondominio.querySelectorAll("input[type='checkbox']");
+                filtros.forEach(checkbox => {
+                    if (imovel.condominio.filtros.includes(checkbox.value)) {
+                        checkbox.checked = true;
+                    }
+                });
+            }
+        }
 
 
     } else {
@@ -912,8 +997,6 @@ function adicionarAnexo(event) {
     input.click();
 }
 
-let imovelId = null;
-
 window.addEventListener("DOMContentLoaded", async function () {
 
     sessionStorage.getItem("cadastro-imovel: abaAtiva") ? abrirTab(parseInt(sessionStorage.getItem("cadastro-imovel: abaAtiva"))) : abrirTab(0);
@@ -933,7 +1016,10 @@ window.addEventListener("DOMContentLoaded", async function () {
         digits: 2,
         autoGroup: true,
         allowMinus: false,
-        placeholder: '0'
+        rightAlign: false,
+        placeholder: '0',
+        numericInput: true,
+        positionCaretOnClick: "radixFocus"
     }).mask('#ta-aluguel, #ta-venda, #ta-condominio, #ta-iptu');
 
     Inputmask({

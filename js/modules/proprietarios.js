@@ -6,7 +6,7 @@ export async function listarProprietarios() {
         const resposta = await fetch(caminho)
             .then(async (res) => {
                 if (res.erro) {
-                    alert("Erro ao listar proprietários: " + res.erro);
+                    console.error("Erro ao listar proprietários: " + res.erro);
                     return null;
                 }
                 const contentType = res.headers.get("content-type");
@@ -14,14 +14,13 @@ export async function listarProprietarios() {
                     return await res.json();
                 } else {
                     const texto = await res.text();
-                    alert("Resposta inesperada do servidor");
                     console.error("Resposta não é JSON:", texto);
                     return null;
                 }
             })
             .then(async (data) => {
                 if (data.status == "erro") {
-                    alert("Erro ao listar proprietários: " + data.mensagem);
+                    console.error(data.mensagem);
                     return null;
                 }
                 return data;
