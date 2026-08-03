@@ -13,6 +13,8 @@ window.adicionarAnexo = adicionarAnexo;
 window.selecionarTodos = selecionarTodos;
 window.compartilhar = compartilhar;
 window.abrirAnuncio = abrirAnuncio;
+window.abrirImagem = abrirImagem;
+window.abrirMultiplos = abrirMultiplos;
 
 function abrirAnuncio() {
     let urlAtual = window.location.href;
@@ -561,12 +563,9 @@ function abrirTab(posicao) {
 
 
 async function abrirCadastro(imovel) {
-    // imovel = JSON.parse(imovel);
-    console.log("Abrindo cadastro do imóvel:", imovel);
     if (imovel) {
         let containerImagens = document.getElementById("container-imagens");
         prepararContainerArrastavel(containerImagens);
-
         document.getElementById("ta-ref").value = imovel.id || "";
         document.getElementById("select-status").value = imovel.status || "";
         document.getElementById("select-situacao").value = imovel.situacao || "";
@@ -577,7 +576,6 @@ async function abrirCadastro(imovel) {
         document.getElementById("ta-bairro").value = imovel.endereco?.bairro || "";
         document.getElementById("ta-cidade").value = imovel.endereco?.cidade || "";
         document.getElementById("ta-estado").value = imovel.endereco?.uf || "";
-        // console.log(imovel.categoria);
         document.getElementById("select-categoria").value = imovel.categoria || "";
         document.getElementById("ta-titulo-anuncio").value = imovel.anuncio?.titulo || "";
         document.getElementById("ta-descricao-anuncio").value = imovel.anuncio?.descricao || "";
@@ -609,11 +607,9 @@ async function abrirCadastro(imovel) {
         if (imovel.anuncio?.imagens && imovel.anuncio.imagens.length > 0) {
             let contadorImgens = 0;
             for (let imagem of imovel.anuncio.imagens) {
-                // console.log(imagem);
                 let divImagem = document.createElement("div");
                 divImagem.classList.add("imagem-anuncio");
                 divImagem.style.backgroundImage = `linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), url(${imagem})`
-                // console.log(imagem);
                 divImagem.setAttribute("onclick", `abrirImagem('${imagem}')`);
                 let checkbox = document.createElement("input");
                 checkbox.type = "checkbox";
@@ -621,17 +617,14 @@ async function abrirCadastro(imovel) {
                 checkbox.value = imagem;
                 checkbox.name = "imagens-selecionadas";
                 divImagem.appendChild(checkbox);
-                // divImagem.appendChild()
                 prepararImagemArrastavel(divImagem);
                 containerImagens.appendChild(divImagem);
-                // console.log(divImagem.style.backgroundImage.split("url(")[1].slice(0, -1))
                 contadorImgens++;
             }
             document.getElementById("contador-imagens").textContent = contadorImgens + " imagem(s)";
             containerImagens.querySelector(".abrir-multiplos").style.display = "inline-block";
             containerImagens.querySelector(".apagar-multiplos").style.display = "inline-block";
         }
-        // console.log(imovel.anuncio);
         if (imovel.anuncio?.documentos && imovel.anuncio.documentos.length > 0) {
             let contadorDocumentos = 0;
             let containerDocumentos = document.getElementById("container-anexos");
@@ -751,6 +744,14 @@ async function abrirCadastro(imovel) {
             }
         }
 
+        if (imovel.destacado) {
+            document.getElementById("checkbox").querySelector("input[type='checkbox']").checked = true;
+        }
+
+        if (imovel.quant_clicks) {
+            document.getElementById("quant-clicks").value = 'Quantidade de cliques: ' + imovel.quant_clicks;
+        }
+
 
     } else {
         alert("Imóvel não encontrado!");
@@ -760,20 +761,11 @@ async function abrirCadastro(imovel) {
 
 function abrirImagem(src) {
     var modal = document.createElement("div");
-    modal.style.position = "fixed";
-    modal.style.top = "0";
-    modal.style.left = "0";
-    modal.style.width = "100%";
-    modal.style.height = "100%";
-    modal.style.backgroundColor = "rgba(0, 0, 0, 0.8)";
-    modal.style.display = "flex";
-    modal.style.justifyContent = "center";
-    modal.style.alignItems = "center";
-    modal.style.zIndex = "1000";
+    modal.id = "modal-imagem";
+
     var img = document.createElement("img");
     img.src = src;
-    img.style.maxWidth = "90%";
-    img.style.maxHeight = "90%";
+
     modal.appendChild(img);
     document.body.appendChild(modal);
     modal.addEventListener("click", function () {

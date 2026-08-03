@@ -24,6 +24,21 @@ class ImovelDAO
         return $this->bancoDados;
     }
 
+    public function atualizarClicks(int $idImovel): bool
+    {
+        try {
+            $sql = "UPDATE imovel SET quant_clicks = quant_clicks + 1 WHERE id = :id";
+            $stmt = $this->bancoDados->prepare($sql);
+            $stmt->execute([
+                ':id' => $idImovel
+            ]);
+            return true;
+        } catch (Exception $e) {
+            error_log("ERRO! imovelDAO->atualizarClicks: " . $e->getMessage());
+            return false;
+        }
+    }
+
     public function destacar($idImovel)
     {
         try {

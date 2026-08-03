@@ -4,11 +4,11 @@ import { getDadosImovel } from "./modules/imoveis.js";
 
 window.abrirImagem = abrirImagem;
 window.curtirImovel = curtirImovel;
-let imovel = null;
-let usuario = null;
-
 window.cadastrarAtendimento = cadastrarAtendimento;
 window.compartilharImovel = compartilharImovel;
+
+let imovel = null;
+let usuario = null;
 
 async function compartilharImovel() {
     if (!navigator.share) {
@@ -70,9 +70,6 @@ async function cadastrarAtendimento() {
     } catch (error) {
         console.error("Erro ao enviar dados do usuário:", error);
     }
-
-
-
 }
 
 function setupDados(imovel) {
@@ -162,6 +159,45 @@ function setupDados(imovel) {
 
 }
 
+function adicionarClick() {
+    if (!imovel || !imovel.id) {
+        return;
+    }
+    try {
+        let caminho = getCaminhoRelativo("/php/api/imoveis.php?acao=cadastrarClick&id=" + imovel.id);
+        const resposta = await fetch(caminho, {
+            method: "POST",
+        })
+            .then(async response => {
+                if (response.erro) {
+                    return false;
+                }
+                const contentType = response.headers.get("content-type");
+                if (contentType && contentType.includes("application/json")) {
+                    return await response.json();
+                } else {
+                    const texto = await response.text();
+                    return false;
+                }
+            })
+            .then(async (data) => {
+                if (data.status == "erro") {
+                    return false;
+                }
+                else if (data.mensagem) {
+                    return true;
+                }
+
+            })
+            .catch(error => {
+                return false;
+            });
+
+    } catch (error) {
+        return false;
+    }
+}
+
 
 window.addEventListener("DOMContentLoaded", async () => {
     const id = new URLSearchParams(window.location.search).get("id");
@@ -178,6 +214,10 @@ window.addEventListener("DOMContentLoaded", async () => {
         alert("Imóvel não encontrado!");
         window.location.href = getCaminhoRelativo("index.html");
         return;
+    }
+
+    if (usuario && usuario.tipo == 'CLIENTE') {
+        adicionarClick();
     }
 
     sessionStorage.removeItem("dados_imovel");

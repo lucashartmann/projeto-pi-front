@@ -467,7 +467,6 @@ class UsuarioDAO
             }
             $tipoUsuarioObj = $usuario->getTipo();
             $tipoUsuarioValor = $tipoUsuarioObj ? $tipoUsuarioObj->value : NULL;
-            error_log("Tipo de usuário: " . $tipoUsuarioValor);
             switch ($tipoUsuarioValor) {
                 case "CORRETOR":
                     try {

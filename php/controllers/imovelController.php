@@ -28,6 +28,25 @@ class ImovelController
         $this->anuncioDAO = new AnuncioDAO();
     }
 
+    function cadastrarClick()
+    {
+        try {
+            $id = $_GET['id'] ?? null;
+            if (!$id) {
+                return (["status" => "erro", "mensagem" => "ID do imóvel não fornecido"]);
+            }
+            $atualizacao = $this->imovelDAO->atualizarClicks($id);
+
+            if (!$atualizacao) {
+                return (["status" => "erro", "mensagem" => "Erro ao atualizar clicks do imóvel"]);
+            }
+
+            return (["status" => "sucesso", "mensagem" => "Clicks do imóvel atualizados com sucesso"]);
+        } catch (Exception $e) {
+            return (["status" => "erro", "mensagem" => "Erro ao atualizar clicks do imóvel: " . $e->getMessage()]);
+        }
+    }
+
     function destacar($id)
     {
 
@@ -646,7 +665,9 @@ class ImovelController
                 "area_total" => $imovel->getAreaTotal() ?? 0.00,
                 "complemento" => $imovel->getComplemento() ?? null,
                 "condominio" => $condominio ?? null,
-                "filtros" => $imovel->getFiltros()
+                "filtros" => $imovel->getFiltros(),
+                "destacado" => $imovel->isDestacado() ?? false,
+                "quant_clicks" => $imovel->getQuantClicks() ?? 0
             ];
         }
 

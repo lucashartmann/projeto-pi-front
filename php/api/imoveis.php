@@ -11,6 +11,16 @@ $controller = new ImovelController();
 
 switch ($acao) {
 
+    case "cadastrarClick":
+        $id = $_GET['id'] ?? null;
+        if ($id) {
+            $resultado = $controller->buscarPorId($id);
+        } else {
+            $resultado = (["status" => "erro", "mensagem" => "ID do imóvel não fornecido"]);
+        }
+        $resultado = $controller->cadastrarClick($id);
+        break;
+
     case "cadastrar":
         $data = $_POST;
         $resultado = $controller->cadastrar($data);

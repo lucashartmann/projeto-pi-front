@@ -32,6 +32,15 @@
             margin-right: 10px;
         }
     }
+
+    #checkbox {
+        display: flex;
+        justify-content: space-between;
+        width: 12.5rem;
+        height: auto;
+    }
+
+ 
 }
 
 
@@ -460,9 +469,9 @@ label {
     height: auto;
     color: white;
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(30%, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     row-gap: 20px;
-    column-gap: 20px;
+    /* column-gap: 20px; */
     justify-self: center;
     justify-content: center;
     justify-items: center;
@@ -542,15 +551,6 @@ label {
 @media screen and (max-width: 404px) {
     #container-cadastro {
         grid-template-columns: repeat(auto-fit, minmax(30%, 2fr));
-    }
-
-    #h-buttons {
-        display: flex;
-        margin: 10px 0 20px 0px;
-        width: 80%;
-        height: 45px;
-        justify-self: center;
-        gap: 10px;
     }
 }
 
@@ -652,5 +652,34 @@ label {
         display: flex;
         flex-direction: column;
         justify-content: center;
+    }
+}
+
+#modal-imagem {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    display: flex;
+    align-self: center;
+    align-items: center;
+    z-index: 1000;
+    flex-direction: column;
+    justify-content: center;
+    align-content: center;
+    justify-self: center;
+    justify-items: center;
+    margin-top: auto;
+    margin-bottom: 0;
+
+    img {
+        width: auto;
+        height: auto;
+        transform: translate(0%, 5%);
+        max-width: 90%;
+        max-height: 80%;
+        justify-self: center;
     }
 }

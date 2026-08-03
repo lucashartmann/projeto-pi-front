@@ -9,3 +9,6 @@
 - [ ] Melhorar tela de contrato
 - [ ] Melhorar tela de dados imobiliaria
 - [ ] Na tela de dados do cliente, se for outro tipo q n seja cliente e admin, n mostrar o botão de ver favoritos e ver atendimentos
+- [ ] Poder editar e vizualizar mais dados de atendimento
+- [ ] Poder editar e vizualizar mais dados de vistoria, e talvez ver na parte de dados do usuário
+- [ ] Se tiver destaque adicionar opçao de remover. A api já remove, então só precisa chamar ela
