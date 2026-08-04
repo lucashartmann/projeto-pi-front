@@ -12,3 +12,12 @@
 - [ ] Poder editar e vizualizar mais dados de atendimento
 - [ ] Poder editar e vizualizar mais dados de vistoria, e talvez ver na parte de dados do usuário
 - [ ] Se tiver destaque adicionar opçao de remover. A api já remove, então só precisa chamar ela
+
+## Bugs:
+
+- [ ] Mesmo quando um imóvel é cadastrado ele retorna uma mensagem de erro dizendo que não foi possivel cadastrar
+- [ ] Quando eu cadastro uma imagem ao imovel, ele remove as imagens de todos os imóveis pré cadastrados pelo __init__ na tabela midia_anuncio
+
+## Ideias:
+
+- Botar um botao X na imagem no cadastro do imóvel para remover a imagem especifica

@@ -399,6 +399,7 @@ class ImovelController
                 }
 
                 $imovelObj->setDataCadastro(DateTime::createFromFormat('Y-m-d H:i:s', date('Y-m-d H:i:s')));
+                $cadastrado = false;
                 if ($id) {
                     $atualizado = $this->imovelDAO->atualizar($imovelObj);
                     if ($atualizado != false) {
@@ -412,15 +413,18 @@ class ImovelController
                 } else {
                     $cadastrado = $this->imovelDAO->cadastrar($imovelObj);
                 }
-                if ($cadastrado != false && $cadastroAnuncio != false && $imagens) {
+
+                if ($cadastrado != false && $imovelObj->getAnuncio() != null && is_array($imagens) && count($imagens) > 0) {
                     $imagensObjetos = [];
                     foreach ($imagens['tmp_name'] as $i => $nomeTemporario) {
                         try {
                             if ($imagens['error'][$i] !== UPLOAD_ERR_OK) {
+                                error_log("Erro ao fazer upload da imagem: " . $imagens['name'][$i] . " - Código de erro: " . $imagens['error'][$i]);
                                 continue;
                             }
                             $caminho = salvarArquivo($nomeTemporario, $imagens['name'][$i], $cadastrado, 'imagem');
                             if (!$caminho) {
+                                error_log("Erro ao salvar a imagem: " . $imagens['name'][$i]);
                                 continue;
                             }
                             $imagemObj = new Anexo(
@@ -430,23 +434,26 @@ class ImovelController
                             );
                             $imagensObjetos[] = $imagemObj;
                         } catch (Exception $e) {
+                            error_log("Exceção ao processar a imagem: " . $imagens['name'][$i] . " - Mensagem: " . $e->getMessage());
                             continue;
                         }
                     }
                     $anuncioObj->setImagens($imagensObjetos);
                     $this->anuncioDAO->atualizar($anuncioObj);
                 }
-                if ($cadastrado != false && $cadastroAnuncio != false && $documentos) {
+                if ($cadastrado != false && $imovelObj->getAnuncio() != null && is_array($documentos) && count($documentos) > 0) {
                     $documentosObjetos = [];
                     foreach ($documentos['tmp_name'] as $i => $nomeTemporario) {
                         try {
                             $nomeArquivo = $documentos['name'][$i];
 
                             if ($documentos['error'][$i] !== UPLOAD_ERR_OK) {
+                                error_log("Erro ao fazer upload do documento: " . $nomeArquivo . " - Código de erro: " . $documentos['error'][$i]);
                                 continue;
                             }
                             $caminho = salvarArquivo($nomeTemporario, $nomeArquivo, $cadastrado, 'documento');
                             if (!$caminho) {
+                                error_log("Erro ao salvar o documento: " . $nomeArquivo);
                                 continue;
                             }
                             $documentoObj = new Anexo(
@@ -456,6 +463,7 @@ class ImovelController
                             );
                             $documentosObjetos[] = $documentoObj;
                         } catch (Exception $e) {
+                            error_log("Exceção ao processar o documento: " . $documentos['name'][$i] . " - Mensagem: " . $e->getMessage());
                             continue;
                         }
                     }
@@ -500,7 +508,6 @@ class ImovelController
     {
         try {
             $imoveis = $this->imovelDAO->listarDisponiveis();
-            // echo $imoveis;
             if (!$imoveis) {
                 return [
                     "status" => "erro",

@@ -7,6 +7,6 @@ ERROS.MD
 .env
 /.phpunit.cache
 erro.md
-assets/imoveis/..
+assets/imoveis/
 .venv
 js/config.js

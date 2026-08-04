@@ -75,10 +75,6 @@ function closeNav() {
 function carregarTabs(usuario) {
     const nav = document.getElementById("top-nav");
     if (!nav) return;
-    document.querySelector(".left").querySelector("a").href = getCaminhoRelativo("index.html");
-    document.querySelector(".center").querySelector("a").href = getCaminhoRelativo("index.html");
-    document.querySelector(".right").querySelectorAll("a")[0].href = getCaminhoRelativo("html/sobre-nos.html");
-    document.querySelector(".right").querySelectorAll("a")[1].href = getCaminhoRelativo("html/login.html");
     let tabs = [];
     let cadastros = [];
     let dados = [];
@@ -344,16 +340,28 @@ async function setup() {
     const usuario = usuarioLogado || await carregarUser();
     notificacoes = await carregarNotificacoes();
 
+    const nav = document.getElementById("top-nav");
+    if (nav) {
+        document.querySelector(".left").querySelector("a").href = getCaminhoRelativo("index.html");
+        document.querySelector(".center").querySelector("a").href = getCaminhoRelativo("index.html");
+    }
 
     if (usuario) {
         carregarTabs(usuario)
         if (notificacoes && notificacoes.length > 0) {
             atualizarNotificacoes();
         }
-    };
+    } else {
+        if (!nav) return;
+        document.querySelector(".right").querySelectorAll("a")[0].href = getCaminhoRelativo("html/sobre-nos.html");
+        document.querySelector(".right").querySelectorAll("a")[1].href = getCaminhoRelativo("html/login.html");
+    }
+
     if (document.getElementById("logo")) {
         document.getElementById("logo").src = getCaminhoRelativo("assets/logo.webp");
     }
+
+
 
     // if (document.querySelector('.fa-whatsapp') && CONFIG.whatsapp) {
     //     document.querySelector('.fa-whatsapp').addEventListener('click', function (event) {

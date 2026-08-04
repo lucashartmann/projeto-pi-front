@@ -268,21 +268,20 @@ async function getOutrosDados(formData) {
     formData.append("imagens", []);
     formData.append("documentos", []);
     formData.append("proprietarios", []);
-    console.log("Imagens a serem enviadas:", imagens);
 
     if (imagens.length > 0) {
         for (let img of imagens) {
-            if (!imovel || !imovel.anuncio || !imovel.anuncio.imagens || !imovel.anuncio.imagens.includes(img)) {
-                try {
-                    const response = await fetch(img);
-                    if (!response.ok) throw new Error("Falha ao buscar o blob");
-                    const blob = await response.blob();
-                    const extensao = blob.type.split("/")[1] || "webp";
-                    formData.append("imagens[]", blob, `imagem.${extensao}`);
-                } catch (error) {
-                    console.error("Erro ao processar imagem:", img, error);
-                }
+
+            try {
+                const response = await fetch(img);
+                if (!response.ok) throw new Error("Falha ao buscar o blob");
+                const blob = await response.blob();
+                const extensao = blob.type.split("/")[1] || "webp";
+                formData.append("imagens[]", blob, `imagem.${extensao}`);
+            } catch (error) {
+                console.error("Erro ao processar imagem:", img, error);
             }
+
         }
     }
 
@@ -675,6 +674,9 @@ async function abrirCadastro(imovel) {
 
 
 function abrirImagem(src) {
+    if (event.target.tagName === "INPUT" && event.target.type === "checkbox") {
+        return;
+    }
     var modal = document.createElement("div");
     modal.id = "modal-imagem";
 

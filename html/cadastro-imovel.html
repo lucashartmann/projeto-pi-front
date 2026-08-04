@@ -9,10 +9,7 @@
     <link rel="stylesheet" href="../css/cadastro-imovel.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.minlength.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-    <link
-    rel="stylesheet"
-    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-    />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://cdn.jsdelivr.net/npm/inputmask/dist/inputmask.min.js"></script>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <link rel="icon" type="image/x-icon" href="../assets/logo.webp">
@@ -145,7 +142,7 @@
                                 </div>
                                 <div class="vertical-separator">
                                     <label for="" id="stt-numero">Número</label>
-                                    <input type="number" placeholder="" id="ta-numero" name="numero" required>
+                                    <input type="number" placeholder="" id="ta-numero" name="numero" required min="0">
                                 </div>
                                 <div class="vertical-separator">
                                     <label for="" id="stt-complemento">Complemento</label>
@@ -398,7 +395,7 @@
                 </header>
             </div>
             <div id="container-mapa" class="container">
-               <div id="mapa"></div>
+                <div id="mapa"></div>
             </div>
 
         </div>

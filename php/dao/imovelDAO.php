@@ -1232,7 +1232,7 @@ class ImovelDAO
 
             $this->bancoDados->commit();
 
-            return $this->bancoDados->lastInsertId();
+            return $idImovel;
         } catch (Exception $e) {
             if ($this->bancoDados->inTransaction()) {
                 $this->bancoDados->rollBack();

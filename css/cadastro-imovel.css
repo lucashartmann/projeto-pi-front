@@ -482,6 +482,7 @@ label {
     justify-content: center;
     justify-items: center;
     color: var(--cor-texto);
+    /* padding: 20px 0px; */
     /* border: 0.3px groove color-mix(in srgb, var(--background-claro) 60%, rgba(255, 255, 255, 0.001)); */
 
     header {

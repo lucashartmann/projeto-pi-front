@@ -79,6 +79,16 @@ class AnuncioDAO
             ]);
 
             $sql = "
+                DELETE FROM midia_anuncio
+                WHERE id_anuncio = :id_anuncio
+            ";
+
+            $stmt = $this->bancoDados->prepare($sql);
+            $stmt->execute([
+                ':id_anuncio' => $anuncio->getId()
+            ]);
+
+            $sql = "
                 INSERT INTO midia_anuncio (
                     id_anuncio,
                     nome_arquivo,

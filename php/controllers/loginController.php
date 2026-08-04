@@ -8,6 +8,7 @@ require_once __DIR__ . '/usuarioController.php';
 require_once __DIR__ . '/imovelController.php';
 require_once __DIR__ . '/atendimentoController.php';
 require_once __DIR__ . '/../utils/env.php';
+require_once __DIR__ . '/../utils/email.php';
 require_once __DIR__ . '/../../vendor/autoload.php';
 
 use PHPMailer\PHPMailer\PHPMailer;

@@ -113,13 +113,14 @@ function salvarArquivo($nomeTemporario, $nomeArquivo, $id, $tipo)
     return $caminhoParaSalvar;
 }
 
-function limparPasta($listaImagens, $id)
+function limparPasta($listaAnexos, $id)
 {
     $listaCaminhos = array_map(function ($anexo) {
         return $anexo->getCaminho();
-    }, $listaImagens);
-    $diretorio = rtrim(dirname($_SERVER['SCRIPT_NAME'], 3), '/') . "/assets/imoveis/" . $id;
-    if (file_exists($diretorio)) {
+    }, $listaAnexos);
+    $diretorio = rtrim($_SERVER['DOCUMENT_ROOT'], '/') . rtrim(dirname($_SERVER['SCRIPT_NAME'], 3), '/') . "/assets/imoveis/" . $id;
+    error_log($diretorio);
+    if (file_exists($diretorio) && is_dir($diretorio)) {
         $arquivos = scandir($diretorio);
         foreach ($arquivos as $arquivo) {
             if ($arquivo !== '.' && $arquivo !== '..') {
