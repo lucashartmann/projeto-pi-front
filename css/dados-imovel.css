@@ -1,3 +1,10 @@
+#mapa {
+    width: 95%;
+    height: 400px;
+    border-radius: 8px;
+    margin: 50px 0;
+}
+
 #dados-imovel {
     display: flex;
     justify-content: center;
@@ -87,7 +94,7 @@ body>hr {
         width: 90%;
         height: auto;
         text-align: justify;
-        margin-top: 20px;
+        margin-top: 0px;
         margin-left: 30px !important;
     }
 

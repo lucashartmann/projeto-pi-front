@@ -62,15 +62,10 @@
   fetch("nav.html")
     .then(response => response.text())
     .then(data => {
-      const inicio = data.lastIndexOf("<div class=");
-      const fim = data.lastIndexOf("</div>");
-      const substring = data.substring(inicio + 20, fim);
-      data = data.replace(substring, "");
       document.body.insertAdjacentHTML('afterbegin', data);
+      var script = document.createElement('script');
     });
-
 </script>
-
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
@@ -79,7 +74,7 @@
 
 <script type="module" src="../js/modules/utils.js"></script>
 <script type="module" src="../js/modules/usuario.js"></script>
-<script type="module" src="js/modules/notificacoes.js"></script>
+<script type="module" src="../js/modules/notificacoes.js"></script>
 <script type="module" src="../js/base.js"></script>
 <script type="module" src="../js/agendar-visita.js"></script>
 

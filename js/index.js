@@ -327,8 +327,18 @@ window.addEventListener("DOMContentLoaded", async () => {
         console.error("Não foi possível carregar os imóveis");
     }
 
+
     if (dados || destacados) {
-        bannerImoveis(destacados ?? dados);
+        let lista =
+            destacados?.length > 0
+                ? destacados
+                : dados?.length > 0
+                    ? dados
+                    : null;
+
+        if (lista) {
+            bannerImoveis(lista);
+        }
     }
 
     inicializarSwiper();

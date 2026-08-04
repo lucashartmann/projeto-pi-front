@@ -31,7 +31,13 @@ body {
     border: none;
     z-index: 0;
     width: 100% !important;
-
+    justify-self: center !important;
+    justify-content: center !important;
+    justify-items: center !important;
+    align-items: center !important;
+    align-content: center !important;
+    align-self: center !important;
+    padding: 10px 0 !important;
 
     .ui,
     tr,
@@ -48,8 +54,8 @@ body {
         display: none;
     }
 
-    background: #f0e9e9 !important;
-    color: var(--cor-texto-alternativa) !important;
+    background: var(--background-custom) !important;
+    color: var(--cor-texto) !important;
 
     .fc-day-grid-event {
         background: var(--background-nav);
@@ -61,15 +67,15 @@ body {
 
     td,
     th {
-        border-color: var(--cor-texto-alternativa);
+        border-color: var(--cor-texto);
     }
 
     .fc-day-number {
-        color: var(--cor-texto-alternativa);
+        color: var(--cor-texto);
     }
 
     th a {
-        color: var(--cor-texto-alternativa);
+        color: var(--cor-texto);
     }
 
     th {
@@ -94,7 +100,7 @@ button {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    background: rgba(36, 30, 30, 0.5);
+    background: var(--background-custom);
     backdrop-filter: blur(40px) !important;
     box-shadow: var(--shadow);
     height: auto;
@@ -154,10 +160,10 @@ button {
         }
 
         button {
-            padding: 0.5em 1em;
-            font-size: 1em;
-            cursor: pointer;
-            margin: 1rem 0rem 2rem 0rem;
+            width: 20%;
+            min-height: 3rem;
+            height: auto;
+            border-radius: 6% / 30%;
         }
     }
 }

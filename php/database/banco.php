@@ -279,7 +279,20 @@ class Banco extends PDO
         }
     }
 
-
+    public function removerLista($campoDesejado, $listaIDS, $tabela)
+    {
+        try {
+            $sqlDeleteQuery = "
+                DELETE FROM $tabela
+                WHERE $campoDesejado in IN (" . implode(',', array_map('intval', $listaIDS)) . ")";
+            $stmt = $this->prepare($sqlDeleteQuery);
+            $stmt->execute();
+            return true;
+        } catch (Exception $e) {
+            error_log("ERRO Banco->removerLista $tabela: " . $e->getMessage());
+            return False;
+        }
+    }
 
     public function remover($campoDesejado, $valor, $tabela)
     {
@@ -296,6 +309,7 @@ class Banco extends PDO
             return False;
         }
     }
+
     public function atualizar($campoDesejado, $valor, $tabela)
     {
         try {

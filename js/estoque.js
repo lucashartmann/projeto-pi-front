@@ -1,5 +1,5 @@
 import { listarUsuarios } from "./modules/usuarios.js";
-import { listarImoveis } from "./modules/imoveis.js";
+import { listarImoveis, destacarImovel, excluirImovel } from "./modules/imoveis.js";
 import { listarProprietarios } from "./modules/proprietarios.js";
 import { formatarValor } from "./modules/utils.js";
 
@@ -16,6 +16,60 @@ window.filtrar = filtrar;
 window.trocarCadastro = trocarCadastro;
 window.openMenu = openMenu;
 window.selecionarTodos = selecionarTodos;
+window.tornarDestaqueMultiplos = tornarDestaqueMultiplos;
+window.apagarMultiplos = apagarMultiplos;
+window.abrirMultiplos = abrirMultiplos;
+window.apagarImovel = apagarImovel;
+window.abrirCadastro = abrirCadastro;
+window.duplicarImovel = duplicarImovel;
+window.destacarImovel = destacarImovel;
+window.montarOpcoes = montarOpcoes;
+
+function abrirCadastro(id) {
+    if (id) {
+        window.open(`cadastro-imovel.html?id=${id}`, '_blank');
+    }
+}
+
+function abrirMultiplos(event) {
+    const checkboxes = document.querySelectorAll(".checkbox-selecionar:checked");
+    const lista_ids = Array.from(checkboxes).map(checkbox => {
+        const resultado = checkbox.closest(".resultado");
+        return resultado ? resultado.getAttribute("href").split("=")[1] : null;
+    }).filter(id => id !== null);
+    for (const id of lista_ids) {
+        window.open(`cadastro-imovel.html?id=${id}`, '_blank');
+    }
+}
+
+function apagarMultiplos(event) {
+    confirmar = confirm("Tem certeza que deseja excluir os imóveis selecionados?");
+    if (!confirmar) {
+        return;
+    }
+    const checkboxes = document.querySelectorAll(".checkbox-selecionar:checked");
+    const lista_ids = Array.from(checkboxes).map(checkbox => {
+        const resultado = checkbox.closest(".resultado");
+        return resultado ? resultado.getAttribute("href").split("=")[1] : null;
+    }).filter(id => id !== null);
+    excluirImovel(lista_ids);
+}
+
+async function tornarDestaqueMultiplos() {
+
+    const checkboxes = document.querySelectorAll(".checkbox-selecionar:checked");
+    const lista_ids = Array.from(checkboxes).map(checkbox => {
+        const resultado = checkbox.closest(".resultado");
+        return resultado ? resultado.getAttribute("href").split("=")[1] : null;
+    }).filter(id => id !== null);
+
+    if (lista_ids.length === 0) {
+        alert("Nenhum imóvel selecionado.");
+        return;
+    }
+
+    destacarImovel(lista_ids);
+}
 
 async function filtroOrdenado() {
     seta = event.target;
@@ -213,8 +267,6 @@ async function filtrar() {
 
         let seta = document.querySelector("#seta");
         let nome = document.getElementById("select-filtro") ? document.getElementById("select-filtro").value : null;
-
-
 
         if (seta && nome) {
             switch (nome) {
@@ -619,12 +671,7 @@ function carregarAnuncios() {
 
 let barra = null;
 
-function tornarDestaque(imovelId) {
-}
 
-function tornarDestaqueMultiplos() {
-
-}
 
 function openMenu(element) {
     if (document.querySelector(".menu-opcoes")) {
@@ -644,14 +691,12 @@ function openMenu(element) {
         <button onclick="abrirCadastro(null, ${element.closest('.resultado').querySelector('.dados label').textContent.split('Ref: ')[1]})">Editar</button>
         <button onclick="apagarImovel(${element.closest('.resultado').querySelector('.dados label').textContent.split('Ref: ')[1]})">Apagar</button>
         <button onclick="duplicarImovel(${element.closest('.resultado').querySelector('.dados label').textContent.split('Ref: ')[1]})">Duplicar</button>
-        <button onclick="tornarDestaque(${element.closest('.resultado').querySelector('.dados label').textContent.split('Ref: ')[1]})">Tornar Destaque</button>
+        <button onclick="destacarImovel(${element.closest('.resultado').querySelector('.dados label').textContent.split('Ref: ')[1]})">Tornar Destaque</button>
     `;
     document.body.appendChild(menu);
     let posicao = element.getBoundingClientRect();
     menu.style.top = `${posicao.bottom}px`;
     menu.style.left = `${posicao.left - 320}px`;
-    // menu.style.top = `${rect.bottom + window.scrollY}px`;
-    // menu.style.left = `${rect.left + window.scrollX}px`;
     document.addEventListener("click", function handler(event) {
         if (!menu.contains(event.target) && event.target !== element) {
             menu.remove();
@@ -666,60 +711,18 @@ async function duplicarImovel(imovelId) {
     imovel.data_cadastro = null;
     imovel.data_modificacao = null;
     imovel.endereco.complemento = null;
-    // imovel.anuncio.imagens = [];
     imovel.anuncio.documentos = [];
-    // imovel.anuncio.videos = [];
     abrirCadastro(imovel, null);
 }
 
 async function apagarImovel(imovelId) {
     confirmar = confirm("Tem certeza que deseja excluir este imóvel?");
-    if (imovelId && confirmar) {
-        try {
-            let caminho = getCaminhoRelativo("/php/api/imoveis.php?acao=apagar&id=" + imovelId);
-            const response = await fetch(caminho, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-
-            })
-                .then(async (response) => {
-                    if (response.erro) {
-                        alert("Erro ao remover imóvel: " + response.erro);
-                        return null;
-                    }
-                    const contentType = response.headers.get("content-type");
-                    if (contentType && contentType.includes("application/json")) {
-                        return await response.json();
-                    } else {
-                        const texto = await response.text();
-                        alert("Resposta inesperada do servidor");
-                        console.error("Resposta não é JSON:", texto);
-                        return null;
-                    }
-                })
-                .then(async (data) => {
-                    if (data.status == "erro") {
-                        alert("Erro ao excluir imóvel: " + data.mensagem);
-                    } else {
-                        console.log("Imóvel excluído com sucesso:", data);
-                        window.location.href = "estoque.html";
-                    }
-                })
-                .catch(error => {
-                    console.error("Erro ao excluir imóvel:", error);
-                });
-        } catch (error) {
-            console.error("Erro ao enviar dados para exclusão do imóvel:", error);
-        }
+    if (!confirmar) {
+        return;
     }
     else {
-        // alert("Nenhum imóvel selecionado para exclusão!");
-        window.location.href = "estoque.html";
+        excluirImovel(imovelId);
     }
-
-
 }
 
 function montarOpcoes() {
@@ -745,10 +748,11 @@ function selecionarTodos() {
     const checkboxes = document.querySelectorAll(".checkbox-selecionar");
     const todosSelecionados = Array.from(checkboxes).every(checkbox => checkbox.checked);
     checkboxes.forEach(checkbox => checkbox.checked = !todosSelecionados);
-    montarOpcoes();
 }
 
 window.addEventListener("DOMContentLoaded", async () => {
+    document.addEventListener("change", montarOpcoes);
+
     let dados = [];
     let dadosUsuarios = await listarUsuarios();
     let dadosProprietarios = await listarProprietarios();
@@ -780,9 +784,6 @@ window.addEventListener("DOMContentLoaded", async () => {
     dados.sort((a, b) => new Date(b.data_cadastro?.date) - new Date(a.data_cadastro?.date));
     imoveisCache.push(...dados);
     imoveisFiltrados = imoveisCache;
-
-
-
 
     carregarAnuncios();
 

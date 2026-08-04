@@ -39,6 +39,19 @@ class ImovelDAO
         }
     }
 
+    public function destacarLista(array $listaIDS)
+    {
+        try {
+            $sql = "UPDATE imovel SET destacado = NOT destacado WHERE id IN (" . implode(',', array_map('intval', $listaIDS)) . ")";
+            $stmt = $this->bancoDados->prepare($sql);
+            $stmt->execute();
+            return true;
+        } catch (Exception $e) {
+            error_log("ERRO! imovelDAO->destacar: " . $e->getMessage());
+            return false;
+        }
+    }
+
     public function destacar($idImovel)
     {
         try {
@@ -49,34 +62,6 @@ class ImovelDAO
         } catch (Exception $e) {
             error_log("ERRO! imovelDAO->destacar: " . $e->getMessage());
             return false;
-        }
-    }
-
-    public function listarDestacados()
-    {
-        try {
-            $sql = "SELECT * FROM imovel d WHERE d.destacado = 1 AND d.status != 'Pendente'";
-            $stmt = $this->bancoDados->prepare($sql);
-            $stmt->execute();
-            $resultados = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-            if (empty($resultados)) {
-                throw new Exception("Não há imóveis destacados");
-            }
-
-            $imoveisDestacados = [];
-            foreach ($resultados as $row) {
-                $idImovel = (int) $row['id_imovel'];
-                $imovel = $this->montar($row, $idImovel);
-                if ($imovel) {
-                    $imoveisDestacados[] = $imovel;
-                }
-            }
-
-            return $imoveisDestacados;
-        } catch (Exception $e) {
-            error_log("ERRO! imovelDAO->listarDestacados: " . $e->getMessage());
-            return [];
         }
     }
 
@@ -310,6 +295,108 @@ class ImovelDAO
             return null;
         }
     }
+
+    public function listarDestacados()
+    {
+        try {
+            $sql = "
+            SELECT
+                i.*,
+
+                e.id AS endereco_id,
+                e.rua AS endereco_rua,
+                e.numero AS endereco_numero,
+                e.complemento AS endereco_complemento,
+                e.bairro AS endereco_bairro,
+                e.cep AS endereco_cep,
+                e.cidade AS endereco_cidade,
+                e.uf AS endereco_uf,
+
+                c.id AS condominio_id,
+                c.nome AS condominio_nome,
+                ce.id AS condominio_endereco_id,
+                ce.rua AS condominio_endereco_rua,
+                ce.numero AS condominio_endereco_numero,
+                ce.complemento AS condominio_endereco_complemento,
+                ce.bairro AS condominio_endereco_bairro,
+                ce.cep AS condominio_endereco_cep,
+                ce.cidade AS condominio_endereco_cidade,
+                ce.uf AS condominio_endereco_uf,
+
+                u_cor.id AS corretor_id,
+                u_cor.username AS corretor_username,
+                u_cor.senha AS corretor_senha,
+                u_cor.email AS corretor_email,
+                u_cor.nome AS corretor_nome,
+                u_cor.cpf_cnpj AS corretor_cpf_cnpj,
+                u_cor.rg AS corretor_rg,
+                co.creci AS corretor_creci,
+
+                u_cap.id AS captador_id,
+                u_cap.username AS captador_username,
+                u_cap.senha AS captador_senha,
+                u_cap.email AS captador_email,
+                u_cap.nome AS captador_nome,
+                u_cap.cpf_cnpj AS captador_cpf_cnpj,
+                u_cap.rg AS captador_rg,
+                ca.salario AS captador_salario,
+
+                a.id AS anuncio_id,
+                a.descricao AS anuncio_descricao,
+                a.titulo AS anuncio_titulo
+
+            FROM imovel i
+
+            LEFT JOIN endereco e
+                ON e.id = i.id_endereco
+
+            LEFT JOIN condominio c
+                ON c.id = i.id_condominio
+
+            LEFT JOIN endereco ce
+                ON ce.id = c.id_endereco
+
+            LEFT JOIN usuario u_cor
+                ON u_cor.id = i.id_corretor
+
+            LEFT JOIN corretor co
+                ON co.id_usuario = u_cor.id
+
+            LEFT JOIN usuario u_cap
+                ON u_cap.id = i.id_captador
+
+            LEFT JOIN captador ca
+                ON ca.id_usuario = u_cap.id
+
+            LEFT JOIN anuncio a
+                ON a.id = i.id_anuncio  
+                
+            WHERE i.destacado = 1 AND i.status != 'Pendente'";
+
+            $stmt = $this->bancoDados->prepare($sql);
+            $stmt->execute();
+            $resultados = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            if (empty($resultados)) {
+                throw new Exception("Não há imóveis destacados");
+            }
+
+            $imoveisDestacados = [];
+            foreach ($resultados as $row) {
+                $idImovel = (int) $row['id_imovel'];
+                $imovel = $this->montar($row, $idImovel);
+                if ($imovel) {
+                    $imoveisDestacados[] = $imovel;
+                }
+            }
+
+            return $imoveisDestacados;
+        } catch (Exception $e) {
+            error_log("ERRO! imovelDAO->listarDestacados: " . $e->getMessage());
+            return [];
+        }
+    }
+
 
     public function listar()
     {

@@ -12,6 +12,8 @@ window.deslogar = deslogar;
 
 let notificacoes = [];
 
+
+
 function aumentarFonte() {
     const root = document.documentElement;
     const style = getComputedStyle(root);
@@ -73,6 +75,10 @@ function closeNav() {
 function carregarTabs(usuario) {
     const nav = document.getElementById("top-nav");
     if (!nav) return;
+    document.querySelector(".left").querySelector("a").href = getCaminhoRelativo("index.html");
+    document.querySelector(".center").querySelector("a").href = getCaminhoRelativo("index.html");
+    document.querySelector(".right").querySelectorAll("a")[0].href = getCaminhoRelativo("html/sobre-nos.html");
+    document.querySelector(".right").querySelectorAll("a")[1].href = getCaminhoRelativo("html/login.html");
     let tabs = [];
     let cadastros = [];
     let dados = [];
@@ -178,7 +184,7 @@ function carregarTabs(usuario) {
             <div class="dropdown-content">
                 ${cadastros.map(c =>
             `<a href="${getCaminhoRelativo(c.href)}">${c.text}</a>`
-            
+
         ).join("")}
             </div>
         </li>
@@ -220,10 +226,8 @@ function carregarTabs(usuario) {
         });
 
         dropdownContent.addEventListener('mouseleave', function (event) {
-            console.log("Mouse saiu do dropdown de notificações");
             if (notificacoes) {
-                console.log("Mouse saiu do dropdown de notificações");
-                document.querySelector('.fa-exclamation').remove();
+                document.querySelector('.fa-exclamation') ? document.querySelector('.fa-exclamation').remove() : null;
                 const elementos = dropdownContent.querySelectorAll('p');
                 elementos.forEach((elemento, index) => {
                     const rect = elemento.getBoundingClientRect();

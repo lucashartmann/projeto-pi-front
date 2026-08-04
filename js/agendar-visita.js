@@ -1,5 +1,13 @@
+import { listarImoveis } from "./modules/imoveis.js";
 import { usuarioLogado, carregarUser } from "./modules/usuario.js";
+import { listarPessoas, listarUsuarios } from "./modules/usuarios.js";
+import { listarProprietarios } from "./modules/proprietarios.js";
 import { getCaminhoRelativo } from "./modules/utils.js";
+
+window.listarImoveis = listarImoveis;
+let imoveisCache = [];
+let proprietariosCache = [];
+let usuariosCache = [];
 
 async function calendar() {
   await $('#calendar').fullCalendar({
@@ -113,29 +121,6 @@ function adicionarEventoAoCalendario(evento) {
   this.event.preventDefault();
 }
 
-function getIdImoveis() {
-  listarImoveis().then(imoveis => {
-    if (!imoveis || imoveis.length === 0) {
-      const p = document.createElement("p");
-      p.textContent = "Nenhum imóvel encontrado.";
-      return p;
-    }
-    const select = document.createElement("select");
-    select.id = "imovel";
-    select.name = "imovel";
-    select.required = true;
-
-    imoveis.forEach(imovel => {
-      const option = document.createElement("option");
-      option.value = imovel.id;
-      option.textContent = imovel.nome;
-      select.appendChild(option);
-    });
-
-    return select;
-  });
-}
-
 document.addEventListener("submit", function (e) {
   if (!e.target.matches(".form-container form")) return;
 
@@ -158,6 +143,37 @@ document.addEventListener('DOMContentLoaded', async function () {
   calendar();
 
   var datas = document.querySelectorAll('.fc-day');
+
+  let dados = [];
+  let dadosUsuarios = await listarUsuarios();
+  let dadosProprietarios = await listarProprietarios();
+  dadosUsuarios = dadosUsuarios?.filter(usuario => usuario.tipo === "CLIENTE");
+  dados = [...dadosUsuarios, ...dadosProprietarios];
+  if (dados.length === 0 || !dados) {
+    const section = document.getElementById("container-pai");
+    const divVazio = document.createElement("div");
+    divVazio.id = "vazio";
+    divVazio.textContent = "Nenhum usuário encontrado.";
+    section.innerHTML = "";
+    section.appendChild(divVazio);
+    return;
+  }
+  dados.sort((a, b) => new Date(b.data_cadastro?.date) - new Date(a.data_cadastro?.date));
+  usuariosCache.push(...dados);
+
+  dados = [];
+  dados = await listarImoveis();
+  if (dados.length === 0 || !dados) {
+    const section = document.getElementById("container-pai");
+    const divVazio = document.createElement("div");
+    divVazio.id = "vazio";
+    divVazio.textContent = "Nenhum imóvel encontrado.";
+    section.innerHTML = "";
+    section.appendChild(divVazio);
+    return;
+  }
+  dados.sort((a, b) => new Date(b.data_cadastro?.date) - new Date(a.data_cadastro?.date));
+  imoveisCache.push(...dados);
 
   datas.forEach(data => {
     data.style.cursor = 'pointer';
@@ -182,11 +198,20 @@ document.addEventListener('DOMContentLoaded', async function () {
               <input type="text" id="nome" name="nome" required placeholder="">
               <label for="hora">Hora do evento:</label>
               <input type="time" id="hora" name="hora" required placeholder="">
+              <label for="cliente">Cliente:</label>
+              <select id="cliente" name="cliente" required>
+                <option value="" selected>Selecione uma opção...</option>
+                ${usuariosCache.map(usuario => `<option value="${usuario.id}">${usuario.nome}</option>`).join('')}          
+              </select>
+              <label for="imovel">Imóvel:</label>
+              <select id="imovel" name="imovel" required>
+                <option value="" selected>Selecione uma opção...</option>
+                ${imoveisCache.map(imovel => `<option value="${imovel.id}">${imovel.endereco}</option>`).join('')}
+              </select>
               <div class="checkbox-container">
                 <input type="checkbox" id="confirmar" name="confirmar" placeholder="">
                 <label for="">Mandar email para cliente?</label>
               </div>
-              ${getIdImoveis() ?? "<p>Nenhum imóvel encontrado.</p>"}
               <button type="submit">Agendar</button>
             </form>
           `;

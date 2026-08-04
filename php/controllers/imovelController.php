@@ -49,23 +49,31 @@ class ImovelController
 
     function destacar($id)
     {
-
-        try {
-            $imovel = $this->imovelDAO->buscarPorId($id);
-            if (!$imovel) {
-                return (["status" => "erro", "mensagem" => "Imóvel não encontrado"]);
+        if (str_contains(",", $id)) {
+            $id = (array) $id;
+        } else {
+            $id = (int) $id;
+        }
+        if (is_array($id)) {
+            try {
+                $resultado  = $this->imovelDAO->destacarLista($id);
+                if (!$resultado) {
+                    return (["status" => "erro", "mensagem" => "Erro ao destacar imóveis"]);
+                }
+                return (["status" => "sucesso", "mensagem" => "Imóveis destacados com sucesso"]);
+            } catch (Exception $e) {
+                return (["status" => "erro", "mensagem" => "Erro ao destacar imóveis: " . $e->getMessage()]);
             }
-
-            // $imovel->setDestacado(true);
-            $atualizacao = $this->imovelDAO->atualizar($imovel);
-
-            if (!$atualizacao) {
-                return (["status" => "erro", "mensagem" => "Erro ao destacar imóvel"]);
+        } else if (is_int($id)) {
+            try {
+                $resultado = $this->imovelDAO->destacar($id);
+                if (!$resultado) {
+                    return (["status" => "erro", "mensagem" => "Erro ao destacar imóvel"]);
+                }
+                return (["status" => "sucesso", "mensagem" => "Imóvel destacado com sucesso"]);
+            } catch (Exception $e) {
+                return (["status" => "erro", "mensagem" => "Erro ao destacar imóvel: " . $e->getMessage()]);
             }
-
-            return (["status" => "sucesso", "mensagem" => "Imóvel destacado com sucesso"]);
-        } catch (Exception $e) {
-            return (["status" => "erro", "mensagem" => "Erro ao destacar imóvel: " . $e->getMessage()]);
         }
     }
 
@@ -79,7 +87,8 @@ class ImovelController
                     "mensagem" => "Nenhum imóvel destacado encontrado"
                 ];
             } else {
-                return self::montarJson($imoveis);
+                $resposta = self::montarJson($imoveis);
+                return $resposta;
             }
         } catch (Exception $e) {
             return (["status" => "erro", "mensagem" => "Erro ao listar imóveis destacados: " . $e->getMessage()]);
@@ -88,11 +97,19 @@ class ImovelController
 
     function apagar(int $id)
     {
-        try {
-            $imovel = $this->imovelDAO->buscarPorId($id);
-            if ($imovel) {
-                $remocao = $this->imovelDAO->getConexao()->remover("id", $id, "imovel");
-                if ($remocao) {
+
+        if (is_array($id)) {
+            $listaIDS = $id;
+            $id = null;
+            try {
+                $remocao = $this->imovelDAO->getConexao()->removerLista("id", $listaIDS, "imovel");
+                foreach ($listaIDS as $id) {
+                    $imovel = $this->imovelDAO->buscarPorId($id);
+                    if (!$imovel) {
+                        // return (["status" => "erro", "mensagem" => "Imóvel não encontrado com ID: " . $id]);
+                        continue;
+                    }
+
                     if ($imovel->getAnuncio() && $imovel->getAnuncio()->getImagens()) {
                         limparPasta($imovel->getAnuncio()->getImagens(), $imovel->getId());
                     } else if ($imovel->getAnuncio() && $imovel->getAnuncio()->getAnexos()) {
@@ -100,15 +117,37 @@ class ImovelController
                     } else if ($imovel->getAnuncio() && $imovel->getAnuncio()->getVideos()) {
                         limparPasta($imovel->getAnuncio()->getVideos(), $imovel->getId());
                     }
-                    return (["status" => "sucesso", "mensagem" => "Imóvel removido com sucesso"]);
-                } else {
-                    return (["status" => "erro", "mensagem" => "Erro ao remover imóvel"]);
                 }
-            } else {
-                return (["status" => "erro", "mensagem" => "Imóvel não encontrado"]);
+                if (!$remocao) {
+                    return (["status" => "erro", "mensagem" => "Erro ao remover imóveis"]);
+                }
+                return (["status" => "sucesso", "mensagem" => "Imóveis removidos com sucesso"]);
+            } catch (Exception $e) {
+                return (["status" => "erro", "mensagem" => "Erro ao remover imóveis: " . $e->getMessage()]);
             }
-        } catch (Exception $e) {
-            return (["status" => "erro", "mensagem" => $e->getMessage()]);
+        } else if (is_int($id)) {
+            try {
+                $imovel = $this->imovelDAO->buscarPorId($id);
+                if ($imovel) {
+                    $remocao = $this->imovelDAO->getConexao()->remover("id", $id, "imovel");
+                    if ($remocao) {
+                        if ($imovel->getAnuncio() && $imovel->getAnuncio()->getImagens()) {
+                            limparPasta($imovel->getAnuncio()->getImagens(), $imovel->getId());
+                        } else if ($imovel->getAnuncio() && $imovel->getAnuncio()->getAnexos()) {
+                            limparPasta($imovel->getAnuncio()->getAnexos(), $imovel->getId());
+                        } else if ($imovel->getAnuncio() && $imovel->getAnuncio()->getVideos()) {
+                            limparPasta($imovel->getAnuncio()->getVideos(), $imovel->getId());
+                        }
+                        return (["status" => "sucesso", "mensagem" => "Imóvel removido com sucesso"]);
+                    } else {
+                        return (["status" => "erro", "mensagem" => "Erro ao remover imóvel"]);
+                    }
+                } else {
+                    return (["status" => "erro", "mensagem" => "Imóvel não encontrado"]);
+                }
+            } catch (Exception $e) {
+                return (["status" => "erro", "mensagem" => $e->getMessage()]);
+            }
         }
     }
 
@@ -141,7 +180,6 @@ class ImovelController
             $status = null;
             $status = Status::tryFrom($data["status"]) ?? null;
             if (!$status) {
-                error_log("Status inválido recebido: " . $data["status"]);
                 return (["status" => "erro", "mensagem" => "Status inválido"]);
             }
 
@@ -233,8 +271,7 @@ class ImovelController
             str_replace(['[', ']', '"'], '', $data["filtros_apartamento"]) : [];
             $filtros_condominio = array_key_exists("filtros_condominio", $data) ?  (array) str_replace(['[', ']', '"'], '', $data["filtros_condominio"]) : [];
 
-            error_log("Filtros apartamento: " . json_encode($filtros_apartamento));
-            error_log("Filtros condominio: " . json_encode($filtros_condominio));
+
             $anuncioObj = new Anuncio();
             $imovelObj = NULL;
             if ($id) {
@@ -404,7 +441,7 @@ class ImovelController
                     foreach ($documentos['tmp_name'] as $i => $nomeTemporario) {
                         try {
                             $nomeArquivo = $documentos['name'][$i];
-                            error_log('tamanho do arquivo ' . $nomeArquivo . ': ' . filesize($documentos['tmp_name'][$i]) . ' bytes');
+
                             if ($documentos['error'][$i] !== UPLOAD_ERR_OK) {
                                 continue;
                             }
@@ -438,6 +475,8 @@ class ImovelController
             return (["status" => "erro", "mensagem" => "Erro interno"]);
         }
     }
+
+
     function listar()
     {
         try {
@@ -515,6 +554,7 @@ class ImovelController
             }
 
             $anuncio = null;
+
             if ($imovel->getAnuncio()) {
                 $anuncioObj = $imovel->getAnuncio();
                 $imagens = [];

@@ -1,7 +1,10 @@
-import { getDadosImovel } from "./modules/imoveis.js";
+import { getDadosImovel, destacarImovel, excluirImovel } from "./modules/imoveis.js";
+import { listarPessoas } from "./modules/usuarios.js";
 import { getCaminhoRelativo } from "./modules/utils.js";
+import { buscarCoordenadas, carregarMapa } from "./modules/mapa.js";
 
 let imovel = null;
+
 
 window.abrirTab = abrirTab;
 window.preencherEndereco = preencherEndereco;
@@ -15,6 +18,8 @@ window.compartilhar = compartilhar;
 window.abrirAnuncio = abrirAnuncio;
 window.abrirImagem = abrirImagem;
 window.abrirMultiplos = abrirMultiplos;
+
+
 
 function abrirAnuncio() {
     let urlAtual = window.location.href;
@@ -88,79 +93,7 @@ async function preencherEndereco(event) {
 }
 
 
-async function listarPessoas(tipo) {
-    if (tipo !== "proprietario") {
-        try {
-            let caminho = getCaminhoRelativo("/php/api/proprietarios.php?acao=listar");
-            const resposta = await fetch(caminho)
-                // .then(res => console.log(res))
-                .then(async (res) => {
-                    if (res.erro) {
-                        alert("Erro ao listar atendimentos: " + res.erro);
-                        return null;
-                    }
-                    const contentType = res.headers.get("content-type");
-                    if (contentType && contentType.includes("application/json")) {
-                        return await res.json();
-                    } else {
-                        const texto = await res.text();
-                        // alert("Resposta inesperada do servidor");
-                        console.error("Resposta não é JSON:", texto);
-                        return;
-                    }
-                })
-                .then(async (data) => {
-                    // console.log(data);
-                    return await data;
-                })
-                .catch(erro => {
-                    console.error("Falha ao conectar com o backend:", erro);
-                    return null;
-                });
 
-            return null;
-
-        } catch (error) {
-            console.error("Falha ao conectar com o backend:", erro);
-            return null;
-        }
-    } else {
-        try {
-            let caminho = getCaminhoRelativo("/php/api/usuarios.php?acao=listar");
-            const resposta = await fetch(caminho)
-                // .then(res => console.log(res))
-                .then(async (res) => {
-                    if (res.erro) {
-                        alert("Erro ao listar atendimentos: " + res.erro);
-                        return null;
-                    }
-                    const contentType = res.headers.get("content-type");
-                    if (contentType && contentType.includes("application/json")) {
-                        return await res.json();
-                    } else {
-                        const texto = await res.text();
-                        // alert("Resposta inesperada do servidor");
-                        console.error("Resposta não é JSON:", texto);
-                        return null;
-                    }
-                })
-                .then(async (data) => {
-                    // console.log(data);
-                    return await data;
-                })
-                .catch(erro => {
-                    console.error("Falha ao conectar com o backend:", erro);
-                    return null;
-                });
-
-            return resposta;
-
-        } catch (error) {
-            console.error("Falha ao conectar com o backend:", erro);
-            return null;
-        }
-    }
-}
 
 let lista = null;
 
@@ -264,7 +197,7 @@ async function editarPessoa(tipo) {
         checkbox.value = (pessoa.id in idsExistentes) ? true : false;
         checkbox.name = "pessoa-selecionada";
 
-        div_left = document.createElement("div");
+        let div_left = document.createElement("div");
         div_left.classList.add("div-left");
         div_left.appendChild(checkbox);
 
@@ -273,7 +206,7 @@ async function editarPessoa(tipo) {
         nome.textContent = pessoa.nome;
         nome.classList.add("nome-pessoa");
 
-        div_right = document.createElement("div");
+        let div_right = document.createElement("div");
         div_right.classList.add("div-right");
         div_right.appendChild(nome);
 
@@ -485,46 +418,7 @@ async function excluir() {
     let confirmar = confirm("Tem certeza que deseja excluir este imóvel?");
     let imovelId = imovel.id;
     if (imovelId && confirmar) {
-        try {
-            let caminho = getCaminhoRelativo("/php/api/imoveis.php?acao=apagar&id=" + imovelId);
-            const response = await fetch(caminho, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-
-            })
-                .then(async (response) => {
-                    if (response.erro) {
-                        alert("Erro ao remover imóvel: " + response.erro);
-                        return null;
-                    }
-                    const contentType = response.headers.get("content-type");
-                    if (contentType && contentType.includes("application/json")) {
-                        return await response.json();
-                    } else {
-                        const texto = await response.text();
-                        alert("Resposta inesperada do servidor");
-                        console.error("Resposta não é JSON:", texto);
-                        return null;
-                    }
-                })
-                .then(async (data) => {
-                    if (data.status == "erro") {
-                        alert("Erro ao excluir imóvel: " + data.mensagem);
-                    } else if (data.status == "sucesso") {
-                        console.log(data.mensagem);
-                        window.location.href = "estoque.html";
-                    } else {
-                        alert("Erro ao excluir imóvel: " + data.mensagem);
-                    }
-                })
-                .catch(error => {
-                    console.error("Erro ao excluir imóvel:", error);
-                });
-        } catch (error) {
-            console.error("Erro ao enviar dados para exclusão do imóvel:", error);
-        }
+        excluirImovel(imovelId);
     }
     else {
         alert("Nenhum imóvel selecionado para exclusão!");
@@ -683,7 +577,7 @@ async function abrirCadastro(imovel) {
                     checkbox.value = pessoa.id;
                     checkbox.name = "pessoa-selecionada";
 
-                    div_left = document.createElement("div");
+                    let div_left = document.createElement("div");
                     div_left.classList.add("div-left");
                     div_left.appendChild(checkbox);
 
@@ -692,7 +586,7 @@ async function abrirCadastro(imovel) {
                     nome.textContent = pessoa.nome;
                     nome.classList.add("nome-pessoa");
 
-                    div_right = document.createElement("div");
+                    let div_right = document.createElement("div");
                     div_right.classList.add("div-right");
                     div_right.appendChild(nome);
 
@@ -752,12 +646,33 @@ async function abrirCadastro(imovel) {
             document.getElementById("quant-clicks").value = 'Quantidade de cliques: ' + imovel.quant_clicks;
         }
 
+        if (imovel.endereco?.cep) {
+            const endereco =
+                `${imovel.endereco.rua},
+                ${imovel.endereco.numero},
+                ${imovel.endereco.cidade},
+                ${imovel.endereco.uf},
+                Brasil`;
+
+            const coordenadas = await buscarCoordenadas(endereco);
+
+            if (coordenadas) {
+
+                carregarMapa(
+                    coordenadas.lat,
+                    coordenadas.lng
+                );
+
+            }
+        }
+
 
     } else {
         alert("Imóvel não encontrado!");
         window.location.href = "estoque.html";
     }
 }
+
 
 function abrirImagem(src) {
     var modal = document.createElement("div");
@@ -998,6 +913,10 @@ window.addEventListener("DOMContentLoaded", async function () {
     if (imovel) {
         await abrirCadastro(imovel);
     }
+
+    document.getElementById("destacar").addEventListener('change', function () {
+        destacarImovel(imovel.id);
+    });
 
     Inputmask("99999-999").mask("#ta-cep");
 

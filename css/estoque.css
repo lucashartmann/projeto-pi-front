@@ -69,6 +69,12 @@
         }
     }
 
+    button {
+         width: 9rem;
+        border-radius: 5% / 30%;
+        height: 2.1rem !important;
+    }
+
     #selecionar-todos {
         width: 9rem;
         border-radius: 5% / 30%;
@@ -162,6 +168,12 @@ table {
         cursor: pointer;
         text-decoration: none;
         color: var(--cor-texto-alternativa);
+
+        input {
+            width: 1.5rem;
+            height: 1.5rem;
+            align-self: center;
+        }
 
         &:hover {
             background-color: rgba(186, 174, 174, 0.8);

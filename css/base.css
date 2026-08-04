@@ -306,7 +306,7 @@ nav {
         left: 0;
         min-width: 220px;
         padding: 0.6rem;
-        border-radius: 14px;
+        border-radius: 4px;
         background: rgba(65, 65, 65, 1);
         backdrop-filter: blur(14px);
         box-shadow: 0 15px 40px rgba(0, 0, 0, 0.35);

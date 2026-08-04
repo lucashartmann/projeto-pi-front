@@ -9,7 +9,12 @@
     <link rel="stylesheet" href="../css/cadastro-imovel.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.minlength.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    />
     <script src="https://cdn.jsdelivr.net/npm/inputmask/dist/inputmask.min.js"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <link rel="icon" type="image/x-icon" href="../assets/logo.webp">
     <script>
         if (localStorage.getItem("tema") === "escuro") {
@@ -345,8 +350,6 @@
                 </div>
             </div>
 
-
-
             <div id="container-imagens" class="container">
                 <header><label for="">Imagens:</label>
                     <button id="bt-adicionar-imagens" onclick="adicionarAnexo(event)">Adicionar</button>
@@ -395,8 +398,7 @@
                 </header>
             </div>
             <div id="container-mapa" class="container">
-                <gmp-map center="41.027748173921374, -92.41852445367961" zoom="13" map-id="DEMO_MAP_ID"
-                    style="height: 400px"></gmp-map>
+               <div id="mapa"></div>
             </div>
 
         </div>
@@ -455,7 +457,7 @@
     </script>
 
 </body>
-<script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=maps,marker" defer></script>
+
 <script type="text/javascript">
     fetch("nav.html")
         .then(response => response.text())
@@ -466,8 +468,10 @@
 </script>
 <script type="module" src="../js/modules/utils.js"></script>
 <script type="module" src="../js/modules/usuario.js"></script>
+<script type="module" src="../js/modules/usuarios.js"></script>
 <script type="module" src="../js/modules/imoveis.js"></script>
-<script type="module" src="js/modules/notificacoes.js"></script>
+<script type="module" src="../js/modules/mapa.js"></script>
+<script type="module" src="../js/modules/notificacoes.js"></script>
 <script type="module" src="../js/base.js"></script>
 <script type="module" src="../js/cadastro-imovel.js"></script>
 

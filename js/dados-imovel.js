@@ -1,6 +1,7 @@
 import { getCaminhoRelativo, formatarValor } from "./modules/utils.js";
 import { usuarioLogado, salvarImoveisCurtidos, curtirImovel, imoveisCurtidos, carregarUser } from "./modules/usuario.js";
 import { getDadosImovel } from "./modules/imoveis.js";
+import { buscarCoordenadas, carregarMapa } from "./modules/mapa.js";
 
 window.abrirImagem = abrirImagem;
 window.curtirImovel = curtirImovel;
@@ -72,7 +73,7 @@ async function cadastrarAtendimento() {
     }
 }
 
-function setupDados(imovel) {
+async function setupDados(imovel) {
     // let imovel = JSON.parse(dados);
     var div = document.getElementById("dados-imovel");
     let imagensHtml = "";
@@ -133,7 +134,7 @@ function setupDados(imovel) {
     document.querySelector("#entrar-contato #banheiros").innerText = imovel.quantidade_banheiros != null ? imovel.quantidade_banheiros : 'n/a';
     document.querySelector("#entrar-contato #vagas").innerText = imovel.quantidade_vagas != null ? imovel.quantidade_vagas : "n/a";
 
-    if (imovel.filtros) {
+    if (imovel.filtros && imovel.filtros.length > 0) {
         const divFiltros = document.createElement("div");
         divFiltros.className = "div-filtros";
         for (const filtro of imovel.filtros) {
@@ -141,8 +142,9 @@ function setupDados(imovel) {
         }
         const h3Filtros = document.createElement("h3");
         h3Filtros.innerText = "Características do imóvel";
-        divPai.appendChild(h3Filtros);
-        divPai.appendChild(divFiltros);
+        // divPai.appendChild(h3Filtros, before #mapa);
+        divPai.insertBefore(h3Filtros, document.getElementById("mapa"));
+        divPai.insertBefore(divFiltros, document.getElementById("mapa"));
     }
 
     if (imovel.condominio?.filtros) {
@@ -157,9 +159,28 @@ function setupDados(imovel) {
         divPai.appendChild(divFiltros);
     }
 
+    if (imovel.endereco?.cep) {
+        const endereco =
+            `${imovel.endereco.rua},
+                ${imovel.endereco.numero},
+                ${imovel.endereco.cidade},
+                ${imovel.endereco.uf},
+                Brasil`;
+
+        const coordenadas = await buscarCoordenadas(endereco);
+
+        if (coordenadas) {
+
+            carregarMapa(
+                coordenadas.lat,
+                coordenadas.lng
+            );
+
+        }
+    }
 }
 
-function adicionarClick() {
+async function adicionarClick() {
     if (!imovel || !imovel.id) {
         return;
     }

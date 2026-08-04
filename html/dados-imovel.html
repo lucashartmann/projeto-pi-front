@@ -10,7 +10,12 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+     <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    />
     <link rel="icon" type="image/x-icon" href="../assets/logo.webp">
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>
         if (localStorage.getItem("tema") === "escuro") {
             document.documentElement.classList.add("modo-noturno");
@@ -77,10 +82,8 @@
             <h3>Descrição</h3>
             <p id="p-descricao">
             </p>
-            <script type="module" src="https://googleapis.com"></script>
-            <gmp-map center="-30.0346, -51.2177" zoom="14" map-id="DEMO_MAP_ID">
-                <gmp-advanced-marker position="-30.0346, -51.2177" title="Porto Alegre"></gmp-advanced-marker>
-            </gmp-map>
+            
+            <div id="mapa"></div>
         </div>
         <div id="entrar-contato">
             <div><a href="https://wa.me/" style="text-decoration: none;" target="_blank"><button id="whatsapp"> <i
@@ -189,7 +192,8 @@
 <script type="module" src="../js/modules/utils.js"></script>
 <script type="module" src="../js/modules/usuario.js"></script>
 <script type="module" src="../js/modules/imoveis.js"></script>
-<script type="module" src="js/modules/notificacoes.js"></script>
+<script type="module" src="../js/modules/mapa.js"></script>
+<script type="module" src="../js/modules/notificacoes.js"></script>
 <script type="module" src="../js/base.js"></script>
 <script type="module" src="../js/dados-imovel.js"></script>
 

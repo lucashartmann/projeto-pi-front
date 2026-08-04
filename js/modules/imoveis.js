@@ -1,5 +1,93 @@
 import { getCaminhoRelativo } from "./utils.js";
 
+export async function destacarImovel(imovelId) {
+    if (!imovelId) {
+        alert("Nenhum imóvel selecionado para destaque!");
+        return;
+    }
+    try {
+        let caminho = getCaminhoRelativo("/php/api/imoveis.php?acao=destacar&id=" + imovelId);
+        const resposta = await fetch(caminho)
+            .then(async (res) => {
+                if (res.erro) {
+                    console.error("Erro ao tornar imóvel destaque: " + res.erro);
+                    return null;
+                }
+                const contentType = res.headers.get("content-type");
+                if (contentType && contentType.includes("application/json")) {
+                    return await res.json();
+                } else {
+                    const texto = await res.text();
+                    console.error("Resposta não é JSON:", texto);
+                    return null;
+                }
+            })
+            .then(async (data) => {
+                if (data.status == "erro") {
+                    console.error(data.mensagem);
+                    return null;
+                }
+                return await data;
+            })
+            .catch(erro => {
+                console.error("Falha ao conectar com o backend:", erro);
+                return null;
+            });
+
+
+    } catch (erro) {
+        console.error("Falha ao conectar com o backend:", erro);
+        return null;
+    }
+}
+
+export async function excluirImovel(imovelId) {
+    if (!imovelId) {
+        alert("Nenhum imóvel selecionado para exclusão!");
+        return;
+    }
+    try {
+        let caminho = getCaminhoRelativo("/php/api/imoveis.php?acao=apagar&id=" + imovelId);
+        const response = await fetch(caminho, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+
+        })
+            .then(async (response) => {
+                if (response.erro) {
+                    alert("Erro ao remover imóvel: " + response.erro);
+                    return null;
+                }
+                const contentType = response.headers.get("content-type");
+                if (contentType && contentType.includes("application/json")) {
+                    return await response.json();
+                } else {
+                    const texto = await response.text();
+                    alert("Resposta inesperada do servidor");
+                    console.error("Resposta não é JSON:", texto);
+                    return null;
+                }
+            })
+            .then(async (data) => {
+                if (data.status == "erro") {
+                    alert("Erro ao excluir imóvel: " + data.mensagem);
+                } else if (data.status == "sucesso") {
+                    console.log(data.mensagem);
+                    window.location.href = "estoque.html";
+                } else {
+                    alert("Erro ao excluir imóvel: " + data.mensagem);
+                }
+            })
+            .catch(error => {
+                console.error("Erro ao excluir imóvel:", error);
+            });
+    } catch (error) {
+        console.error("Erro ao enviar dados para exclusão do imóvel:", error);
+    }
+}
+
 export async function listarImoveis() {
     try {
         let caminho = getCaminhoRelativo("/php/api/imoveis.php?acao=listar");
@@ -142,6 +230,8 @@ export async function listarImoveisDestacados() {
                     break;
             }
         });
+
+        console.log("Imóveis destacados:", resposta);
 
         let imoveis = [];
         imoveis = resposta.filter(imovel => imovel.anuncio && imovel.anuncio.imagens && imovel.anuncio.imagens.length > 0);
