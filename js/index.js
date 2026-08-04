@@ -12,35 +12,25 @@ let imoveisFiltrados = [];
 function imovelPrincipal(dados) {
     if (!Array.isArray(dados) || dados.length === 0) return;
     const imoveisComImagem = dados.filter(imovel => imovel?.anuncio?.imagens?.[0]);
-    const ramdomNumber = Math.floor(Math.random() * imoveisComImagem.length);
-
-    const lista = [];
-
-    for (let i = 0; i <= 8; i++) {
-        let imovel = imoveisComImagem[Math.floor(Math.random() * imoveisComImagem.length)];
-        while (lista.includes(imovel)) {
-            imovel = imoveisComImagem[Math.floor(Math.random() * imoveisComImagem.length)];
-        }
-        if (!lista.includes(imovel)) {
-            lista.push(imovel);
-        }
-    }
+    if (imoveisComImagem.length === 0) return;
+    const imoveisEmbaralhados = [...imoveisComImagem].sort(() => Math.random() - 0.5);
+    const lista = imoveisEmbaralhados.slice(0, 9);
 
     document.querySelector("#gallery").innerHTML = `
-        <a href="html/dados-imovel.html?id=${lista[0].id}"><img src="${lista[0].anuncio.imagens[0]}"  onclick="html/dados-imovel.html?id=${lista[0].id}"></a>
-        <a href="html/dados-imovel.html?id=${lista[1].id}"><img src="${lista[1].anuncio.imagens[0]}"  onclick="html/dados-imovel.html?id=${lista[1].id}"></a>
+        ${lista[0] ? `<a href="html/dados-imovel.html?id=${lista[0].id}"><img src="${lista[0].anuncio.imagens[0]}"  onclick="html/dados-imovel.html?id=${lista[0].id}"></a>` : ''}
+        ${lista[1] ? `<a href="html/dados-imovel.html?id=${lista[1].id}"><img src="${lista[1].anuncio.imagens[0]}"  onclick="html/dados-imovel.html?id=${lista[1].id}"></a>` : ''}
     `
 
     document.querySelector("#gallery3").innerHTML = `
-        <a href="html/dados-imovel.html?id=${lista[2].id}"><img src="${lista[2].anuncio.imagens[0]}"  onclick="html/dados-imovel.html?id=${lista[2].id}"></a>
-        <a href="html/dados-imovel.html?id=${lista[3].id}"><img src="${lista[3].anuncio.imagens[0]}"  onclick="html/dados-imovel.html?id=${lista[3].id}"></a>
+        ${lista[2] ? `<a href="html/dados-imovel.html?id=${lista[2].id}"><img src="${lista[2].anuncio.imagens[0]}"  onclick="html/dados-imovel.html?id=${lista[2].id}"></a>` : ''}
+        ${lista[3] ? `<a href="html/dados-imovel.html?id=${lista[3].id}"><img src="${lista[3].anuncio.imagens[0]}"  onclick="html/dados-imovel.html?id=${lista[3].id}"></a>` : ''}
     `
 
     document.querySelector("#gallery2").innerHTML = `
-        <a href="html/dados-imovel.html?id=${lista[4].id}"><img src="${lista[4].anuncio.imagens[0]}"  onclick="html/dados-imovel.html?id=${lista[4].id}"></a>
-        <a href="html/dados-imovel.html?id=${lista[5].id}"><img src="${lista[5].anuncio.imagens[0]}"  onclick="html/dados-imovel.html?id=${lista[5].id}"></a>
-        <a href="html/dados-imovel.html?id=${lista[6].id}"><img src="${lista[6].anuncio.imagens[0]}"  onclick="html/dados-imovel.html?id=${lista[6].id}"></a>
-        <a href="html/dados-imovel.html?id=${lista[7].id}"><img src="${lista[7].anuncio.imagens[0]}"  onclick="html/dados-imovel.html?id=${lista[7].id}"></a>
+        ${lista[4] ? `<a href="html/dados-imovel.html?id=${lista[4].id}"><img src="${lista[4].anuncio.imagens[0]}"  onclick="html/dados-imovel.html?id=${lista[4].id}"></a>` : ''}
+        ${lista[5] ? `<a href="html/dados-imovel.html?id=${lista[5].id}"><img src="${lista[5].anuncio.imagens[0]}"  onclick="html/dados-imovel.html?id=${lista[5].id}"></a>` : ''}
+        ${lista[6] ? `<a href="html/dados-imovel.html?id=${lista[6].id}"><img src="${lista[6].anuncio.imagens[0]}"  onclick="html/dados-imovel.html?id=${lista[6].id}"></a>` : ''}
+        ${lista[7] ? `<a href="html/dados-imovel.html?id=${lista[7].id}"><img src="${lista[7].anuncio.imagens[0]}"  onclick="html/dados-imovel.html?id=${lista[7].id}"></a>` : ''}
     `
 
 }
@@ -50,6 +40,10 @@ function bannerImoveis(dados) {
     if (!wrapper) return;
     wrapper.innerHTML = "";
     const tamanho = dados.length < 5 ? dados.length : 5;
+    if (tamanho === 0) return;
+    if (!Array.isArray(dados)) return;
+    if (dados.length === 0) return;
+    if (dados.filter(imovel => imovel?.anuncio?.imagens?.[0]).length === 0) return;
     for (var i = 0; i < tamanho; i++) {
         var imovel = dados[i];
         if (!imovel) continue;
@@ -115,6 +109,8 @@ async function carregarAnuncios(dados) {
     const section = document.getElementById("anuncios");
     let $usuario = usuarioLogado;
     if (!section || !dados) return;
+    if (dados.length === 0) return;
+    if (dados.filter(imovel => imovel?.anuncio?.imagens?.[0]).length === 0) return;
     section.innerHTML = "";
     let html = "";
     for (const imovel of dados) {
@@ -317,10 +313,13 @@ function estilizarDiv() {
 
 window.addEventListener("DOMContentLoaded", async () => {
     const dados = await listarImoveisDisponiveis() || null;
-    const destacados = await listarImoveisDestacados() || null;
+    let destacados = null;
+    if (dados && dados.length > 0 && dados.filter(imovel => imovel?.anuncio?.imagens?.[0]).length > 0) {
+        destacados = await listarImoveisDestacados() || null;
+    }
 
     dadosImoveis = dados;
-    if (dados) {
+    if (dados && dados.length > 0 && dados.filter(imovel => imovel?.anuncio?.imagens?.[0]).length > 0) {
         carregarAnuncios(dados);
         imovelPrincipal(dados);
     } else {
@@ -336,19 +335,19 @@ window.addEventListener("DOMContentLoaded", async () => {
                     ? dados
                     : null;
 
-        if (lista) {
+        if (lista && lista.length > 0 && lista.filter(imovel => imovel?.anuncio?.imagens?.[0]).length > 0) {
             bannerImoveis(lista);
+            inicializarSwiper();
+            estilizarDiv();
+            setInterval(() => {
+                const swiper = document.querySelector('.swiper-destaque').swiper;
+                if (swiper) {
+                    swiper.slideNext();
+                }
+            }, 7500);
         }
     }
 
-    inicializarSwiper();
-    estilizarDiv();
-    setInterval(() => {
-        const swiper = document.querySelector('.swiper-destaque').swiper;
-        if (swiper) {
-            swiper.slideNext();
-        }
-    }, 7500);
 });
 
 window.addEventListener('beforeunload', async function (event) {

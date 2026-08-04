@@ -1,4 +1,4 @@
-import { getDadosImovel, destacarImovel, excluirImovel } from "./modules/imoveis.js";
+import { getDadosImovel, destacarImovel, excluirImovel, listarImoveis } from "./modules/imoveis.js";
 import { listarPessoas } from "./modules/usuarios.js";
 import { getCaminhoRelativo } from "./modules/utils.js";
 import { buscarCoordenadas, carregarMapa } from "./modules/mapa.js";
@@ -19,7 +19,95 @@ window.abrirAnuncio = abrirAnuncio;
 window.abrirImagem = abrirImagem;
 window.abrirMultiplos = abrirMultiplos;
 
+function calcularMediaAluguel(imovelAlvo) {
+    const listaImoveis = listarImoveis() || [];
+    if (!listaImoveis.length || !imovelAlvo?.endereco) {
+        return 0;
+    }
 
+    const enderecoAlvo = imovelAlvo.endereco;
+
+    const imoveisMesmaRegiao = listaImoveis.filter(i => {
+        return i?.endereco?.cep === enderecoAlvo.cep;
+    });
+
+    if (imoveisMesmaRegiao.length === 0) {
+        return 0;
+    }
+
+    const somaMetroQuadrado = imoveisMesmaRegiao.reduce((acc, i) => {
+        const valor = i?.anuncio?.valor_aluguel || 0;
+        const area = i?.anuncio?.areaPrivativa || 1;
+        return acc + (valor / area);
+    }, 0);
+
+    const mediaMetroQuadrado = somaMetroQuadrado / imoveisMesmaRegiao.length;
+
+    const areaAlvo = imovelAlvo?.anuncio?.areaPrivativa || 1;
+    const mediaAoImovel = mediaMetroQuadrado * areaAlvo;
+
+    return mediaAoImovel;
+}
+
+function calcularMediaVenda(imovelAlvo) {
+    const listaImoveis = listarImoveis() || [];
+    if (!listaImoveis.length || !imovelAlvo?.endereco) {
+        return 0;
+    }
+
+    const enderecoAlvo = imovelAlvo.endereco;
+
+    const imoveisMesmaRegiao = listaImoveis.filter(i => {
+        return i?.endereco?.cep === enderecoAlvo.cep;
+    });
+
+    if (imoveisMesmaRegiao.length === 0) {
+        return 0;
+    }
+
+    const somaMetroQuadrado = imoveisMesmaRegiao.reduce((acc, i) => {
+        const valor = i?.anuncio?.valor_venda || 0;
+        const area = i?.anuncio?.areaPrivativa || 1;
+        return acc + (valor / area);
+    }, 0);
+
+    const mediaMetroQuadrado = somaMetroQuadrado / imoveisMesmaRegiao.length;
+
+    const areaAlvo = imovelAlvo?.anuncio?.areaPrivativa || 1;
+    const mediaAoImovel = mediaMetroQuadrado * areaAlvo;
+
+    return mediaAoImovel;
+}
+
+function clacularMedia () {
+    const container = document.getElementById("media-valores");
+    if (!imovel || !imovel.status) {
+        return;
+    }
+    switch (imovel.status) {
+        case "aluguel":
+            container.innerHTML = `Média de aluguel: R$ ${calcularMediaAluguel(imovel).toFixed(2)}`;
+            if (calcularMediaAluguel(imovel) < imovel.valor_aluguel) {
+                container.innerHTML += `<br><p style="color:red">Imóvel está acima da média</p>`;
+            }
+            break;
+        case "venda":
+            container.innerHTML = `Média de venda: R$ ${calcularMediaVenda(imovel).toFixed(2)}`;
+            if (calcularMediaVenda(imovel) < imovel.valor_venda) {
+                container.innerHTML += `<br><p style="color:red">Imóvel está acima da média</p>`;
+            }
+            break;
+        case "venda e aluguel":
+            container.innerHTML = `Média de aluguel: R$ ${calcularMediaAluguel(imovel).toFixed(2)}<br>Média de venda: R$ ${calcularMediaVenda(imovel).toFixed(2)}`;
+            if (calcularMediaAluguel(imovel) < imovel.valor_aluguel) {
+                container.innerHTML += `<br><p style="color:red">Imóvel está acima da média de aluguel</p>`;
+            }
+            if (calcularMediaVenda(imovel) < imovel.valor_venda) {
+                container.innerHTML += `<br><p style="color:red">Imóvel está acima da média de venda</p>`;
+            }
+            break;
+    }
+}
 
 function abrirAnuncio() {
     let urlAtual = window.location.href;
