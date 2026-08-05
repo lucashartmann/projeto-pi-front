@@ -488,7 +488,7 @@ button {
     border-radius: 2% / 30%;
 
     &:hover {
-        background-color: var(--hover);
+        background-color: color-mix(in srgb, var(--background-custom) 70%, rgb(211, 172, 30));
     }
 }
 

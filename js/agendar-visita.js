@@ -46,6 +46,11 @@ async function calendar() {
     height: $('#pai-calendario').height(),
     handleWindowResize: true,
     width: $('#pai-calendario').width(),
+    dayClick: function (date) {
+      const dataSelecionada = date.format('YYYY-MM-DD');
+
+      abrirFormulario(dataSelecionada);
+    }
   });
 };
 
@@ -139,11 +144,58 @@ document.addEventListener("submit", function (e) {
   e.target.closest(".form-container")?.remove();
 });
 
+function abrirFormulario(dataSelecionada) {
+
+  document.querySelector('.form-container')?.remove();
+
+  const div = document.createElement('div');
+  div.className = 'form-container';
+
+  div.innerHTML = `
+        <div class="form-header">
+            <h2>Agendar visita para ${dataSelecionada}</h2>
+            <button id="close-btn" onclick="this.parentElement.parentElement.remove()">X</button>
+        </div>
+
+        <form>
+            <input type="hidden" name="data" value="${dataSelecionada}">
+
+            <label>Nome do evento:</label>
+            <input type="text" name="nome" required>
+
+            <label>Hora do evento:</label>
+            <input type="time" name="hora" required>
+
+            <label>Cliente:</label>
+            <select name="cliente" required>
+                <option value="">Selecione uma opção...</option>
+                ${usuariosCache.map(usuario =>
+    `<option value="${usuario.id}">${usuario.nome}</option>`
+  ).join('')}
+            </select>
+
+            <label>Imóvel:</label>
+            <select name="imovel" required>
+                <option value="">Selecione uma opção...</option>
+                ${imoveisCache.map(imovel =>
+    `<option value="${imovel.id}">${imovel.endereco}</option>`
+  ).join('')}
+            </select>
+
+            <div class="checkbox-container">
+                <input type="checkbox" id="confirmar" name="confirmar">
+                <label for="confirmar">Mandar email para cliente?</label>
+            </div>
+
+            <button type="submit">Agendar</button>
+        </form>
+    `;
+
+  document.body.appendChild(div);
+}
+
 document.addEventListener('DOMContentLoaded', async function () {
   calendar();
-
-  var datas = document.querySelectorAll('.fc-day');
-
   let dados = [];
   let dadosUsuarios = await listarUsuarios();
   let dadosProprietarios = await listarProprietarios();
@@ -174,51 +226,4 @@ document.addEventListener('DOMContentLoaded', async function () {
   }
   dados.sort((a, b) => new Date(b.data_cadastro?.date) - new Date(a.data_cadastro?.date));
   imoveisCache.push(...dados);
-
-  datas.forEach(data => {
-    data.style.cursor = 'pointer';
-
-    data.addEventListener('click', function () {
-      var dataSelecionada = this.getAttribute('data-date');
-
-      const div = document.createElement('div');
-
-      if (document.querySelector('.form-container')) {
-        document.querySelector('.form-container').remove();
-      }
-
-      div.classList.add('form-container');
-
-      div.innerHTML = `
-            <div class="form-header"><h2>Agendar visita para ${dataSelecionada}</h2>
-            <button id="close-btn" onclick="this.parentElement.parentElement.remove()">X</button></div>
-            <form>
-            <input type="hidden" name="data" value="${dataSelecionada}" placeholder="">
-              <label for="nome">Nome do evento:</label>
-              <input type="text" id="nome" name="nome" required placeholder="">
-              <label for="hora">Hora do evento:</label>
-              <input type="time" id="hora" name="hora" required placeholder="">
-              <label for="cliente">Cliente:</label>
-              <select id="cliente" name="cliente" required>
-                <option value="" selected>Selecione uma opção...</option>
-                ${usuariosCache.map(usuario => `<option value="${usuario.id}">${usuario.nome}</option>`).join('')}          
-              </select>
-              <label for="imovel">Imóvel:</label>
-              <select id="imovel" name="imovel" required>
-                <option value="" selected>Selecione uma opção...</option>
-                ${imoveisCache.map(imovel => `<option value="${imovel.id}">${imovel.endereco}</option>`).join('')}
-              </select>
-              <div class="checkbox-container">
-                <input type="checkbox" id="confirmar" name="confirmar" placeholder="">
-                <label for="">Mandar email para cliente?</label>
-              </div>
-              <button type="submit">Agendar</button>
-            </form>
-          `;
-
-      div.classList.add('form-container');
-
-      document.body.appendChild(div);
-    });
-  });
 });

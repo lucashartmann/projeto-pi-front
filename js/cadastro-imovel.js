@@ -2,6 +2,7 @@ import { getDadosImovel, destacarImovel, excluirImovel, listarImoveis } from "./
 import { listarPessoas } from "./modules/usuarios.js";
 import { getCaminhoRelativo } from "./modules/utils.js";
 import { buscarCoordenadas, carregarMapa } from "./modules/mapa.js";
+import { usuarioLogado, carregarUser } from "./modules/usuario.js";
 
 let imovel = null;
 
@@ -79,25 +80,34 @@ function calcularMediaVenda(imovelAlvo) {
     return mediaAoImovel;
 }
 
-function clacularMedia () {
+function calcularMedia() {
     const container = document.getElementById("media-valores");
-    if (!imovel || !imovel.status) {
+    if (!imovel || !imovel.status || !container) {
         return;
     }
-    switch (imovel.status) {
+    switch (imovel.status.toLowerCase()) {
         case "aluguel":
+            if (calcularMediaAluguel(imovel) === 0) {
+                return;
+            }
             container.innerHTML = `Média de aluguel: R$ ${calcularMediaAluguel(imovel).toFixed(2)}`;
             if (calcularMediaAluguel(imovel) < imovel.valor_aluguel) {
                 container.innerHTML += `<br><p style="color:red">Imóvel está acima da média</p>`;
             }
             break;
         case "venda":
+            if (calcularMediaVenda(imovel) === 0) {
+                return;
+            }
             container.innerHTML = `Média de venda: R$ ${calcularMediaVenda(imovel).toFixed(2)}`;
             if (calcularMediaVenda(imovel) < imovel.valor_venda) {
                 container.innerHTML += `<br><p style="color:red">Imóvel está acima da média</p>`;
             }
             break;
         case "venda e aluguel":
+            if (calcularMediaVenda(imovel) === 0 && calcularMediaAluguel(imovel) === 0) {
+                return;
+            }
             container.innerHTML = `Média de aluguel: R$ ${calcularMediaAluguel(imovel).toFixed(2)}<br>Média de venda: R$ ${calcularMediaVenda(imovel).toFixed(2)}`;
             if (calcularMediaAluguel(imovel) < imovel.valor_aluguel) {
                 container.innerHTML += `<br><p style="color:red">Imóvel está acima da média de aluguel</p>`;
@@ -1002,11 +1012,21 @@ window.addEventListener("DOMContentLoaded", async function () {
     imovel = id ? await getDadosImovel(id) : null;
     if (imovel) {
         await abrirCadastro(imovel);
+        calcularMedia();
     }
 
     document.getElementById("destacar").addEventListener('change', function () {
         destacarImovel(imovel.id);
     });
+
+    
+    const usuario = usuarioLogado || await carregarUser();
+
+    if (usuario && usuario.tipo && usuario.tipo === "ADMIN") {
+        const botao = document.createElement("button");
+        botao.textContent = "Alterar Logo";
+        document.querySelector(".selecionar-todos").after(botao);
+    }
 
     Inputmask("99999-999").mask("#ta-cep");
 
