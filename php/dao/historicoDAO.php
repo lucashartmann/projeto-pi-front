@@ -39,8 +39,7 @@ class HistoricoDAO
             }
             return $historicos;
         } catch (Exception $e) {
-            error_log("ERRO! historicoDAO->listarHistorico: " . $e->getMessage());
-            return [];
+           throw $e;
         }
     }
 
@@ -60,8 +59,7 @@ class HistoricoDAO
             ]);
             return true;
         } catch (Exception $e) {
-            error_log("ERRO! historicoDAO->cadastrarHistorico: " . $e->getMessage());
-            return false;
+            throw $e;
         }
     }
 }

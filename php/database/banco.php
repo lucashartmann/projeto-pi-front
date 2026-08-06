@@ -243,21 +243,17 @@ class Banco extends PDO
                     ON DELETE CASCADE
             )",
 
-            "CREATE TABLE IF NOT EXISTS filtros_imovel (
+            "CREATE TABLE IF NOT EXISTS filtro (
                 id INTEGER PRIMARY KEY AUTO_INCREMENT,
                 nome VARCHAR(255) NOT NULL UNIQUE                    
             )",
 
-            "CREATE TABLE IF NOT EXISTS filtros_condominio (
-                id INTEGER PRIMARY KEY AUTO_INCREMENT,
-                nome VARCHAR(255) NOT NULL UNIQUE                    
-            )",
 
             "CREATE TABLE IF NOT EXISTS imovel_filtros (
-                id_filtros_imovel INTEGER,
+                id_filtro INTEGER,
                 id_imovel INTEGER, 
-                FOREIGN KEY (id_filtros_imovel) 
-                    REFERENCES filtros_imovel(id) 
+                FOREIGN KEY (id_filtro) 
+                    REFERENCES filtro (id) 
                     ON DELETE CASCADE,
                 FOREIGN KEY (id_imovel) 
                     REFERENCES imovel(id) 
@@ -265,10 +261,10 @@ class Banco extends PDO
             )",
 
             "CREATE TABLE IF NOT EXISTS condominio_filtros (
-                id_filtros_condominio INTEGER,
+                id_filtro INTEGER,
                 id_condominio INTEGER, 
-                FOREIGN KEY (id_filtros_condominio) 
-                    REFERENCES filtros_condominio(id) 
+                FOREIGN KEY (id_filtro) 
+                    REFERENCES filtro(id) 
                     ON DELETE CASCADE,
                 FOREIGN KEY (id_condominio) 
                     REFERENCES condominio(id) 

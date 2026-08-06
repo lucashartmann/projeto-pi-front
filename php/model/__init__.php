@@ -3,26 +3,30 @@
 require_once __DIR__ . '/cliente.php';
 require_once __DIR__ . '/corretor.php';
 require_once __DIR__ . '/imovel.php';
-require_once __DIR__ . '/captador.php';
 require_once __DIR__ . '/atendimento.php';
 require_once __DIR__ . '/endereco.php';
 require_once __DIR__ . '/anuncio.php';
 require_once __DIR__ . '/vendaAluguel.php';
 require_once __DIR__ . '/condominio.php';
-require_once __DIR__ . '/gerente.php';
 require_once __DIR__ . '/usuario.php';
 require_once __DIR__ . '/proprietario.php';
+require_once __DIR__ . '/funcionario.php';
+require_once __DIR__ . '/pessoa.php';
 require_once __DIR__ . '/anexo.php';
 require_once __DIR__ . '/../dao/imovelDAO.php';
 require_once __DIR__ . '/../dao/anexoDAO.php';
-require_once __DIR__ . '/../dao/usuarioDAO.php';
+require_once __DIR__ . '/../dao/pessoaDAO.php';
 require_once __DIR__ . '/../dao/condominioDAO.php';
 require_once __DIR__ . '/../dao/anuncioDAO.php';
 require_once __DIR__ . '/../dao/atendimentoDAO.php';
 require_once __DIR__ . '/../dao/enderecoDAO.php';
-require_once __DIR__ . '/../dao/proprietarioDAO.php';
 require_once __DIR__ . '/../dao/visitaDAO.php';
 require_once __DIR__ . '/../dao/vistoriaDAO.php';
+require_once __DIR__ . '/../dao/filtroDAO.php';
+require_once __DIR__ . '/../dao/funcionarioDAO.php';
+require_once __DIR__ . '/../services/imovelService.php';
+require_once __DIR__ . '/../services/pessoaService.php';
+require_once __DIR__ . '/../services/anuncioService.php';
 
 // ini_set('display_errors', 0);
 // error_reporting(E_ALL);
@@ -419,16 +423,18 @@ function initialize()
     $atendimentoDAO = new AtendimentoDAO();
     $condominioDAO = new CondominioDAO();
     $enderecoDAO = new EnderecoDAO();
-    $proprietarioDAO = new ProprietarioDAO();
-    $usuarioDAO = new UsuarioDAO();
+    $pessoaDAO = new PessoaDAO();
     $visitaDAO = new VisitaDAO();
     $vistoriaDAO = new VistoriaDAO();
+    $filtroDAO = new FiltroDAO();
+    $imovelService = new ImovelService();
+    $anuncioService = new AnuncioService();
 
-    if (empty($imovelDAO->getConexao()->getListaFiltrosApartamento())) {
-        $imovelDAO->getConexao()->cadastrarListaFiltros($filtrosImovel, "filtros_imovel");
+    if (empty($filtroDAO->listar("imovel"))) {
+        $filtroDAO->cadastrarLista($filtrosImovel, "imovel");
     }
-    if (empty($condominioDAO->listarFiltros())) {
-        $imovelDAO->getConexao()->cadastrarListaFiltros($filtrosCondominio, "filtros_condominio");
+    if (empty($filtroDAO->listar("condominio"))) {
+        $filtroDAO->cadastrarLista($filtrosCondominio, "condominio");
     }
 
     if (count($imovelDAO->listar()) == 0) {
@@ -465,15 +471,14 @@ function initialize()
             $telefoneCliente = [$telefone($sequencial + 13), $telefone($sequencial + 14)];
             $telefoneProprietario = [$telefone($sequencial + 15), $telefone($sequencial + 16)];
 
-            $vistoriador = new Usuario(
-                username: "vistoriador$i@{$emails[array_rand($emails)]}",
-                senha: "Vistoriador$i#",
+            $vistoriador = new Funcionario(
                 email: "vistoriador$i@{$emails[array_rand($emails)]}",
                 nome: "{$nomes[array_rand($nomes)]} {$segundoNomes[array_rand($segundoNomes)]} {$sobrenomes[array_rand($sobrenomes)]}",
                 cpfCnpj: $cpfVistoriador,
-                tipo: Tipo::VISTORIADOR
+                cargo: Cargo::VISTORIADOR
             );
 
+            $vistoriador->setSenha("Vistoriador$i#");
             $vistoriador->setRg($rgVistoriador);
             $vistoriador->setTelefones($telefoneVistoriador);
             $vistoriador->setDataNascimento(DateTime::createFromFormat('Y-m-d', '1990-01-01')->modify("+$i days"));
@@ -489,14 +494,13 @@ function initialize()
             ];
             $vistoriador->setDataModificacao($opcoes[array_rand($opcoes)]);
 
-            $financeiro = new Usuario(
-                username: "financeiro$i@{$emails[array_rand($emails)]}",
-                senha: "Financeiro$i#",
+            $financeiro = new Funcionario(
                 email: "financeiro$i@{$emails[array_rand($emails)]}",
                 nome: "{$nomes[array_rand($nomes)]} {$segundoNomes[array_rand($segundoNomes)]} {$sobrenomes[array_rand($sobrenomes)]}",
                 cpfCnpj: $cpfFinanceiro,
-                tipo: Tipo::FINANCEIRO
+                cargo: Cargo::FINANCEIRO
             );
+            $financeiro->setSenha("Financeiro$i#");
 
             $financeiro->setRg($rgFinanceiro);
             $financeiro->setTelefones($telefoneFinanceiro);
@@ -514,14 +518,13 @@ function initialize()
             $financeiro->setDataModificacao($opcoes[array_rand($opcoes)]);
 
             $corretor = new Corretor(
-                username: "corretor$i@{$emails[array_rand($emails)]}",
-                senha: "Corretor$i#",
                 email: "corretor$i@{$emails[array_rand($emails)]}",
                 nome: "{$nomes[array_rand($nomes)]} {$segundoNomes[array_rand($segundoNomes)]} {$sobrenomes[array_rand($sobrenomes)]}",
                 cpfCnpj: $cpfCorretor,
                 creci: str_repeat($i, 6)
             );
 
+            $corretor->setSenha("Corretor$i#");
             $corretor->setRg($rgCorretor);
             $corretor->setTelefones($telefoneCorretor);
             $corretor->setDataNascimento(DateTime::createFromFormat('Y-m-d', '1990-01-01')->modify("+$i days"));
@@ -537,14 +540,14 @@ function initialize()
             ];
             $corretor->setDataModificacao($opcoes[array_rand($opcoes)]);
 
-            $captador = new Captador(
-                username: "captador$i@{$emails[array_rand($emails)]}",
-                senha: "Captador$i#",
+            $captador = new Funcionario(
                 email: "captador$i@{$emails[array_rand($emails)]}",
                 nome: "{$nomes[array_rand($nomes)]} {$segundoNomes[array_rand($segundoNomes)]} {$sobrenomes[array_rand($sobrenomes)]}",
-                cpfCnpj: $cpfCaptador
+                cpfCnpj: $cpfCaptador,
+                cargo: Cargo::CAPTADOR
             );
 
+            $captador->setSenha("Captador$i#");
             $captador->setRg($rgCaptador);
             $captador->setTelefones($telefoneCaptador);
             $captador->setDataNascimento(DateTime::createFromFormat('Y-m-d', '1990-01-01')->modify("+$i days"));
@@ -560,14 +563,14 @@ function initialize()
             ];
             $captador->setDataModificacao($opcoes[array_rand($opcoes)]);
 
-            $gerente = new Gerente(
-                username: "gerente$i@{$emails[array_rand($emails)]}",
-                senha: "Gerente$i#",
+            $gerente = new Funcionario(
                 email: "gerente$i@{$emails[array_rand($emails)]}",
                 nome: "{$nomes[array_rand($nomes)]} {$segundoNomes[array_rand($segundoNomes)]} {$sobrenomes[array_rand($sobrenomes)]}",
-                cpfCnpj: $cpfGerente
+                cpfCnpj: $cpfGerente,
+                cargo: Cargo::GERENTE
             );
 
+            $gerente->setSenha("Gerente$i#");
             $gerente->setRg($rgGerente);
             $gerente->setTelefones($telefoneGerente);
             $gerente->setDataNascimento(DateTime::createFromFormat('Y-m-d', '1990-01-01')->modify("+$i days"));
@@ -583,15 +586,14 @@ function initialize()
             ];
             $gerente->setDataModificacao($opcoes[array_rand($opcoes)]);
 
-            $administrador = new Usuario(
-                username: "administrador$i@{$emails[array_rand($emails)]}",
-                senha: "Administrador$i#",
+            $administrador = new Funcionario(
                 email: "administrador$i@{$emails[array_rand($emails)]}",
                 nome: "{$nomes[array_rand($nomes)]} {$segundoNomes[array_rand($segundoNomes)]} {$sobrenomes[array_rand($sobrenomes)]}",
                 cpfCnpj: $cpfAdministrador,
-                tipo: Tipo::ADMINISTRADOR
+                cargo: Cargo::ADMIN
             );
 
+            $administrador->setSenha("Administrador$i#");
             $administrador->setRg($rgAdministrador);
             $administrador->setTelefones($telefoneAdministrador);
             $administrador->setDataNascimento(DateTime::createFromFormat('Y-m-d', '1990-01-01')->modify("+$i days"));
@@ -608,13 +610,12 @@ function initialize()
             $administrador->setDataModificacao($opcoes[array_rand($opcoes)]);
 
             $cliente = new Cliente(
-                username: "cliente$i@{$emails[array_rand($emails)]}",
-                senha: "Cliente$i#",
                 email: "cliente$i@{$emails[array_rand($emails)]}",
                 nome: "{$nomes[array_rand($nomes)]} {$segundoNomes[array_rand($segundoNomes)]} {$sobrenomes[array_rand($sobrenomes)]}",
                 cpfCnpj: $cpfCliente
             );
 
+            $cliente->setSenha("Cliente$i#");
             $cliente->setRg($rgCliente);
             $cliente->setTelefones($telefoneCliente);
             $cliente->setDataNascimento(DateTime::createFromFormat('Y-m-d', '1990-01-01')->modify("+$i days"));
@@ -651,49 +652,49 @@ function initialize()
             ];
             $proprietario->setDataModificacao($opcoes[array_rand($opcoes)]);
 
-            $idCorretor = $usuarioDAO->cadastrar($corretor);
+            $idCorretor = $pessoaDAO->cadastrar($corretor);
             if ($idCorretor) {
                 $corretor->setId($idCorretor);
             } else {
                 $corretor = null;
             }
-            $idCaptador = $usuarioDAO->cadastrar($captador);
+            $idCaptador = $pessoaDAO->cadastrar($captador);
             if ($idCaptador) {
                 $captador->setId($idCaptador);
             } else {
                 $captador = null;
             }
-            $idGerente = $usuarioDAO->cadastrar($gerente);
+            $idGerente = $pessoaDAO->cadastrar($gerente);
             if ($idGerente) {
                 $gerente->setId($idGerente);
             } else {
                 $gerente = null;
             }
-            $idCliente = $usuarioDAO->cadastrar($cliente);
+            $idCliente = $pessoaDAO->cadastrar($cliente);
             if ($idCliente) {
                 $cliente->setId($idCliente);
             } else {
                 $cliente = null;
             }
-            $idAdministrador = $usuarioDAO->cadastrar($administrador);
+            $idAdministrador = $pessoaDAO->cadastrar($administrador);
             if ($idAdministrador) {
                 $administrador->setId($idAdministrador);
             } else {
                 $administrador = null;
             }
-            $idVistoriador = $usuarioDAO->cadastrar($vistoriador);
+            $idVistoriador = $pessoaDAO->cadastrar($vistoriador);
             if ($idVistoriador) {
                 $vistoriador->setId($idVistoriador);
             } else {
                 $vistoriador = null;
             }
-            $idFinanceiro = $usuarioDAO->cadastrar($financeiro);
+            $idFinanceiro = $pessoaDAO->cadastrar($financeiro);
             if ($idFinanceiro) {
                 $financeiro->setId($idFinanceiro);
             } else {
                 $financeiro = null;
             }
-            $proprietarioDAO->cadastrar($proprietario);
+            $pessoaDAO->cadastrar($proprietario);
 
             $numeroAleatorioEndereco = rand(0, count($enderecos) - 1);
 
@@ -747,7 +748,7 @@ function initialize()
                 array_slice($filtros, 0, rand(0, $limiteMaximo))
             ];
             $imovel->setFiltros($opcao[array_rand($opcao)]);
-            $listaProprietarios = $proprietarioDAO->listar();
+            $listaProprietarios = $pessoaDAO->listar("PROPRIETARIO");
             $listaProprietarios = array_values($listaProprietarios);
             $limiteMaximo = min(
                 count($listaProprietarios) - 1,
@@ -795,23 +796,18 @@ function initialize()
 
             $anuncio->setTitulo($titulo);
             $anuncio->setDescricao($descricao);
-            $idAnuncio = $anuncioDAO->cadastrar($anuncio);
+            $imovel = $imovelService->cadastrar($imovel);
 
 
-            if ($idAnuncio > 0) {
-                $anuncio->setId($idAnuncio);
+            if ($imovel->getAnuncio()) {
                 $imagem = new Anexo(
-                    $idAnuncio,
+                    $imovel->getAnuncio()->getId(),
                     "imoveis/imovel_" . $i . ".webp",
                     TipoAnexo::IMAGEM
                 );
                 $anuncio->setImagens([$imagem, $imagem, $imagem, $imagem, $imagem, $imagem, $imagem, $imagem, $imagem, $imagem, $imagem, $imagem, $imagem, $imagem, $imagem]);
-                $anuncioDAO->atualizar($anuncio);
+                $anuncioService->atualizar($anuncio);
             }
-
-            $imovel->setAnuncio($anuncio ?? null);
-
-            $imovelDAO->cadastrar($imovel);
 
             // $condominio = new Condominio($nomesCondominio[array_rand($nomesCondominio)], $endereco);
             // $limiteMaximo = isset($i) ? $i - 1 : count($filtrosCondominio);

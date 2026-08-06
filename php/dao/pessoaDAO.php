@@ -8,16 +8,19 @@ require_once __DIR__ . '/../model/corretor.php';
 require_once __DIR__ . '/../model/proprietario.php';
 require_once __DIR__ . '/../model/funcionario.php';
 require_once __DIR__ . '/imovelDAO.php';
+require_once __DIR__ . '/telefoneDAO.php';
 
 class PessoaDAO
 {
     private Banco $bancoDados;
     private ImovelDAO $imovelDAO;
+    private TelefoneDAO $telefoneDAO;
 
     public function __construct()
     {
         $this->bancoDados = Banco::getInstance();
         $this->imovelDAO = new ImovelDAO();
+        $this->telefoneDAO = new TelefoneDAO();
     }
 
     public function getConexao()
@@ -84,20 +87,6 @@ class PessoaDAO
         try {
             $pessoa = null;
 
-            $stmtTel = $this->bancoDados->prepare("
-                SELECT telefone.numero
-                FROM telefone_pessoa 
-                JOIN telefone ON telefone.id = telefone_pessoa.id_telefone
-                WHERE telefone_pessoa.id_pessoa = :id
-                ");
-            $stmtTel->execute([':id' => $registro["id"]]);
-
-            $telefones = [];
-
-            while ($row = $stmtTel->fetch(PDO::FETCH_ASSOC)) {
-                $telefones[] = $row['numero'];
-            }
-
             $endereco = new Endereco($registro["rua"], $registro["bairro"], $registro["cep"], $registro["cidade"], $registro["uf"]);
             $endereco->setId($registro["id_endereco"]);
             $endereco->setComplemento($registro["complemento"]);
@@ -116,23 +105,7 @@ class PessoaDAO
 
             if ($registro["proprietario_id"] !== null && $registro["corretor_id"] === null) {
                 $pessoa = new Proprietario($registro["email"], $registro["nome"], $registro["cpf_cnpj"]);
-
-                $stmtTel = $this->bancoDados->prepare("
-                SELECT imovel.*
-                FROM proprietario_imovel 
-                JOIN imovel ON imovel.id = proprietario_imovel.id_imovel
-                WHERE proprietario_imovel.id_proprietario = :id
-                ");
-
-                $stmtTel->execute([':id' => $registro["id"]]);
-
-                $imoveis = [];
-
-                while ($row = $stmtTel->fetch(PDO::FETCH_ASSOC)) {
-                    $imoveis[] = $this->imovelDAO->montar($row);
-                }
-
-                $pessoa->setImoveis($imoveis);
+                $pessoa->setImoveis($this->imovelDAO->listarPorProprietario($pessoa));
             }
 
             if ($registro["corretor_id"] !== null) {
@@ -151,7 +124,7 @@ class PessoaDAO
             $pessoa->setDataNascimento($registro["data_nascimento"] ? new DateTime($registro["data_nascimento"]) : null);
             $pessoa->setDataCadastro($registro["data_cadastro"] ? new DateTime($registro["data_cadastro"]) : null);
             $pessoa->setDataModificacao($registro["data_modificacao"] ? new DateTime($registro["data_modificacao"]) : null);
-            $pessoa->setTelefones($telefones);
+            $pessoa->setTelefones($this->telefoneDAO->listarPorPessoa($registro["id"]));
             $pessoa->setEndereco($endereco);
             $pessoa->setAtivo($registro["ativo"]);
             if ($registro['senha'] !== null) {
@@ -207,6 +180,132 @@ class PessoaDAO
             return $this->montar($registro);
         } catch (Exception $e) {
             throw new Exception("Erro ao buscar usuário por ID: " . $e->getMessage());
+        }
+    }
+
+    public function listar($tipo = null): array
+    {
+        try {
+            $sql = "
+            SELECT
+                pessoa.*,
+                usuario.*,
+                funcionario.*,
+                corretor.*,
+                cliente.*,
+                proprietario.*,
+                endereco.*,
+                endereco.id AS id_endereco,
+                funcionario.id_pessoa AS funcionario_id,
+                corretor.id_funcionario AS corretor_id,
+                cliente.id_pessoa AS cliente_id,
+                proprietario.id_pessoa AS proprietario_id
+            FROM pessoa 
+            LEFT JOIN usuario  ON usuario.id_pessoa = pessoa.id
+            LEFT JOIN funcionario  ON funcionario.id_pessoa = pessoa.id
+            LEFT JOIN corretor  ON corretor.id_funcionario = funcionario.id_pessoa
+            LEFT JOIN cliente  ON cliente.id_pessoa = pessoa.id
+            LEFT JOIN proprietario  ON proprietario.id_pessoa = pessoa.id
+            LEFT JOIN endereco  ON endereco.id = pessoa.id_endereco
+            ";
+
+            if ($tipo !== null) {
+                $sql .= " WHERE " . $tipo . ".id_pessoa IS NOT NULL";
+            }
+
+            $stmt = $this->bancoDados->prepare($sql);
+            $stmt->execute();
+
+            $pessoas = [];
+            while ($registro = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                $pessoas[] = $this->montar($registro);
+            }
+
+            return $pessoas;
+        } catch (Exception $e) {
+            throw new Exception("Erro ao listar pessoas: " . $e->getMessage());
+        }
+    }
+
+    public function listarPorIdImovel($idImovel): array
+    {
+        try {
+            $sql = "
+            SELECT
+                p.*,
+                e.*,
+                e.id AS id_endereco
+            FROM pessoa p
+            INNER JOIN proprietario_imovel pi
+                ON pi.id_proprietario = p.id
+            LEFT JOIN endereco e
+                ON e.id = p.id_endereco
+            WHERE pi.id_imovel = ?
+            ";
+
+            $stmt = $this->bancoDados->prepare($sql);
+            $stmt->execute([$idImovel]);
+
+            $pessoas = [];
+            while ($registro = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                $pessoas[] = $this->montar($registro);
+            }
+
+            return $pessoas;
+        } catch (Exception $e) {
+            throw new Exception("Erro ao listar pessoas por ID do imóvel: " . $e->getMessage());
+        }
+    }
+
+    public function verificar($email, $senha, bool $google = false)
+    {
+        try {
+
+            $stmt = $this->bancoDados->prepare("
+            SELECT
+                pessoa.*,
+                usuario.*,
+                corretor.*,
+                cliente.*,
+                proprietario.*,
+                endereco.*,
+                endereco.id AS id_endereco,
+                funcionario.id_pessoa AS funcionario_id,
+                corretor.id_funcionario AS corretor_id,
+                cliente.id_pessoa AS cliente_id,
+                proprietario.id_pessoa AS proprietario_id
+            FROM pessoa 
+            LEFT JOIN usuario  ON usuario.id_pessoa = pessoa.id
+            LEFT JOIN corretor  ON corretor.id_funcionario = funcionario.id_pessoa
+            LEFT JOIN cliente  ON cliente.id_pessoa = pessoa.id
+            LEFT JOIN proprietario  ON proprietario.id_pessoa = pessoa.id
+            LEFT JOIN endereco  ON endereco.id = pessoa.id_endereco
+            WHERE email = :email
+        ");
+            $stmt->execute([':email' => $email]);
+
+            $registro = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if (!$registro) {
+                throw new Exception("Usuário não encontrado");
+            }
+
+            $senha_hash_banco = "";
+
+            if (!$google) {
+
+                $senha_hash_banco = $registro['senha'];
+
+                $senha_hash = hash('sha256', $senha);
+
+                if ($senha_hash_banco !== $senha_hash) {
+                    throw new Exception("Senha errada!");
+                }
+            }
+
+            return $this->montar($registro);
+        } catch (Exception $e) {
+            throw new Exception("Erro ao verificar usuário: " . $e->getMessage());
         }
     }
 }

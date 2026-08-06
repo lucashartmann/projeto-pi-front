@@ -2,20 +2,20 @@
 
 require_once __DIR__ . '/../database/banco.php';
 require_once __DIR__ . '/imovelDAO.php';
-require_once __DIR__ . '/usuarioDAO.php';
+require_once __DIR__ . '/pessoaDAO.php';
 require_once __DIR__ . '/../model/visita.php';
 
 class VisitaDAO
 {
     private Banco $bancoDados;
     private ImovelDAO $imovelDAO;
-    private UsuarioDAO $usuarioDAO;
+    private PessoaDAO $pessoaDAO;
 
     public function __construct()
     {
         $this->bancoDados = Banco::getInstance();
         $this->imovelDAO = new ImovelDAO();
-        $this->usuarioDAO = new UsuarioDAO();
+        $this->pessoaDAO = new PessoaDAO();
     }
     public function listarPorCorretor($corretor)
     {
@@ -27,7 +27,7 @@ class VisitaDAO
             $novaVisita = new Visita();
             $novaVisita->setId($visita['id_visita']);
             $novaVisita->setImovel($this->imovelDAO->buscarPorId($visita['id_imovel']));
-            $novaVisita->setCliente($this->usuarioDAO->buscarPorId($visita['id_cliente']));
+            $novaVisita->setCliente($this->pessoaDAO->buscarPorId($visita['id_cliente']));
             $lista[] = $novaVisita;
         }
 

@@ -3,20 +3,20 @@
 
 require_once __DIR__ . '/../database/banco.php';
 require_once __DIR__ . '/imovelDAO.php';
-require_once __DIR__ . '/usuarioDAO.php';
+require_once __DIR__ . '/pessoaDAO.php';
 require_once __DIR__ . '/../model/atendimento.php';
 
 class AtendimentoDAO
 {
     private Banco $bancoDados;
     private ImovelDAO $imovelDAO;
-    private UsuarioDAO $usuarioDAO;
+    private PessoaDAO $pessoaDAO;
 
     public function __construct()
     {
         $this->bancoDados = Banco::getInstance();
         $this->imovelDAO = new ImovelDAO();
-        $this->usuarioDAO = new UsuarioDAO();
+        $this->pessoaDAO = new PessoaDAO();
     }
 
     public function getConexao()
@@ -40,9 +40,7 @@ class AtendimentoDAO
 
             return $this->montar($registro);
         } catch (Exception $e) {
-            $erro = "ERRO! atendimentoDAO->buscarPorId: " . $e->getMessage();
-            error_log($erro);
-            return null;
+           throw $e;
         }
     }
 
@@ -80,8 +78,7 @@ class AtendimentoDAO
                 ':id' => $atendimento->getId()
             ]);
         } catch (Exception $e) {
-            error_log("ERRO! atendimentoDAO->atualizar: " . $e->getMessage());
-            return false;
+            throw $e;
         }
     }
 
@@ -100,12 +97,12 @@ class AtendimentoDAO
         }
 
         if ($idCorretor) {
-            $corretor = $this->usuarioDAO->buscarPorId($idCorretor);
+            $corretor = $this->pessoaDAO->buscarPorId($idCorretor);
             $atendimento->setCorretor($corretor);
         }
 
         if ($idCliente) {
-            $cliente = $this->usuarioDAO->buscarPorId($idCliente);
+            $cliente = $this->pessoaDAO->buscarPorId($idCliente);
             $atendimento->setCliente($cliente);
         }
 
@@ -149,9 +146,7 @@ class AtendimentoDAO
                 ":status" => $status
             ]);
         } catch (Exception $e) {
-            $erro = "ERRO! atendimentoDAO->cadastrar: " . $e->getMessage();
-            error_log($erro);
-            return False;
+            throw $e;
         }
     }
 
@@ -329,13 +324,13 @@ class AtendimentoDAO
                     $registroCorretor = $registro->filter(function ($key) {
                         return strpos($key, 'atendimento_corretor_') === 0;
                     }, ARRAY_FILTER_USE_KEY);
-                    $corretor = $this->usuarioDAO->montar($registroCorretor);
+                    $corretor = $this->pessoaDAO->montar($registroCorretor);
                 }
                 if ($idComprador) {
                     $registroComprador = $registro->filter(function ($key) {
                         return strpos($key, 'atendimento_cliente_') === 0;
                     }, ARRAY_FILTER_USE_KEY);
-                    $cliente = $this->usuarioDAO->montar($registroComprador);
+                    $cliente = $this->pessoaDAO->montar($registroComprador);
                 }
                 if ($status) {
                     $status = StatusAtendimento::tryFrom($status);
@@ -374,9 +369,7 @@ class AtendimentoDAO
             }
             return $listaAtendimentos;
         } catch (Exception $e) {
-            $erro = "ERRO! atendimentoDAO->listarPorUsuario: " . $e->getMessage();
-            error_log($erro);
-            return [];
+            throw $e;
         }
     }
 }

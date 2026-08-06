@@ -7,16 +7,23 @@ require_once __DIR__ . '/../model/imovel.php';
 require_once __DIR__ . '/../model/condominio.php';
 require_once __DIR__ . '/../model/anexo.php';
 require_once __DIR__ . '/../model/anuncio.php';
-require_once __DIR__ . '/../model/captador.php';
+require_once __DIR__ . '/../model/funcionario.php';
 require_once __DIR__ . '/../model/corretor.php';
+require_once __DIR__ . '/../model/pessoa.php';
+require_once __DIR__ . '/../dao/anexoDAO.php';
+require_once __DIR__ . '/../dao/pessoaDAO.php';
 
 class ImovelDAO
 {
     private Banco $bancoDados;
+    private AnexoDAO $anexoDAO;
+    private PessoaDAO $pessoaDAO;
 
     public function __construct()
     {
         $this->bancoDados = Banco::getInstance();
+        $this->anexoDAO = new AnexoDAO();
+        $this->pessoaDAO = new PessoaDAO();
     }
 
     public function getConexao()
@@ -47,8 +54,7 @@ class ImovelDAO
             $stmt->execute();
             return true;
         } catch (Exception $e) {
-            error_log("ERRO! imovelDAO->destacar: " . $e->getMessage());
-            return false;
+            throw $e;
         }
     }
 
@@ -60,8 +66,7 @@ class ImovelDAO
             $stmt->execute([':id' => $idImovel]);
             return true;
         } catch (Exception $e) {
-            error_log("ERRO! imovelDAO->destacar: " . $e->getMessage());
-            return false;
+            throw $e;
         }
     }
 
@@ -89,26 +94,25 @@ class ImovelDAO
             $corretor = null;
             if ($dados['corretor_id']) {
                 $corretor = new Corretor(
-                    $dados['corretor_username'],
-                    $dados['corretor_senha'],
                     $dados['corretor_email'],
                     $dados['corretor_nome'],
                     $dados['corretor_cpf_cnpj'],
                     (string) ($dados['corretor_creci'] ?? '')
                 );
+                $corretor->setSenha($dados['corretor_senha']);
                 $corretor->setId((int) $dados['corretor_id']);
                 $corretor->setRg($dados['corretor_rg'] ?? '');
             }
 
             $captador = null;
             if ($dados['captador_id']) {
-                $captador = new Captador(
-                    $dados['captador_username'],
-                    $dados['captador_senha'],
+                $captador = new Funcionario(
                     $dados['captador_email'],
                     $dados['captador_nome'],
-                    $dados['captador_cpf_cnpj']
+                    $dados['captador_cpf_cnpj'],
+                    Cargo::CAPTADOR
                 );
+                $captador->setSenha($dados['captador_senha']);
                 $captador->setId((int) $dados['captador_id']);
                 $captador->setRg($dados['captador_rg'] ?? '');
                 if ($dados['captador_salario'] !== null) {
@@ -122,40 +126,10 @@ class ImovelDAO
                 $anuncio->setId((int) $dados['anuncio_id']);
                 $anuncio->setDescricao($dados['anuncio_descricao'] ?? '');
                 $anuncio->setTitulo($dados['anuncio_titulo'] ?? '');
-
-                $stmtAnexos = $this->bancoDados->prepare("
-                    SELECT id, id_anuncio, nome_arquivo, tipo 
-                    FROM midia_anuncio
-                    WHERE id_anuncio = :id_anuncio
-                ");
-                $idAnuncio = (int) $dados['anuncio_id'];
-                $stmtAnexos->execute([':id_anuncio' => $idAnuncio]);
-                $imagens = [];
-                $videos = [];
-                $documentos = [];
-
-                foreach ($stmtAnexos->fetchAll(PDO::FETCH_ASSOC) as $anexo) {
-                    if ($anexo['tipo'] === null) {
-                        continue;
-                    }
-
-                    $tipoNormalizado = strtolower($anexo['tipo']);
-
-                    if ($tipoNormalizado === "imagem") {
-                        $anexo_obj = new Anexo($idAnuncio, $anexo['nome_arquivo'], TipoAnexo::IMAGEM);
-                        $imagens[] = $anexo_obj;
-                    } else if ($tipoNormalizado === "anexo") {
-                        $anexo_obj = new Anexo($idAnuncio, $anexo['nome_arquivo'], TipoAnexo::DOCUMENTO);
-                        $documentos[] = $anexo_obj;
-                    } else if ($tipoNormalizado === "video") {
-                        $anexo_obj = new Anexo($idAnuncio, $anexo['nome_arquivo'], TipoAnexo::VIDEO);
-                        $videos[] = $anexo_obj;
-                    }
-                }
-
-                $anuncio->setImagens($imagens);
-                $anuncio->setVideos($videos);
-                $anuncio->setAnexos($documentos);
+                $anexos = $this->anexoDAO->listarPorIdAnuncio($dados['anuncio_id']);
+                $anuncio->setImagens($anexos['Imagens'] ?? null);
+                $anuncio->setVideos($anexos['Videos'] ?? null);
+                $anuncio->setAnexos($anexos['Documentos'] ?? null);
             }
 
             $condominio = null;
@@ -206,66 +180,17 @@ class ImovelDAO
             $imovelObj->setCondominio($condominio);
             $imovelObj->setDestacado((bool) $dados['destacado']);
             $imovelObj->setQuantClicks($dados['quant_clicks'] !== null ? (int) $dados['quant_clicks'] : 0);
+            $imovelObj->setProprietarios($this->pessoaDAO->listarPorIdImovel($dados['id']) ?? []);
+            $imovelObj->setFiltros($this->listarFiltros($dados['id']) ?? []);
+            return $imovelObj;
+        } catch (Exception $e) {
+            throw $e;
+        }
+    }
 
-            $stmt = $this->bancoDados->prepare("
-                SELECT
-                    p.id,
-                    p.email,
-                    p.nome,
-                    p.cpf_cnpj,
-                    p.rg,
-                    p.id_endereco,
-                    p.data_nascimento,
-                    e.rua AS endereco_rua,
-                    e.numero AS endereco_numero,
-                    e.complemento AS endereco_complemento,
-                    e.bairro AS endereco_bairro,
-                    e.cep AS endereco_cep,
-                    e.cidade AS endereco_cidade,
-                    e.uf AS endereco_uf
-                FROM proprietario p
-                INNER JOIN proprietario_imovel pi
-                    ON pi.id_proprietario = p.id
-                LEFT JOIN endereco e
-                    ON e.id = p.id_endereco
-                WHERE pi.id_imovel = :id
-            ");
-            $stmt->execute([':id' => $idImovel]);
-
-            $proprietarios = [];
-            while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-                $dataNascimento = $row['data_nascimento']
-                    ? DateTime::createFromFormat('Y-m-d', $row['data_nascimento'])
-                    : null;
-
-                $prop = new Proprietario(
-                    $row['email'],
-                    $row['nome'],
-                    $row['cpf_cnpj']
-                );
-
-                $prop->setId((int) $row['id']);
-                $prop->setRg($row['rg']);
-                $prop->setDataNascimento($dataNascimento);
-
-                if (!empty($row['id_endereco'])) {
-                    $enderecoProprietario = new Endereco(
-                        $row['endereco_rua'],
-                        $row['endereco_bairro'],
-                        $row['endereco_cep'],
-                        $row['endereco_cidade'],
-                        $row['endereco_uf']
-                    );
-                    $enderecoProprietario->setId((int) $row['id_endereco']);
-                    $enderecoProprietario->setNumero($row['endereco_numero'] !== null ? (int) $row['endereco_numero'] : null);
-                    $enderecoProprietario->setComplemento($row['endereco_complemento']);
-                    $prop->setEndereco($enderecoProprietario);
-                }
-
-                $proprietarios[] = $prop;
-            }
-            $imovelObj->setProprietarios($proprietarios);
-
+    public function listarFiltros($id)
+    {
+        try {
             $stmt = $this->bancoDados->prepare("
                 SELECT fi.nome
                 FROM imovel_filtros ifi
@@ -273,18 +198,16 @@ class ImovelDAO
                     ON fi.id = ifi.id_filtros_imovel
                 WHERE ifi.id_imovel = :id
             ");
-            $stmt->execute([':id' => $idImovel]);
+            $stmt->execute([':id' => $id]);
 
             $filtros = [];
             while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
                 $filtros[] = $row['nome'];
             }
-            $imovelObj->setFiltros($filtros);
 
-            return $imovelObj;
+            return $filtros;
         } catch (Exception $e) {
-            error_log("ERRO! imovelDAO-> montar: " . $e->getMessage());
-            return null;
+            throw $e;
         }
     }
 
@@ -372,8 +295,7 @@ class ImovelDAO
 
             return $imoveisDestacados;
         } catch (Exception $e) {
-            error_log("ERRO! imovelDAO->listarDestacados: " . $e->getMessage());
-            return [];
+            throw $e;
         }
     }
 
@@ -466,8 +388,7 @@ class ImovelDAO
 
             return $lista;
         } catch (Exception $e) {
-            error_log("ERRO imovelDAO->listar: " . $e->getMessage());
-            return [];
+            throw $e;
         }
     }
 
@@ -560,8 +481,7 @@ class ImovelDAO
 
             return $lista;
         } catch (Exception $e) {
-            error_log("ERRO imovelDAO->listarDisponiveis: " . $e->getMessage());
-            return [];
+            throw $e;
         }
     }
     public function buscarPorId($idImovel)
@@ -642,8 +562,7 @@ class ImovelDAO
 
             return $this->montar($dados);
         } catch (Exception $e) {
-            error_log("ERRO! imovelDAO->buscarPorId: " . $e->getMessage());
-            return null;
+            throw $e;
         }
     }
 
@@ -666,9 +585,7 @@ class ImovelDAO
             }
             return $imoveis;
         } catch (Exception $e) {
-            $erro = "ERRO! imovelDAO->listarPorProprietario: " . $e->getMessage();
-            error_log($erro);
-            return [];
+            throw $e;
         }
     }
 
@@ -791,8 +708,7 @@ class ImovelDAO
             }
             return $lista;
         } catch (Exception $e) {
-            error_log("ERRO imovelDAO->listarFavoritos: " . $e->getMessage());
-            return [];
+            throw $e;
         }
     }
 
@@ -849,9 +765,7 @@ class ImovelDAO
             if ($this->bancoDados->inTransaction()) {
                 $this->bancoDados->rollBack();
             }
-
-            error_log("ERRO imovelDAO->cadastrarImoveisCliente: " . $e->getMessage());
-            return false;
+            throw $e;
         }
     }
 
@@ -1011,8 +925,7 @@ class ImovelDAO
             if ($this->bancoDados->inTransaction()) {
                 $this->bancoDados->rollBack();
             }
-            error_log("ERRO imovelDAO->atualizar: " . $e->getMessage());
-            return false;
+            throw $e;
         }
     }
 
@@ -1167,8 +1080,7 @@ class ImovelDAO
             if ($this->bancoDados->inTransaction()) {
                 $this->bancoDados->rollBack();
             }
-            error_log("ERRO! imovelDAO->cadastrar: " . $e->getMessage());
-            return false;
+            throw $e;
         }
     }
 
@@ -1207,8 +1119,7 @@ class ImovelDAO
                 ':id_filtro' => $idFiltro
             ]);;
         } catch (Exception $e) {
-            error_log("ERRO imovelDAO->cadastrarFiltro: " . $e->getMessage());
-            return false;
+            throw $e;
         }
     }
 
@@ -1226,8 +1137,7 @@ class ImovelDAO
                 ':id_filtro' => $idFiltro
             ]);
         } catch (Exception $e) {
-            error_log("ERRO imovelDAO->removerFiltro: " . $e->getMessage());
-            return false;
+            throw $e;
         }
     }
 }

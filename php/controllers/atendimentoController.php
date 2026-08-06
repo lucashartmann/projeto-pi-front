@@ -1,7 +1,7 @@
 <?php
 
 require_once __DIR__ . '/../dao/anuncioDAO.php';
-require_once __DIR__ . '/../dao/usuarioDAO.php';
+require_once __DIR__ . '/../dao/pessoaDAO.php';
 require_once __DIR__ . '/../dao/imovelDAO.php';
 require_once __DIR__ . '/../dao/notificacaoDAO.php';
 require_once __DIR__ . '/../dao/atendimentoDAO.php';
@@ -13,19 +13,16 @@ class AtendimentoController
 
 
     private AtendimentoDAO $atendimentoDAO;
-    private UsuarioDAO $usuarioDAO;
+    private PessoaDAO $pessoaDAO;
     private NotificacaoDAO $notificacaoDAO;
-
     private ImovelDAO $imovelDAO;
-
     private UsuarioController $usuarioController;
-
     private ImovelController $imovelController;
 
     public function __construct()
     {
         $this->atendimentoDAO = new AtendimentoDAO();
-        $this->usuarioDAO = new UsuarioDAO();
+        $this->pessoaDAO = new PessoaDAO();
         $this->imovelDAO = new ImovelDAO();
         $this->usuarioController = new UsuarioController();
         $this->imovelController = new ImovelController();
@@ -72,9 +69,9 @@ class AtendimentoController
         $usuario = $_GET['usuario'] ?? null;
 
         if ($usuario) {
-            $listaUsuarios = $this->usuarioDAO->listar();
+            $listaUsuarios = $this->pessoaDAO->listar();
             $corretores = array_filter($listaUsuarios, function ($usuario) {
-                return $usuario->getTipo() === Tipo::CORRETOR;
+                return $usuario->getCargo() === Cargo::CORRETOR;
             });
             foreach ($corretores as $corretor) {
                 $this->notificacaoDAO->cadastrar($corretor, "Cliente $usuario->getNome() quer atendimento para o imóvel de ID $idImovel", "atendimento");
@@ -85,7 +82,7 @@ class AtendimentoController
             $idUsuario = $_SESSION['usuario_id'];
 
             $atendimento = new Atendimento();
-            $atendimento->setCliente($this->usuarioDAO->buscarPorId($idUsuario));
+            $atendimento->setCliente($this->pessoaDAO->buscarPorId($idUsuario));
             $atendimento->setImovel($this->imovelDAO->buscarPorId($idImovel));
             $atendimento->setStatus(StatusAtendimento::PENDENTE);
 

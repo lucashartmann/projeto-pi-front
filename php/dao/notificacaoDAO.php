@@ -28,8 +28,7 @@ class NotificacaoDAO
 
             return true;
         } catch (Exception $e) {
-            error_log("ERRO! notificacaoDAO->cadastrar: " . $e->getMessage());
-            return false;
+            throw $e;
         }
     }
 
@@ -49,8 +48,7 @@ class NotificacaoDAO
 
             return true;
         } catch (Exception $e) {
-            error_log("ERRO! notificacaoDAO->marcarComoLida: " . $e->getMessage());
-            return false;
+           throw $e;
         }
     }
 
@@ -66,8 +64,7 @@ class NotificacaoDAO
             $stmt->execute([':id' => $usuario->getId()]);
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (Exception $e) {
-            error_log("ERRO! notificacaoDAO->buscarPorUsuario: " . $e->getMessage());
-            return [];
+          throw $e;
         }
     }
 }

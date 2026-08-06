@@ -3,6 +3,13 @@
 require_once __DIR__ . '/pessoa.php';
 require_once __DIR__ . '/endereco.php';
 
+enum TipoInteresse: string
+{
+    case VENDA = "Venda";
+    case ALUGUEL = "Aluguel";
+    case VENDA_ALUGUEL = "Venda e Aluguel";
+}
+
 class Cliente extends Pessoa 
 {
     private array $tipoImoveisDesejado;
@@ -10,6 +17,9 @@ class Cliente extends Pessoa
     private int $quantBanheirosDesejado;
     private ?Endereco $enderecoDesejado;
     private array $imoveisFavoritos;
+    private ?TipoInteresse $tipoInteresse;
+    private ?float $valorMinimo;
+    private ?float $valorMaximo;
 
     public function __construct(string $email, string $nome, string $cpfCnpj)
     {
@@ -19,6 +29,44 @@ class Cliente extends Pessoa
         $this->quantBanheirosDesejado = 0;
         $this->enderecoDesejado = NULL;
         $this->imoveisFavoritos = [];
+        $this->tipoInteresse = NULL;
+        $this->valorMinimo = NULL;
+        $this->valorMaximo = NULL;
+    }
+
+    public function getTipoInteresse(): ?TipoInteresse
+    {
+        return $this->tipoInteresse;
+    }
+
+    public function setTipoInteresse(?TipoInteresse $tipoInteresse)
+    {
+        $this->tipoInteresse = $tipoInteresse;
+    }
+
+    public function getValorMinimo(): ?float
+    {
+        return $this->valorMinimo;
+    }
+
+    public function setValorMinimo(?float $valorMinimo)
+    {
+        $this->valorMinimo = $valorMinimo;
+    }
+
+    public function getValorMaximo(): ?float
+    {
+        return $this->valorMaximo;
+    }
+
+    public function setValorMaximo(?float $valorMaximo)
+    {
+        $this->valorMaximo = $valorMaximo;
+    }
+
+    public function getTipoImoveisDesejados(): array
+    {
+        return $this->tipoImoveisDesejado;
     }
 
     public function setTiposImoveisDesejados(array $tipoImoveis)

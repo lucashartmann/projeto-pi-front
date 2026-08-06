@@ -36,9 +36,7 @@ class AnexoDAO
 
             return $anexoObj;
         } catch (Exception $e) {
-            $erro = "ERRO! anexoDAO->buscarPorCaminho: " . $e->getMessage();
-            error_log($erro);
-            return null;
+            throw $e;
         }
     }
 
@@ -78,9 +76,7 @@ class AnexoDAO
             $mapa["Documentos"] = $documentos;
             return $mapa;
         } catch (Exception $e) {
-            $erro = "ERRO! anexoDAO->listarPorIdAnuncio: " . $e->getMessage();
-            error_log($erro);
-            return [];
+            throw $e;
         }
     }
 
@@ -106,9 +102,28 @@ class AnexoDAO
                 ':tipo' => $anexo->getTipo() ? $anexo->getTipo()->value : null
             ]);
         } catch (Exception $e) {
-            $erro = "ERRO! anexoDAO->cadastrar: " . $e->getMessage();
-            error_log($erro);
-            return False;
+            throw $e;
+        }
+    }
+
+    public function atualizar($anexo)
+    {
+        try {
+            $sqlQuery = " 
+                    UPDATE midia_anuncio 
+                    SET id_anuncio = :id_anuncio, nome_arquivo = :nome_arquivo, tipo = :tipo
+                    WHERE id = :id
+                    ";
+            $stmt = $this->bancoDados->prepare($sqlQuery);
+
+            return $stmt->execute([
+                ':id' => $anexo->getId(),
+                ':id_anuncio' => $anexo->getId(),
+                ':nome_arquivo' => $anexo->getCaminho(),
+                ':tipo' => $anexo->getTipo() ? $anexo->getTipo()->value : null
+            ]);
+        } catch (Exception $e) {
+            throw $e;
         }
     }
 }

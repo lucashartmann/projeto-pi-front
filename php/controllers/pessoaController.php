@@ -1,6 +1,6 @@
 <?php
 
-require_once __DIR__ . '/../dao/usuarioDAO.php';
+require_once __DIR__ . '/../dao/pessoaDAO.php';
 require_once __DIR__ . '/../dao/proprietarioDAO.php';
 require_once __DIR__ . '/../dao/corretorDAO.php';
 require_once __DIR__ . '/../dao/clienteDAO.php';
@@ -12,24 +12,12 @@ require_once __DIR__ . '/../services/pessoaService.php';
 class UsuarioController
 {
 
-    private UsuarioDAO $usuarioDAO;
-    private CorretorDAO $corretorDAO;
-    private ClienteDAO $clienteDAO;
-    private FuncionarioDAO $funcionarioDAO;
     private PessoaDAO $pessoaDAO;
-    private ProprietarioDAO $proprietarioDAO;
-    private EnderecoDAO $enderecoDAO;
     private PessoaService $pessoaService;
 
     public function __construct()
     {
-        $this->usuarioDAO = new UsuarioDAO();
-        $this->corretorDAO = new CorretorDAO();
-        $this->clienteDAO = new ClienteDAO();
-        $this->funcionarioDAO = new FuncionarioDAO();
         $this->pessoaDAO = new PessoaDAO();
-        $this->proprietarioDAO = new ProprietarioDAO();
-        $this->enderecoDAO = new EnderecoDAO();
         $this->pessoaService = new PessoaService();
     }
 
@@ -99,10 +87,10 @@ class UsuarioController
         return ($lista);
     }
 
-    function listar()
+    function listar($tipo = null)
     {
         try {
-            $usuarios = $this->usuarioDAO->listar();
+            $usuarios = $this->pessoaDAO->listar($tipo);
             return self::montarJson($usuarios);
         } catch (Exception $e) {
             return (["status" => "erro", "mensagem" => "Erro ao listar usuários"]);
@@ -194,37 +182,19 @@ class UsuarioController
                 );
                 $endereco->setNumero($numero ?? null);
                 $endereco->setComplemento($complemento ?? null);
-                $verificar_endereco = $this->enderecoDAO->verificar($endereco);
-                if ($verificar_endereco) {
-                    $endereco = $verificar_endereco;
-                } else {
-                    $idEndereco = $this->enderecoDAO->cadastrar($endereco);
-                    $endereco->setId($idEndereco);
-                }
             } else {
                 $endereco = null;
             }
 
-
             $pessoa->setEndereco($endereco);
             $pessoa->setDataModificacao(DateTime::createFromFormat('Y-m-d H:i:s', date('Y-m-d H:i:s')));
             if ($id > 0) {
-                $atualizacao = $this->pessoaService->atualizar($pessoa);
-                if ($atualizacao) {
-                    return (["status" => "sucesso", "mensagem" => "Usuário atualizado com sucesso"]);
-                } else {
-                    return (["status" => "erro", "mensagem" => "Erro ao atualizar usuário"]);
-                }
+                $this->pessoaService->atualizar($pessoa);
+                return (["status" => "sucesso", "mensagem" => "Usuário atualizado com sucesso"]);
             } else {
                 $pessoa->setDataCadastro(DateTime::createFromFormat('Y-m-d H:i:s', date('Y-m-d H:i:s')));
-
-                $cadastro = $this->pessoaService->cadastrar($pessoa);
-
-                if ($cadastro) {
-                    return (["status" => "sucesso", "mensagem" => "Usuário cadastrado com sucesso"]);
-                } else {
-                    return (["status" => "erro", "mensagem" => "Erro ao cadastrar usuário"]);
-                }
+                $this->pessoaService->cadastrar($pessoa);
+                return (["status" => "sucesso", "mensagem" => "Usuário cadastrado com sucesso"]);
             }
         } catch (Exception $e) {
             return (["status" => "erro", "mensagem" => "Erro ao atualizar usuário: " . $e->getMessage()]);
@@ -234,7 +204,7 @@ class UsuarioController
     function buscarPorId(int $id)
     {
         try {
-            $usuario = $this->usuarioDAO->buscarPorId($id);
+            $usuario = $this->pessoaDAO->buscarPorId($id);
             if ($usuario) {
                 return self::montarJson([$usuario]);
             } else {
@@ -248,9 +218,9 @@ class UsuarioController
     function apagar(int $id)
     {
         try {
-            $usuario = $this->usuarioDAO->buscarPorId($id);
+            $usuario = $this->pessoaDAO->buscarPorId($id);
             if ($usuario) {
-                $remocao = $this->usuarioDAO->getConexao()->remover("id", $id, "usuario");
+                $remocao = $this->pessoaDAO->getConexao()->remover("id", $id, "usuario");
                 if ($remocao) {
                     return (["status" => "sucesso", "mensagem" => "Usuário removido com sucesso"]);
                 } else {

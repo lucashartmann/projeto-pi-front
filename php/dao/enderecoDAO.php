@@ -50,8 +50,7 @@ class EnderecoDAO
 
             return $lista;
         } catch (Exception $e) {
-            error_log("ERRO! Banco->listar: " . $e->getMessage());
-            return [];
+           throw $e;
         }
     }
 
@@ -94,8 +93,7 @@ class EnderecoDAO
 
             return $endereco;
         } catch (Exception $e) {
-            error_log("ERRO! enderecoDAO->verificar: " . $e->getMessage());
-            return null;
+            throw $e;
         }
     }
 
@@ -130,8 +128,7 @@ class EnderecoDAO
 
             return $endereco;
         } catch (Exception $e) {
-            error_log("ERRO! Banco->buscarPorId: " . $e->getMessage());
-            return null;
+            throw $e;
         }
     }
 
@@ -160,8 +157,7 @@ class EnderecoDAO
 
             return $this->bancoDados->lastInsertId();
         } catch (Exception $e) {
-            error_log("ERRO! Banco->cadastrar: " . $e->getMessage());
-            return false;
+            throw $e;
         }
     }
 
@@ -195,8 +191,7 @@ class EnderecoDAO
 
             return true;
         } catch (Exception $e) {
-            error_log("ERRO! Banco->atualizar: " . $e->getMessage());
-            return false;
+            throw $e;
         }
     }
 }

@@ -31,28 +31,9 @@ class AnuncioDAO
                 $anuncio->getTitulo()
             ]);
 
-            if ($anuncio->getImagens()) {
-                foreach ($anuncio->getImagens() as $img) {
-                    $this->anexoDAO->cadastrar($img);
-                }
-            }
-
-            if ($anuncio->getVideos()) {
-                foreach ($anuncio->getVideos() as $video) {
-                    $this->anexoDAO->cadastrar($video);
-                }
-            }
-
-            if ($anuncio->getAnexos()) {
-                foreach ($anuncio->getAnexos() as $anexo) {
-                    $this->anexoDAO->cadastrar($anexo);
-                }
-            }
-
             return $this->bancoDados->lastInsertId();
         } catch (Exception $e) {
-            error_log("ERRO! anuncioDAO->cadastrar: " . $e->getMessage());
-            return false;
+            throw $e;
         }
     }
 
@@ -88,54 +69,12 @@ class AnuncioDAO
                 ':id_anuncio' => $anuncio->getId()
             ]);
 
-            $sql = "
-                INSERT INTO midia_anuncio (
-                    id_anuncio,
-                    nome_arquivo,
-                    tipo
-                ) VALUES (
-                    :id_anuncio,
-                    :nome_arquivo,
-                    :tipo
-                )
-                ON DUPLICATE KEY UPDATE
-                    nome_arquivo = VALUES(nome_arquivo),
-                    tipo = VALUES(tipo)
-            ";
-
-            $stmt = $this->bancoDados->prepare($sql);
-            foreach ($anuncio->getImagens() as $img) {
-                $stmt->execute([
-                    ':tipo' => 'imagem',
-                    ':nome_arquivo' => $img->getCaminho(),
-                    ':id_anuncio' => $anuncio->getId(),
-                ]);
-            }
-
-            foreach ($anuncio->getVideos() as $video) {
-                $stmt->execute([
-                    ':tipo' => 'video',
-                    ':nome_arquivo' => $video->getCaminho(),
-                    ':id_anuncio' => $anuncio->getId(),
-                ]);
-            }
-
-            foreach ($anuncio->getAnexos() as $anexo) {
-                $stmt->execute([
-                    ':tipo' => 'anexo',
-                    ':nome_arquivo' => $anexo->getCaminho(),
-                    ':id_anuncio' => $anuncio->getId(),
-                ]);
-            }
-
-
             return $this->bancoDados->commit();
         } catch (Exception $e) {
             if ($this->bancoDados->inTransaction()) {
                 $this->bancoDados->rollBack();
             }
-            error_log("ERRO anuncioDAO->atualizar: " . $e->getMessage());
-            return false;
+           throw $e;
         }
     }
     public function buscarPorId($idAnuncio)
@@ -173,9 +112,7 @@ class AnuncioDAO
             }
             return $anuncioObj;
         } catch (Exception $e) {
-            $erro = "ERRO! anuncioDAO->buscarPorId: " . $e->getMessage();
-            error_log($erro);
-            return NULL;
+            throw $e;
         }
     }
 }

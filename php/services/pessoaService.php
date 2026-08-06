@@ -7,7 +7,8 @@ require_once __DIR__ . '/../dao/corretorDAO.php';
 require_once __DIR__ . '/../dao/funcionarioDAO.php';
 require_once __DIR__ . '/../dao/proprietarioDAO.php';
 require_once __DIR__ . '/../model/pessoa.php';
-
+require_once __DIR__ . '/../database/banco.php';
+require_once __DIR__ . '/../dao/enderecoDAO.php';
 
 class PessoaService
 {
@@ -17,6 +18,8 @@ class PessoaService
     private CorretorDAO $corretorDAO;
     private FuncionarioDAO $funcionarioDAO;
     private ProprietarioDAO $proprietarioDAO;
+    private TelefoneDAO $telefoneDAO;
+    private EnderecoDAO $enderecoDAO;
     private Banco $bancoDados;
 
     public function __construct()
@@ -27,6 +30,7 @@ class PessoaService
         $this->corretorDAO = new CorretorDAO();
         $this->funcionarioDAO = new FuncionarioDAO();
         $this->proprietarioDAO = new ProprietarioDAO();
+        $this->enderecoDAO = new EnderecoDAO();
         $this->bancoDados = Banco::getInstance();
     }
 
@@ -36,8 +40,19 @@ class PessoaService
 
         try {
 
+            if ($pessoa->getEndereco() !== null) {
+                if (!$this->enderecoDAO->verificar($pessoa->getEndereco())) {
+                    $idEndereco = $this->enderecoDAO->cadastrar($pessoa->getEndereco());
+                    $pessoa->getEndereco()->setId($idEndereco);
+                }
+            }
+
             $idPessoa = $this->pessoaDAO->cadastrar($pessoa);
             $pessoa->setId($idPessoa);
+
+            if ($pessoa->getTelefones() !== null && count($pessoa->getTelefones()) > 0) {
+                $this->telefoneDAO->cadastrar($pessoa);
+            }
 
             if ($pessoa->getSenha() !== null) {
                 $this->usuarioDAO->cadastrar($pessoa);
@@ -56,7 +71,6 @@ class PessoaService
 
             $this->bancoDados->commit();
         } catch (Exception $e) {
-
             $this->bancoDados->rollBack();
             throw $e;
         }
@@ -74,7 +88,6 @@ class PessoaService
                 $this->usuarioDAO->atualizar($pessoa);
             }
 
-
             if ($pessoa instanceof Corretor) {
                 $this->funcionarioDAO->atualizar($pessoa);
                 $this->corretorDAO->atualizar($pessoa);
@@ -88,7 +101,6 @@ class PessoaService
 
             $this->bancoDados->commit();
         } catch (Exception $e) {
-
             $this->bancoDados->rollBack();
             throw $e;
         }

@@ -31,8 +31,7 @@ class CondominioDAO
 
             return $row ? (int) $row['id'] : null;
         } catch (Exception $e) {
-            error_log("ERRO condominioDAO->getIdFiltroCondominioPorNome: " . $e->getMessage());
-            return null;
+           throw $e;
         }
     }
 
@@ -51,8 +50,7 @@ class CondominioDAO
                 ':id_condominio' => $idCondominio
             ]);
         } catch (Exception $e) {
-            error_log("ERRO condominioDAO->cadastrarFiltro: " . $e->getMessage());
-            return false;
+            throw $e;
         }
     }
 
@@ -72,8 +70,7 @@ class CondominioDAO
                 ':id_filtro' => $idFiltro
             ]);
         } catch (Exception $e) {
-            error_log("ERRO condominioDAO->removerFiltro: " . $e->getMessage());
-            return false;
+            throw $e;
         }
     }
 
@@ -131,8 +128,7 @@ class CondominioDAO
             if ($this->bancoDados->inTransaction()) {
                 $this->bancoDados->rollBack();
             }
-            error_log("ERRO condominioDAO->atualizar: " . $e->getMessage());
-            return false;
+           throw $e;
         }
     }
     public function cadastrar($condominio)
@@ -190,8 +186,7 @@ class CondominioDAO
 
             return $this->bancoDados->lastInsertId();
         } catch (Exception $e) {
-            error_log("ERRO! condominioDAO->cadastrar: " . $e->getMessage());
-            return false;
+            throw $e;
         }
     }
 
@@ -245,9 +240,7 @@ class CondominioDAO
 
             return $condominio_obj;
         } catch (Exception $e) {
-            $erro = "ERRO! condominioDAO->buscarPorId: " . $e->getMessage();
-            error_log($erro);
-            return null;
+            throw $e;
         }
     }
     public function buscarPorEndereco($endereco)
@@ -290,9 +283,7 @@ class CondominioDAO
 
             return $condominio_obj;
         } catch (Exception $e) {
-            $erro = "ERRO! condominioDAO->buscarPorEndereco: " . $e->getMessage();
-            error_log($erro);
-            return null;
+           throw $e;
         }
     }
     public function buscarPorImovel($id_imovel)
@@ -348,9 +339,7 @@ class CondominioDAO
             }
             return $condominio_obj;
         } catch (Exception $e) {
-            $erro = "ERRO! condominioDAO->buscarPorImovel: " . $e->getMessage();
-            error_log($erro);
-            return NULL;
+            throw $e;
         }
     }
     public function listarFiltros()
@@ -372,8 +361,7 @@ class CondominioDAO
             }
             return $lista;
         } catch (Exception $e) {
-            error_log("ERRO! condominioDAO->listarFiltros: " . $e->getMessage());
-            return [];
+            throw $e;
         }
     }
 }

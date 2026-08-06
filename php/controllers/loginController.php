@@ -1,6 +1,6 @@
 <?php
 
-require_once __DIR__ . '/../dao/usuarioDAO.php';
+require_once __DIR__ . '/../dao/pessoaDAO.php';
 require_once __DIR__ . '/../dao/notificacaoDAO.php';
 require_once __DIR__ . '/../dao/imovelDAO.php';
 require_once __DIR__ . '/../dao/atendimentoDAO.php';
@@ -18,7 +18,7 @@ use PHPMailer\PHPMailer\SMTP;
 
 class loginController
 {
-    private UsuarioDAO $usuarioDAO;
+    private PessoaDAO $pessoaDAO;
     private ImovelDAO $imovelDAO;
     private UsuarioController $usuarioController;
     private AtendimentoDAO $atendimentoDAO;
@@ -28,7 +28,7 @@ class loginController
 
     public function __construct()
     {
-        $this->usuarioDAO = new UsuarioDAO();
+        $this->pessoaDAO = new PessoaDAO();
         $this->imovelDAO = new ImovelDAO();
         $this->usuarioController = new UsuarioController();
         $this->imovelController = new ImovelController();
@@ -45,7 +45,7 @@ class loginController
                 return (["status" => "erro", "mensagem" => "Usuário não logado"]);
             }
             $idUsuario = $_SESSION['usuario_id'];
-            $usuario = $this->usuarioDAO->buscarPorId($idUsuario);
+            $usuario = $this->pessoaDAO->buscarPorId($idUsuario);
             if (!$usuario) {
                 return (["status" => "erro", "mensagem" => "Usuário não encontrado"]);
             }
@@ -89,7 +89,7 @@ class loginController
                 return (["status" => "erro", "mensagem" => "Usuário não logado"]);
             }
             $idUsuario = $_SESSION['usuario_id'];
-            $usuario = $this->usuarioDAO->buscarPorId($_SESSION['usuario_id']);
+            $usuario = $this->pessoaDAO->buscarPorId($_SESSION['usuario_id']);
             if (!$usuario) {
                 return (["status" => "erro", "mensagem" => "Usuário não encontrado"]);
             }
@@ -163,7 +163,7 @@ class loginController
             session_start();
             $usuario = null;
             if (isset($_SESSION['usuario_id'])) {
-                $usuario = $this->usuarioDAO->buscarPorId($_SESSION['usuario_id']);
+                $usuario = $this->pessoaDAO->buscarPorId($_SESSION['usuario_id']);
             } else {
                 return (["status" => "erro", "mensagem" => "Usuário não logado"]);
             }
@@ -264,7 +264,7 @@ class loginController
         try {
             session_start();
             if (isset($_SESSION['usuario_id'])) {
-                $usuario = $this->usuarioDAO->buscarPorId($_SESSION['usuario_id']);
+                $usuario = $this->pessoaDAO->buscarPorId($_SESSION['usuario_id']);
 
                 $dados = $this->usuarioController->montarJson([$usuario]);
 
@@ -308,7 +308,7 @@ class loginController
                     $nome = $payload['name'];
                     $foto = $payload['picture'];
 
-                    $consulta = $this->usuarioDAO->verificar($email, "", true);
+                    $consulta = $this->pessoaDAO->verificar($email, "", true);
 
                     if (!$consulta) {
                         $resultado = $this->usuarioController->atualizar([
@@ -327,18 +327,26 @@ class loginController
                     return (["status" => "erro", "mensagem" => "Usuário ou senha não fornecidos"]);
                 }
 
-                $consulta = $this->usuarioDAO->verificar($usuario, $senha);
+                $consulta = $this->pessoaDAO->verificar($usuario, $senha);
             }
 
             if ($consulta) {
                 $_SESSION['usuario_id'] = $consulta->getId();
-                $_SESSION['tipo'] = $consulta->getTipo() ?? NULL;
+                if ($consulta instanceof Cliente) {
+                    $_SESSION['tipo'] = "CLIENTE";
+                } else if ($consulta  instanceof Corretor) {
+                    $_SESSION['tipo'] = "CORRETOR";
+                } else if ($consulta instanceof Funcionario) {
+                    $_SESSION['tipo'] = $consulta->getCargo() ?? NULL;
+                } else if ($consulta instanceof Proprietario) {
+                    $_SESSION['tipo'] = "PROPRIETARIO";
+                }
                 return ([
                     "status" => "sucesso",
                     "usuario" => [
                         "id" => $consulta->getId(),
                         "nome" => $consulta->getNome(),
-                        "tipo" => $consulta->getTipo() ? $consulta->getTipo()->value : null,
+                        "tipo" => $_SESSION['tipo'],
                     ]
                 ]);
             } else {
