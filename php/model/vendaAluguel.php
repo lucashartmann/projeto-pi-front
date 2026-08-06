@@ -1,16 +1,16 @@
 <?php
 class VendaAluguel
 {
-    public int $id;
-    public ?Cliente $cliente;
-    public ?Corretor $captador;
-    public ?Corretor $corretor;
-    public ?Imovel $imovel;
-    public ?DateTime $data;
-    public float $comissaoCaptador;
-    public float $comissaoCorretor;
-    public ?DateTime $dataCadastro;
-    public ?DateTime $dataModificacao;
+    private int $id;
+    private ?Cliente $cliente;
+    private ?Corretor $captador;
+    private ?Corretor $corretor;
+    private ?Imovel $imovel;
+    private ?DateTime $data;
+    private float $comissaoCaptador;
+    private float $comissaoCorretor;
+    private ?DateTime $dataCadastro;
+    private ?DateTime $dataModificacao;
 
     public function __init__()
     {

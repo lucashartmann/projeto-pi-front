@@ -14,11 +14,11 @@ enum StatusAtendimento: string
 
 class Atendimento
 {
-    public int $id;
-    public ?Usuario $corretor;
-    public ?Usuario $cliente;
-    public ?Imovel $imovel;
-    public ?StatusAtendimento $status;
+    private int $id;
+    private ?Corretor $corretor;
+    private ?Cliente $cliente;
+    private ?Imovel $imovel;
+    private ?StatusAtendimento $status;
 
     public function __construct()
     {
@@ -44,7 +44,7 @@ class Atendimento
         return $this->corretor;
     }
 
-    public function setCorretor(?Usuario $value)
+    public function setCorretor(?Corretor $value)
     {
         $this->corretor = $value;
     }
@@ -54,7 +54,7 @@ class Atendimento
         return $this->cliente;
     }
 
-    public function setCliente(?Usuario $value)
+    public function setCliente(?Cliente $value)
     {
         $this->cliente = $value;
     }

@@ -14,6 +14,8 @@
 
 - [ ] As notificaçoes botar q se um cliente for cadastrado mandar uma notificação para todos os corretores cadastrando por id do corretor na tabela notificacao e botar o tipo ser "atendimento', "cadastro", etc
 
+- [ ] !!! Continuar reformulação do banco de dados. Implementar funcionarioController, corretorController e etc. No JS implementar buscarCorretor e etc. Ser especifico, mudar a API tambem do PHP.
+
 ### Login:
 
 - [ ] Esqueceu senha: mandar o email

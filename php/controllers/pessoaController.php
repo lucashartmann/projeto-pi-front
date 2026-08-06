@@ -2,23 +2,37 @@
 
 require_once __DIR__ . '/../dao/usuarioDAO.php';
 require_once __DIR__ . '/../dao/proprietarioDAO.php';
+require_once __DIR__ . '/../dao/corretorDAO.php';
+require_once __DIR__ . '/../dao/clienteDAO.php';
+require_once __DIR__ . '/../dao/funcionarioDAO.php';
+require_once __DIR__ . '/../dao/pessoaDAO.php';
 require_once __DIR__ . '/../dao/enderecoDAO.php';
+require_once __DIR__ . '/../services/pessoaService.php';
 
 class UsuarioController
 {
 
     private UsuarioDAO $usuarioDAO;
-
+    private CorretorDAO $corretorDAO;
+    private ClienteDAO $clienteDAO;
+    private FuncionarioDAO $funcionarioDAO;
+    private PessoaDAO $pessoaDAO;
     private ProprietarioDAO $proprietarioDAO;
-
     private EnderecoDAO $enderecoDAO;
+    private PessoaService $pessoaService;
 
     public function __construct()
     {
         $this->usuarioDAO = new UsuarioDAO();
+        $this->corretorDAO = new CorretorDAO();
+        $this->clienteDAO = new ClienteDAO();
+        $this->funcionarioDAO = new FuncionarioDAO();
+        $this->pessoaDAO = new PessoaDAO();
         $this->proprietarioDAO = new ProprietarioDAO();
         $this->enderecoDAO = new EnderecoDAO();
+        $this->pessoaService = new PessoaService();
     }
+
     function montarJson(array $listaUsuarios)
     {
 
@@ -107,7 +121,7 @@ class UsuarioController
             $rg = array_key_exists('rg', $dados) && Validacao::validarRG($dados['rg']) ? $dados['rg'] : "";
             $telefones = array_key_exists('telefones', $dados) && Validacao::validarTelefone($dados['telefones']) ? str_replace(['-', '(', ')'], '', $dados['telefones']) : [];
             $tipo = array_key_exists('tipo', $dados) ? $dados['tipo'] : null;
-            $usuario = Null;
+            $pessoa = Null;
             $creci = array_key_exists('creci', $dados) && Validacao::validarCreci($dados['creci']) ? $dados['creci'] : "";
             $salario = array_key_exists('salario', $dados) && Validacao::validarSalario($dados['salario']) ? str_replace(['-', 'R$', ' '], '', $dados['salario']) : 0.0;
             $id = array_key_exists('id', $dados) ? $dados['id'] : 0;
@@ -120,48 +134,55 @@ class UsuarioController
             $complemento = array_key_exists('complemento', $dados) ? $dados['complemento'] : "";
 
             if ($id > 0) {
-                $usuario = $this->usuarioDAO->buscarPorId($id);
+                $pessoa = $this->pessoaDAO->buscarPorId($id);
             } else {
                 switch ($tipo) {
                     case "CORRETOR":
-                        $usuario = new Corretor($username, $senha, $email, $nome, $cpfCnpj, $creci);
+                        $pessoa = new Corretor($email, $nome, $cpfCnpj, $creci);
+                        $pessoa->setSalario($salario);
                         break;
                     case "GERENTE":
-                        $usuario = new Gerente($username, $senha, $email, $nome, $cpfCnpj);
-                        $usuario->setSalario($salario);
+                        $pessoa = new Funcionario($email, $nome, $cpfCnpj, Cargo::GERENTE);
+                        $pessoa->setSalario($salario);
                         break;
                     case "CAPTADOR":
-                        $usuario = new Captador($username, $senha, $email, $nome, $cpfCnpj);
-                        $usuario->setSalario($salario);
+                        $pessoa = new Funcionario($email, $nome, $cpfCnpj, Cargo::CAPTADOR);
+                        $pessoa->setSalario($salario);
                         break;
                     case "CLIENTE":
-                        $usuario = new Cliente($username, $senha, $email, $nome, $cpfCnpj);
-                        $usuario->setNome($nome);
+                        $pessoa = new Cliente($email, $nome, $cpfCnpj);
+                        $pessoa->setNome($nome);
                         break;
                     case "PROPRIETARIO":
-                        $usuario = new Proprietario($email, $nome, $cpfCnpj);
-                        $usuario->setNome($nome);
+                        $pessoa = new Proprietario($email, $nome, $cpfCnpj);
+                        $pessoa->setNome($nome);
                         break;
                     case "FINANCEIRO":
-                        $usuario = new Usuario($username, $senha, $email, $nome, $cpfCnpj, Tipo::FINANCEIRO);
-                        // $usuario->setSalario($salario);
+                        $pessoa = new Funcionario($email, $nome, $cpfCnpj, Cargo::FINANCEIRO);
+                        $pessoa->setSalario($salario);
                         break;
                     case "VISTORIADOR":
-                        $usuario = new Usuario($username, $senha, $email, $nome, $cpfCnpj, Tipo::VISTORIADOR);
+                        $pessoa = new Funcionario($email, $nome, $cpfCnpj, Cargo::VISTORIADOR);
+                        $pessoa->setSalario($salario);
                         break;
                     case "ADMINISTRADOR":
-                        $usuario = new Usuario($username, $senha, $email, $nome, $cpfCnpj, Tipo::ADMINISTRADOR);
+                        $pessoa = new Funcionario($email, $nome, $cpfCnpj, Cargo::ADMIN);
+                        $pessoa->setSalario($salario);
                         break;
                     default:
                         return (["status" => "erro", "mensagem" => "Tipo de usuário inválido"]);
                 }
             }
 
-            $usuario->setNome($nome);
-            $usuario->setCpfCnpj($cpfCnpj);
-            $usuario->setDataNascimento($dataNascimento);
-            $usuario->setRg($rg);
-            $usuario->setTelefones($telefones);
+            $pessoa->setNome($nome);
+            $pessoa->setCpfCnpj($cpfCnpj);
+            $pessoa->setDataNascimento($dataNascimento);
+            $pessoa->setRg($rg);
+            $pessoa->setTelefones($telefones);
+
+            if ($senha) {
+                $pessoa->setSenha($senha);
+            }
 
             if ($cep) {
                 $endereco = new Endereco(
@@ -185,28 +206,21 @@ class UsuarioController
             }
 
 
-            $usuario->setEndereco($endereco);
-            $atualizacao = null;
-            $usuario->setDataModificacao(DateTime::createFromFormat('Y-m-d H:i:s', date('Y-m-d H:i:s')));
+            $pessoa->setEndereco($endereco);
+            $pessoa->setDataModificacao(DateTime::createFromFormat('Y-m-d H:i:s', date('Y-m-d H:i:s')));
             if ($id > 0) {
-                if ($tipo == "PROPRIETARIO") {
-                    $atualizacao = $this->proprietarioDAO->atualizar($usuario);
-                } else {
-                    $atualizacao = $this->usuarioDAO->atualizar($usuario);
-                }
+                $atualizacao = $this->pessoaService->atualizar($pessoa);
                 if ($atualizacao) {
                     return (["status" => "sucesso", "mensagem" => "Usuário atualizado com sucesso"]);
                 } else {
                     return (["status" => "erro", "mensagem" => "Erro ao atualizar usuário"]);
                 }
             } else {
-                $usuario->setDataCadastro(DateTime::createFromFormat('Y-m-d H:i:s', date('Y-m-d H:i:s')));
-                if ($tipo == "PROPRIETARIO") {
-                    $atualizacao = $this->proprietarioDAO->cadastrar($usuario);
-                } else {
-                    $atualizacao = $this->usuarioDAO->cadastrar($usuario);
-                }
-                if ($atualizacao) {
+                $pessoa->setDataCadastro(DateTime::createFromFormat('Y-m-d H:i:s', date('Y-m-d H:i:s')));
+
+                $cadastro = $this->pessoaService->cadastrar($pessoa);
+
+                if ($cadastro) {
                     return (["status" => "sucesso", "mensagem" => "Usuário cadastrado com sucesso"]);
                 } else {
                     return (["status" => "erro", "mensagem" => "Erro ao cadastrar usuário"]);

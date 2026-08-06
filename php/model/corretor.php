@@ -1,16 +1,16 @@
 <?php
 
 
-require_once __DIR__ . '/usuario.php';
+require_once __DIR__ . '/funcionario.php';
 
 
-class Corretor extends Usuario
+class Corretor extends Funcionario
 {
-    public string $creci;
+    private string $creci;
 
-    public function __construct(string $username, string $senha, string $email, string $nome, string $cpfCnpj, string $creci)
+    public function __construct(string $email, string $nome, string $cpfCnpj, string $creci)
     {
-        parent::__construct($username, $senha, $email, $nome, $cpfCnpj, Tipo::CORRETOR);
+        parent::__construct($email, $nome, $cpfCnpj, Cargo::CORRETOR);
         $this->creci = $creci;
     }
 

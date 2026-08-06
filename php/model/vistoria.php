@@ -1,12 +1,12 @@
 <?php
 
 require_once __DIR__ . '/imovel.php';
-require_once __DIR__ . '/usuario.php';
+require_once __DIR__ . '/Funcionario.php';
 
 class Vistoria
 {
     private int $id;
-    private ?Usuario $vistoriador;
+    private ?Funcionario $vistoriador;
     private ?Imovel $imovel;
     private ?DateTime $data;
     private ?string $relatorio;
@@ -37,7 +37,8 @@ class Vistoria
     }
 
 
-    public function setVistoriador(?Usuario $vistoriador): self
+
+    public function setVistoriador(?Funcionario $vistoriador): self
     {
         $this->vistoriador = $vistoriador;
 

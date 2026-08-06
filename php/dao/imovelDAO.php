@@ -65,10 +65,13 @@ class ImovelDAO
         }
     }
 
-    public function montar($dados, $idImovel)
+    public function montar($dados): ?Imovel
     {
         try {
-
+            $idImovel = (int) $dados['id'];
+            if (!isset($dados['id'])) {
+                throw new Exception("ID do imóvel não fornecido");
+            }
             $endereco = null;
             if ($dados['endereco_id']) {
                 $endereco = new Endereco(
@@ -157,24 +160,13 @@ class ImovelDAO
 
             $condominio = null;
             if ($dados['condominio_id']) {
-                $enderecoCondominio = null;
-                if ($dados['condominio_endereco_id']) {
-                    $enderecoCondominio = new Endereco(
-                        $dados['condominio_endereco_rua'],
-                        $dados['condominio_endereco_bairro'],
-                        $dados['condominio_endereco_cep'],
-                        $dados['condominio_endereco_cidade'],
-                        $dados['condominio_endereco_uf']
-                    );
-                    $enderecoCondominio->setId((int) $dados['condominio_endereco_id']);
-                    $enderecoCondominio->setNumero($dados['condominio_endereco_numero'] !== null ? (int) $dados['condominio_endereco_numero'] : null);
-                    $enderecoCondominio->setComplemento($dados['condominio_endereco_complemento']);
-                }
-
                 $condominio = new Condominio(
                     $dados['condominio_nome'],
-                    $enderecoCondominio
+                    $endereco
                 );
+                if ($condominio->getEndereco()) {
+                    $condominio->getEndereco()->setComplemento('');
+                }
                 $condominio->setId((int) $dados['condominio_id']);
             }
 
@@ -314,15 +306,7 @@ class ImovelDAO
 
                 c.id AS condominio_id,
                 c.nome AS condominio_nome,
-                ce.id AS condominio_endereco_id,
-                ce.rua AS condominio_endereco_rua,
-                ce.numero AS condominio_endereco_numero,
-                ce.complemento AS condominio_endereco_complemento,
-                ce.bairro AS condominio_endereco_bairro,
-                ce.cep AS condominio_endereco_cep,
-                ce.cidade AS condominio_endereco_cidade,
-                ce.uf AS condominio_endereco_uf,
-
+            
                 u_cor.id AS corretor_id,
                 u_cor.username AS corretor_username,
                 u_cor.senha AS corretor_senha,
@@ -353,9 +337,6 @@ class ImovelDAO
             LEFT JOIN condominio c
                 ON c.id = i.id_condominio
 
-            LEFT JOIN endereco ce
-                ON ce.id = c.id_endereco
-
             LEFT JOIN usuario u_cor
                 ON u_cor.id = i.id_corretor
 
@@ -383,8 +364,7 @@ class ImovelDAO
 
             $imoveisDestacados = [];
             foreach ($resultados as $row) {
-                $idImovel = (int) $row['id_imovel'];
-                $imovel = $this->montar($row, $idImovel);
+                $imovel = $this->montar($row);
                 if ($imovel) {
                     $imoveisDestacados[] = $imovel;
                 }
@@ -418,15 +398,7 @@ class ImovelDAO
 
                 c.id AS condominio_id,
                 c.nome AS condominio_nome,
-                ce.id AS condominio_endereco_id,
-                ce.rua AS condominio_endereco_rua,
-                ce.numero AS condominio_endereco_numero,
-                ce.complemento AS condominio_endereco_complemento,
-                ce.bairro AS condominio_endereco_bairro,
-                ce.cep AS condominio_endereco_cep,
-                ce.cidade AS condominio_endereco_cidade,
-                ce.uf AS condominio_endereco_uf,
-
+               
                 u_cor.id AS corretor_id,
                 u_cor.username AS corretor_username,
                 u_cor.senha AS corretor_senha,
@@ -457,9 +429,6 @@ class ImovelDAO
             LEFT JOIN condominio c
                 ON c.id = i.id_condominio
 
-            LEFT JOIN endereco ce
-                ON ce.id = c.id_endereco
-
             LEFT JOIN usuario u_cor
                 ON u_cor.id = i.id_corretor
 
@@ -489,9 +458,7 @@ class ImovelDAO
             $lista = [];
 
             foreach ($resultados as $dados) {
-
-                $id = (int) $dados['id'];
-                $imovel = $this->montar($dados, $id);
+                $imovel = $this->montar($dados);
                 if ($imovel) {
                     $lista[] = $imovel;
                 }
@@ -524,14 +491,6 @@ class ImovelDAO
 
                 c.id AS condominio_id,
                 c.nome AS condominio_nome,
-                ce.id AS condominio_endereco_id,
-                ce.rua AS condominio_endereco_rua,
-                ce.numero AS condominio_endereco_numero,
-                ce.complemento AS condominio_endereco_complemento,
-                ce.bairro AS condominio_endereco_bairro,
-                ce.cep AS condominio_endereco_cep,
-                ce.cidade AS condominio_endereco_cidade,
-                ce.uf AS condominio_endereco_uf,
 
                 u_cor.id AS corretor_id,
                 u_cor.username AS corretor_username,
@@ -562,9 +521,6 @@ class ImovelDAO
 
             LEFT JOIN condominio c
                 ON c.id = i.id_condominio
-
-            LEFT JOIN endereco ce
-                ON ce.id = c.id_endereco
 
             LEFT JOIN usuario u_cor
                 ON u_cor.id = i.id_corretor
@@ -596,10 +552,7 @@ class ImovelDAO
             $lista = [];
 
             foreach ($resultados as $dados) {
-
-                $id = (int) $dados['id'];
-
-                $imovel = $this->montar($dados, $id);
+                $imovel = $this->montar($dados);
                 if ($imovel) {
                     $lista[] = $imovel;
                 }
@@ -629,14 +582,6 @@ class ImovelDAO
 
                 c.id AS condominio_id,
                 c.nome AS condominio_nome,
-                ce.id AS condominio_endereco_id,
-                ce.rua AS condominio_endereco_rua,
-                ce.numero AS condominio_endereco_numero,
-                ce.complemento AS condominio_endereco_complemento,
-                ce.bairro AS condominio_endereco_bairro,
-                ce.cep AS condominio_endereco_cep,
-                ce.cidade AS condominio_endereco_cidade,
-                ce.uf AS condominio_endereco_uf,
 
                 u_cor.id AS corretor_id,
                 u_cor.username AS corretor_username,
@@ -668,9 +613,6 @@ class ImovelDAO
             LEFT JOIN condominio c
                 ON c.id = i.id_condominio
 
-            LEFT JOIN endereco ce
-                ON ce.id = c.id_endereco
-
             LEFT JOIN usuario u_cor
                 ON u_cor.id = i.id_corretor
 
@@ -698,7 +640,7 @@ class ImovelDAO
                 throw new Exception("Imóvel não encontrado");
             }
 
-            return $this->montar($dados, $idImovel);
+            return $this->montar($dados);
         } catch (Exception $e) {
             error_log("ERRO! imovelDAO->buscarPorId: " . $e->getMessage());
             return null;
@@ -779,14 +721,6 @@ class ImovelDAO
 
             condominio.id AS condominio_id,
             condominio.nome AS condominio_nome,
-            condominio_endereco.id AS condominio_endereco_id,
-            condominio_endereco.rua AS condominio_endereco_rua,
-            condominio_endereco.numero AS condominio_endereco_numero,
-            condominio_endereco.complemento AS condominio_endereco_complemento,
-            condominio_endereco.bairro AS condominio_endereco_bairro,
-            condominio_endereco.cep AS condominio_endereco_cep,
-            condominio_endereco.cidade AS condominio_endereco_cidade,
-            condominio_endereco.uf AS condominio_endereco_uf,
 
             usuario_corretor.id AS corretor_id,
             usuario_corretor.username AS corretor_username,
@@ -821,9 +755,6 @@ class ImovelDAO
             LEFT JOIN condominio
                 ON condominio.id = imovel.id_condominio
 
-            LEFT JOIN endereco condominio_endereco
-                ON condominio_endereco.id = condominio.id_endereco
-
             LEFT JOIN usuario usuario_corretor
                 ON usuario_corretor.id = imovel.id_corretor
 
@@ -853,8 +784,7 @@ class ImovelDAO
             $lista = [];
 
             foreach ($dados as $registro) {
-                $idImovel = (int) $registro['id'];
-                $imovel = $this->montar($registro, $idImovel);
+                $imovel = $this->montar($registro);
                 if ($imovel) {
                     $lista[] = $imovel;
                 }

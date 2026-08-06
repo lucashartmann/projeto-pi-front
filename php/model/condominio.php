@@ -4,10 +4,10 @@ require_once __DIR__ . '/endereco.php';
 
 class Condominio
 {
-    public int $id;
-    public string $nome;
-    public ?Endereco $endereco;
-    public array $filtros;
+    private int $id;
+    private string $nome;
+    private ?Endereco $endereco;
+    private array $filtros;
 
     public function __construct(string $nome = null, ?Endereco $endereco = null)
     {

@@ -2,12 +2,12 @@
 
 class Anuncio
 {
-    public int $id;
-    public string $descricao;
-    public string $titulo;
-    public array $imagens;
-    public array $videos;
-    public array $anexos;
+    private int $id;
+    private string $descricao;
+    private string $titulo;
+    private array $imagens;
+    private array $videos;
+    private array $anexos;
 
     public function __construct()
     {

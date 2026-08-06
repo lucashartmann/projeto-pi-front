@@ -3,14 +3,14 @@
 
 class Endereco
 {
-    public int $id;
-    public string $rua;
-    public int $numero;
-    public string $bairro;
-    public string $cep;
-    public string $complemento;
-    public string $cidade;
-    public string $uf;
+    private int $id;
+    private string $rua;
+    private int $numero;
+    private string $bairro;
+    private string $cep;
+    private string $complemento;
+    private string $cidade;
+    private string $uf;
 
     public function __construct(string $rua, string $bairro, string $cep, string $cidade, string $uf)
     {

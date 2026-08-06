@@ -3,7 +3,7 @@
 
 require_once __DIR__ . '/endereco.php';
 require_once __DIR__ . '/corretor.php';
-require_once __DIR__ . '/captador.php';
+require_once __DIR__ . '/funcionario.php';
 require_once __DIR__ . '/anuncio.php';
 require_once __DIR__ . '/condominio.php';
 
@@ -65,38 +65,38 @@ enum Status: string
 
 class Imovel
 {
-    public int $id;
-    public float $valorVenda;
-    public float $valorAluguel;
-    public int $quantQuartos;
-    public int $quantSalas;
-    public int $quantVagas;
-    public int $quantBanheiros;
-    public int $quantVarandas;
-    public ?Categoria $categoria;
-    public ?Endereco $endereco;
-    public ?Status $status;
-    public float $iptu;
-    public float $valorCondominio;
-    public int $andar;
-    public ?Estado $estado;
-    public string $bloco;
-    public int $anoConstrucao;
-    public float $areaTotal;
-    public float $areaPrivativa;
-    public ?Situacao $situacao;
-    public ?Ocupacao $ocupacao;
-    public array $proprietarios;
-    public ?Corretor $corretor;
-    public ?Captador $captador;
-    public ?DateTime $dataCadastro;
-    public ?DateTime $dataModificacao;
-    public ?Anuncio $anuncio;
-    public ?Condominio $condominio;
-    public array $filtros;
-    public string $complemento;
-    public bool $destacado;
-    public int $quantClicks;
+    private int $id;
+    private float $valorVenda;
+    private float $valorAluguel;
+    private int $quantQuartos;
+    private int $quantSalas;
+    private int $quantVagas;
+    private int $quantBanheiros;
+    private int $quantVarandas;
+    private ?Categoria $categoria;
+    private ?Endereco $endereco;
+    private ?Status $status;
+    private float $iptu;
+    private float $valorCondominio;
+    private int $andar;
+    private ?Estado $estado;
+    private string $bloco;
+    private int $anoConstrucao;
+    private float $areaTotal;
+    private float $areaPrivativa;
+    private ?Situacao $situacao;
+    private ?Ocupacao $ocupacao;
+    private array $proprietarios;
+    private ?Corretor $corretor;
+    private ?Funcionario $captador;
+    private ?DateTime $dataCadastro;
+    private ?DateTime $dataModificacao;
+    private ?Anuncio $anuncio;
+    private ?Condominio $condominio;
+    private array $filtros;
+    private string $complemento;
+    private bool $destacado;
+    private int $quantClicks;
 
     public function __construct(?Endereco $endereco, Status $status, Categoria $categoria)
     {
@@ -444,7 +444,7 @@ class Imovel
         return $this->captador;
     }
 
-    public function setCaptador(?Captador $value)
+    public function setCaptador(?Funcionario $value)
     {
         $this->captador = $value;
     }

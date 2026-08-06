@@ -1,20 +1,19 @@
 <?php
 
-require_once __DIR__ . '/usuario.php';
+require_once __DIR__ . '/pessoa.php';
 require_once __DIR__ . '/endereco.php';
 
-class Cliente extends Usuario
+class Cliente extends Pessoa 
 {
-    public array $tipoImoveisDesejado;
-    public int $quantQuartosDesejado;
-    public int $quantBanheirosDesejado;
-    public ?Endereco $enderecoDesejado;
+    private array $tipoImoveisDesejado;
+    private int $quantQuartosDesejado;
+    private int $quantBanheirosDesejado;
+    private ?Endereco $enderecoDesejado;
+    private array $imoveisFavoritos;
 
-    public array $imoveisFavoritos;
-
-    public function __construct(string $username, string $senha, string $email, string $nome, string $cpfCnpj)
+    public function __construct(string $email, string $nome, string $cpfCnpj)
     {
-        parent::__construct($username, $senha, $email, $nome, $cpfCnpj, Tipo::CLIENTE);
+        parent::__construct($email, $nome, $cpfCnpj);
         $this->tipoImoveisDesejado = [];
         $this->quantQuartosDesejado = 0;
         $this->quantBanheirosDesejado = 0;

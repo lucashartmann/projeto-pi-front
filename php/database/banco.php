@@ -35,23 +35,11 @@ class Banco extends PDO
     {
 
         $queries = [
-            "CREATE DATABASE IF NOT EXISTS imobiliaria CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;",
-            "USE imobiliaria;",
+            "CREATE DATABASE IF NOT EXISTS imobiliaria 
+            CHARACTER SET utf8mb4 
+            COLLATE utf8mb4_unicode_ci;",
 
-            "CREATE TABLE IF NOT EXISTS usuario (
-                id INTEGER PRIMARY KEY AUTO_INCREMENT,
-                username VARCHAR(255) UNIQUE,
-                senha VARCHAR(255) NULL,
-                email VARCHAR(255) UNIQUE,
-                nome VARCHAR(255) NOT NULL,
-                cpf_cnpj VARCHAR(14) UNIQUE,
-                rg VARCHAR(12),
-                id_endereco INTEGER,
-                data_nascimento DATE,
-                tipo ENUM('CLIENTE', 'CORRETOR', 'CAPTADOR', 'VISTORIADOR', 'ADMIN', 'FINANCEIRO', 'GERENTE') NOT NULL,
-                data_cadastro TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                data_modificacao DATETIME NULL
-            )",
+            "USE imobiliaria;",
 
             "CREATE TABLE IF NOT EXISTS telefone (
                 id INTEGER PRIMARY KEY AUTO_INCREMENT,
@@ -69,48 +57,89 @@ class Banco extends PDO
                 uf VARCHAR(2) NOT NULL
             )",
 
-            "CREATE TABLE IF NOT EXISTS proprietario (
+            "CREATE TABLE IF NOT EXISTS pessoa (
                 id INTEGER PRIMARY KEY AUTO_INCREMENT,
-                email VARCHAR(255) UNIQUE NULL,
+                email VARCHAR(255) UNIQUE,
                 nome VARCHAR(255) NOT NULL,
-                cpf_cnpj VARCHAR(14) UNIQUE NULL,
-                rg VARCHAR(12) NULL,
-                id_endereco INTEGER NULL,
-                data_nascimento DATE NULL,
-                FOREIGN KEY (id_endereco) REFERENCES endereco(id)
+                cpf_cnpj VARCHAR(14) UNIQUE,
+                rg VARCHAR(12),
+                id_endereco INTEGER,
+                data_nascimento DATE,
+                data_cadastro TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                data_modificacao DATETIME NULL,
+                FOREIGN KEY (id_endereco) 
+                    REFERENCES endereco(id) 
+                    ON DELETE SET NULL
             )",
 
-            "CREATE TABLE IF NOT EXISTS telefone_usuario (
-                id_usuario INTEGER,
-                id_telefone INTEGER,
-                FOREIGN KEY (id_usuario) REFERENCES usuario(id) ON DELETE CASCADE,
-                FOREIGN KEY (id_telefone) REFERENCES telefone(id) ON DELETE CASCADE
+            "CREATE TABLE IF NOT EXISTS funcionario (
+                id_pessoa INTEGER PRIMARY KEY,
+                matricula VARCHAR(255) NULL UNIQUE,
+                salario REAL NULL,
+                data_admissao DATE NULL,
+                cargo ENUM ('ADMIN', 'CORRETOR', 'GERENTE', 'CAPTADOR', 'FINANCEIRO', 'VISTORIADOR') NULL,
+                FOREIGN KEY (id_pessoa) 
+                    REFERENCES pessoa(id) 
+                    ON DELETE CASCADE
             )",
 
-            "CREATE TABLE IF NOT EXISTS telefone_proprietario (
-                id_telefone INTEGER,
-                id_proprietario INTEGER,
-                FOREIGN KEY (id_telefone) REFERENCES telefone(id) ON DELETE CASCADE,
-                FOREIGN KEY (id_proprietario) REFERENCES proprietario(id) ON DELETE CASCADE
-            )",
-
-            "CREATE TABLE IF NOT EXISTS cliente (
-                    id_usuario INTEGER PRIMARY KEY,
-                    FOREIGN KEY (id_usuario) REFERENCES usuario(id) ON DELETE CASCADE
-            )",
-
-            "CREATE TABLE IF NOT EXISTS captador (
-                    id_usuario INTEGER PRIMARY KEY,
-                    salario REAL NULL,
-                    FOREIGN KEY (id_usuario) REFERENCES usuario(id) ON DELETE CASCADE
+            "CREATE TABLE IF NOT EXISTS usuario (
+                id_pessoa INTEGER UNIQUE NOT NULL,
+                senha VARCHAR(255) NOT NULL,
+                ultimo_login DATETIME NULL,
+                ativo BOOLEAN DEFAULT TRUE,
+                FOREIGN KEY (id_pessoa) 
+                    REFERENCES pessoa(id) 
+                    ON DELETE CASCADE
             )",
 
             "CREATE TABLE IF NOT EXISTS corretor (
-                    id_usuario INTEGER PRIMARY KEY,
-                    creci TEXT NULL,
-                    FOREIGN KEY (id_usuario) REFERENCES usuario(id) ON DELETE CASCADE
+                id_funcionario INTEGER PRIMARY KEY,
+                creci TEXT NULL,
+                FOREIGN KEY (id_funcionario) 
+                    REFERENCES funcionario(id_pessoa) 
+                    ON DELETE CASCADE
             )",
 
+            "CREATE TABLE IF NOT EXISTS proprietario (
+                id_pessoa INTEGER PRIMARY KEY,
+                FOREIGN KEY (id_pessoa) 
+                    REFERENCES pessoa(id) ON DELETE CASCADE
+            )",
+
+            "CREATE TABLE IF NOT EXISTS telefone_pessoa(
+                id_pessoa INTEGER,
+                id_telefone INTEGER,
+                UNIQUE(id_pessoa, id_telefone),
+                FOREIGN KEY (id_pessoa) 
+                    REFERENCES pessoa(id) 
+                    ON DELETE CASCADE,
+                FOREIGN KEY (id_telefone) 
+                    REFERENCES telefone(id) 
+                    ON DELETE CASCADE
+            )",
+
+            "CREATE TABLE IF NOT EXISTS cliente (
+                id_pessoa INTEGER PRIMARY KEY,
+                tipo_interesse ENUM('Venda', 'Aluguel', 'Venda e Aluguel') NULL,
+                valor_minimo REAL NULL,
+                valor_maximo REAL NULL,
+                FOREIGN KEY (id_pessoa) 
+                    REFERENCES pessoa(id) 
+                    ON DELETE CASCADE
+            )",
+
+            "CREATE TABLE IF NOT EXISTS favoritos (
+                id_cliente INTEGER,
+                id_imovel INTEGER,
+                UNIQUE(id_cliente, id_imovel),
+                FOREIGN KEY (id_cliente) 
+                    REFERENCES cliente(id_pessoa) 
+                    ON DELETE CASCADE,
+                FOREIGN KEY (id_imovel) 
+                    REFERENCES imovel(id) 
+                    ON DELETE CASCADE
+            )",
 
             "CREATE TABLE IF NOT EXISTS anuncio (
                 id INTEGER PRIMARY KEY AUTO_INCREMENT,
@@ -122,7 +151,8 @@ class Banco extends PDO
                 id INTEGER PRIMARY KEY AUTO_INCREMENT,
                 nome VARCHAR(255) NULL,
                 id_endereco INTEGER NULL,
-                FOREIGN KEY (id_endereco) REFERENCES endereco(id)
+                FOREIGN KEY (id_endereco) 
+                    REFERENCES endereco(id)
             )",
 
             "CREATE TABLE IF NOT EXISTS imovel (
@@ -155,18 +185,16 @@ class Banco extends PDO
                 id_condominio INT NULL,
                 quant_clicks INTEGER DEFAULT 0,
                 destacado BOOLEAN DEFAULT FALSE,
-                FOREIGN KEY (id_anuncio) REFERENCES anuncio(id),
-                FOREIGN KEY (id_endereco) REFERENCES endereco(id),
-                FOREIGN KEY (id_corretor) REFERENCES corretor(id_usuario),
-                FOREIGN KEY (id_captador) REFERENCES captador(id_usuario),
-                FOREIGN KEY (id_condominio) REFERENCES condominio(id)
-            )",
-
-            "CREATE TABLE IF NOT EXISTS imovel_cliente (
-                id_imovel INTEGER UNIQUE,
-                id_cliente INTEGER,
-                FOREIGN KEY (id_imovel) REFERENCES imovel(id) ON DELETE CASCADE,
-                FOREIGN KEY (id_cliente) REFERENCES cliente(id_usuario) ON DELETE CASCADE
+                FOREIGN KEY (id_anuncio) 
+                    REFERENCES anuncio(id),
+                FOREIGN KEY (id_endereco) 
+                    REFERENCES endereco(id),
+                FOREIGN KEY (id_corretor) 
+                    REFERENCES corretor(id_pessoa),
+                FOREIGN KEY (id_captador) 
+                    REFERENCES captador(id_pessoa),
+                FOREIGN KEY (id_condominio) 
+                    REFERENCES condominio(id)
             )",
 
             "CREATE TABLE IF NOT EXISTS midia_anuncio (
@@ -174,104 +202,161 @@ class Banco extends PDO
                 id_anuncio INTEGER NULL,
                 nome_arquivo VARCHAR(255) NULL,
                 tipo ENUM('imagem', 'video', 'documento') NULL,
-                FOREIGN KEY (id_anuncio) REFERENCES anuncio(id) ON DELETE CASCADE
+                FOREIGN KEY (id_anuncio) 
+                    REFERENCES anuncio(id) ON DELETE CASCADE
             )",
 
             "CREATE TABLE IF NOT EXISTS venda_aluguel (
-                    id INTEGER PRIMARY KEY AUTO_INCREMENT,
-                    id_cliente INT NULL,
-                    id_proprietario INTEGER,
-                    id_captador INT NULL,
-                    id_corretor INT NULL,
-                    data_venda DATE NULL,
-                    id_imovel INTEGER  NULL,
-                    comissao_captador REAL NULL,
-                    comissao_corretor REAL NULL,
-                    FOREIGN KEY (id_imovel) REFERENCES imovel(id),
-                    FOREIGN KEY (id_cliente) REFERENCES cliente(id_usuario),
-                    FOREIGN KEY (id_proprietario) REFERENCES proprietario(id),
-                    FOREIGN KEY (id_corretor) references corretor(id_usuario)
-                    )",
-
-            "CREATE TABLE IF NOT EXISTS gerente (
-                    id_usuario INTEGER PRIMARY KEY AUTO_INCREMENT,
-                    salario REAL NULL,
-                    FOREIGN KEY (id_usuario) REFERENCES usuario(id) ON DELETE CASCADE
-                )",
+                id INTEGER PRIMARY KEY AUTO_INCREMENT,
+                id_cliente INT NULL,
+                id_proprietario INTEGER,
+                id_captador INT NULL,
+                id_corretor INT NULL,
+                data_venda DATE NULL,
+                id_imovel INTEGER  NULL,
+                comissao_captador REAL NULL,
+                comissao_corretor REAL NULL,
+                FOREIGN KEY (id_imovel) 
+                    REFERENCES imovel(id),
+                FOREIGN KEY (id_cliente) 
+                    REFERENCES cliente(id_pessoa),
+                FOREIGN KEY (id_proprietario) 
+                    REFERENCES proprietario(id_pessoa),
+                FOREIGN KEY (id_captador) 
+                    REFERENCES captador(id_pessoa),
+                FOREIGN KEY (id_corretor) 
+                    REFERENCES corretor(id_pessoa)
+            )",
 
             "CREATE TABLE IF NOT EXISTS atendimento (
-                    id INTEGER PRIMARY KEY AUTO_INCREMENT,
-                    id_imovel INTEGER  NULL,
-                    id_corretor INT  NULL,
-                    id_cliente INT NULL,
-                    status ENUM('Em Andamento', 'Pendente') NULL,
-                    FOREIGN KEY (id_imovel) REFERENCES imovel(id),
-                    FOREIGN KEY (id_corretor) references corretor(id_usuario),
-                    FOREIGN KEY (id_cliente) references cliente(id_usuario) ON DELETE CASCADE
-                )",
-            "CREATE TABLE IF NOT EXISTS filtros_imovel (
-                    id INTEGER PRIMARY KEY AUTO_INCREMENT,
-                    nome VARCHAR(255) NOT NULL UNIQUE                    
-                )",
-            "CREATE TABLE IF NOT EXISTS filtros_condominio
-                (
-                    id INTEGER PRIMARY KEY AUTO_INCREMENT,
-                    nome VARCHAR(255) NOT NULL UNIQUE                    
-                )",
-            "CREATE TABLE IF NOT EXISTS imovel_filtros (
-                    id_filtros_imovel INTEGER,
-                    id_imovel INTEGER, 
-                    FOREIGN KEY (id_filtros_imovel) references filtros_imovel(id) ON DELETE CASCADE,
-                    FOREIGN KEY (id_imovel) references imovel(id) ON DELETE CASCADE                
-                )",
-            "CREATE TABLE IF NOT EXISTS condominio_filtros (
-                    id_filtros_condominio INTEGER,
-                    id_condominio INTEGER, 
-                    FOREIGN KEY (id_filtros_condominio) references filtros_condominio(id) ON DELETE CASCADE,
-                    FOREIGN KEY (id_condominio) references condominio(id) ON DELETE CASCADE               
-                )",
+                id INTEGER PRIMARY KEY AUTO_INCREMENT,
+                id_imovel INTEGER  NULL,
+                id_corretor INT  NULL,
+                id_cliente INT NULL,
+                status ENUM('Em Andamento', 'Pendente') NULL,
+                FOREIGN KEY (id_imovel) 
+                    REFERENCES imovel(id),
+                FOREIGN KEY (id_corretor) 
+                    REFERENCES corretor(id_pessoa),
+                FOREIGN KEY (id_cliente) 
+                    REFERENCES cliente(id_pessoa) 
+                    ON DELETE CASCADE
+            )",
 
-            "CREATE TABLE IF NOT EXISTS proprietario_imovel (
-                    id_proprietario INTEGER NULL,
-                    id_imovel INTEGER NULL,
-                    FOREIGN KEY (id_proprietario) REFERENCES proprietario(id) ON DELETE CASCADE,
-                    FOREIGN KEY (id_imovel) REFERENCES imovel(id) ON DELETE CASCADE                
-                )",
+            "CREATE TABLE IF NOT EXISTS filtros_imovel (
+                id INTEGER PRIMARY KEY AUTO_INCREMENT,
+                nome VARCHAR(255) NOT NULL UNIQUE                    
+            )",
+
+            "CREATE TABLE IF NOT EXISTS filtros_condominio (
+                id INTEGER PRIMARY KEY AUTO_INCREMENT,
+                nome VARCHAR(255) NOT NULL UNIQUE                    
+            )",
+
+            "CREATE TABLE IF NOT EXISTS imovel_filtros (
+                id_filtros_imovel INTEGER,
+                id_imovel INTEGER, 
+                FOREIGN KEY (id_filtros_imovel) 
+                    REFERENCES filtros_imovel(id) 
+                    ON DELETE CASCADE,
+                FOREIGN KEY (id_imovel) 
+                    REFERENCES imovel(id) 
+                    ON DELETE CASCADE                
+            )",
+
+            "CREATE TABLE IF NOT EXISTS condominio_filtros (
+                id_filtros_condominio INTEGER,
+                id_condominio INTEGER, 
+                FOREIGN KEY (id_filtros_condominio) 
+                    REFERENCES filtros_condominio(id) 
+                    ON DELETE CASCADE,
+                FOREIGN KEY (id_condominio) 
+                    REFERENCES condominio(id) 
+                    ON DELETE CASCADE               
+            )",
+
+            "CREATE TABLE proprietario_imovel (
+                id_proprietario INTEGER NOT NULL,
+                id_imovel INTEGER NOT NULL,
+                PRIMARY KEY (id_proprietario, id_imovel),
+                FOREIGN KEY (id_proprietario)
+                    REFERENCES proprietario(id_pessoa)
+                    ON DELETE CASCADE,
+                FOREIGN KEY (id_imovel)
+                    REFERENCES imovel(id)
+                    ON DELETE CASCADE
+            )",
 
             "CREATE TABLE IF NOT EXISTS visita (
-                    id INTEGER PRIMARY KEY AUTO_INCREMENT,
-                    id_cliente INTEGER NULL,
-                    id_imovel INTEGER NULL,
-                    id_corretor INTEGER NULL,
-                    data_visita DATETIME NULL,
-                    status VARCHAR(255) NULL,
-                    FOREIGN KEY (id_cliente) references cliente(id_usuario) ON DELETE CASCADE,
-                    FOREIGN KEY (id_imovel) references imovel(id) ON DELETE CASCADE,
-                    FOREIGN KEY (id_corretor) references corretor(id_usuario) ON DELETE CASCADE
-                )",
+                id INTEGER PRIMARY KEY AUTO_INCREMENT,
+                id_cliente INTEGER NULL,
+                id_imovel INTEGER NULL,
+                id_corretor INTEGER NULL,
+                data_visita DATETIME NULL,
+                status VARCHAR(255) NULL,
+                FOREIGN KEY (id_cliente) 
+                    REFERENCES cliente(id_pessoa) 
+                    ON DELETE CASCADE,
+                FOREIGN KEY (id_imovel) 
+                    REFERENCES imovel(id) 
+                    ON DELETE CASCADE,
+                FOREIGN KEY (id_corretor) 
+                    REFERENCES corretor(id_pessoa) 
+                    ON DELETE CASCADE
+            )",
 
             "CREATE TABLE IF NOT EXISTS vistoria (
-                    id INTEGER PRIMARY KEY AUTO_INCREMENT,
-                    id_imovel INTEGER NULL,
-                    data_vistoria DATETIME NULL,
-                    status VARCHAR(255) NULL,
-                    FOREIGN KEY (id_imovel) references imovel(id) ON DELETE CASCADE
-                )",
+                id INTEGER PRIMARY KEY AUTO_INCREMENT,
+                id_imovel INTEGER NULL,
+                data_vistoria DATETIME NULL,
+                status VARCHAR(255) NULL,
+                FOREIGN KEY (id_imovel) 
+                    REFERENCES imovel(id) 
+                    ON DELETE CASCADE
+            )",
+
             "CREATE TABLE IF NOT EXISTS relatorio_vistoria (
-                    id INTEGER PRIMARY KEY AUTO_INCREMENT,
-                    id_vistoria INTEGER NULL,
-                    descricao TEXT NULL,
-                    FOREIGN KEY (id_vistoria) references vistoria(id) ON DELETE CASCADE
-                )",
+                id INTEGER PRIMARY KEY AUTO_INCREMENT,
+                id_vistoria INTEGER NULL,
+                descricao TEXT NULL,
+                FOREIGN KEY (id_vistoria) 
+                    REFERENCES vistoria(id) 
+                    ON DELETE CASCADE
+            )",
+
             "CREATE TABLE IF NOT EXISTS notificacao (
-                    id INTEGER PRIMARY KEY AUTO_INCREMENT,
-                    id_usuario INTEGER NULL,
-                    mensagem TEXT NULL,
-                    tipo VARCHAR(255) NULL,
-                    lida BOOLEAN DEFAULT FALSE,
-                    data TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                    FOREIGN KEY (id_usuario) references usuario(id) ON DELETE CASCADE
-                )"
+                id INTEGER PRIMARY KEY AUTO_INCREMENT,
+                id_usuario INTEGER NULL,
+                mensagem TEXT NULL,
+                tipo VARCHAR(255) NULL,
+                lida BOOLEAN DEFAULT FALSE,
+                data TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                FOREIGN KEY (id_usuario) 
+                    REFERENCES usuario(id_pessoa) 
+                    ON DELETE CASCADE
+            )",
+
+            "CREATE TABLE IF NOT EXISTS historico_alteracoes (
+                id INTEGER PRIMARY KEY AUTO_INCREMENT,
+                id_usuario INTEGER NULL,
+                id_cliente INTEGER NULL,
+                id_proprietario INTEGER NULL,
+                id_imovel INTEGER NULL,
+                descricao TEXT NULL,
+                data TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                FOREIGN KEY (id_usuario) 
+                    REFERENCES usuario(id_pessoa) 
+                    ON DELETE CASCADE,
+                FOREIGN KEY (id_cliente) 
+                    REFERENCES cliente(id_pessoa) 
+                    ON DELETE CASCADE,
+                FOREIGN KEY (id_proprietario) 
+                    REFERENCES proprietario(id_pessoa) 
+                    ON DELETE CASCADE,
+                FOREIGN KEY (id_imovel) 
+                    REFERENCES imovel(id) 
+                    ON DELETE CASCADE
+            )",
         ];
 
         foreach ($queries as $sql) {
