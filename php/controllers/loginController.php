@@ -3,6 +3,7 @@
 require_once __DIR__ . '/../dao/pessoaDAO.php';
 require_once __DIR__ . '/../dao/notificacaoDAO.php';
 require_once __DIR__ . '/../dao/imovelDAO.php';
+require_once __DIR__ . '/../dao/usuarioDAO.php';
 require_once __DIR__ . '/../dao/atendimentoDAO.php';
 require_once __DIR__ . '/pessoaController.php';
 require_once __DIR__ . '/imovelController.php';
@@ -18,15 +19,6 @@ use PHPMailer\PHPMailer\SMTP;
 
 class loginController
 {
-    private PessoaDAO $pessoaDAO;
-    private ImovelDAO $imovelDAO;
-    private PessoaController $pessoaController;
-    private AtendimentoDAO $atendimentoDAO;
-    private NotificacaoDAO $notificacaoDAO;
-    private ImovelController $imovelController;
-    private AtendimentoController $atendimentoController;
-
-
 
     function marcarComoLido($dados)
     {
@@ -36,14 +28,16 @@ class loginController
                 return (["status" => "erro", "mensagem" => "Usuário não logado"]);
             }
             $idUsuario = $_SESSION['usuario_id'];
-            $usuario = $this->pessoaDAO->buscarPorId($idUsuario);
+            $pessoaDAO = new PessoaDAO();
+            $usuario = $pessoaDAO->buscarPorId($idUsuario);
             if (!$usuario) {
                 return (["status" => "erro", "mensagem" => "Usuário não encontrado"]);
             }
             $listaIds = array_map(function ($notificacao) {
                 return $notificacao['id'];
             }, $dados['notificacoes']);
-            $resultado = $this->notificacaoDAO->marcarComoLido($listaIds, $usuario);
+            $notificacaoDAO = new NotificacaoDAO();
+            $resultado = $notificacaoDAO->marcarComoLido($listaIds, $usuario);
             if ($resultado) {
                 return (["status" => "sucesso", "mensagem" => "Notificações marcadas como lidas com sucesso"]);
             } else {
@@ -80,11 +74,13 @@ class loginController
                 return (["status" => "erro", "mensagem" => "Usuário não logado"]);
             }
             $idUsuario = $_SESSION['usuario_id'];
-            $usuario = $this->pessoaDAO->buscarPorId($_SESSION['usuario_id']);
+            $pessoaDAO = new PessoaDAO();
+            $usuario = $pessoaDAO->buscarPorId($_SESSION['usuario_id']);
             if (!$usuario) {
                 return (["status" => "erro", "mensagem" => "Usuário não encontrado"]);
             }
-            $notificacoes = $this->notificacaoDAO->buscarPorUsuario($usuario);
+            $notificacaoDAO = new NotificacaoDAO();
+            $notificacoes = $notificacaoDAO->buscarPorUsuario($usuario);
             if (!$notificacoes) {
                 return [
                     "status" => "erro",
@@ -107,14 +103,16 @@ class loginController
                 return (["status" => "erro", "mensagem" => "Usuário não logado"]);
             }
             $idUsuario = $_SESSION['usuario_id'];
-            $atendimentos = $this->atendimentoDAO->listarPorUsuario($idUsuario);
+            $atendimentoDAO = new AtendimentoDAO();
+            $atendimentos = $atendimentoDAO->listarPorUsuario($idUsuario);
             if (!$atendimentos) {
                 return [
                     "status" => "erro",
                     "mensagem" => "Nenhum atendimento encontrado para o usuário"
                 ];
             } else {
-                return $this->atendimentoController->montarJson($atendimentos);
+                $atendimentoController = new AtendimentoController();
+                return $atendimentoController->montarJson($atendimentos);
             }
         } catch (Exception $e) {
             return (["status" => "erro", "mensagem" => "Erro ao carregar atendimentos: " . $e->getMessage()]);
@@ -129,14 +127,16 @@ class loginController
                 return (["status" => "erro", "mensagem" => "Usuário não logado"]);
             }
             $idCliente = $_SESSION['usuario_id'];
-            $imoveisFavoritos = $this->imovelDAO->listarFavoritos($idCliente);
+            $imovelDAO = new ImovelDAO();
+            $imoveisFavoritos = $imovelDAO->listarFavoritos($idCliente);
             if (!$imoveisFavoritos) {
                 return [
                     "status" => "erro",
                     "mensagem" => "Nenhum imóvel favorito encontrado para o usuário"
                 ];
             } else {
-                return $this->imovelController->montarJson($imoveisFavoritos);
+                $imovelController = new ImovelController();
+                return $imovelController->montarJson($imoveisFavoritos);
             }
         } catch (Exception $e) {
             return (["status" => "erro", "mensagem" => "Erro ao carregar favoritos: " . $e->getMessage()]);
@@ -153,8 +153,10 @@ class loginController
             }
             session_start();
             $usuario = null;
+
             if (isset($_SESSION['usuario_id'])) {
-                $usuario = $this->pessoaDAO->buscarPorId($_SESSION['usuario_id']);
+                $pessoaDAO = new PessoaDAO();
+                $usuario = $pessoaDAO->buscarPorId($_SESSION['usuario_id']);
             } else {
                 return (["status" => "erro", "mensagem" => "Usuário não logado"]);
             }
@@ -172,7 +174,8 @@ class loginController
             // if ($idImoveis == array_column($usuario->listarFavoritos(), 'id')) {
             //     return (["status" => "sucesso", "mensagem" => "Imóveis já favoritados"]);
             // }
-            $resultado = $this->imovelDAO->cadastrarImoveisCliente($idCliente, $idImoveis);
+            $imovelDAO = new ImovelDAO();
+            $resultado = $imovelDAO->cadastrarImoveisCliente($idCliente, $idImoveis);
             if ($resultado) {
                 return (["status" => "sucesso", "mensagem" => "Imóveis favoritados com sucesso"]);
             } else {
@@ -255,9 +258,10 @@ class loginController
         try {
             session_start();
             if (isset($_SESSION['usuario_id'])) {
-                $usuario = $this->pessoaDAO->buscarPorId($_SESSION['usuario_id']);
-
-                $dados = $this->pessoaController->montarJson([$usuario]);
+                $usuarioDAO = new UsuarioDAO();
+                $usuario = $usuarioDAO->buscarPorId($_SESSION['usuario_id']);
+                $pessoaController = new PessoaController();
+                $dados = $pessoaController->montarJson([$usuario]);
 
                 return ([
                     "status" => "sucesso",
@@ -284,7 +288,7 @@ class loginController
             $usuario = $data['usuario'] ?? '';
             $senha = $data['senha'] ?? '';
             $consulta = null;
-
+            $usuarioDAO = new UsuarioDAO();
             if (array_key_exists('credential', $data)) {
                 $token = $data["credential"];
                 $client = new Google_Client([
@@ -299,13 +303,13 @@ class loginController
                     $nome = $payload['name'];
                     $foto = $payload['picture'];
 
-                    $consulta = $this->pessoaDAO->verificar($email, "", true);
+                    $consulta = $usuarioDAO->verificar($email, "", true);
 
                     if (!$consulta) {
-                        $resultado = $this->pessoaController->atualizar([
+                        $pessoaController = new PessoaController();
+                        $resultado = $pessoaController->atualizar([
                             "nome" => $nome,
                             "email" => $email,
-                            "username" => $email,
                             "senha" => "",
                             "tipo" => "CLIENTE"
                         ]);
@@ -318,7 +322,9 @@ class loginController
                     return (["status" => "erro", "mensagem" => "Usuário ou senha não fornecidos"]);
                 }
 
-                $consulta = $this->pessoaDAO->verificar($usuario, $senha);
+                $consulta = $usuarioDAO->verificar($usuario, $senha);
+
+                error_log("Resultado da verificação de login: " . print_r($consulta, true));
             }
 
             if ($consulta) {

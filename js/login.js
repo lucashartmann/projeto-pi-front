@@ -136,6 +136,8 @@ async function fazerLogin(event) {
             return;
         }
 
+        console.log("Dados recebidos do login:", dados);
+
         if (dados.status == "erro") {
             alert(dados.mensagem);
             return;

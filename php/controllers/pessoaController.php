@@ -12,11 +12,6 @@ require_once __DIR__ . '/../services/pessoaService.php';
 class PessoaController
 {
 
-    private PessoaDAO $pessoaDAO;
-    private PessoaService $pessoaService;
-
-
-
     function montarJson(array $listaUsuarios)
     {
 
@@ -35,7 +30,6 @@ class PessoaController
                     "nome" => $usuario->getNome(),
                     "cpf_cnpj" => $usuario->getCpfCnpj(),
                     "rg" => $usuario->getRg(),
-                    "username" => !($usuario instanceof Proprietario) ? $usuario->getUsername() ?? null : null,
                     "telefones" => [$usuario->getTelefones()],
                     "endereco" => $usuario->getEndereco() ? [
                         "rua" => $usuario->getEndereco()->rua ?? null,
@@ -49,7 +43,7 @@ class PessoaController
                     "creci" => $usuario instanceof Corretor ? $usuario->getCreci() ?? null : null,
                     "salario" => method_exists($usuario, 'getSalario') ? $usuario->getSalario() ?? null : null,
                     "data_nascimento" => $usuario->getDataNascimento() ? $usuario->getDataNascimento()->format('d-m-Y') : null,
-                    "tipo" => $usuario instanceof Proprietario ? "PROPRIETARIO" : $usuario->getTipo() ?? null,
+                    "tipo" => ($usuario instanceof Proprietario ? "PROPRIETARIO" : ($usuario instanceof Cliente ? "CLIENTE" : $usuario->getCargo() ?? null)),
                     "data_cadastro" => $usuario->getDataCadastro() ? $usuario->getDataCadastro() : null,
                     "data_modificacao" => $usuario->getDataModificacao() ? $usuario->getDataModificacao() : null,
                     "imoveis" => array_map(function ($imovel) {
@@ -86,7 +80,8 @@ class PessoaController
     function listar($tipo = null)
     {
         try {
-            $usuarios = $this->pessoaDAO->listar($tipo);
+            $pessoaDAO = new PessoaDAO();
+            $usuarios = $pessoaDAO->listar($tipo);
             return self::montarJson($usuarios);
         } catch (Exception $e) {
             return (["status" => "erro", "mensagem" => "Erro ao listar usuários"]);
@@ -99,7 +94,6 @@ class PessoaController
             $nome = array_key_exists('nome', $dados) ? $dados['nome'] : "";
             $email = array_key_exists('email', $dados) ? $dados['email'] : "";
             $senha = array_key_exists('senha', $dados) ? $dados['senha'] : "";
-            $username = $email;
             $dataNascimento = array_key_exists('data_nascimento', $dados) && Validacao::validarDataNascimento($dados['data_nascimento']) ? DateTime::createFromFormat('d/m/Y', $dados['data_nascimento']) : null;
             $cpfCnpj = array_key_exists('cpf_cnpj', $dados) && Validacao::validarCPF($dados['cpf_cnpj']) ? str_replace(['.', '-', ' '], '', $dados['cpf_cnpj']) : "";
             $rg = array_key_exists('rg', $dados) && Validacao::validarRG($dados['rg']) ? $dados['rg'] : "";
@@ -118,7 +112,8 @@ class PessoaController
             $complemento = array_key_exists('complemento', $dados) ? $dados['complemento'] : "";
 
             if ($id > 0) {
-                $pessoa = $this->pessoaDAO->buscarPorId($id);
+                $pessoaDAO = new PessoaDAO();
+                $pessoa = $pessoaDAO->buscarPorId($id);
             } else {
                 switch ($tipo) {
                     case "CORRETOR":
@@ -184,12 +179,13 @@ class PessoaController
 
             $pessoa->setEndereco($endereco);
             $pessoa->setDataModificacao(DateTime::createFromFormat('Y-m-d H:i:s', date('Y-m-d H:i:s')));
+            $pessoaService = new PessoaService();
             if ($id > 0) {
-                $this->pessoaService->atualizar($pessoa);
+                $pessoaService->atualizar($pessoa);
                 return (["status" => "sucesso", "mensagem" => "Usuário atualizado com sucesso"]);
             } else {
                 $pessoa->setDataCadastro(DateTime::createFromFormat('Y-m-d H:i:s', date('Y-m-d H:i:s')));
-                $this->pessoaService->cadastrar($pessoa);
+                $pessoaService->cadastrar($pessoa);
                 return (["status" => "sucesso", "mensagem" => "Usuário cadastrado com sucesso"]);
             }
         } catch (Exception $e) {
@@ -200,7 +196,8 @@ class PessoaController
     function buscarPorId(int $id)
     {
         try {
-            $usuario = $this->pessoaDAO->buscarPorId($id);
+            $pessoaDAO = new PessoaDAO();
+            $usuario = $pessoaDAO->buscarPorId($id);
             if ($usuario) {
                 return self::montarJson([$usuario]);
             } else {
@@ -214,9 +211,10 @@ class PessoaController
     function apagar(int $id)
     {
         try {
-            $usuario = $this->pessoaDAO->buscarPorId($id);
+            $pessoaDAO = new PessoaDAO();
+            $usuario = $pessoaDAO->buscarPorId($id);
             if ($usuario) {
-                $remocao = $this->pessoaDAO->getConexao()->remover("id", $id, "usuario");
+                $remocao = $pessoaDAO->getConexao()->remover("id", $id, "usuario");
                 if ($remocao) {
                     return (["status" => "sucesso", "mensagem" => "Usuário removido com sucesso"]);
                 } else {

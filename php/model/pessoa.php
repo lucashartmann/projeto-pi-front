@@ -101,7 +101,7 @@ class Pessoa
         return $this->dataNascimento;
     }
 
-    public function isAtivo(): bool
+    public function isAtivo(): ?bool
     {
         return $this->ativo;
     }
@@ -151,7 +151,7 @@ class Pessoa
         $this->dataNascimento = $value;
     }
 
-    public function setAtivo(bool $value)
+    public function setAtivo(?bool $value)
     {
         $this->ativo = $value;
     }

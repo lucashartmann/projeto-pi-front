@@ -132,11 +132,12 @@ class ImovelService
             $anuncioDAO = new AnuncioDAO();
             $anuncioDAO->atualizar($imovel->getAnuncio());
 
-            if ($imovel->getAnuncio()->getAnexos() !== null && count($imovel->getAnuncio()->getAnexos()) > 0) {
+            if (($imovel->getAnuncio()->getAnexos() !== null && count($imovel->getAnuncio()->getAnexos()) > 0) || ($imovel->getAnuncio()->getImagens() !== null && count($imovel->getAnuncio()->getImagens()) > 0) || ($imovel->getAnuncio()->getVideos() !== null && count($imovel->getAnuncio()->getVideos()) > 0)) {
                 $anexoDAO = new AnexoDAO();
-                foreach ($imovel->getAnuncio()->getAnexos() as $anexo) {
-                    $anexo->setId($imovel->getAnuncio()->getId());
-                    if ($anexo->getId() === null) {
+                $anexos = $imovel->getAnuncio()->getImagens() + $imovel->getAnuncio()->getVideos() + $imovel->getAnuncio()->getAnexos();
+                foreach ($anexos as $anexo) {
+                    if ($anexo->getIdAnuncio() === null) {
+                        $anexo->setIdAnuncio($imovel->getAnuncio()->getId());
                         $anexoDAO->cadastrar($anexo);
                     } else {
                         $anexoDAO->atualizar($anexo);
@@ -160,11 +161,12 @@ class ImovelService
             $anuncioDAO = new AnuncioDAO();
             $anuncioDAO->atualizar($anuncio);
 
-            if ($anuncio->getAnexos() !== null && count($anuncio->getAnexos()) > 0) {
+            if (($anuncio->getAnexos() !== null && count($anuncio->getAnexos()) > 0) || ($anuncio->getImagens() !== null && count($anuncio->getImagens()) > 0) || ($anuncio->getVideos() !== null && count($anuncio->getVideos()) > 0)) {
                 $anexoDAO = new AnexoDAO();
-                foreach ($anuncio->getAnexos() as $anexo) {
-                    $anexo->setId($anuncio->getId());
-                    if ($anexo->getId() === null) {
+                $anexos = $anuncio->getImagens() + $anuncio->getVideos() + $anuncio->getAnexos();
+                foreach ($anexos as $anexo) {
+                    if ($anexo->getIdAnuncio() === null) {
+                        $anexo->setIdAnuncio($anuncio->getId());
                         $anexoDAO->cadastrar($anexo);
                     } else {
                         $anexoDAO->atualizar($anexo);

@@ -104,7 +104,7 @@ class AnexoDAO
             $stmt = $this->bancoDados->prepare($sqlQuery);
 
             return $stmt->execute([
-                ':id_anuncio' => $anexo->getId(),
+                ':id_anuncio' => $anexo->getIdAnuncio(),
                 ':nome_arquivo' => $anexo->getCaminho(),
                 ':tipo' => $anexo->getTipo() ? $anexo->getTipo()->value : null
             ]);
@@ -125,8 +125,8 @@ class AnexoDAO
             $stmt = $this->bancoDados->prepare($sqlQuery);
 
             return $stmt->execute([
-                ':id' => $anexo->getId(),
-                ':id_anuncio' => $anexo->getId(),
+                ':id' => $anexo->getIdAnuncio(),
+                ':id_anuncio' => $anexo->getIdAnuncio(),
                 ':nome_arquivo' => $anexo->getCaminho(),
                 ':tipo' => $anexo->getTipo() ? $anexo->getTipo()->value : null
             ]);

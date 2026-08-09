@@ -814,18 +814,35 @@ function initialize()
             $imovel->setAnuncio($anuncio);
 
             try {
-                $idImovel = $imovelService->cadastrar($imovel);
+                $imovel = $imovelService->cadastrar($imovel);
             } catch (Exception $e) {
                 continue;
             }
 
             if ($imovel->getAnuncio()) {
+                $imagens = [];
+
                 $imagem = new Anexo(
-                    $imovel->getAnuncio()->getId(),
+                    null,
                     "imoveis/imovel_" . $i . ".webp",
                     TipoAnexo::IMAGEM
                 );
-                $anuncio->setImagens([$imagem, $imagem, $imagem, $imagem, $imagem, $imagem, $imagem, $imagem, $imagem, $imagem, $imagem, $imagem, $imagem, $imagem, $imagem]);
+                $imagens[] = $imagem;
+
+                $diretorio = __DIR__ . "/../../assets/imoveis";
+                $maxImagens = count(glob($diretorio . "/*"));
+
+                for ($j = $i + 1; $j <= $i + 5 && $j <= $maxImagens; $j++) {
+                    $imagem = new Anexo(
+                        null,
+                        "imoveis/imovel_" . $j . ".webp",
+                        TipoAnexo::IMAGEM
+                    );
+
+                    $imagens[] = $imagem;
+                }
+
+                $anuncio->setImagens($imagens);
                 try {
                     $imovelService->atualizarAnuncio($anuncio);
                 } catch (Exception $e) {

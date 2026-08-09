@@ -160,6 +160,9 @@ export async function listarImoveisDisponiveis() {
             return null;
         }
 
+        
+
+
         resposta.forEach(imovel => {
             switch (imovel.status) {
                 case "Venda":
@@ -175,7 +178,8 @@ export async function listarImoveisDisponiveis() {
 
         let imoveis = [];
         imoveis = resposta.filter(imovel => imovel.anuncio && imovel.anuncio.imagens && imovel.anuncio.imagens.length > 0);
-
+        console.log("Imóveis disponíveis:", imoveis);
+        
         return imoveis;
     } catch (erro) {
         console.error("Falha ao conectar com o backend:", erro);

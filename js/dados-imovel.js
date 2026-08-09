@@ -7,6 +7,7 @@ window.abrirImagem = abrirImagem;
 window.curtirImovel = curtirImovel;
 window.cadastrarAtendimento = cadastrarAtendimento;
 window.compartilharImovel = compartilharImovel;
+window.ativarImagem = ativarImagem;
 
 let imovel = null;
 let usuario = null;
@@ -73,6 +74,11 @@ async function cadastrarAtendimento() {
     }
 }
 
+function ativarImagem(index) {
+    document.querySelector('.swiper-destaque').swiper.slideTo(index);
+    document.querySelector('.swiper-galeria').swiper.slideTo(index);
+}
+
 async function setupDados(imovel) {
     // let imovel = JSON.parse(dados);
     var div = document.getElementById("dados-imovel");
@@ -80,9 +86,10 @@ async function setupDados(imovel) {
     let swiperhtml = "";
     if (imovel.anuncio.imagens && imovel.anuncio.imagens.length > 0) {
         swiperhtml = "";
-        for (const imagem of imovel.anuncio.imagens) {
+        for (let i = 0; i < imovel.anuncio.imagens.length; i++) {
+            const imagem = imovel.anuncio.imagens[i];
             swiperhtml += `<div class="swiper-slide" style="background-image: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), url(${imagem})" onclick="abrirImagem('${imagem}')"></div>`;
-            imagensHtml += `<div class="swiper-slide" style="background-image: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), url(${imagem})" onclick="abrirImagem('${imagem}')"></div>`;
+            imagensHtml += `<div class="swiper-slide" style="background-image: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), url(${imagem})" onclick="ativarImagem('${i}')"></div>`;
         }
     }
 
@@ -248,21 +255,15 @@ window.addEventListener("DOMContentLoaded", async () => {
 });
 
 function abrirImagem(src) {
-    var modal = document.createElement("div");
-    modal.id = "modal-imagem";
+    // document.querySelector(".swiper-destaque").swiper.slideTo(imovel.anuncio.imagens.indexOf(src));
+    
+    document.querySelector(".swiper-destaque").classList.toggle("modal-imagem");
 
-    var img = document.createElement("img");
-    img.src = src;
+    // document.addEventListener("click", function () {
+    //     document.querySelector(".swiper-destaque").classList.remove("modal-imagem");
+    // });
 
-    modal.appendChild(img);
-    document.body.appendChild(modal);
-    modal.addEventListener("click", function () {
-        document.body.removeChild(modal);
-    });
-    img.addEventListener("click", function (event) {
-        event.stopPropagation();
-        document.body.removeChild(modal);
-    });
+
 }
 
 function inicializarSwiper() {
@@ -272,7 +273,7 @@ function inicializarSwiper() {
     }
 
     var swiper = new Swiper('.swiper-destaque', {
-        loop: true,
+        loop: imovel.anuncio.imagens.length > 1 ? true : false,
         pagination: {
             el: '.swiper-destaque .swiper-pagination',
             clickable: true
@@ -287,7 +288,7 @@ function inicializarSwiper() {
     });
 
     var swiper = new Swiper('.swiper-galeria', {
-        loop: true,
+        loop: imovel.anuncio.imagens.length > 1 ? true : false,
         pagination: {
             el: '.swiper-galeria .swiper-pagination',
             clickable: true
@@ -297,12 +298,12 @@ function inicializarSwiper() {
             prevEl: '.swiper-galeria .swiper-button-prev'
         },
         spaceBetween: 30,
-        centeredSlides: true,
+        centeredSlides: false,
         breakpoints: {
-            0: { slidesPerView: 1 },
-            640: { slidesPerView: 2 },
-            768: { slidesPerView: 3 },
-            1024: { slidesPerView: 4 },
+            0: { slidesPerView: imovel.anuncio.imagens.length > 1 ? 1 : imovel.anuncio.imagens.length  },
+            640: { slidesPerView: imovel.anuncio.imagens.length > 2 ? 2 : imovel.anuncio.imagens.length  },
+            768: { slidesPerView: imovel.anuncio.imagens.length > 3 ? 3 : imovel.anuncio.imagens.length  },
+            1024: { slidesPerView: imovel.anuncio.imagens.length > 4 ? 4 : imovel.anuncio.imagens.length },
         },
     });
 

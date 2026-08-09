@@ -151,7 +151,6 @@ async function abrirImovel(imovel = null) {
 async function abrirCadastro(usuario) {
     if (usuario) {
         document.getElementById("inpt-nome").value = usuario.nome || "";
-        // document.getElementById("inpt-username").value = usuario.username || "";
         document.getElementById("inpt-email").value = usuario.email || "";
         document.getElementById("inpt-cpf").value = usuario.cpf_cnpj || "";
         document.getElementById("ta-cep").value = usuario.endereco?.cep || "";

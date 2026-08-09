@@ -57,3 +57,4 @@
 ### Atendimentos e Agendar visitas:
 
 - [ ] Poder editar o atendimento e a visita, e talvez adicionar uma opção de cancelar a visita e apagar o atendimento. Mostrar mais detalhes
+- [ ] Arrumar SQL de atendimento

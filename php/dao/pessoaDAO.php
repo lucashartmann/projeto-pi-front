@@ -83,11 +83,12 @@ class PessoaDAO
         try {
             $pessoa = null;
 
-            if ($registro["id"] === null) {
+            if (!isset($registro["id"]) || $registro["id"] === null) {
+                error_log("PessoaDAO->montar: Registro de pessoa inválido: ID nulo");
                 return null;
             }
 
-            if ($registro["id_endereco"] !== null) {
+            if (isset($registro["id_endereco"]) && $registro["id_endereco"] !== null) {
                 $endereco = new Endereco(
                     $registro["rua"],
                     $registro["bairro"],
@@ -102,24 +103,24 @@ class PessoaDAO
                 $endereco = null;
             }
 
-            if ($registro["funcionario_id"] !== null) {
+            if (isset($registro["funcionario_id"]) && $registro["funcionario_id"] !== null) {
                 $pessoa = new Funcionario($registro["email"], $registro["nome"], $registro["cpf_cnpj"], $registro["cargo"] ? Cargo::tryFrom($registro["cargo"]) : null);
                 $pessoa->setMatricula($registro["matricula"]);
                 $pessoa->setSalario($registro["salario"]);
                 $pessoa->setDataAdmissao($registro["data_admissao"] ? new DateTime($registro["data_admissao"]) : null);
             }
 
-            if ($registro["cliente_id"] !== null) {
+            if (isset($registro["cliente_id"]) && $registro["cliente_id"] !== null) {
                 $pessoa = new Cliente($registro["email"], $registro["nome"], $registro["cpf_cnpj"]);
             }
 
-            if ($registro["proprietario_id"] !== null && $registro["corretor_id"] === null) {
+            if (isset($registro["proprietario_id"]) && $registro["proprietario_id"] !== null && $registro["corretor_id"] === null) {
                 $pessoa = new Proprietario($registro["email"], $registro["nome"], $registro["cpf_cnpj"]);
                 $proprietarioImovelDAO = new ProprietarioImovelDAO();
                 $pessoa->setImoveis($proprietarioImovelDAO->listarPorProprietario($registro["proprietario_id"]));
             }
 
-            if ($registro["corretor_id"] !== null) {
+            if (isset($registro["corretor_id"]) && $registro["corretor_id"] !== null) {
                 $pessoa = new Corretor($registro["email"], $registro["nome"], $registro["cpf_cnpj"], $registro["creci"]);
             }
 
@@ -155,25 +156,45 @@ class PessoaDAO
             $sql = "
             SELECT
                 pessoa.*,
-                usuario.*,
-                funcionario.*,
-                corretor.*,
-                cliente.*,
-                proprietario.*,
-                endereco.*,
-                endereco.id AS id_endereco,
-                funcionario.id_pessoa AS funcionario_id,
+                
+                usuario.id_pessoa AS usuario_id,
+                usuario.senha,
+                usuario.ultimo_login,
+                usuario.ativo,
+
                 corretor.id_funcionario AS corretor_id,
+                corretor.creci,
+
+                proprietario.id_pessoa AS proprietario_id,
+                
                 cliente.id_pessoa AS cliente_id,
-                proprietario.id_pessoa AS proprietario_id
-            FROM pessoa 
-            LEFT JOIN usuario  ON usuario.id_pessoa = pessoa.id
-            LEFT JOIN funcionario  ON funcionario.id_pessoa = pessoa.id
-            LEFT JOIN corretor  ON corretor.id_funcionario = funcionario.id_pessoa
-            LEFT JOIN cliente  ON cliente.id_pessoa = pessoa.id
-            LEFT JOIN proprietario  ON proprietario.id_pessoa = pessoa.id
-            LEFT JOIN endereco  ON endereco.id = pessoa.id_endereco
-            WHERE pessoa.id = ?
+                cliente.tipo_interesse,
+                cliente.valor_minimo,
+                cliente.valor_maximo,
+
+                funcionario.id_pessoa AS funcionario_id,
+                funcionario.matricula,
+                funcionario.salario,
+                funcionario.data_admissao,
+                funcionario.cargo,
+
+                endereco.id AS endereco_id,
+                endereco.rua,
+                endereco.numero,
+                endereco.bairro,
+                endereco.cep,
+                endereco.complemento,
+                endereco.cidade,
+                endereco.uf
+            
+                FROM pessoa 
+                LEFT JOIN usuario  ON usuario.id_pessoa = pessoa.id
+                LEFT JOIN funcionario  ON funcionario.id_pessoa = pessoa.id
+                LEFT JOIN corretor  ON corretor.id_funcionario = funcionario.id_pessoa
+                LEFT JOIN cliente  ON cliente.id_pessoa = pessoa.id
+                LEFT JOIN endereco  ON endereco.id = pessoa.id_endereco
+                LEFT JOIN proprietario  ON proprietario.id_pessoa = pessoa.id
+                WHERE pessoa.id = ?
             ";
 
             $stmt = Banco::getInstance()->prepare($sql);
@@ -197,25 +218,45 @@ class PessoaDAO
         try {
             $sql = "
             SELECT
-                pessoa.*,
-                usuario.*,
-                funcionario.*,
-                corretor.*,
-                cliente.*,
-                proprietario.*,
-                endereco.*,
-                endereco.id AS id_endereco,
-                funcionario.id_pessoa AS funcionario_id,
+             pessoa.*,
+                
+                usuario.id_pessoa AS usuario_id,
+                usuario.senha,
+                usuario.ultimo_login,
+                usuario.ativo,
+
                 corretor.id_funcionario AS corretor_id,
+                corretor.creci,
+
+                proprietario.id_pessoa AS proprietario_id,
+                
                 cliente.id_pessoa AS cliente_id,
-                proprietario.id_pessoa AS proprietario_id
-            FROM pessoa 
-            LEFT JOIN usuario  ON usuario.id_pessoa = pessoa.id
-            LEFT JOIN funcionario  ON funcionario.id_pessoa = pessoa.id
-            LEFT JOIN corretor  ON corretor.id_funcionario = funcionario.id_pessoa
-            LEFT JOIN cliente  ON cliente.id_pessoa = pessoa.id
-            LEFT JOIN proprietario  ON proprietario.id_pessoa = pessoa.id
-            LEFT JOIN endereco  ON endereco.id = pessoa.id_endereco
+                cliente.tipo_interesse,
+                cliente.valor_minimo,
+                cliente.valor_maximo,
+
+                funcionario.id_pessoa AS funcionario_id,
+                funcionario.matricula,
+                funcionario.salario,
+                funcionario.data_admissao,
+                funcionario.cargo,
+
+                endereco.id AS endereco_id,
+                endereco.rua,
+                endereco.numero,
+                endereco.bairro,
+                endereco.cep,
+                endereco.complemento,
+                endereco.cidade,
+                endereco.uf
+            
+                FROM pessoa 
+                LEFT JOIN usuario  ON usuario.id_pessoa = pessoa.id
+                LEFT JOIN funcionario  ON funcionario.id_pessoa = pessoa.id
+                LEFT JOIN corretor  ON corretor.id_funcionario = funcionario.id_pessoa
+                LEFT JOIN cliente  ON cliente.id_pessoa = pessoa.id
+                LEFT JOIN endereco  ON endereco.id = pessoa.id_endereco
+                LEFT JOIN proprietario  ON proprietario.id_pessoa = pessoa.id
             ";
 
             if ($tipo !== null) {
@@ -234,63 +275,6 @@ class PessoaDAO
         } catch (Exception $e) {
             error_log("ERRO! pessoaDAO->listar: " . $e->getMessage());
             throw new Exception("Erro ao listar pessoas: " . $e->getMessage());
-        }
-    }
-
-
-
-
-
-    public function verificar(String $email, String $senha, bool $google = false): ?Pessoa
-    {
-        try {
-
-            $stmt = $this->bancoDados->prepare("
-            SELECT
-                pessoa.*,
-                usuario.*,
-                corretor.*,
-                cliente.*,
-                proprietario.*,
-                endereco.*,
-                endereco.id AS id_endereco,
-                funcionario.id_pessoa AS funcionario_id,
-                corretor.id_funcionario AS corretor_id,
-                cliente.id_pessoa AS cliente_id,
-                proprietario.id_pessoa AS proprietario_id
-            FROM pessoa 
-            LEFT JOIN usuario  ON usuario.id_pessoa = pessoa.id
-            LEFT JOIN corretor  ON corretor.id_funcionario = funcionario.id_pessoa
-            LEFT JOIN cliente  ON cliente.id_pessoa = pessoa.id
-            LEFT JOIN proprietario  ON proprietario.id_pessoa = pessoa.id
-            LEFT JOIN endereco  ON endereco.id = pessoa.id_endereco
-            WHERE email = :email
-        ");
-            $stmt->execute([':email' => $email]);
-
-            $registro = $stmt->fetch(PDO::FETCH_ASSOC);
-
-            if (!$registro) {
-                return null;
-            }
-
-            $senha_hash_banco = "";
-
-            if (!$google) {
-
-                $senha_hash_banco = $registro['senha'];
-
-                $senha_hash = hash('sha256', $senha);
-
-                if ($senha_hash_banco !== $senha_hash) {
-                    throw new Exception("Senha errada!");
-                }
-            }
-
-            return $this->montar($registro);
-        } catch (Exception $e) {
-            error_log("ERRO! pessoaDAO->verificar: " . $e->getMessage());
-            throw new Exception("Erro ao verificar usuário: " . $e->getMessage());
         }
     }
 }

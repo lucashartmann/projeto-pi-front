@@ -9,25 +9,26 @@ enum TipoAnexo: string
 
 class Anexo
 {
-    private int $id;
+    private ?int $idAnuncio;
     private string $caminho;
     private TipoAnexo $tipoAnexo;
 
-    public function __construct(int $id, string $caminho, TipoAnexo $tipoAnexo)
+    public function __construct(int $idAnuncio = null, string $caminho, TipoAnexo $tipoAnexo)
     {
-        $this->id = $id;
+        $this->idAnuncio = $idAnuncio;
         $this->caminho = $caminho;
         $this->tipoAnexo = $tipoAnexo;
     }
 
-    public function setId(int $id): void
+
+    public function setIdAnuncio(int $idAnuncio): void
     {
-        $this->id = $id;
+        $this->idAnuncio = $idAnuncio;
     }
 
-    public function getId(): int
+    public function getIdAnuncio(): ?int
     {
-        return $this->id;
+        return $this->idAnuncio;
     }
 
     public function getCaminho(): string

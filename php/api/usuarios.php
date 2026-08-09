@@ -64,3 +64,10 @@ switch ($acao) {
         $resultado = (["status" => "erro", "mensagem" => "Ação inválida"]);
         break;
 }
+
+if (!headers_sent()) {
+    http_response_code(200);
+    echo json_encode($resultado);
+} else {
+    error_log("Erro: Cabeçalhos já enviados, não é possível enviar a resposta JSON.");
+}

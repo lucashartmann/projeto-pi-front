@@ -1,6 +1,6 @@
 <?php
 
-require_once __DIR__ . '/../dao/$imovelDAO->hp';
+require_once __DIR__ . '/../dao/imovelDAO.php';
 require_once __DIR__ . '/../dao/pessoaDAO.php';
 require_once __DIR__ . '/../dao/enderecoDAO.php';
 require_once __DIR__ . '/../dao/condominioDAO.php';
@@ -12,7 +12,6 @@ require_once __DIR__ . '/../model/anuncio.php';
 require_once __DIR__ . '/../model/endereco.php';
 require_once __DIR__ . '/../model/condominio.php';
 require_once __DIR__ . '/../services/imovelService.php';
-require_once __DIR__ . '/../services/anuncioService.php';
 
 class ImovelController
 {
@@ -431,6 +430,7 @@ class ImovelController
         try {
             $imovelDAO = new ImovelDAO();
             $imoveis = $imovelDAO->listarDisponiveis();
+            error_log("Quantidade de imóveis disponíveis encontrados: " . count($imoveis));
             if (!$imoveis) {
                 return [
                     "status" => "erro",
@@ -472,14 +472,15 @@ class ImovelController
             $endereco = null;
             if ($imovel->getEndereco()) {
                 $enderecoObj = $imovel->getEndereco();
+      
                 $endereco = [
-                    "rua" => $enderecoObj->rua ?? null,
-                    "numero" => $enderecoObj->numero ?? null,
-                    "bairro" => $enderecoObj->bairro ?? null,
-                    "cidade" => $enderecoObj->cidade ?? null,
-                    "uf" => $enderecoObj->uf ?? null,
-                    "cep" => $enderecoObj->cep ?? null,
-                    "complemento" => $enderecoObj->complemento ?? null,
+                    "rua" => $enderecoObj->getRua() ?? null,
+                    "numero" => $enderecoObj->getNumero() ?? null,
+                    "bairro" => $enderecoObj->getBairro() ?? null,
+                    "cidade" => $enderecoObj->getCidade() ?? null,
+                    "uf" => $enderecoObj->getUf() ?? null,
+                    "cep" => $enderecoObj->getCep() ?? null,
+                    "complemento" => $enderecoObj->getComplemento() ?? null,
                 ];
             }
 
@@ -633,7 +634,6 @@ class ImovelController
                 "estado" => $imovel->getEstado() ?? null,
                 "area_privativa" => $imovel->getAreaPrivativa() ?? 0.00,
                 "area_total" => $imovel->getAreaTotal() ?? 0.00,
-                "complemento" => $imovel->getComplemento() ?? null,
                 "condominio" => $condominio ?? null,
                 "filtros" => $imovel->getFiltros(),
                 "destacado" => $imovel->isDestacado() ?? false,

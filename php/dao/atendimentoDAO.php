@@ -187,7 +187,6 @@ class AtendimentoDAO
                 imovel_condominio.endereco_uf AS imovel_condominio_endereco_uf,
 
                 imovel_usuario_corretor.id AS imovel_corretor_id,
-                imovel_usuario_corretor.username AS imovel_corretor_username,
                 imovel_usuario_corretor.senha AS imovel_corretor_senha,
                 imovel_usuario_corretor.email AS imovel_corretor_email,
                 imovel_usuario_corretor.nome AS imovel_corretor_nome,
@@ -196,7 +195,6 @@ class AtendimentoDAO
                 imovel_corretor.creci AS imovel_corretor_creci,
 
                 imovel_usario_captador.id AS imovel_captador_id,
-                imovel_usario_captador.username AS imovel_captador_username,
                 imovel_usario_captador.senha AS imovel_captador_senha,
                 imovel_usario_captador.email AS imovel_captador_email,
                 imovel_usario_captador.nome AS imovel_captador_nome,
@@ -239,7 +237,6 @@ class AtendimentoDAO
                 imovel.destacado as imovel_destacado
                
                 atendimento_corretor_usuario.id as atendimento_corretor_id 
-                atendimento_corretor_usuario.username as atendimento_corretor_username
                 atendimento_corretor_usuario.senha as atendimento_corretor_senha
                 atendimento_corretor_usuario.email as atendimento_corretor_email
                 atendimento_corretor_usuario.nome as atendimento_corretor_nome
@@ -254,7 +251,6 @@ class AtendimentoDAO
                
 
                 atendimento_cliente_usuario.id as atendimento_cliente_id 
-                atendimento_cliente_usuario.username as atendimento_cliente_username
                 atendimento_cliente_usuario.senha as atendimento_cliente_senha
                 atendimento_cliente_usuario.email as atendimento_cliente_email
                 atendimento_cliente_usuario.nome as atendimento_cliente_nome

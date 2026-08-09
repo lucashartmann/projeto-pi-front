@@ -1,6 +1,5 @@
 import { listarUsuarios } from "./modules/usuarios.js";
 import { listarImoveis, destacarImovel, excluirImovel } from "./modules/imoveis.js";
-import { listarProprietarios } from "./modules/proprietarios.js";
 import { formatarValor } from "./modules/utils.js";
 
 let imoveisCache = [];
@@ -755,8 +754,7 @@ window.addEventListener("DOMContentLoaded", async () => {
 
     let dados = [];
     let dadosUsuarios = await listarUsuarios();
-    let dadosProprietarios = await listarProprietarios();
-    dados = [...dadosUsuarios, ...dadosProprietarios];
+    dados = [...dadosUsuarios];
     if (dados.length === 0 || !dados) {
         const section = document.getElementById("container-pai");
         const divVazio = document.createElement("div");

@@ -75,7 +75,13 @@ class ImovelDAO
             if (!isset($dados['id'])) {
                 throw new Exception("ID do imóvel não fornecido");
             }
+
             $endereco = null;
+
+            if (!isset($dados['endereco_id'])) {
+                throw new Exception("ID do endereço não fornecido");
+            }
+
             if ($dados['endereco_id']) {
                 $endereco = new Endereco(
                     $dados['endereco_rua'],
@@ -87,35 +93,6 @@ class ImovelDAO
                 $endereco->setId((int) $dados['endereco_id']);
                 $endereco->setNumero($dados['endereco_numero'] !== null ? (int) $dados['endereco_numero'] : null);
                 $endereco->setComplemento($dados['endereco_complemento']);
-            }
-
-            $corretor = null;
-            if ($dados['corretor_id']) {
-                $corretor = new Corretor(
-                    $dados['corretor_email'],
-                    $dados['corretor_nome'],
-                    $dados['corretor_cpf_cnpj'],
-                    (string) ($dados['corretor_creci'] ?? '')
-                );
-                $corretor->setSenha($dados['corretor_senha']);
-                $corretor->setId((int) $dados['corretor_id']);
-                $corretor->setRg($dados['corretor_rg'] ?? '');
-            }
-
-            $captador = null;
-            if ($dados['captador_id']) {
-                $captador = new Funcionario(
-                    $dados['captador_email'],
-                    $dados['captador_nome'],
-                    $dados['captador_cpf_cnpj'],
-                    Cargo::CAPTADOR
-                );
-                $captador->setSenha($dados['captador_senha']);
-                $captador->setId((int) $dados['captador_id']);
-                $captador->setRg($dados['captador_rg'] ?? '');
-                if ($dados['captador_salario'] !== null) {
-                    $captador->setSalario((float) $dados['captador_salario']);
-                }
             }
 
             $anuncio = null;
@@ -171,8 +148,7 @@ class ImovelDAO
             $imovelObj->setAreaPrivativa($dados['area_privativa'] !== null ? (float) $dados['area_privativa'] : 0);
             $imovelObj->setSituacao($dados['situacao'] ? Situacao::tryFrom($dados['situacao']) : null);
             $imovelObj->setOcupacao($dados['ocupacao'] ? Ocupacao::tryFrom($dados['ocupacao']) : null);
-            $imovelObj->setCorretor($corretor);
-            $imovelObj->setCaptador($captador);
+
             $imovelObj->setDataCadastro($dataCadastro);
             $imovelObj->setDataModificacao($dataModificacao);
             $imovelObj->setAnuncio($anuncio);
@@ -218,72 +194,121 @@ class ImovelDAO
         try {
             $sql = "
             SELECT
-                i.*,
+                imovel.*,
 
-                e.id AS endereco_id,
-                e.rua AS endereco_rua,
-                e.numero AS endereco_numero,
-                e.complemento AS endereco_complemento,
-                e.bairro AS endereco_bairro,
-                e.cep AS endereco_cep,
-                e.cidade AS endereco_cidade,
-                e.uf AS endereco_uf,
+                endereco.id AS endereco_id,
+                endereco.rua AS endereco_rua,
+                endereco.numero AS endereco_numero,
+                endereco.complemento AS endereco_complemento,
+                endereco.bairro AS endereco_bairro,
+                endereco.cep AS endereco_cep,
+                endereco.cidade AS endereco_cidade,
+                endereco.uf AS endereco_uf,
 
-                c.id AS condominio_id,
-                c.nome AS condominio_nome,
-            
-                u_cor.id_pessoa AS corretor_id,
-            
-                u_cor.senha AS corretor_senha,
-                    p_cor.email AS corretor_email,
-                    p_cor.nome AS corretor_nome,
-                    p_cor.cpf_cnpj AS corretor_cpf_cnpj,
-                    p_cor.rg AS corretor_rg,
-                co.creci AS corretor_creci,
+                endereco_corretor.id AS corretor_endereco_id,
+                endereco_corretor.rua AS corretor_rua,
+                endereco_corretor.numero AS corretor_numero,
+                endereco_corretor.complemento AS corretor_complemento,
+                endereco_corretor.bairro AS corretor_bairro,
+                endereco_corretor.cep AS corretor_cep,
+                endereco_corretor.cidade AS corretor_cidade,
+                endereco_corretor.uf AS corretor_uf,
 
-                u_cap.id_pessoa AS captador_id,
-          
-                u_cap.senha AS captador_senha,
-                    p_cap.email AS captador_email,
-                    p_cap.nome AS captador_nome,
-                    p_cap.cpf_cnpj AS captador_cpf_cnpj,
-                    p_cap.rg AS captador_rg,
-                ca.salario AS captador_salario,
+                endereco_captador.id AS captador_endereco_id,
+                endereco_captador.rua AS captador_rua,
+                endereco_captador.numero AS captador_numero,
+                endereco_captador.complemento AS captador_complemento,
+                endereco_captador.bairro AS captador_bairro,
+                endereco_captador.cep AS captador_cep,
+                endereco_captador.cidade AS captador_cidade,
+                endereco_captador.uf AS captador_uf,
 
-                a.id AS anuncio_id,
-                a.descricao AS anuncio_descricao,
-                a.titulo AS anuncio_titulo
+                condominio.id AS condominio_id,
+                condominio.nome AS condominio_nome,
 
-            FROM imovel i
+                pessoa_corretor.id as corretor_id,
+                pessoa_corretor.email AS corretor_email,
+                pessoa_corretor.nome AS corretor_nome,
+                pessoa_corretor.cpf_cnpj AS corretor_cpf_cnpj,
+                pessoa_corretor.rg AS corretor_rg,
+                pessoa_corretor.id_endereco AS corretor_id_endereco,
+                pessoa_corretor.data_nascimento AS corretor_data_nascimento,
+                pessoa_corretor.data_cadastro AS corretor_data_cadastro,
+                pessoa_corretor.data_modificacao AS corretor_data_modificacao,
+                usuario_corretor.senha as corretor_senha,
+                usuario_corretor.ultimo_login as corretor_ultimo_login,
+                usuario_corretor.ativo AS corretor_ativo,
+                usuario_corretor.id_pessoa AS corretor_usuario_id,
+                funcionario_corretor.id_pessoa AS corretor_funcionario_id,
+                funcionario_corretor.salario AS corretor_salario,
+                funcionario_corretor.matricula AS corretor_matricula,
+                funcionario_corretor.data_admissao AS corretor_data_admissao,
+                funcionario_corretor.cargo AS corretor_cargo,
+                corretor.creci as corretor_creci,
+                corretor.id_funcionario AS corretor_corretor_id,
 
-            LEFT JOIN endereco e
-                ON e.id = i.id_endereco
+                pessoa_captador.id as captador_id,
+                pessoa_captador.email AS captador_email,
+                pessoa_captador.nome AS captador_nome,
+                pessoa_captador.cpf_cnpj AS captador_cpf_cnpj,
+                pessoa_captador.rg AS captador_rg,
+                pessoa_captador.id_endereco AS captador_id_endereco,
+                pessoa_captador.data_nascimento AS captador_data_nascimento,
+                pessoa_captador.data_cadastro AS captador_data_cadastro,
+                pessoa_captador.data_modificacao AS captador_data_modificacao,
+                usuario_captador.senha as captador_senha,
+                usuario_captador.ultimo_login as captador_ultimo_login,
+                usuario_captador.ativo AS captador_ativo,
+                usuario_captador.id_pessoa AS captador_usuario_id,
+                funcionario_captador.id_pessoa AS captador_funcionario_id,
+                funcionario_captador.salario AS captador_salario,
+                funcionario_captador.matricula AS captador_matricula,
+                funcionario_captador.data_admissao AS captador_data_admissao,
+                funcionario_captador.cargo AS captador_cargo,
 
-            LEFT JOIN condominio c
-                ON c.id = i.id_condominio
+                anuncio.id AS anuncio_id,
+                anuncio.descricao AS anuncio_descricao,
+                anuncio.titulo AS anuncio_titulo
 
-            LEFT JOIN usuario u_cor
-                ON u_cor.id_pessoa = i.id_corretor
+            FROM imovel 
 
-            LEFT JOIN pessoa p_cor
-                ON p_cor.id = u_cor.id_pessoa
+            LEFT JOIN endereco 
+                ON endereco.id = imovel.id_endereco
 
-            LEFT JOIN corretor co
-                ON co.id_funcionario = u_cor.id_pessoa
+            LEFT JOIN condominio 
+                ON condominio.id = imovel.id_condominio
 
-            LEFT JOIN usuario u_cap
-                ON u_cap.id_pessoa = i.id_captador
+            LEFT JOIN anuncio 
+                ON anuncio.id = imovel.id_anuncio
 
-            LEFT JOIN pessoa p_cap
-                ON p_cap.id = u_cap.id_pessoa
+            LEFT JOIN pessoa pessoa_corretor
+                ON pessoa_corretor.id = imovel.id_corretor
 
-            LEFT JOIN funcionario ca
-                ON ca.id_pessoa = u_cap.id_pessoa
+            LEFT JOIN pessoa pessoa_captador
+                ON pessoa_captador.id = imovel.id_captador
 
-            LEFT JOIN anuncio a
-                ON a.id = i.id_anuncio  
+            LEFT JOIN usuario usuario_corretor
+                ON usuario_corretor.id_pessoa = pessoa_corretor.id
+
+            LEFT JOIN usuario usuario_captador
+                ON usuario_captador.id_pessoa = pessoa_captador.id
+
+            LEFT JOIN funcionario funcionario_corretor
+                ON funcionario_corretor.id_pessoa = pessoa_corretor.id
+
+            LEFT JOIN funcionario funcionario_captador
+                ON funcionario_captador.id_pessoa = pessoa_captador.id
+
+            LEFT JOIN corretor
+                ON corretor.id_funcionario = funcionario_corretor.id_pessoa
+
+            LEFT JOIN endereco endereco_captador
+                ON endereco_captador.id = pessoa_captador.id_endereco
+
+            LEFT JOIN endereco endereco_corretor
+                ON endereco_corretor.id = pessoa_corretor.id_endereco
                 
-            WHERE i.destacado = 1 AND i.status != 'Pendente'";
+            WHERE imovel.destacado = 1 AND imovel.status != 'Pendente'";
 
             $stmt = $this->bancoDados->prepare($sql);
             $stmt->execute();
@@ -294,9 +319,51 @@ class ImovelDAO
             }
 
             $imoveisDestacados = [];
+            $pessoaDAO = new PessoaDAO();
             foreach ($resultados as $row) {
                 $imovel = $this->montar($row);
                 if ($imovel) {
+                    $dadosCorretor = array_filter($row, function ($key) {
+                        return strpos($key, 'corretor_') === 0;
+                    }, ARRAY_FILTER_USE_KEY);
+                    $dadosCorretor = array_combine(
+                        array_map(function ($key) {
+                            return preg_replace('/corretor_/', '', $key, 1);
+                        }, array_keys($dadosCorretor)),
+                        $dadosCorretor
+                    );
+                    $dadosCaptador = array_filter($row, function ($key) {
+                        return strpos($key, 'captador_') === 0;
+                    }, ARRAY_FILTER_USE_KEY);
+                    $dadosCaptador = array_combine(
+                        array_map(function ($key) {
+                            return str_replace('captador_', '', $key);
+                        }, array_keys($dadosCaptador)),
+                        $dadosCaptador
+                    );
+                    $corretor = null;
+                    $captador = null;
+                    try {
+                        if ($dadosCorretor['id'] !== null) {
+                            $corretor = $pessoaDAO->montar($dadosCorretor);
+                        }
+                    } catch (Exception $e) {
+                        error_log("ERRO! imovelDAO->listarDisponiveis: " . $e->getMessage());
+                    }
+                    try {
+                        if ($dadosCaptador['id'] !== null) {
+                            $captador = $pessoaDAO->montar($dadosCaptador);
+                        }
+                    } catch (Exception $e) {
+                        error_log("ERRO! imovelDAO->listarDisponiveis: " . $e->getMessage());
+                    }
+
+                    if ($corretor) {
+                        $imovel->setCorretor($corretor);
+                    }
+                    if ($captador) {
+                        $imovel->setCaptador($captador);
+                    }
                     $imoveisDestacados[] = $imovel;
                 }
             }
@@ -318,70 +385,119 @@ class ImovelDAO
 
             $sql = "
             SELECT
-                i.*,
+                imovel.*,
 
-                e.id AS endereco_id,
-                e.rua AS endereco_rua,
-                e.numero AS endereco_numero,
-                e.complemento AS endereco_complemento,
-                e.bairro AS endereco_bairro,
-                e.cep AS endereco_cep,
-                e.cidade AS endereco_cidade,
-                e.uf AS endereco_uf,
+                endereco.id AS endereco_id,
+                endereco.rua AS endereco_rua,
+                endereco.numero AS endereco_numero,
+                endereco.complemento AS endereco_complemento,
+                endereco.bairro AS endereco_bairro,
+                endereco.cep AS endereco_cep,
+                endereco.cidade AS endereco_cidade,
+                endereco.uf AS endereco_uf,
 
-                c.id AS condominio_id,
-                c.nome AS condominio_nome,
-               
-                u_cor.id_pessoa AS corretor_id,
-                NULL AS corretor_username,
-                u_cor.senha AS corretor_senha,
-                    p_cor.email AS corretor_email,
-                    p_cor.nome AS corretor_nome,
-                    p_cor.cpf_cnpj AS corretor_cpf_cnpj,
-                    p_cor.rg AS corretor_rg,
-                co.creci AS corretor_creci,
+                endereco_corretor.id AS corretor_endereco_id,
+                endereco_corretor.rua AS corretor_rua,
+                endereco_corretor.numero AS corretor_numero,
+                endereco_corretor.complemento AS corretor_complemento,
+                endereco_corretor.bairro AS corretor_bairro,
+                endereco_corretor.cep AS corretor_cep,
+                endereco_corretor.cidade AS corretor_cidade,
+                endereco_corretor.uf AS corretor_uf,
 
-                u_cap.id_pessoa AS captador_id,
-                NULL AS captador_username,
-                u_cap.senha AS captador_senha,
-                    p_cap.email AS captador_email,
-                    p_cap.nome AS captador_nome,
-                    p_cap.cpf_cnpj AS captador_cpf_cnpj,
-                    p_cap.rg AS captador_rg,
-                ca.salario AS captador_salario,
+                endereco_captador.id AS captador_endereco_id,
+                endereco_captador.rua AS captador_rua,
+                endereco_captador.numero AS captador_numero,
+                endereco_captador.complemento AS captador_complemento,
+                endereco_captador.bairro AS captador_bairro,
+                endereco_captador.cep AS captador_cep,
+                endereco_captador.cidade AS captador_cidade,
+                endereco_captador.uf AS captador_uf,
 
-                a.id AS anuncio_id,
-                a.descricao AS anuncio_descricao,
-                a.titulo AS anuncio_titulo
+                condominio.id AS condominio_id,
+                condominio.nome AS condominio_nome,
 
-            FROM imovel i
+                pessoa_corretor.id as corretor_id,
+                pessoa_corretor.email AS corretor_email,
+                pessoa_corretor.nome AS corretor_nome,
+                pessoa_corretor.cpf_cnpj AS corretor_cpf_cnpj,
+                pessoa_corretor.rg AS corretor_rg,
+                pessoa_corretor.id_endereco AS corretor_id_endereco,
+                pessoa_corretor.data_nascimento AS corretor_data_nascimento,
+                pessoa_corretor.data_cadastro AS corretor_data_cadastro,
+                pessoa_corretor.data_modificacao AS corretor_data_modificacao,
+                usuario_corretor.senha as corretor_senha,
+                usuario_corretor.ultimo_login as corretor_ultimo_login,
+                usuario_corretor.ativo AS corretor_ativo,
+                usuario_corretor.id_pessoa AS corretor_usuario_id,
+                funcionario_corretor.id_pessoa AS corretor_funcionario_id,
+                funcionario_corretor.salario AS corretor_salario,
+                funcionario_corretor.matricula AS corretor_matricula,
+                funcionario_corretor.data_admissao AS corretor_data_admissao,
+                funcionario_corretor.cargo AS corretor_cargo,
+                corretor.creci as corretor_creci,
+                corretor.id_funcionario AS corretor_corretor_id,
 
-            LEFT JOIN endereco e
-                ON e.id = i.id_endereco
+                pessoa_captador.id as captador_id,
+                pessoa_captador.email AS captador_email,
+                pessoa_captador.nome AS captador_nome,
+                pessoa_captador.cpf_cnpj AS captador_cpf_cnpj,
+                pessoa_captador.rg AS captador_rg,
+                pessoa_captador.id_endereco AS captador_id_endereco,
+                pessoa_captador.data_nascimento AS captador_data_nascimento,
+                pessoa_captador.data_cadastro AS captador_data_cadastro,
+                pessoa_captador.data_modificacao AS captador_data_modificacao,
+                usuario_captador.senha as captador_senha,
+                usuario_captador.ultimo_login as captador_ultimo_login,
+                usuario_captador.ativo AS captador_ativo,
+                usuario_captador.id_pessoa AS captador_usuario_id,
+                funcionario_captador.id_pessoa AS captador_funcionario_id,
+                funcionario_captador.salario AS captador_salario,
+                funcionario_captador.matricula AS captador_matricula,
+                funcionario_captador.data_admissao AS captador_data_admissao,
+                funcionario_captador.cargo AS captador_cargo,
 
-            LEFT JOIN condominio c
-                ON c.id = i.id_condominio
+                anuncio.id AS anuncio_id,
+                anuncio.descricao AS anuncio_descricao,
+                anuncio.titulo AS anuncio_titulo
 
-            LEFT JOIN usuario u_cor
-                ON u_cor.id_pessoa = i.id_corretor
+            FROM imovel 
 
-            LEFT JOIN pessoa p_cor
-                ON p_cor.id = u_cor.id_pessoa
+            LEFT JOIN endereco 
+                ON endereco.id = imovel.id_endereco
 
-            LEFT JOIN corretor co
-                ON co.id_funcionario = u_cor.id_pessoa
+            LEFT JOIN condominio 
+                ON condominio.id = imovel.id_condominio
 
-            LEFT JOIN usuario u_cap
-                ON u_cap.id_pessoa = i.id_captador
+            LEFT JOIN anuncio 
+                ON anuncio.id = imovel.id_anuncio
 
-            LEFT JOIN pessoa p_cap
-                ON p_cap.id = u_cap.id_pessoa
+            LEFT JOIN pessoa pessoa_corretor
+                ON pessoa_corretor.id = imovel.id_corretor
 
-            LEFT JOIN funcionario ca
-                ON ca.id_pessoa = u_cap.id_pessoa
+            LEFT JOIN pessoa pessoa_captador
+                ON pessoa_captador.id = imovel.id_captador
 
-            LEFT JOIN anuncio a
-                ON a.id = i.id_anuncio
+            LEFT JOIN usuario usuario_corretor
+                ON usuario_corretor.id_pessoa = pessoa_corretor.id
+
+            LEFT JOIN usuario usuario_captador
+                ON usuario_captador.id_pessoa = pessoa_captador.id
+
+            LEFT JOIN funcionario funcionario_corretor
+                ON funcionario_corretor.id_pessoa = pessoa_corretor.id
+
+            LEFT JOIN funcionario funcionario_captador
+                ON funcionario_captador.id_pessoa = pessoa_captador.id
+
+            LEFT JOIN corretor
+                ON corretor.id_funcionario = funcionario_corretor.id_pessoa
+
+            LEFT JOIN endereco endereco_captador
+                ON endereco_captador.id = pessoa_captador.id_endereco
+
+            LEFT JOIN endereco endereco_corretor
+                ON endereco_corretor.id = pessoa_corretor.id_endereco
 
             ";
 
@@ -395,10 +511,52 @@ class ImovelDAO
             }
 
             $lista = [];
+            $pessoaDAO = new PessoaDAO();
 
             foreach ($resultados as $dados) {
                 $imovel = $this->montar($dados);
                 if ($imovel) {
+                    $dadosCorretor = array_filter($dados, function ($key) {
+                        return strpos($key, 'corretor_') === 0;
+                    }, ARRAY_FILTER_USE_KEY);
+                    $dadosCorretor = array_combine(
+                        array_map(function ($key) {
+                            return preg_replace('/corretor_/', '', $key, 1);
+                        }, array_keys($dadosCorretor)),
+                        $dadosCorretor
+                    );
+                    $dadosCaptador = array_filter($dados, function ($key) {
+                        return strpos($key, 'captador_') === 0;
+                    }, ARRAY_FILTER_USE_KEY);
+                    $dadosCaptador = array_combine(
+                        array_map(function ($key) {
+                            return str_replace('captador_', '', $key);
+                        }, array_keys($dadosCaptador)),
+                        $dadosCaptador
+                    );
+                    $corretor = null;
+                    $captador = null;
+                    try {
+                        if ($dadosCorretor['id'] !== null) {
+                            $corretor = $pessoaDAO->montar($dadosCorretor);
+                        }
+                    } catch (Exception $e) {
+                        error_log("ERRO! imovelDAO->listarDisponiveis: " . $e->getMessage());
+                    }
+                    try {
+                        if ($dadosCaptador['id'] !== null) {
+                            $captador = $pessoaDAO->montar($dadosCaptador);
+                        }
+                    } catch (Exception $e) {
+                        error_log("ERRO! imovelDAO->listarDisponiveis: " . $e->getMessage());
+                    }
+
+                    if ($corretor) {
+                        $imovel->setCorretor($corretor);
+                    }
+                    if ($captador) {
+                        $imovel->setCaptador($captador);
+                    }
                     $lista[] = $imovel;
                 }
             }
@@ -417,72 +575,121 @@ class ImovelDAO
 
             $sql = "
             SELECT
-                i.*,
+                imovel.*,
 
-                e.id AS endereco_id,
-                e.rua AS endereco_rua,
-                e.numero AS endereco_numero,
-                e.complemento AS endereco_complemento,
-                e.bairro AS endereco_bairro,
-                e.cep AS endereco_cep,
-                e.cidade AS endereco_cidade,
-                e.uf AS endereco_uf,
+                endereco.id AS endereco_id,
+                endereco.rua AS endereco_rua,
+                endereco.numero AS endereco_numero,
+                endereco.complemento AS endereco_complemento,
+                endereco.bairro AS endereco_bairro,
+                endereco.cep AS endereco_cep,
+                endereco.cidade AS endereco_cidade,
+                endereco.uf AS endereco_uf,
 
-                c.id AS condominio_id,
-                c.nome AS condominio_nome,
+                endereco_corretor.id AS corretor_endereco_id,
+                endereco_corretor.rua AS corretor_rua,
+                endereco_corretor.numero AS corretor_numero,
+                endereco_corretor.complemento AS corretor_complemento,
+                endereco_corretor.bairro AS corretor_bairro,
+                endereco_corretor.cep AS corretor_cep,
+                endereco_corretor.cidade AS corretor_cidade,
+                endereco_corretor.uf AS corretor_uf,
 
-                u_cor.id_pessoa AS corretor_id,
-                NULL AS corretor_username,
-                u_cor.senha AS corretor_senha,
-                p_cor.email AS corretor_email,
-                p_cor.nome AS corretor_nome,
-                p_cor.cpf_cnpj AS corretor_cpf_cnpj,
-                p_cor.rg AS corretor_rg,
-                co.creci AS corretor_creci,
+                endereco_captador.id AS captador_endereco_id,
+                endereco_captador.rua AS captador_rua,
+                endereco_captador.numero AS captador_numero,
+                endereco_captador.complemento AS captador_complemento,
+                endereco_captador.bairro AS captador_bairro,
+                endereco_captador.cep AS captador_cep,
+                endereco_captador.cidade AS captador_cidade,
+                endereco_captador.uf AS captador_uf,
 
-                u_cap.id_pessoa AS captador_id,
-                NULL AS captador_username,
-                u_cap.senha AS captador_senha,
-                p_cap.email AS captador_email,
-                p_cap.nome AS captador_nome,
-                p_cap.cpf_cnpj AS captador_cpf_cnpj,
-                p_cap.rg AS captador_rg,
-                ca.salario AS captador_salario,
+                condominio.id AS condominio_id,
+                condominio.nome AS condominio_nome,
 
-                a.id AS anuncio_id,
-                a.descricao AS anuncio_descricao,
-                a.titulo AS anuncio_titulo
+                pessoa_corretor.id as corretor_id,
+                pessoa_corretor.email AS corretor_email,
+                pessoa_corretor.nome AS corretor_nome,
+                pessoa_corretor.cpf_cnpj AS corretor_cpf_cnpj,
+                pessoa_corretor.rg AS corretor_rg,
+                pessoa_corretor.id_endereco AS corretor_id_endereco,
+                pessoa_corretor.data_nascimento AS corretor_data_nascimento,
+                pessoa_corretor.data_cadastro AS corretor_data_cadastro,
+                pessoa_corretor.data_modificacao AS corretor_data_modificacao,
+                usuario_corretor.senha as corretor_senha,
+                usuario_corretor.ultimo_login as corretor_ultimo_login,
+                usuario_corretor.ativo AS corretor_ativo,
+                usuario_corretor.id_pessoa AS corretor_usuario_id,
+                funcionario_corretor.id_pessoa AS corretor_funcionario_id,
+                funcionario_corretor.salario AS corretor_salario,
+                funcionario_corretor.matricula AS corretor_matricula,
+                funcionario_corretor.data_admissao AS corretor_data_admissao,
+                funcionario_corretor.cargo AS corretor_cargo,
+                corretor.creci as corretor_creci,
+                corretor.id_funcionario AS corretor_corretor_id,
 
-            FROM imovel i
+                pessoa_captador.id as captador_id,
+                pessoa_captador.email AS captador_email,
+                pessoa_captador.nome AS captador_nome,
+                pessoa_captador.cpf_cnpj AS captador_cpf_cnpj,
+                pessoa_captador.rg AS captador_rg,
+                pessoa_captador.id_endereco AS captador_id_endereco,
+                pessoa_captador.data_nascimento AS captador_data_nascimento,
+                pessoa_captador.data_cadastro AS captador_data_cadastro,
+                pessoa_captador.data_modificacao AS captador_data_modificacao,
+                usuario_captador.senha as captador_senha,
+                usuario_captador.ultimo_login as captador_ultimo_login,
+                usuario_captador.ativo AS captador_ativo,
+                usuario_captador.id_pessoa AS captador_usuario_id,
+                funcionario_captador.id_pessoa AS captador_funcionario_id,
+                funcionario_captador.salario AS captador_salario,
+                funcionario_captador.matricula AS captador_matricula,
+                funcionario_captador.data_admissao AS captador_data_admissao,
+                funcionario_captador.cargo AS captador_cargo,
 
-            LEFT JOIN endereco e
-                ON e.id = i.id_endereco
+                anuncio.id AS anuncio_id,
+                anuncio.descricao AS anuncio_descricao,
+                anuncio.titulo AS anuncio_titulo
 
-            LEFT JOIN condominio c
-                ON c.id = i.id_condominio
+            FROM imovel 
 
-            LEFT JOIN usuario u_cor
-                ON u_cor.id_pessoa = i.id_corretor
+            LEFT JOIN endereco 
+                ON endereco.id = imovel.id_endereco
 
-            LEFT JOIN pessoa p_cor
-                ON p_cor.id = u_cor.id_pessoa
+            LEFT JOIN condominio 
+                ON condominio.id = imovel.id_condominio
 
-            LEFT JOIN corretor co
-                ON co.id_funcionario = u_cor.id_pessoa
+            LEFT JOIN anuncio 
+                ON anuncio.id = imovel.id_anuncio
 
-            LEFT JOIN usuario u_cap
-                ON u_cap.id_pessoa = i.id_captador
+            LEFT JOIN pessoa pessoa_corretor
+                ON pessoa_corretor.id = imovel.id_corretor
 
-            LEFT JOIN funcionario ca
-                ON ca.id_pessoa = u_cap.id_pessoa
+            LEFT JOIN pessoa pessoa_captador
+                ON pessoa_captador.id = imovel.id_captador
 
-            LEFT JOIN pessoa p_cap
-                ON p_cap.id = u_cap.id_pessoa
+            LEFT JOIN usuario usuario_corretor
+                ON usuario_corretor.id_pessoa = pessoa_corretor.id
 
-            LEFT JOIN anuncio a
-                ON a.id = i.id_anuncio
+            LEFT JOIN usuario usuario_captador
+                ON usuario_captador.id_pessoa = pessoa_captador.id
 
-            WHERE i.status IN ('Venda', 'Aluguel', 'Venda e Aluguel')
+            LEFT JOIN funcionario funcionario_corretor
+                ON funcionario_corretor.id_pessoa = pessoa_corretor.id
+
+            LEFT JOIN funcionario funcionario_captador
+                ON funcionario_captador.id_pessoa = pessoa_captador.id
+
+            LEFT JOIN corretor
+                ON corretor.id_funcionario = funcionario_corretor.id_pessoa
+
+            LEFT JOIN endereco endereco_captador
+                ON endereco_captador.id = pessoa_captador.id_endereco
+
+            LEFT JOIN endereco endereco_corretor
+                ON endereco_corretor.id = pessoa_corretor.id_endereco
+
+            WHERE imovel.status IN ('Venda', 'Aluguel', 'Venda e Aluguel')
         ";
 
             $stmt = $this->bancoDados->prepare($sql);
@@ -495,10 +702,52 @@ class ImovelDAO
             }
 
             $lista = [];
-
+            $pessoaDAO = new PessoaDAO();
             foreach ($resultados as $dados) {
                 $imovel = $this->montar($dados);
                 if ($imovel) {
+                    $dadosCorretor = array_filter($dados, function ($key) {
+                        return strpos($key, 'corretor_') === 0;
+                    }, ARRAY_FILTER_USE_KEY);
+                    $dadosCorretor = array_combine(
+                        array_map(function ($key) {
+                            return preg_replace('/corretor_/', '', $key, 1);
+                        }, array_keys($dadosCorretor)),
+                        $dadosCorretor
+                    );
+                    $dadosCaptador = array_filter($dados, function ($key) {
+                        return strpos($key, 'captador_') === 0;
+                    }, ARRAY_FILTER_USE_KEY);
+                    $dadosCaptador = array_combine(
+                        array_map(function ($key) {
+                            return str_replace('captador_', '', $key);
+                        }, array_keys($dadosCaptador)),
+                        $dadosCaptador
+                    );
+                    $corretor = null;
+                    $captador = null;
+                    try {
+                        if ($dadosCorretor['id'] !== null) {
+                            $corretor = $pessoaDAO->montar($dadosCorretor);
+                        }
+                    } catch (Exception $e) {
+                        error_log("ERRO! imovelDAO->listarDisponiveis: " . $e->getMessage());
+                    }
+                    try {
+                        if ($dadosCaptador['id'] !== null) {
+                            $captador = $pessoaDAO->montar($dadosCaptador);
+                        }
+                    } catch (Exception $e) {
+                        error_log("ERRO! imovelDAO->listarDisponiveis: " . $e->getMessage());
+                    }
+
+                    if ($corretor) {
+                        $imovel->setCorretor($corretor);
+                    }
+                    if ($captador) {
+                        $imovel->setCaptador($captador);
+                    }
+
                     $lista[] = $imovel;
                 }
             }
@@ -514,72 +763,121 @@ class ImovelDAO
         try {
             $sql = "
             SELECT
-                i.*,
+            imovel.*,
 
-                e.id AS endereco_id,
-                e.rua AS endereco_rua,
-                e.numero AS endereco_numero,
-                e.complemento AS endereco_complemento,
-                e.bairro AS endereco_bairro,
-                e.cep AS endereco_cep,
-                e.cidade AS endereco_cidade,
-                e.uf AS endereco_uf,
+                endereco.id AS endereco_id,
+                endereco.rua AS endereco_rua,
+                endereco.numero AS endereco_numero,
+                endereco.complemento AS endereco_complemento,
+                endereco.bairro AS endereco_bairro,
+                endereco.cep AS endereco_cep,
+                endereco.cidade AS endereco_cidade,
+                endereco.uf AS endereco_uf,
 
-                c.id AS condominio_id,
-                c.nome AS condominio_nome,
+                endereco_corretor.id AS corretor_endereco_id,
+                endereco_corretor.rua AS corretor_rua,
+                endereco_corretor.numero AS corretor_numero,
+                endereco_corretor.complemento AS corretor_complemento,
+                endereco_corretor.bairro AS corretor_bairro,
+                endereco_corretor.cep AS corretor_cep,
+                endereco_corretor.cidade AS corretor_cidade,
+                endereco_corretor.uf AS corretor_uf,
 
-                u_cor.id_pessoa AS corretor_id,
-                NULL AS corretor_username,
-                u_cor.senha AS corretor_senha,
-                p_cor.email AS corretor_email,
-                p_cor.nome AS corretor_nome,
-                p_cor.cpf_cnpj AS corretor_cpf_cnpj,
-                p_cor.rg AS corretor_rg,
-                co.creci AS corretor_creci,
+                endereco_captador.id AS captador_endereco_id,
+                endereco_captador.rua AS captador_rua,
+                endereco_captador.numero AS captador_numero,
+                endereco_captador.complemento AS captador_complemento,
+                endereco_captador.bairro AS captador_bairro,
+                endereco_captador.cep AS captador_cep,
+                endereco_captador.cidade AS captador_cidade,
+                endereco_captador.uf AS captador_uf,
 
-                u_cap.id_pessoa AS captador_id,
-                NULL AS captador_username,
-                u_cap.senha AS captador_senha,
-                p_cap.email AS captador_email,
-                p_cap.nome AS captador_nome,
-                p_cap.cpf_cnpj AS captador_cpf_cnpj,
-                p_cap.rg AS captador_rg,
-                ca.salario AS captador_salario,
+                condominio.id AS condominio_id,
+                condominio.nome AS condominio_nome,
 
-                a.id AS anuncio_id,
-                a.descricao AS anuncio_descricao,
-                a.titulo AS anuncio_titulo
+                pessoa_corretor.id as corretor_id,
+                pessoa_corretor.email AS corretor_email,
+                pessoa_corretor.nome AS corretor_nome,
+                pessoa_corretor.cpf_cnpj AS corretor_cpf_cnpj,
+                pessoa_corretor.rg AS corretor_rg,
+                pessoa_corretor.id_endereco AS corretor_id_endereco,
+                pessoa_corretor.data_nascimento AS corretor_data_nascimento,
+                pessoa_corretor.data_cadastro AS corretor_data_cadastro,
+                pessoa_corretor.data_modificacao AS corretor_data_modificacao,
+                usuario_corretor.senha as corretor_senha,
+                usuario_corretor.ultimo_login as corretor_ultimo_login,
+                usuario_corretor.ativo AS corretor_ativo,
+                usuario_corretor.id_pessoa AS corretor_usuario_id,
+                funcionario_corretor.id_pessoa AS corretor_funcionario_id,
+                funcionario_corretor.salario AS corretor_salario,
+                funcionario_corretor.matricula AS corretor_matricula,
+                funcionario_corretor.data_admissao AS corretor_data_admissao,
+                funcionario_corretor.cargo AS corretor_cargo,
+                corretor.creci as corretor_creci,
+                corretor.id_funcionario AS corretor_corretor_id,
 
-            FROM imovel i
+                pessoa_captador.id as captador_id,
+                pessoa_captador.email AS captador_email,
+                pessoa_captador.nome AS captador_nome,
+                pessoa_captador.cpf_cnpj AS captador_cpf_cnpj,
+                pessoa_captador.rg AS captador_rg,
+                pessoa_captador.id_endereco AS captador_id_endereco,
+                pessoa_captador.data_nascimento AS captador_data_nascimento,
+                pessoa_captador.data_cadastro AS captador_data_cadastro,
+                pessoa_captador.data_modificacao AS captador_data_modificacao,
+                usuario_captador.senha as captador_senha,
+                usuario_captador.ultimo_login as captador_ultimo_login,
+                usuario_captador.ativo AS captador_ativo,
+                usuario_captador.id_pessoa AS captador_usuario_id,
+                funcionario_captador.id_pessoa AS captador_funcionario_id,
+                funcionario_captador.salario AS captador_salario,
+                funcionario_captador.matricula AS captador_matricula,
+                funcionario_captador.data_admissao AS captador_data_admissao,
+                funcionario_captador.cargo AS captador_cargo,
 
-            LEFT JOIN endereco e
-                ON e.id = i.id_endereco
+                anuncio.id AS anuncio_id,
+                anuncio.descricao AS anuncio_descricao,
+                anuncio.titulo AS anuncio_titulo
 
-            LEFT JOIN condominio c
-                ON c.id = i.id_condominio
+            FROM imovel 
 
-            LEFT JOIN usuario u_cor
-                ON u_cor.id_pessoa = i.id_corretor
+            LEFT JOIN endereco 
+                ON endereco.id = imovel.id_endereco
 
-            LEFT JOIN pessoa p_cor
-                ON p_cor.id = u_cor.id_pessoa
+            LEFT JOIN condominio 
+                ON condominio.id = imovel.id_condominio
 
-            LEFT JOIN corretor co
-                ON co.id_funcionario = u_cor.id_pessoa
+            LEFT JOIN anuncio 
+                ON anuncio.id = imovel.id_anuncio
 
-            LEFT JOIN usuario u_cap
-                ON u_cap.id_pessoa = i.id_captador
+            LEFT JOIN pessoa pessoa_corretor
+                ON pessoa_corretor.id = imovel.id_corretor
 
-            LEFT JOIN funcionario ca
-                ON ca.id_pessoa = u_cap.id_pessoa
+            LEFT JOIN pessoa pessoa_captador
+                ON pessoa_captador.id = imovel.id_captador
 
-            LEFT JOIN pessoa p_cap
-                ON p_cap.id = u_cap.id_pessoa
+            LEFT JOIN usuario usuario_corretor
+                ON usuario_corretor.id_pessoa = pessoa_corretor.id
 
-            LEFT JOIN anuncio a
-                ON a.id = i.id_anuncio
+            LEFT JOIN usuario usuario_captador
+                ON usuario_captador.id_pessoa = pessoa_captador.id
 
-            WHERE i.id = :id
+            LEFT JOIN funcionario funcionario_corretor
+                ON funcionario_corretor.id_pessoa = pessoa_corretor.id
+
+            LEFT JOIN funcionario funcionario_captador
+                ON funcionario_captador.id_pessoa = pessoa_captador.id
+
+            LEFT JOIN corretor
+                ON corretor.id_funcionario = funcionario_corretor.id_pessoa
+
+            LEFT JOIN endereco endereco_captador
+                ON endereco_captador.id = pessoa_captador.id_endereco
+
+            LEFT JOIN endereco endereco_corretor
+                ON endereco_corretor.id = pessoa_corretor.id_endereco
+
+            WHERE imovel.id = :id
         ";
 
             $stmt = $this->bancoDados->prepare($sql);
@@ -590,8 +888,51 @@ class ImovelDAO
             if (!$dados) {
                 throw new Exception("Imóvel não encontrado");
             }
+            $pessoaDAO = new PessoaDAO();
+            $dadosCorretor = array_filter($dados, function ($key) {
+                return strpos($key, 'corretor_') === 0;
+            }, ARRAY_FILTER_USE_KEY);
+            $dadosCorretor = array_combine(
+                array_map(function ($key) {
+                    return preg_replace('/corretor_/', '', $key, 1);
+                }, array_keys($dadosCorretor)),
+                $dadosCorretor
+            );
+            $dadosCaptador = array_filter($dados, function ($key) {
+                return strpos($key, 'captador_') === 0;
+            }, ARRAY_FILTER_USE_KEY);
+            $dadosCaptador = array_combine(
+                array_map(function ($key) {
+                    return str_replace('captador_', '', $key);
+                }, array_keys($dadosCaptador)),
+                $dadosCaptador
+            );
+            $corretor = null;
+            $captador = null;
+            try {
+                if ($dadosCorretor['id'] !== null) {
+                    $corretor = $pessoaDAO->montar($dadosCorretor);
+                }
+            } catch (Exception $e) {
+                error_log("ERRO! imovelDAO->listarDisponiveis: " . $e->getMessage());
+            }
+            try {
+                if ($dadosCaptador['id'] !== null) {
+                    $captador = $pessoaDAO->montar($dadosCaptador);
+                }
+            } catch (Exception $e) {
+                error_log("ERRO! imovelDAO->listarDisponiveis: " . $e->getMessage());
+            }
+            $imovel = $this->montar($dados);
 
-            return $this->montar($dados);
+            if ($corretor) {
+                $imovel->setCorretor($corretor);
+            }
+            if ($captador) {
+                $imovel->setCaptador($captador);
+            }
+
+            return $imovel;
         } catch (Exception $e) {
             error_log("ERRO! imovelDAO->buscarPorId: " . $e->getMessage());
             throw $e;
@@ -604,98 +945,119 @@ class ImovelDAO
         try {
             $sql = "
             SELECT
+           imovel.*,
 
-            imovel_cliente.*,
+                endereco.id AS endereco_id,
+                endereco.rua AS endereco_rua,
+                endereco.numero AS endereco_numero,
+                endereco.complemento AS endereco_complemento,
+                endereco.bairro AS endereco_bairro,
+                endereco.cep AS endereco_cep,
+                endereco.cidade AS endereco_cidade,
+                endereco.uf AS endereco_uf,
 
-            imovel.id AS id,
-            imovel.valor_venda AS valor_venda,
-            imovel.valor_aluguel AS valor_aluguel,
-            imovel.quant_quartos AS quant_quartos,
-            imovel.quant_salas AS quant_salas,
-            imovel.quant_vagas AS quant_vagas,
-            imovel.quant_banheiros AS quant_banheiros,
-            imovel.quant_varandas AS quant_varandas,
-            imovel.categoria AS categoria,
-            imovel.id_endereco AS id_endereco,
-            imovel.status AS status,
-            imovel.iptu AS iptu,
-            imovel.valor_condominio AS valor_condominio,
-            imovel.andar AS andar,
-            imovel.estado AS estado,
-            imovel.bloco AS bloco,
-            imovel.ano_construcao AS ano_construcao,
-            imovel.area_total AS area_total,
-            imovel.area_privativa AS area_privativa,
-            imovel.situacao AS situacao,
-            imovel.ocupacao AS ocupacao,
-            imovel.id_corretor AS id_corretor,
-            imovel.id_captador AS id_captador,
-            imovel.data_cadastro AS data_cadastro,
-            imovel.data_modificacao AS data_modificacao,
-            imovel.id_anuncio AS id_anuncio,
-            imovel.id_condominio AS id_condominio,
-            imovel.destacado AS destacado,
-            imovel.quant_clicks AS quant_clicks,
+                endereco_corretor.id AS corretor_endereco_id,
+                endereco_corretor.rua AS corretor_rua,
+                endereco_corretor.numero AS corretor_numero,
+                endereco_corretor.complemento AS corretor_complemento,
+                endereco_corretor.bairro AS corretor_bairro,
+                endereco_corretor.cep AS corretor_cep,
+                endereco_corretor.cidade AS corretor_cidade,
+                endereco_corretor.uf AS corretor_uf,
 
-            endereco.id AS endereco_id,
-            endereco.rua AS endereco_rua,
-            endereco.numero AS endereco_numero,
-            endereco.complemento AS endereco_complemento,
-            endereco.bairro AS endereco_bairro,
-            endereco.cep AS endereco_cep,
-            endereco.cidade AS endereco_cidade,
-            endereco.uf AS endereco_uf,
+                endereco_captador.id AS captador_endereco_id,
+                endereco_captador.rua AS captador_rua,
+                endereco_captador.numero AS captador_numero,
+                endereco_captador.complemento AS captador_complemento,
+                endereco_captador.bairro AS captador_bairro,
+                endereco_captador.cep AS captador_cep,
+                endereco_captador.cidade AS captador_cidade,
+                endereco_captador.uf AS captador_uf,
 
-            condominio.id AS condominio_id,
-            condominio.nome AS condominio_nome,
+                condominio.id AS condominio_id,
+                condominio.nome AS condominio_nome,
 
-            usuario_corretor.id AS corretor_id,
-            usuario_corretor.username AS corretor_username,
-            usuario_corretor.senha AS corretor_senha,
-            usuario_corretor.email AS corretor_email,
-            usuario_corretor.nome AS corretor_nome,
-            usuario_corretor.cpf_cnpj AS corretor_cpf_cnpj,
-            usuario_corretor.rg AS corretor_rg,
-            corretor.creci AS corretor_creci,
+                pessoa_corretor.id as corretor_id,
+                pessoa_corretor.email AS corretor_email,
+                pessoa_corretor.nome AS corretor_nome,
+                pessoa_corretor.cpf_cnpj AS corretor_cpf_cnpj,
+                pessoa_corretor.rg AS corretor_rg,
+                pessoa_corretor.id_endereco AS corretor_id_endereco,
+                pessoa_corretor.data_nascimento AS corretor_data_nascimento,
+                pessoa_corretor.data_cadastro AS corretor_data_cadastro,
+                pessoa_corretor.data_modificacao AS corretor_data_modificacao,
+                usuario_corretor.senha as corretor_senha,
+                usuario_corretor.ultimo_login as corretor_ultimo_login,
+                usuario_corretor.ativo AS corretor_ativo,
+                usuario_corretor.id_pessoa AS corretor_usuario_id,
+                funcionario_corretor.id_pessoa AS corretor_funcionario_id,
+                funcionario_corretor.salario AS corretor_salario,
+                funcionario_corretor.matricula AS corretor_matricula,
+                funcionario_corretor.data_admissao AS corretor_data_admissao,
+                funcionario_corretor.cargo AS corretor_cargo,
+                corretor.creci as corretor_creci,
+                corretor.id_funcionario AS corretor_corretor_id,
 
-            usuario_captador.id AS captador_id,
-            usuario_captador.username AS captador_username,
-            usuario_captador.senha AS captador_senha,
-            usuario_captador.email AS captador_email,
-            usuario_captador.nome AS captador_nome,
-            usuario_captador.cpf_cnpj AS captador_cpf_cnpj,
-            usuario_captador.rg AS captador_rg,
-            captador.salario AS captador_salario,
+                pessoa_captador.id as captador_id,
+                pessoa_captador.email AS captador_email,
+                pessoa_captador.nome AS captador_nome,
+                pessoa_captador.cpf_cnpj AS captador_cpf_cnpj,
+                pessoa_captador.rg AS captador_rg,
+                pessoa_captador.id_endereco AS captador_id_endereco,
+                pessoa_captador.data_nascimento AS captador_data_nascimento,
+                pessoa_captador.data_cadastro AS captador_data_cadastro,
+                pessoa_captador.data_modificacao AS captador_data_modificacao,
+                usuario_captador.senha as captador_senha,
+                usuario_captador.ultimo_login as captador_ultimo_login,
+                usuario_captador.ativo AS captador_ativo,
+                usuario_captador.id_pessoa AS captador_usuario_id,
+                funcionario_captador.id_pessoa AS captador_funcionario_id,
+                funcionario_captador.salario AS captador_salario,
+                funcionario_captador.matricula AS captador_matricula,
+                funcionario_captador.data_admissao AS captador_data_admissao,
+                funcionario_captador.cargo AS captador_cargo,
 
-            anuncio.id AS anuncio_id,
-            anuncio.descricao AS anuncio_descricao,
-            anuncio.titulo AS anuncio_titulo
+                anuncio.id AS anuncio_id,
+                anuncio.descricao AS anuncio_descricao,
+                anuncio.titulo AS anuncio_titulo
 
-            FROM imovel_cliente
+            FROM imovel 
 
-            LEFT join imovel 
-                ON imovel_cliente.id_imovel = imovel.id 
-
-            LEFT JOIN endereco
+            LEFT JOIN endereco 
                 ON endereco.id = imovel.id_endereco
 
-            LEFT JOIN condominio
+            LEFT JOIN condominio 
                 ON condominio.id = imovel.id_condominio
-
-            LEFT JOIN usuario usuario_corretor
-                ON usuario_corretor.id = imovel.id_corretor
-
-            LEFT JOIN corretor
-                ON corretor.id_usuario = usuario_corretor.id
-
-            LEFT JOIN usuario usuario_captador
-                ON usuario_captador.id = imovel.id_captador
-
-            LEFT JOIN funcionario captador
-                ON captador.id_pessoa = usuario_captador.id
 
             LEFT JOIN anuncio 
                 ON anuncio.id = imovel.id_anuncio
+
+            LEFT JOIN pessoa pessoa_corretor
+                ON pessoa_corretor.id = imovel.id_corretor
+
+            LEFT JOIN pessoa pessoa_captador
+                ON pessoa_captador.id = imovel.id_captador
+
+            LEFT JOIN usuario usuario_corretor
+                ON usuario_corretor.id_pessoa = pessoa_corretor.id
+
+            LEFT JOIN usuario usuario_captador
+                ON usuario_captador.id_pessoa = pessoa_captador.id
+
+            LEFT JOIN funcionario funcionario_corretor
+                ON funcionario_corretor.id_pessoa = pessoa_corretor.id
+
+            LEFT JOIN funcionario funcionario_captador
+                ON funcionario_captador.id_pessoa = pessoa_captador.id
+
+            LEFT JOIN corretor
+                ON corretor.id_funcionario = funcionario_corretor.id_pessoa
+
+            LEFT JOIN endereco endereco_captador
+                ON endereco_captador.id = pessoa_captador.id_endereco
+
+            LEFT JOIN endereco endereco_corretor
+                ON endereco_corretor.id = pessoa_corretor.id_endereco
 
             WHERE id_cliente = :id
 
@@ -709,10 +1071,52 @@ class ImovelDAO
             }
 
             $lista = [];
+            $pessoaDAO = new PessoaDAO();
 
             foreach ($dados as $registro) {
                 $imovel = $this->montar($registro);
                 if ($imovel) {
+                    $dadosCorretor = array_filter($dados, function ($key) {
+                        return strpos($key, 'corretor_') === 0;
+                    }, ARRAY_FILTER_USE_KEY);
+                    $dadosCorretor = array_combine(
+                        array_map(function ($key) {
+                            return preg_replace('/corretor_/', '', $key, 1);
+                        }, array_keys($dadosCorretor)),
+                        $dadosCorretor
+                    );
+                    $dadosCaptador = array_filter($dados, function ($key) {
+                        return strpos($key, 'captador_') === 0;
+                    }, ARRAY_FILTER_USE_KEY);
+                    $dadosCaptador = array_combine(
+                        array_map(function ($key) {
+                            return str_replace('captador_', '', $key);
+                        }, array_keys($dadosCaptador)),
+                        $dadosCaptador
+                    );
+                    $corretor = null;
+                    $captador = null;
+                    try {
+                        if ($dadosCorretor['id'] !== null) {
+                            $corretor = $pessoaDAO->montar($dadosCorretor);
+                        }
+                    } catch (Exception $e) {
+                        error_log("ERRO! imovelDAO->listarDisponiveis: " . $e->getMessage());
+                    }
+                    try {
+                        if ($dadosCaptador['id'] !== null) {
+                            $captador = $pessoaDAO->montar($dadosCaptador);
+                        }
+                    } catch (Exception $e) {
+                        error_log("ERRO! imovelDAO->listarDisponiveis: " . $e->getMessage());
+                    }
+
+                    if ($corretor) {
+                        $imovel->setCorretor($corretor);
+                    }
+                    if ($captador) {
+                        $imovel->setCaptador($captador);
+                    }
                     $lista[] = $imovel;
                 }
             }
