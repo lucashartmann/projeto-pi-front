@@ -18,7 +18,7 @@ class UsuarioDAO
         return $this->bancoDados;
     }
 
-    public function cadastrar(Pessoa $usuario)
+    public  function cadastrar(Pessoa $usuario): void
     {
         try {
             $sql = "
@@ -33,11 +33,12 @@ class UsuarioDAO
                 ':ultimo_login' => null
             ]);
         } catch (Exception $e) {
+            error_log("ERRO! usuarioDAO->cadastrar: " . $e->getMessage());
             throw new Exception("Erro ao cadastrar usuário: " . $e->getMessage());
         }
     }
 
-    public function atualizar(Pessoa $usuario)
+    public  function atualizar(Pessoa $usuario): void
     {
         try {
             $sql = "
@@ -55,6 +56,7 @@ class UsuarioDAO
                 ':ultimo_login' => $usuario->getUltimoLogin() ? $usuario->getUltimoLogin()->format('Y-m-d H:i:s') : null
             ]);
         } catch (Exception $e) {
+            error_log("ERRO! usuarioDAO->atualizar: " . $e->getMessage());
             throw new Exception("Erro ao atualizar usuário: " . $e->getMessage());
         }
     }

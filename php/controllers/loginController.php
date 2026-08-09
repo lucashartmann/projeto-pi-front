@@ -4,7 +4,7 @@ require_once __DIR__ . '/../dao/pessoaDAO.php';
 require_once __DIR__ . '/../dao/notificacaoDAO.php';
 require_once __DIR__ . '/../dao/imovelDAO.php';
 require_once __DIR__ . '/../dao/atendimentoDAO.php';
-require_once __DIR__ . '/usuarioController.php';
+require_once __DIR__ . '/pessoaController.php';
 require_once __DIR__ . '/imovelController.php';
 require_once __DIR__ . '/atendimentoController.php';
 require_once __DIR__ . '/../utils/env.php';
@@ -20,22 +20,13 @@ class loginController
 {
     private PessoaDAO $pessoaDAO;
     private ImovelDAO $imovelDAO;
-    private UsuarioController $usuarioController;
+    private PessoaController $pessoaController;
     private AtendimentoDAO $atendimentoDAO;
     private NotificacaoDAO $notificacaoDAO;
     private ImovelController $imovelController;
     private AtendimentoController $atendimentoController;
 
-    public function __construct()
-    {
-        $this->pessoaDAO = new PessoaDAO();
-        $this->imovelDAO = new ImovelDAO();
-        $this->usuarioController = new UsuarioController();
-        $this->imovelController = new ImovelController();
-        $this->atendimentoDAO = new AtendimentoDAO();
-        $this->atendimentoController = new AtendimentoController();
-        $this->notificacaoDAO = new NotificacaoDAO();
-    }
+
 
     function marcarComoLido($dados)
     {
@@ -266,7 +257,7 @@ class loginController
             if (isset($_SESSION['usuario_id'])) {
                 $usuario = $this->pessoaDAO->buscarPorId($_SESSION['usuario_id']);
 
-                $dados = $this->usuarioController->montarJson([$usuario]);
+                $dados = $this->pessoaController->montarJson([$usuario]);
 
                 return ([
                     "status" => "sucesso",
@@ -311,7 +302,7 @@ class loginController
                     $consulta = $this->pessoaDAO->verificar($email, "", true);
 
                     if (!$consulta) {
-                        $resultado = $this->usuarioController->atualizar([
+                        $resultado = $this->pessoaController->atualizar([
                             "nome" => $nome,
                             "email" => $email,
                             "username" => $email,

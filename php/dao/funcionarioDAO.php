@@ -17,7 +17,7 @@ class FuncionarioDAO
         return $this->bancoDados;
     }
 
-    public function cadastrar(Funcionario $funcionario)
+    public  function cadastrar(Funcionario $funcionario)
     {
         try {
             $sql = "
@@ -33,11 +33,12 @@ class FuncionarioDAO
                 ':cargo' => $funcionario->getCargo()->value
             ]);
         } catch (Exception $e) {
+            error_log("funcionarioDAO::cadastrar - Error: " . $e->getMessage());
             throw new Exception("Erro ao cadastrar funcionário: " . $e->getMessage());
         }
     }
 
-    public function atualizar(Funcionario $funcionario)
+    public  function atualizar(Funcionario $funcionario)
     {
         try {
             $sql = "
@@ -57,6 +58,7 @@ class FuncionarioDAO
                 ':cargo' => $funcionario->getCargo()->value
             ]);
         } catch (Exception $e) {
+            error_log("funcionarioDAO::atualizar - Error: " . $e->getMessage());
             throw new Exception("Erro ao atualizar funcionário: " . $e->getMessage());
         }
     }

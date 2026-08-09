@@ -9,17 +9,13 @@ require_once __DIR__ . '/../dao/pessoaDAO.php';
 require_once __DIR__ . '/../dao/enderecoDAO.php';
 require_once __DIR__ . '/../services/pessoaService.php';
 
-class UsuarioController
+class PessoaController
 {
 
     private PessoaDAO $pessoaDAO;
     private PessoaService $pessoaService;
 
-    public function __construct()
-    {
-        $this->pessoaDAO = new PessoaDAO();
-        $this->pessoaService = new PessoaService();
-    }
+
 
     function montarJson(array $listaUsuarios)
     {

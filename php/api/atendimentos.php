@@ -26,7 +26,3 @@ switch ($acao) {
         $resultado = (["status" => "erro", "mensagem" => "Ação inválida"]);
         break;
 }
-
-if ($acao) {
-    echo json_encode($resultado);
-}

@@ -13,7 +13,7 @@ class AnexoDAO
         $this->bancoDados = Banco::getInstance();
     }
 
-    public function buscarPorCaminho($caminho)
+    public function buscarPorCaminho(String $caminho)
     {
         try {
             $stmt = $this->bancoDados->prepare("
@@ -36,11 +36,12 @@ class AnexoDAO
 
             return $anexoObj;
         } catch (Exception $e) {
+            error_log("anexoDAO::buscarPorCaminho - Error: " . $e->getMessage());
             throw $e;
         }
     }
 
-    public function listarPorIdAnuncio($idAnuncio)
+    public function listarPorIdAnuncio(int $idAnuncio)
     {
         try {
 
@@ -76,18 +77,24 @@ class AnexoDAO
             $mapa["Documentos"] = $documentos;
             return $mapa;
         } catch (Exception $e) {
+            error_log("anexoDAO::listarPorIdAnuncio - Error: " . $e->getMessage());
             throw $e;
         }
     }
 
-    public function buscarMidiaPorId($id)
+    public function buscarMidiaPorId(int $id)
     {
-        $stmt = $this->bancoDados->prepare("SELECT midia FROM midia_anuncio WHERE id = ?");
-        $stmt->execute([$id]);
-        return $stmt->fetchColumn();
+        try {
+            $stmt = $this->bancoDados->prepare("SELECT midia FROM midia_anuncio WHERE id = ?");
+            $stmt->execute([$id]);
+            return $stmt->fetchColumn();
+        } catch (Exception $e) {
+            error_log("anexoDAO::buscarMidiaPorId - Error: " . $e->getMessage());
+            throw $e;
+        }
     }
 
-    public function cadastrar($anexo)
+    public function cadastrar(Anexo $anexo)
     {
         try {
             $sqlQuery = " 
@@ -102,11 +109,12 @@ class AnexoDAO
                 ':tipo' => $anexo->getTipo() ? $anexo->getTipo()->value : null
             ]);
         } catch (Exception $e) {
+            error_log("anexoDAO::cadastrar - Error: " . $e->getMessage());
             throw $e;
         }
     }
 
-    public function atualizar($anexo)
+    public function atualizar(Anexo $anexo)
     {
         try {
             $sqlQuery = " 
@@ -123,6 +131,7 @@ class AnexoDAO
                 ':tipo' => $anexo->getTipo() ? $anexo->getTipo()->value : null
             ]);
         } catch (Exception $e) {
+            error_log("anexoDAO::atualizar - Error: " . $e->getMessage());
             throw $e;
         }
     }

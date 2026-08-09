@@ -50,11 +50,12 @@ class EnderecoDAO
 
             return $lista;
         } catch (Exception $e) {
-           throw $e;
+            error_log("endereçoDAO::listar - Error: " . $e->getMessage());
+            throw $e;
         }
     }
 
-    public function verificar($enderecoObj)
+    public function verificar(Endereco $enderecoObj)
     {
         try {
 
@@ -62,8 +63,8 @@ class EnderecoDAO
             SELECT *
             FROM endereco
             WHERE cep = :cep
-              AND numero <=> :numero
-              AND complemento <=> :complemento
+              AND numero = :numero
+              AND complemento = :complemento
         ";
 
             $stmt = $this->bancoDados->prepare($sql);
@@ -76,7 +77,7 @@ class EnderecoDAO
             $registro = $stmt->fetch(PDO::FETCH_ASSOC);
 
             if (!$registro) {
-                throw new Exception("Não existe endereço com estes dados.");
+                return null;
             }
 
             $endereco = new Endereco(
@@ -93,11 +94,12 @@ class EnderecoDAO
 
             return $endereco;
         } catch (Exception $e) {
+            error_log("endereçoDAO::verificar - Error: " . $e->getMessage());
             throw $e;
         }
     }
 
-    public function buscarPorId($id)
+    public  function buscarPorId(int $id)
     {
         try {
 
@@ -128,11 +130,12 @@ class EnderecoDAO
 
             return $endereco;
         } catch (Exception $e) {
+            error_log("endereçoDAO::buscarPorId - Error: " . $e->getMessage());
             throw $e;
         }
     }
 
-    public function cadastrar($endereco)
+    public function cadastrar(Endereco $endereco)
     {
         try {
 
@@ -157,11 +160,12 @@ class EnderecoDAO
 
             return $this->bancoDados->lastInsertId();
         } catch (Exception $e) {
+            error_log("endereçoDAO::cadastrar - Error: " . $e->getMessage());
             throw $e;
         }
     }
 
-    public function atualizar($endereco)
+    public function atualizar(Endereco $endereco)
     {
         try {
             $sql = "
@@ -191,6 +195,7 @@ class EnderecoDAO
 
             return true;
         } catch (Exception $e) {
+            error_log("endereçoDAO::atualizar - Error: " . $e->getMessage());
             throw $e;
         }
     }

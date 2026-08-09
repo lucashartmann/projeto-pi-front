@@ -20,6 +20,6 @@ switch ($acao) {
         break;
 
     default:
-        echo json_encode(["status" => "erro", "mensagem" => "Ação inválida"]);
+        error_log(json_encode(["status" => "erro", "mensagem" => "Ação inválida"]));
         break;
 }

@@ -4,39 +4,47 @@ require_once __DIR__ . '/../database/banco.php';
 require_once __DIR__ . '/imovelDAO.php';
 require_once __DIR__ . '/pessoaDAO.php';
 require_once __DIR__ . '/../model/visita.php';
+require_once __DIR__ . '/../model/funcionario.php';
 
 class VisitaDAO
 {
     private Banco $bancoDados;
-    private ImovelDAO $imovelDAO;
-    private PessoaDAO $pessoaDAO;
 
     public function __construct()
     {
         $this->bancoDados = Banco::getInstance();
-        $this->imovelDAO = new ImovelDAO();
-        $this->pessoaDAO = new PessoaDAO();
     }
-    public function listarPorCorretor($corretor)
+    public function listarPorCorretor(Funcionario $corretor): array
     {
-        $lista = [];
-        $visitas = $this->bancoDados->prepare("SELECT * from visita WHERE id_corretor = :id_corretor");
-        $visitas->execute([':id_corretor' => $corretor]);
+        try {
+            $lista = [];
+            $visitas = $this->bancoDados->prepare("SELECT * from visita WHERE id_corretor = :id_corretor");
+            if (!$visitas) {
+                return $lista;
+            }
+            $imovelDAO = new ImovelDAO();
+            $pessoaDAO = new PessoaDAO();
+            $visitas->execute([':id_corretor' => $corretor]);
 
-        foreach ($visitas as $visita) {
-            $novaVisita = new Visita();
-            $novaVisita->setId($visita['id_visita']);
-            $novaVisita->setImovel($this->imovelDAO->buscarPorId($visita['id_imovel']));
-            $novaVisita->setCliente($this->pessoaDAO->buscarPorId($visita['id_cliente']));
-            $lista[] = $novaVisita;
+            foreach ($visitas as $visita) {
+                $novaVisita = new Visita();
+                $novaVisita->setId($visita['id_visita']);
+                $novaVisita->setImovel($imovelDAO->buscarPorId($visita['id_imovel']));
+                $novaVisita->setCliente($pessoaDAO->buscarPorId($visita['id_cliente']));
+                $lista[] = $novaVisita;
+            }
+
+            return $lista;
+        } catch (Exception $e) {
+            error_log("ERRO! visitaDAO->listarPorCorretor: " . $e->getMessage());
+            throw new Exception("Erro ao listar visitas por corretor: " . $e->getMessage());
         }
-
-        return $lista;
     }
 
-    public function cadastrar($visita)
+    public function cadastrar(Visita $visita): bool
     {
-        return $this->bancoDados->exec("
+        try {
+            return $this->bancoDados->exec("
             INSERT INTO visita (id_cliente, id_imovel, id_corretor, data_visita, status) 
             VALUES (
                 " . ($visita->getCliente() ? $visita->getCliente()->getId() : "NULL") . ",
@@ -46,5 +54,9 @@ class VisitaDAO
                 '" . ($visita->getStatus() ? $visita->getStatus()->value : "NULL") . "'
             )
         ");
+        } catch (Exception $e) {
+            error_log("ERRO! visitaDAO->cadastrar: " . $e->getMessage());
+            throw new Exception("Erro ao cadastrar visita: " . $e->getMessage());
+        }
     }
 }

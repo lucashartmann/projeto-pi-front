@@ -6,7 +6,7 @@ require_once __DIR__ . '/../model/historico.php';
 
 class HistoricoDAO
 {
- private Banco $bancoDados;
+    private Banco $bancoDados;
 
     public function __construct()
     {
@@ -39,7 +39,8 @@ class HistoricoDAO
             }
             return $historicos;
         } catch (Exception $e) {
-           throw $e;
+            error_log("historicoDAO::listarHistorico - Error: " . $e->getMessage());
+            throw $e;
         }
     }
 
@@ -59,6 +60,7 @@ class HistoricoDAO
             ]);
             return true;
         } catch (Exception $e) {
+            error_log("historicoDAO::cadastrarHistorico - Error: " . $e->getMessage());
             throw $e;
         }
     }

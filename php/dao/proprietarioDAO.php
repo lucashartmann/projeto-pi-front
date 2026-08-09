@@ -17,7 +17,7 @@ class ProprietarioDAO
         return $this->bancoDados;
     }
 
-    public function cadastrar(Proprietario $proprietario)
+    public  function cadastrar(Proprietario $proprietario): void
     {
         try {
             $sql = "
@@ -29,11 +29,12 @@ class ProprietarioDAO
                 ':id_pessoa' => $proprietario->getId()
             ]);
         } catch (Exception $e) {
+            error_log("proprietarioDAO::cadastrar - Error: " . $e->getMessage());
             throw new Exception("Erro ao cadastrar proprietário: " . $e->getMessage());
         }
     }
 
-    public function atualizar(Proprietario $proprietario)
+    public  function atualizar(Proprietario $proprietario): void
     {
         try {
             $sql = "
@@ -46,6 +47,7 @@ class ProprietarioDAO
                 ':id_pessoa' => $proprietario->getId()
             ]);
         } catch (Exception $e) {
+            error_log("proprietarioDAO::atualizar - Error: " . $e->getMessage());
             throw new Exception("Erro ao atualizar proprietário: " . $e->getMessage());
         }
     }

@@ -1,14 +1,14 @@
 <?php
 
 
-require_once __DIR__ . '/../controllers/usuarioController.php';
+require_once __DIR__ . '/../controllers/pessoaController.php';
 
 // ob_start();
 header('Content-Type: application/json');
 ini_set('display_errors', 0);
 error_reporting(E_ALL);
 $acao = $_GET['acao'] ?? '';
-$controller = new UsuarioController();
+$controller = new PessoaController();
 
 switch ($acao) {
 
@@ -63,8 +63,4 @@ switch ($acao) {
     default:
         $resultado = (["status" => "erro", "mensagem" => "Ação inválida"]);
         break;
-}
-
-if ($acao) {
-    echo json_encode($resultado);
 }

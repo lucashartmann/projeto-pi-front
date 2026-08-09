@@ -12,7 +12,7 @@ class NotificacaoDAO
         $this->bancoDados = Banco::getInstance();
     }
 
-    public function cadastrar($usuario, $mensagem, $tipo = null)
+    public function cadastrar(Pessoa $usuario, String $mensagem, String $tipo = null): bool
     {
         try {
             $stmt = $this->bancoDados->prepare("
@@ -28,12 +28,13 @@ class NotificacaoDAO
 
             return true;
         } catch (Exception $e) {
+            error_log("ERRO! notificacaoDAO->cadastrar: " . $e->getMessage());
             throw $e;
         }
     }
 
 
-    public function marcarComoLido($listaIds, $usuario)
+    public function marcarComoLido(array $listaIds, Pessoa $usuario): bool
     {
         try {
             foreach ($listaIds as $id) {
@@ -48,11 +49,12 @@ class NotificacaoDAO
 
             return true;
         } catch (Exception $e) {
-           throw $e;
+            error_log("ERRO! notificacaoDAO->marcarComoLido: " . $e->getMessage());
+            throw $e;
         }
     }
 
-    public function buscarPorUsuario($usuario)
+    public function buscarPorUsuario(Pessoa $usuario): array
     {
         try {
             $stmt = $this->bancoDados->prepare("
@@ -64,7 +66,8 @@ class NotificacaoDAO
             $stmt->execute([':id' => $usuario->getId()]);
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (Exception $e) {
-          throw $e;
+            error_log("ERRO! notificacaoDAO->buscarPorUsuario: " . $e->getMessage());
+            throw $e;
         }
     }
 }

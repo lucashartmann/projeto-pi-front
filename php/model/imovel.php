@@ -94,7 +94,6 @@ class Imovel
     private ?Anuncio $anuncio;
     private ?Condominio $condominio;
     private array $filtros;
-    private string $complemento;
     private bool $destacado;
     private int $quantClicks;
 
@@ -129,7 +128,6 @@ class Imovel
         $this->anuncio = NULL;
         $this->condominio = NULL;
         $this->filtros = [];
-        $this->complemento = "";
         $this->quantClicks = 0;
         $this->destacado = false;
     }
@@ -152,16 +150,6 @@ class Imovel
     public function setQuantClicks(int $quantClicks)
     {
         $this->quantClicks = $quantClicks;
-    }
-
-    public function getComplemento()
-    {
-        return $this->complemento;
-    }
-
-    public function setComplemento(string $complemento)
-    {
-        $this->complemento = $complemento;
     }
 
     public function setFiltros(array $filtros)

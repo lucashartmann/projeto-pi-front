@@ -2,9 +2,9 @@
 
 require_once __DIR__ . '/pessoa.php';
 
-enum Cargo : string
+enum Cargo: string
 {
-    case ADMIN = "ADMINISTRADOR";
+    case ADMIN = "ADMIN";
     case CORRETOR = "CORRETOR";
     case GERENTE = "GERENTE";
     case CAPTADOR = "CAPTADOR";

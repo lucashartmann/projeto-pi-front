@@ -1,7 +1,7 @@
 <?php
 
 require_once __DIR__ . '/../php/controllers/proprietarioController.php';
-require_once __DIR__ . '/../php/controllers/usuarioController.php';
+require_once __DIR__ . '/../php/controllers/pessoaController.php';
 require_once __DIR__ . '/../php/controllers/loginController.php';
 require_once __DIR__ . '/../php/controllers/imovelController.php';
 require_once __DIR__ . '/../php/model/proprietario.php';
@@ -84,7 +84,7 @@ class ControllerTest extends TestCase
             }
         };
 
-        $ctrl = new UsuarioController();
+        $ctrl = new PessoaController();
         $res = $ctrl->listar();
 
         $this->assertEquals('sucesso', $res['status']);

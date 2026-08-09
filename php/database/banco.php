@@ -1,7 +1,7 @@
 <?php
 
-ini_set('display_errors', 0);
 error_reporting(E_ALL);
+
 class Banco extends PDO
 {
 
@@ -54,7 +54,8 @@ class Banco extends PDO
                 cep VARCHAR(8) NOT NULL,
                 complemento VARCHAR(100) NULL,
                 cidade VARCHAR(255) NOT NULL,
-                uf VARCHAR(2) NOT NULL
+                uf VARCHAR(2) NOT NULL,
+                unique(cep, numero, complemento)
             )",
 
             "CREATE TABLE IF NOT EXISTS pessoa (
@@ -129,17 +130,6 @@ class Banco extends PDO
                     ON DELETE CASCADE
             )",
 
-            "CREATE TABLE IF NOT EXISTS favoritos (
-                id_cliente INTEGER,
-                id_imovel INTEGER,
-                UNIQUE(id_cliente, id_imovel),
-                FOREIGN KEY (id_cliente) 
-                    REFERENCES cliente(id_pessoa) 
-                    ON DELETE CASCADE,
-                FOREIGN KEY (id_imovel) 
-                    REFERENCES imovel(id) 
-                    ON DELETE CASCADE
-            )",
 
             "CREATE TABLE IF NOT EXISTS anuncio (
                 id INTEGER PRIMARY KEY AUTO_INCREMENT,
@@ -165,7 +155,7 @@ class Banco extends PDO
                 quant_banheiros INTEGER NULL,
                 quant_varandas INTEGER NULL,
                 categoria ENUM('Sala Comercial', 'Apartamento', 'Casa', 'Loja', 'Galpão', 'Cobertura', 'Loft', 'Studio', 'Depósito', 'Pavilhão', 'Prédio Comercial', 'Ponto Comercial', 'Empreendimento', 'Casa em Condomínio', 'Sobrado', 'Sítio', 'Terreno', 'Kitnet', 'Chácara', 'Fazenda') NOT NULL,
-                id_endereco INTEGER NULL,
+                id_endereco INTEGER NULL UNIQUE,
                 status ENUM('Venda', 'Aluguel', 'Venda e Aluguel', 'Alugado', 'Vendido', 'Pendente') NOT NULL,
                 iptu REAL NULL,
                 valor_condominio REAL NULL,
@@ -181,7 +171,7 @@ class Banco extends PDO
                 id_captador INT NULL,
                 data_cadastro TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 data_modificacao DATETIME NULL,
-                id_anuncio INT NULL,
+                id_anuncio INT NULL UNIQUE,
                 id_condominio INT NULL,
                 quant_clicks INTEGER DEFAULT 0,
                 destacado BOOLEAN DEFAULT FALSE,
@@ -190,11 +180,23 @@ class Banco extends PDO
                 FOREIGN KEY (id_endereco) 
                     REFERENCES endereco(id),
                 FOREIGN KEY (id_corretor) 
-                    REFERENCES corretor(id_pessoa),
+                    REFERENCES corretor(id_funcionario),
                 FOREIGN KEY (id_captador) 
-                    REFERENCES captador(id_pessoa),
+                    REFERENCES funcionario(id_pessoa),
                 FOREIGN KEY (id_condominio) 
                     REFERENCES condominio(id)
+            )",
+
+            "CREATE TABLE IF NOT EXISTS favoritos (
+                id_cliente INTEGER,
+                id_imovel INTEGER,
+                UNIQUE(id_cliente, id_imovel),
+                FOREIGN KEY (id_cliente) 
+                    REFERENCES cliente(id_pessoa) 
+                    ON DELETE CASCADE,
+                FOREIGN KEY (id_imovel) 
+                    REFERENCES imovel(id) 
+                    ON DELETE CASCADE
             )",
 
             "CREATE TABLE IF NOT EXISTS midia_anuncio (
@@ -223,9 +225,9 @@ class Banco extends PDO
                 FOREIGN KEY (id_proprietario) 
                     REFERENCES proprietario(id_pessoa),
                 FOREIGN KEY (id_captador) 
-                    REFERENCES captador(id_pessoa),
+                    REFERENCES funcionario(id_pessoa),
                 FOREIGN KEY (id_corretor) 
-                    REFERENCES corretor(id_pessoa)
+                    REFERENCES corretor(id_funcionario)
             )",
 
             "CREATE TABLE IF NOT EXISTS atendimento (
@@ -237,7 +239,7 @@ class Banco extends PDO
                 FOREIGN KEY (id_imovel) 
                     REFERENCES imovel(id),
                 FOREIGN KEY (id_corretor) 
-                    REFERENCES corretor(id_pessoa),
+                    REFERENCES corretor(id_funcionario),
                 FOREIGN KEY (id_cliente) 
                     REFERENCES cliente(id_pessoa) 
                     ON DELETE CASCADE
@@ -271,7 +273,7 @@ class Banco extends PDO
                     ON DELETE CASCADE               
             )",
 
-            "CREATE TABLE proprietario_imovel (
+            "CREATE TABLE IF NOT EXISTS proprietario_imovel (
                 id_proprietario INTEGER NOT NULL,
                 id_imovel INTEGER NOT NULL,
                 PRIMARY KEY (id_proprietario, id_imovel),
@@ -297,7 +299,7 @@ class Banco extends PDO
                     REFERENCES imovel(id) 
                     ON DELETE CASCADE,
                 FOREIGN KEY (id_corretor) 
-                    REFERENCES corretor(id_pessoa) 
+                    REFERENCES corretor(id_funcionario) 
                     ON DELETE CASCADE
             )",
 
@@ -370,7 +372,7 @@ class Banco extends PDO
             $stmt->execute();
             return true;
         } catch (Exception $e) {
-            error_log("ERRO Banco->removerLista $tabela: " . $e->getMessage());
+            error_log("ERRO Banco->removerLista $tabela - " . implode(',', $listaIDS) . ": " . $e->getMessage());
             return False;
         }
     }
@@ -405,48 +407,6 @@ class Banco extends PDO
         } catch (Exception $e) {
             error_log("ERRO Banco->atualizar $tabela - $valor: " . $e->getMessage());
             return False;
-        }
-    }
-
-    public function getListaFiltrosApartamento()
-    {
-        try {
-
-            $stmt = $this->prepare("
-                        SELECT * FROM filtros_imovel 
-                ");
-            $stmt->execute();
-            $registros = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-            $lista = [];
-
-            foreach ($registros as $registro) {
-                $nome = $registro['nome'] ?? null;
-                if ($nome !== null) {
-                    $lista[] = $nome;
-                }
-            }
-            return $lista;
-        } catch (Exception $e) {
-            error_log("ERRO! Banco->getListaFiltrosApartamento: " . $e->getMessage());
-            return [];
-        }
-    }
-    public function cadastrarListaFiltros($lista_filtros, $tabela)
-    {
-        foreach ($lista_filtros as $filtro) {
-            try {
-                $sqlQuery = " 
-                            INSERT INTO $tabela (nome) 
-                            VALUES(:nome)
-                            ";
-                $stmt = $this->prepare($sqlQuery);
-                $stmt->execute([':nome' => $filtro]);
-            } catch (Exception $e) {
-                $erro = "ERRO! Banco->cadastrarListaFiltros: " . $e->getMessage();
-                error_log("ERRO! Banco->cadastrarListaFiltros: " . $erro);
-                continue;
-            }
         }
     }
 }

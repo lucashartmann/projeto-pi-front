@@ -32,6 +32,7 @@ class CorretorDAO
                 ':creci' => $corretor->getCreci()
             ]);
         } catch (Exception $e) {
+            error_log("corretorDAO::cadastrar - Error: " . $e->getMessage());
             throw new Exception("Erro ao cadastrar corretor: " . $e->getMessage());
         }
     }
@@ -50,6 +51,7 @@ class CorretorDAO
                 ':creci' => $corretor->getCreci()
             ]);
         } catch (Exception $e) {
+            error_log("corretorDAO::atualizar - Error: " . $e->getMessage());
             throw new Exception("Erro ao atualizar corretor: " . $e->getMessage());
         }
     }

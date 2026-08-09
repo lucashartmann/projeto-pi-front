@@ -1,8 +1,9 @@
-<?php  
+<?php
 
 require_once __DIR__ . '/endereco.php';
- 
-class Pessoa {
+
+class Pessoa
+{
 
     protected  ?int $id;
     protected  ?string $nome;
@@ -11,14 +12,15 @@ class Pessoa {
     protected  array $telefones;
     protected  ?Endereco $endereco;
     protected  ?DateTime $dataNascimento;
-    protected  bool $ativo;
+    protected  ?bool $ativo;
     protected  ?DateTime $dataCadastro;
     protected  ?DateTime $dataModificacao;
     protected  ?string $senha;
     protected  ?string $email;
     protected ?DateTime $ultimoLogin;
 
-    public function __construct(string $email, string $nome, string $cpfCnpj) {
+    public function __construct(string $email, string $nome, string $cpfCnpj)
+    {
         $this->id = NULL;
         $this->email = $email;
         $this->nome = $nome;
@@ -163,5 +165,4 @@ class Pessoa {
     {
         $this->dataModificacao = $value;
     }
-
 }

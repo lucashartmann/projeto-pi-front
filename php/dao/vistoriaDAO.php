@@ -7,30 +7,42 @@ require_once __DIR__ . '/../model/vistoria.php';
 class VistoriaDAO
 {
     private Banco $bancoDados;
-    private ImovelDAO $imovelDAO;
 
     public function __construct()
     {
         $this->bancoDados = Banco::getInstance();
-        $this->imovelDAO = new ImovelDAO();
     }
-    public function listarPorVistoriador($vistoriador)
-    {
-        $lista = [];
-        $vistorias = $this->bancoDados->prepare("SELECT * from vistoria WHERE id_vistoriador = $vistoriador");
 
-        foreach ($vistorias as $vistoria) {
-            $novaVistoria = new Vistoria();
-            $novaVistoria->setId($vistoria['id_vistoria']);
-            $novaVistoria->setImovel($this->imovelDAO->buscarPorId($vistoria['id_imovel']));
-            $lista[] = $novaVistoria;
+    public function listarPorVistoriador(Funcionario $vistoriador)
+    {
+        try {
+
+            $lista = [];
+            $vistorias = $this->bancoDados->prepare("SELECT * from vistoria WHERE id_vistoriador = $vistoriador");
+
+            if (!$vistorias) {
+                return $lista;
+            }
+
+            $imovelDAO = new ImovelDAO();
+
+            foreach ($vistorias as $vistoria) {
+                $novaVistoria = new Vistoria();
+                $novaVistoria->setId($vistoria['id_vistoria']);
+                $novaVistoria->setImovel($imovelDAO->buscarPorId($vistoria['id_imovel']));
+                $lista[] = $novaVistoria;
+            }
+
+            return $lista;
+        } catch (Exception $e) {
+            error_log("ERRO! vistoriaDAO->listarPorVistoriador: " . $e->getMessage());
+            throw new Exception("Erro ao listar vistorias por vistoriador: " . $e->getMessage());
         }
-
-        return $lista;
     }
-    public function cadastrar($vistoria)
+    public function cadastrar(Vistoria $vistoria)
     {
-        return $this->bancoDados->exec("
+        try {
+            return $this->bancoDados->exec("
             INSERT INTO vistoria (id_imovel, data_vistoria, status) 
             VALUES (
                 " . ($vistoria->getImovel() ? $vistoria->getImovel()->getId() : "NULL") . ",
@@ -38,5 +50,9 @@ class VistoriaDAO
                 '" . ($vistoria->getStatus() ? $vistoria->getStatus()->value : "NULL") . "'
             )
         ");
+        } catch (Exception $e) {
+            error_log("ERRO! vistoriaDAO->cadastrar: " . $e->getMessage());
+            throw new Exception("Erro ao cadastrar vistoria: " . $e->getMessage());
+        }
     }
 }

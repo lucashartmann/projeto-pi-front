@@ -7,15 +7,13 @@ require_once __DIR__ . '/../model/anuncio.php';
 class AnuncioDAO
 {
     private Banco $bancoDados;
-    private AnexoDAO $anexoDAO;
 
     public function __construct()
     {
         $this->bancoDados = Banco::getInstance();
-        $this->anexoDAO = new AnexoDAO();
     }
 
-    public function cadastrar($anuncio)
+    public function cadastrar(Anuncio $anuncio)
     {
         try {
 
@@ -33,16 +31,15 @@ class AnuncioDAO
 
             return $this->bancoDados->lastInsertId();
         } catch (Exception $e) {
+            error_log("anuncioDAO::cadastrar - Error: " . $e->getMessage());
             throw $e;
         }
     }
 
-    public function atualizar($anuncio)
+    public function atualizar(Anuncio $anuncio)
     {
 
         try {
-
-            $this->bancoDados->beginTransaction();
 
 
             $sql = "
@@ -69,15 +66,16 @@ class AnuncioDAO
                 ':id_anuncio' => $anuncio->getId()
             ]);
 
-            return $this->bancoDados->commit();
+            return true;
         } catch (Exception $e) {
             if ($this->bancoDados->inTransaction()) {
                 $this->bancoDados->rollBack();
             }
-           throw $e;
+            error_log("anuncioDAO::atualizar - Error: " . $e->getMessage());
+            throw $e;
         }
     }
-    public function buscarPorId($idAnuncio)
+    public function buscarPorId(int $idAnuncio)
     {
         try {
 
@@ -100,7 +98,8 @@ class AnuncioDAO
             $anuncioObj->setId($idAnuncio);
             $anuncioObj->setDescricao($descricao);
             $anuncioObj->setTitulo($titulo);
-            $mapaAnexos = $this->anexoDAO->listarPorIdAnuncio($idAnuncio);
+            $anexoDAO = new AnexoDAO();
+            $mapaAnexos = $anexoDAO->listarPorIdAnuncio($idAnuncio);
             if ($mapaAnexos && isset($mapaAnexos["Imagens"])) {
                 $anuncioObj->setImagens($mapaAnexos["Imagens"]);
             }
@@ -112,6 +111,7 @@ class AnuncioDAO
             }
             return $anuncioObj;
         } catch (Exception $e) {
+            error_log("anuncioDAO::buscarPorId - Error: " . $e->getMessage());
             throw $e;
         }
     }

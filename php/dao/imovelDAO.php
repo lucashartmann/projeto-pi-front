@@ -11,19 +11,15 @@ require_once __DIR__ . '/../model/funcionario.php';
 require_once __DIR__ . '/../model/corretor.php';
 require_once __DIR__ . '/../model/pessoa.php';
 require_once __DIR__ . '/../dao/anexoDAO.php';
-require_once __DIR__ . '/../dao/pessoaDAO.php';
+require_once __DIR__ . '/proprietarioImovelDAO.php';
 
 class ImovelDAO
 {
     private Banco $bancoDados;
-    private AnexoDAO $anexoDAO;
-    private PessoaDAO $pessoaDAO;
 
     public function __construct()
     {
         $this->bancoDados = Banco::getInstance();
-        $this->anexoDAO = new AnexoDAO();
-        $this->pessoaDAO = new PessoaDAO();
     }
 
     public function getConexao()
@@ -42,11 +38,11 @@ class ImovelDAO
             return true;
         } catch (Exception $e) {
             error_log("ERRO! imovelDAO->atualizarClicks: " . $e->getMessage());
-            return false;
+            throw $e;
         }
     }
 
-    public function destacarLista(array $listaIDS)
+    public function destacarLista(array $listaIDS): bool
     {
         try {
             $sql = "UPDATE imovel SET destacado = NOT destacado WHERE id IN (" . implode(',', array_map('intval', $listaIDS)) . ")";
@@ -54,11 +50,12 @@ class ImovelDAO
             $stmt->execute();
             return true;
         } catch (Exception $e) {
+            error_log("ERRO! imovelDAO->destacarLista: " . $e->getMessage());
             throw $e;
         }
     }
 
-    public function destacar($idImovel)
+    public function destacar(int $idImovel): bool
     {
         try {
             $sql = "UPDATE imovel SET destacado = NOT destacado WHERE id = :id";
@@ -66,11 +63,12 @@ class ImovelDAO
             $stmt->execute([':id' => $idImovel]);
             return true;
         } catch (Exception $e) {
+            error_log("ERRO! imovelDAO->destacar: " . $e->getMessage());
             throw $e;
         }
     }
 
-    public function montar($dados): ?Imovel
+    public  function montar(array $dados): ?Imovel
     {
         try {
             $idImovel = (int) $dados['id'];
@@ -126,7 +124,8 @@ class ImovelDAO
                 $anuncio->setId((int) $dados['anuncio_id']);
                 $anuncio->setDescricao($dados['anuncio_descricao'] ?? '');
                 $anuncio->setTitulo($dados['anuncio_titulo'] ?? '');
-                $anexos = $this->anexoDAO->listarPorIdAnuncio($dados['anuncio_id']);
+                $anexoDAO = new AnexoDAO();
+                $anexos = $anexoDAO->listarPorIdAnuncio($dados['anuncio_id']);
                 $anuncio->setImagens($anexos['Imagens'] ?? null);
                 $anuncio->setVideos($anexos['Videos'] ?? null);
                 $anuncio->setAnexos($anexos['Documentos'] ?? null);
@@ -180,22 +179,24 @@ class ImovelDAO
             $imovelObj->setCondominio($condominio);
             $imovelObj->setDestacado((bool) $dados['destacado']);
             $imovelObj->setQuantClicks($dados['quant_clicks'] !== null ? (int) $dados['quant_clicks'] : 0);
-            $imovelObj->setProprietarios($this->pessoaDAO->listarPorIdImovel($dados['id']) ?? []);
+            $proprietarioImovelDAO = new ProprietarioImovelDAO();
+            $imovelObj->setProprietarios($proprietarioImovelDAO->listarPorIdImovel($dados['id']) ?? []);
             $imovelObj->setFiltros($this->listarFiltros($dados['id']) ?? []);
             return $imovelObj;
         } catch (Exception $e) {
+            error_log("ERRO! imovelDAO->buscarPorId: " . $e->getMessage());
             throw $e;
         }
     }
 
-    public function listarFiltros($id)
+    public function listarFiltros(int $id): array
     {
         try {
             $stmt = $this->bancoDados->prepare("
                 SELECT fi.nome
                 FROM imovel_filtros ifi
-                JOIN filtros_imovel fi
-                    ON fi.id = ifi.id_filtros_imovel
+                JOIN filtro fi
+                    ON fi.id = ifi.id_filtro
                 WHERE ifi.id_imovel = :id
             ");
             $stmt->execute([':id' => $id]);
@@ -207,11 +208,12 @@ class ImovelDAO
 
             return $filtros;
         } catch (Exception $e) {
+            error_log("ERRO! imovelDAO->listarFiltros: " . $e->getMessage());
             throw $e;
         }
     }
 
-    public function listarDestacados()
+    public function listarDestacados(): array
     {
         try {
             $sql = "
@@ -230,22 +232,22 @@ class ImovelDAO
                 c.id AS condominio_id,
                 c.nome AS condominio_nome,
             
-                u_cor.id AS corretor_id,
-                u_cor.username AS corretor_username,
+                u_cor.id_pessoa AS corretor_id,
+            
                 u_cor.senha AS corretor_senha,
-                u_cor.email AS corretor_email,
-                u_cor.nome AS corretor_nome,
-                u_cor.cpf_cnpj AS corretor_cpf_cnpj,
-                u_cor.rg AS corretor_rg,
+                    p_cor.email AS corretor_email,
+                    p_cor.nome AS corretor_nome,
+                    p_cor.cpf_cnpj AS corretor_cpf_cnpj,
+                    p_cor.rg AS corretor_rg,
                 co.creci AS corretor_creci,
 
-                u_cap.id AS captador_id,
-                u_cap.username AS captador_username,
+                u_cap.id_pessoa AS captador_id,
+          
                 u_cap.senha AS captador_senha,
-                u_cap.email AS captador_email,
-                u_cap.nome AS captador_nome,
-                u_cap.cpf_cnpj AS captador_cpf_cnpj,
-                u_cap.rg AS captador_rg,
+                    p_cap.email AS captador_email,
+                    p_cap.nome AS captador_nome,
+                    p_cap.cpf_cnpj AS captador_cpf_cnpj,
+                    p_cap.rg AS captador_rg,
                 ca.salario AS captador_salario,
 
                 a.id AS anuncio_id,
@@ -261,16 +263,22 @@ class ImovelDAO
                 ON c.id = i.id_condominio
 
             LEFT JOIN usuario u_cor
-                ON u_cor.id = i.id_corretor
+                ON u_cor.id_pessoa = i.id_corretor
+
+            LEFT JOIN pessoa p_cor
+                ON p_cor.id = u_cor.id_pessoa
 
             LEFT JOIN corretor co
-                ON co.id_usuario = u_cor.id
+                ON co.id_funcionario = u_cor.id_pessoa
 
             LEFT JOIN usuario u_cap
-                ON u_cap.id = i.id_captador
+                ON u_cap.id_pessoa = i.id_captador
 
-            LEFT JOIN captador ca
-                ON ca.id_usuario = u_cap.id
+            LEFT JOIN pessoa p_cap
+                ON p_cap.id = u_cap.id_pessoa
+
+            LEFT JOIN funcionario ca
+                ON ca.id_pessoa = u_cap.id_pessoa
 
             LEFT JOIN anuncio a
                 ON a.id = i.id_anuncio  
@@ -282,7 +290,7 @@ class ImovelDAO
             $resultados = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
             if (empty($resultados)) {
-                throw new Exception("Não há imóveis destacados");
+                return [];
             }
 
             $imoveisDestacados = [];
@@ -295,12 +303,15 @@ class ImovelDAO
 
             return $imoveisDestacados;
         } catch (Exception $e) {
+            error_log("ERRO! imovelDAO->listarDestacados: " . $e->getMessage());
             throw $e;
         }
     }
 
 
-    public function listar()
+
+
+    public function listar(): array
     {
 
         try {
@@ -321,22 +332,22 @@ class ImovelDAO
                 c.id AS condominio_id,
                 c.nome AS condominio_nome,
                
-                u_cor.id AS corretor_id,
-                u_cor.username AS corretor_username,
+                u_cor.id_pessoa AS corretor_id,
+                NULL AS corretor_username,
                 u_cor.senha AS corretor_senha,
-                u_cor.email AS corretor_email,
-                u_cor.nome AS corretor_nome,
-                u_cor.cpf_cnpj AS corretor_cpf_cnpj,
-                u_cor.rg AS corretor_rg,
+                    p_cor.email AS corretor_email,
+                    p_cor.nome AS corretor_nome,
+                    p_cor.cpf_cnpj AS corretor_cpf_cnpj,
+                    p_cor.rg AS corretor_rg,
                 co.creci AS corretor_creci,
 
-                u_cap.id AS captador_id,
-                u_cap.username AS captador_username,
+                u_cap.id_pessoa AS captador_id,
+                NULL AS captador_username,
                 u_cap.senha AS captador_senha,
-                u_cap.email AS captador_email,
-                u_cap.nome AS captador_nome,
-                u_cap.cpf_cnpj AS captador_cpf_cnpj,
-                u_cap.rg AS captador_rg,
+                    p_cap.email AS captador_email,
+                    p_cap.nome AS captador_nome,
+                    p_cap.cpf_cnpj AS captador_cpf_cnpj,
+                    p_cap.rg AS captador_rg,
                 ca.salario AS captador_salario,
 
                 a.id AS anuncio_id,
@@ -352,16 +363,22 @@ class ImovelDAO
                 ON c.id = i.id_condominio
 
             LEFT JOIN usuario u_cor
-                ON u_cor.id = i.id_corretor
+                ON u_cor.id_pessoa = i.id_corretor
+
+            LEFT JOIN pessoa p_cor
+                ON p_cor.id = u_cor.id_pessoa
 
             LEFT JOIN corretor co
-                ON co.id_usuario = u_cor.id
+                ON co.id_funcionario = u_cor.id_pessoa
 
             LEFT JOIN usuario u_cap
-                ON u_cap.id = i.id_captador
+                ON u_cap.id_pessoa = i.id_captador
 
-            LEFT JOIN captador ca
-                ON ca.id_usuario = u_cap.id
+            LEFT JOIN pessoa p_cap
+                ON p_cap.id = u_cap.id_pessoa
+
+            LEFT JOIN funcionario ca
+                ON ca.id_pessoa = u_cap.id_pessoa
 
             LEFT JOIN anuncio a
                 ON a.id = i.id_anuncio
@@ -374,7 +391,7 @@ class ImovelDAO
             $resultados = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
             if (empty($resultados)) {
-                throw new Exception("Não há imóveis disponíveis");
+                return [];
             }
 
             $lista = [];
@@ -388,11 +405,12 @@ class ImovelDAO
 
             return $lista;
         } catch (Exception $e) {
+            error_log("ERRO! imovelDAO->listar: " . $e->getMessage());
             throw $e;
         }
     }
 
-    public function listarDisponiveis()
+    public function listarDisponiveis(): array
     {
 
         try {
@@ -413,22 +431,22 @@ class ImovelDAO
                 c.id AS condominio_id,
                 c.nome AS condominio_nome,
 
-                u_cor.id AS corretor_id,
-                u_cor.username AS corretor_username,
+                u_cor.id_pessoa AS corretor_id,
+                NULL AS corretor_username,
                 u_cor.senha AS corretor_senha,
-                u_cor.email AS corretor_email,
-                u_cor.nome AS corretor_nome,
-                u_cor.cpf_cnpj AS corretor_cpf_cnpj,
-                u_cor.rg AS corretor_rg,
+                p_cor.email AS corretor_email,
+                p_cor.nome AS corretor_nome,
+                p_cor.cpf_cnpj AS corretor_cpf_cnpj,
+                p_cor.rg AS corretor_rg,
                 co.creci AS corretor_creci,
 
-                u_cap.id AS captador_id,
-                u_cap.username AS captador_username,
+                u_cap.id_pessoa AS captador_id,
+                NULL AS captador_username,
                 u_cap.senha AS captador_senha,
-                u_cap.email AS captador_email,
-                u_cap.nome AS captador_nome,
-                u_cap.cpf_cnpj AS captador_cpf_cnpj,
-                u_cap.rg AS captador_rg,
+                p_cap.email AS captador_email,
+                p_cap.nome AS captador_nome,
+                p_cap.cpf_cnpj AS captador_cpf_cnpj,
+                p_cap.rg AS captador_rg,
                 ca.salario AS captador_salario,
 
                 a.id AS anuncio_id,
@@ -444,16 +462,22 @@ class ImovelDAO
                 ON c.id = i.id_condominio
 
             LEFT JOIN usuario u_cor
-                ON u_cor.id = i.id_corretor
+                ON u_cor.id_pessoa = i.id_corretor
+
+            LEFT JOIN pessoa p_cor
+                ON p_cor.id = u_cor.id_pessoa
 
             LEFT JOIN corretor co
-                ON co.id_usuario = u_cor.id
+                ON co.id_funcionario = u_cor.id_pessoa
 
             LEFT JOIN usuario u_cap
-                ON u_cap.id = i.id_captador
+                ON u_cap.id_pessoa = i.id_captador
 
-            LEFT JOIN captador ca
-                ON ca.id_usuario = u_cap.id
+            LEFT JOIN funcionario ca
+                ON ca.id_pessoa = u_cap.id_pessoa
+
+            LEFT JOIN pessoa p_cap
+                ON p_cap.id = u_cap.id_pessoa
 
             LEFT JOIN anuncio a
                 ON a.id = i.id_anuncio
@@ -467,7 +491,7 @@ class ImovelDAO
             $resultados = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
             if (empty($resultados)) {
-                throw new Exception("Não há imóveis disponíveis");
+                return [];
             }
 
             $lista = [];
@@ -481,10 +505,11 @@ class ImovelDAO
 
             return $lista;
         } catch (Exception $e) {
+            error_log("ERRO! imovelDAO->listarDisponiveis: " . $e->getMessage());
             throw $e;
         }
     }
-    public function buscarPorId($idImovel)
+    public  function buscarPorId(int $idImovel): ?Imovel
     {
         try {
             $sql = "
@@ -503,22 +528,22 @@ class ImovelDAO
                 c.id AS condominio_id,
                 c.nome AS condominio_nome,
 
-                u_cor.id AS corretor_id,
-                u_cor.username AS corretor_username,
+                u_cor.id_pessoa AS corretor_id,
+                NULL AS corretor_username,
                 u_cor.senha AS corretor_senha,
-                u_cor.email AS corretor_email,
-                u_cor.nome AS corretor_nome,
-                u_cor.cpf_cnpj AS corretor_cpf_cnpj,
-                u_cor.rg AS corretor_rg,
+                p_cor.email AS corretor_email,
+                p_cor.nome AS corretor_nome,
+                p_cor.cpf_cnpj AS corretor_cpf_cnpj,
+                p_cor.rg AS corretor_rg,
                 co.creci AS corretor_creci,
 
-                u_cap.id AS captador_id,
-                u_cap.username AS captador_username,
+                u_cap.id_pessoa AS captador_id,
+                NULL AS captador_username,
                 u_cap.senha AS captador_senha,
-                u_cap.email AS captador_email,
-                u_cap.nome AS captador_nome,
-                u_cap.cpf_cnpj AS captador_cpf_cnpj,
-                u_cap.rg AS captador_rg,
+                p_cap.email AS captador_email,
+                p_cap.nome AS captador_nome,
+                p_cap.cpf_cnpj AS captador_cpf_cnpj,
+                p_cap.rg AS captador_rg,
                 ca.salario AS captador_salario,
 
                 a.id AS anuncio_id,
@@ -534,16 +559,22 @@ class ImovelDAO
                 ON c.id = i.id_condominio
 
             LEFT JOIN usuario u_cor
-                ON u_cor.id = i.id_corretor
+                ON u_cor.id_pessoa = i.id_corretor
+
+            LEFT JOIN pessoa p_cor
+                ON p_cor.id = u_cor.id_pessoa
 
             LEFT JOIN corretor co
-                ON co.id_usuario = u_cor.id
+                ON co.id_funcionario = u_cor.id_pessoa
 
             LEFT JOIN usuario u_cap
-                ON u_cap.id = i.id_captador
+                ON u_cap.id_pessoa = i.id_captador
 
-            LEFT JOIN captador ca
-                ON ca.id_usuario = u_cap.id
+            LEFT JOIN funcionario ca
+                ON ca.id_pessoa = u_cap.id_pessoa
+
+            LEFT JOIN pessoa p_cap
+                ON p_cap.id = u_cap.id_pessoa
 
             LEFT JOIN anuncio a
                 ON a.id = i.id_anuncio
@@ -562,34 +593,13 @@ class ImovelDAO
 
             return $this->montar($dados);
         } catch (Exception $e) {
+            error_log("ERRO! imovelDAO->buscarPorId: " . $e->getMessage());
             throw $e;
         }
     }
 
-    public function listarPorProprietario($idProprietario)
-    {
-        try {
-            $stmt = $this->bancoDados->prepare("SELECT id_imovel FROM proprietario_imovel WHERE id_proprietario = ?");
-            $stmt->execute([$idProprietario]);
-            $dados = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            if (empty($dados)) {
-                throw new Exception("Não há imóveis disponíveis");
-            }
-            $imoveis = [];
-            foreach ($dados as $row) {
-                $id = (int) $row['id_imovel'];
-                $imovel = $this->buscarPorId($id);
-                if ($imovel) {
-                    $imoveis[] = $imovel;
-                }
-            }
-            return $imoveis;
-        } catch (Exception $e) {
-            throw $e;
-        }
-    }
 
-    function listarFavoritos(int $idCliente)
+    public function listarFavoritos(int $idCliente): array
     {
         try {
             $sql = "
@@ -681,8 +691,8 @@ class ImovelDAO
             LEFT JOIN usuario usuario_captador
                 ON usuario_captador.id = imovel.id_captador
 
-            LEFT JOIN captador
-                ON captador.id_usuario = usuario_captador.id
+            LEFT JOIN funcionario captador
+                ON captador.id_pessoa = usuario_captador.id
 
             LEFT JOIN anuncio 
                 ON anuncio.id = imovel.id_anuncio
@@ -708,6 +718,7 @@ class ImovelDAO
             }
             return $lista;
         } catch (Exception $e) {
+            error_log("ERRO! imovelDAO->listarFavoritos: " . $e->getMessage());
             throw $e;
         }
     }
@@ -765,11 +776,12 @@ class ImovelDAO
             if ($this->bancoDados->inTransaction()) {
                 $this->bancoDados->rollBack();
             }
+            error_log("ERRO! imovelDAO->cadastrarImoveisCliente: " . $e->getMessage());
             throw $e;
         }
     }
 
-    public function atualizar($imovel)
+    public  function atualizar(Imovel $imovel): bool
     {
 
         try {
@@ -925,18 +937,15 @@ class ImovelDAO
             if ($this->bancoDados->inTransaction()) {
                 $this->bancoDados->rollBack();
             }
+            error_log("ERRO! imovelDAO->atualizar: " . $e->getMessage());
             throw $e;
         }
     }
 
 
-    public function cadastrar($imovel)
+    public  function cadastrar(Imovel $imovel): int
     {
         try {
-
-
-            $this->bancoDados->beginTransaction();
-
             $sql = "
             INSERT INTO imovel (
                 valor_venda, valor_aluguel, quant_quartos, quant_salas, quant_vagas,
@@ -1027,71 +1036,21 @@ class ImovelDAO
                 $imovel->getQuantClicks()
             ]);
 
-            $idImovel = $this->bancoDados->lastInsertId();
-
-
-            if ($imovel->getProprietarios()) {
-                foreach ($imovel->getProprietarios() as $prop) {
-                    $stmtProp = $this->bancoDados->prepare("
-                    INSERT INTO proprietario_imovel (id_proprietario, id_imovel)
-                    VALUES (?, ?)
-                ");
-                    $stmtProp->execute([
-                        $prop->getId(),
-                        $idImovel
-                    ]);
-                }
-            }
-
-
-            if ($imovel->getFiltros()) {
-                foreach ($imovel->getFiltros() as $filtro) {
-                    $stmt = $this->bancoDados->prepare("
-                        INSERT IGNORE INTO filtros_imovel (nome)
-                        VALUES (:nome)
-                    ");
-                    $stmt->execute([':nome' => $filtro]);
-
-                    $stmt = $this->bancoDados->prepare("
-                        SELECT id
-                        FROM filtros_imovel
-                        WHERE nome = :nome
-                    ");
-                    $stmt->execute([':nome' => $filtro]);
-
-                    $idFiltro = $stmt->fetchColumn();
-
-                    $stmt = $this->bancoDados->prepare("
-                        INSERT INTO imovel_filtros (id_imovel, id_filtros_imovel)
-                        VALUES (:id_imovel, :id_filtro)
-                    ");
-                    $stmt->execute([
-                        ':id_imovel' => $idImovel,
-                        ':id_filtro' => $idFiltro
-                    ]);
-                }
-            }
-
-
-            $this->bancoDados->commit();
-
-            return $idImovel;
+            return $this->bancoDados->lastInsertId();
         } catch (Exception $e) {
-            if ($this->bancoDados->inTransaction()) {
-                $this->bancoDados->rollBack();
-            }
+            error_log("ERRO! imovelDAO->cadastrar: " . $e->getMessage());
             throw $e;
         }
     }
 
 
-    public function getIdFiltroImovelPorNome($nome)
+    public function getIdFiltroImovelPorNome(String $nome): ?int
     {
         try {
 
             $stmt = $this->bancoDados->prepare("
                 SELECT id 
-                FROM filtros_imovel 
+                FROM filtro
                 WHERE nome = :nome
             ");
             $stmt->execute([':nome' => $nome]);
@@ -1100,17 +1059,17 @@ class ImovelDAO
 
             return $row ? (int) $row['id'] : null;
         } catch (Exception $e) {
-            error_log("ERRO imovelDAO->getIdFiltroImovelPorNome: " . $e->getMessage());
-            return null;
+            error_log("ERRO! imovelDAO->getIdFiltroImovelPorNome: " . $e->getMessage());
+            throw $e;
         }
     }
 
-    public function cadastrarFiltro($idImovel, $idFiltro)
+    public function cadastrarFiltro(int $idImovel, int $idFiltro): bool
     {
         try {
 
             $stmt = $this->bancoDados->prepare("
-            INSERT INTO imovel_filtros (id_imovel, id_filtros_imovel)
+            INSERT INTO imovel_filtros (id_imovel, id_filtro)
             VALUES (:id_imovel, :id_filtro)
         ");
 
@@ -1119,24 +1078,26 @@ class ImovelDAO
                 ':id_filtro' => $idFiltro
             ]);;
         } catch (Exception $e) {
+            error_log("ERRO! imovelDAO->cadastrarFiltro: " . $e->getMessage());
             throw $e;
         }
     }
 
-    public function removerFiltro($idImovel, $idFiltro)
+    public function removerFiltro(int $idImovel, int $idFiltro): bool
     {
         try {
 
             $stmt = $this->bancoDados->prepare("
             DELETE FROM imovel_filtros
             WHERE id_imovel = :id_imovel 
-              AND id_filtros_imovel = :id_filtro
+              AND id_filtro = :id_filtro
         ");
             return $stmt->execute([
                 ':id_imovel' => $idImovel,
                 ':id_filtro' => $idFiltro
             ]);
         } catch (Exception $e) {
+            error_log("ERRO! imovelDAO->removerFiltro: " . $e->getMessage());
             throw $e;
         }
     }

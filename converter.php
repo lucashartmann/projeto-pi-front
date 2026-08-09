@@ -98,8 +98,9 @@ foreach ($arquivos as $arquivo) {
     unlink($caminho);
 
 
-    echo "Convertido: $arquivo -> " . basename($novoArquivo) . PHP_EOL;
+
+    error_log("Convertido: $arquivo -> " . basename($novoArquivo) . PHP_EOL);
 }
 
 
-echo "\nFinalizado!";
+error_log("\nFinalizado!");

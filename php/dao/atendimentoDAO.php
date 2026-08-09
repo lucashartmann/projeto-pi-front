@@ -9,14 +9,10 @@ require_once __DIR__ . '/../model/atendimento.php';
 class AtendimentoDAO
 {
     private Banco $bancoDados;
-    private ImovelDAO $imovelDAO;
-    private PessoaDAO $pessoaDAO;
 
     public function __construct()
     {
         $this->bancoDados = Banco::getInstance();
-        $this->imovelDAO = new ImovelDAO();
-        $this->pessoaDAO = new PessoaDAO();
     }
 
     public function getConexao()
@@ -24,7 +20,7 @@ class AtendimentoDAO
         return $this->bancoDados;
     }
 
-    public function buscarPorId($id)
+    public function buscarPorId(int $id)
     {
         try {
             $stmt = $this->bancoDados->prepare("
@@ -40,11 +36,12 @@ class AtendimentoDAO
 
             return $this->montar($registro);
         } catch (Exception $e) {
-           throw $e;
+            error_log("atendimentoDAO::buscarPorId - Error: " . $e->getMessage());
+            throw $e;
         }
     }
 
-    public function atualizar($atendimento)
+    public function atualizar(Atendimento $atendimento)
     {
         try {
             $stmt = $this->bancoDados->prepare("
@@ -78,31 +75,35 @@ class AtendimentoDAO
                 ':id' => $atendimento->getId()
             ]);
         } catch (Exception $e) {
+            error_log("atendimentoDAO::atualizar - Error: " . $e->getMessage());
             throw $e;
         }
     }
 
-    public function montar($dados)
+    public function montar(array $dados)
     {
 
         $idImovel = $dados['id_imovel'];
         $idCorretor = $dados['id_corretor'];
         $idCliente = $dados['id_cliente'];
 
+        $pessoaDAO = new PessoaDAO();
+
         $atendimento = new Atendimento();
 
         if ($idImovel) {
-            $imovel = $this->imovelDAO->buscarPorId($idImovel);
+            $imovelDAO = new ImovelDAO();
+            $imovel = $imovelDAO->buscarPorId($idImovel);
             $atendimento->setImovel($imovel);
         }
 
         if ($idCorretor) {
-            $corretor = $this->pessoaDAO->buscarPorId($idCorretor);
+            $corretor = $pessoaDAO->buscarPorId($idCorretor);
             $atendimento->setCorretor($corretor);
         }
 
         if ($idCliente) {
-            $cliente = $this->pessoaDAO->buscarPorId($idCliente);
+            $cliente = $pessoaDAO->buscarPorId($idCliente);
             $atendimento->setCliente($cliente);
         }
 
@@ -112,7 +113,7 @@ class AtendimentoDAO
         return $atendimento;
     }
 
-    public function cadastrar($atendimento)
+    public function cadastrar(Atendimento $atendimento)
     {
         try {
 
@@ -146,6 +147,7 @@ class AtendimentoDAO
                 ":status" => $status
             ]);
         } catch (Exception $e) {
+            error_log("atendimentoDAO::cadastrar - Error: " . $e->getMessage());
             throw $e;
         }
     }
@@ -153,6 +155,8 @@ class AtendimentoDAO
     public function listar()
     {
         try {
+
+
 
             $sql = "
             SELECT
@@ -305,6 +309,8 @@ class AtendimentoDAO
             $stmt->execute();
             $registros = $stmt->fetchAll(PDO::FETCH_ASSOC);
             $lista = [];
+            $pessoaDAO = new PessoaDAO();
+            $imovelDAO = new ImovelDAO();
             foreach ($registros as $registro) {
                 $idAtendimento = $registro['id'];
                 $idImovel = $registro['id_imovel'];
@@ -318,19 +324,19 @@ class AtendimentoDAO
                     $registroImovel = $registro->filter(function ($key) {
                         return strpos($key, 'imovel_') === 0;
                     }, ARRAY_FILTER_USE_KEY);
-                    $imovel = $this->imovelDAO->montar($registroImovel);
+                    $imovel = $imovelDAO->montar($registroImovel);
                 }
                 if ($idCorretor) {
                     $registroCorretor = $registro->filter(function ($key) {
                         return strpos($key, 'atendimento_corretor_') === 0;
                     }, ARRAY_FILTER_USE_KEY);
-                    $corretor = $this->pessoaDAO->montar($registroCorretor);
+                    $corretor = $pessoaDAO->montar($registroCorretor);
                 }
                 if ($idComprador) {
                     $registroComprador = $registro->filter(function ($key) {
                         return strpos($key, 'atendimento_cliente_') === 0;
                     }, ARRAY_FILTER_USE_KEY);
-                    $cliente = $this->pessoaDAO->montar($registroComprador);
+                    $cliente = $pessoaDAO->montar($registroComprador);
                 }
                 if ($status) {
                     $status = StatusAtendimento::tryFrom($status);
@@ -345,9 +351,8 @@ class AtendimentoDAO
             }
             return $lista;
         } catch (Exception $e) {
-            $erro = "ERRO! atendimentoDAO->listar: " . $e->getMessage();
-            error_log($erro);
-            return [];
+            error_log("atendimentoDAO::listar - Error: " . $e->getMessage());
+            throw $e;
         }
     }
     public function listarPorUsuario(int $idUsuario)
@@ -364,11 +369,12 @@ class AtendimentoDAO
             }
             $listaAtendimentos = [];
             foreach ($atendimentos as $dados) {
-                $atendimento = self::montar($dados);
+                $atendimento = $this->montar($dados);
                 $listaAtendimentos[] = $atendimento;
             }
             return $listaAtendimentos;
         } catch (Exception $e) {
+            error_log("atendimentoDAO::listarPorUsuario - Error: " . $e->getMessage());
             throw $e;
         }
     }

@@ -8,7 +8,6 @@ require_once __DIR__ . '/endereco.php';
 require_once __DIR__ . '/anuncio.php';
 require_once __DIR__ . '/vendaAluguel.php';
 require_once __DIR__ . '/condominio.php';
-require_once __DIR__ . '/usuario.php';
 require_once __DIR__ . '/proprietario.php';
 require_once __DIR__ . '/funcionario.php';
 require_once __DIR__ . '/pessoa.php';
@@ -24,18 +23,18 @@ require_once __DIR__ . '/../dao/visitaDAO.php';
 require_once __DIR__ . '/../dao/vistoriaDAO.php';
 require_once __DIR__ . '/../dao/filtroDAO.php';
 require_once __DIR__ . '/../dao/funcionarioDAO.php';
+require_once __DIR__ . '/../dao/clienteDAO.php';
+require_once __DIR__ . '/../dao/usuarioDAO.php';
+require_once __DIR__ . '/../dao/corretorDAO.php';
+require_once __DIR__ . '/../dao/proprietarioDAO.php';
 require_once __DIR__ . '/../services/imovelService.php';
 require_once __DIR__ . '/../services/pessoaService.php';
-require_once __DIR__ . '/../services/anuncioService.php';
+require_once __DIR__ . '/../dao/proprietarioImovelDAO.php';
 
-// ini_set('display_errors', 0);
-// error_reporting(E_ALL);
-
-
+error_reporting(E_ALL);
 
 function initialize()
 {
-
 
     $filtrosImovel = [
         "Aceita Pet",
@@ -417,18 +416,25 @@ function initialize()
         "F",
     ];
 
-    $imovelDAO = new ImovelDAO();
+    $filtroDAO = new FiltroDAO();
     $anexoDAO = new AnexoDAO();
+    $telefoneDAO = new TelefoneDAO();
+    $proprietarioImovelDAO = new ProprietarioImovelDAO();
     $anuncioDAO = new AnuncioDAO();
-    $atendimentoDAO = new AtendimentoDAO();
-    $condominioDAO = new CondominioDAO();
     $enderecoDAO = new EnderecoDAO();
+    $condominioDAO = new CondominioDAO();
+    $imovelDAO = new ImovelDAO();
     $pessoaDAO = new PessoaDAO();
+    $atendimentoDAO = new AtendimentoDAO();
     $visitaDAO = new VisitaDAO();
     $vistoriaDAO = new VistoriaDAO();
-    $filtroDAO = new FiltroDAO();
+    $funcionarioDAO = new FuncionarioDAO();
+    $clienteDAO = new ClienteDAO();
+    $usuarioDAO = new UsuarioDAO();
+    $corretorDAO = new CorretorDAO();
+    $proprietarioDAO = new ProprietarioDAO();
     $imovelService = new ImovelService();
-    $anuncioService = new AnuncioService();
+    $pessoaService = new PessoaService();
 
     if (empty($filtroDAO->listar("imovel"))) {
         $filtroDAO->cadastrarLista($filtrosImovel, "imovel");
@@ -438,7 +444,7 @@ function initialize()
     }
 
     if (count($imovelDAO->listar()) == 0) {
-        for ($i = 1; $i <= 50; $i++) {
+        for ($i = 1; $i <= 20; $i++) {
             $sequencial = ($i - 1) * 8;
             $cpfVistoriador = str_pad((string) ($sequencial + 1), 11, '0', STR_PAD_LEFT);
             $cpfFinanceiro = str_pad((string) ($sequencial + 2), 11, '0', STR_PAD_LEFT);
@@ -652,49 +658,54 @@ function initialize()
             ];
             $proprietario->setDataModificacao($opcoes[array_rand($opcoes)]);
 
-            $idCorretor = $pessoaDAO->cadastrar($corretor);
-            if ($idCorretor) {
-                $corretor->setId($idCorretor);
-            } else {
+            try {
+                $corretor = $pessoaService->cadastrar($corretor);
+            } catch (Exception $e) {
                 $corretor = null;
             }
-            $idCaptador = $pessoaDAO->cadastrar($captador);
-            if ($idCaptador) {
-                $captador->setId($idCaptador);
-            } else {
-                $captador = null;
+
+
+            try {
+                $proprietario = $pessoaService->cadastrar($proprietario);
+            } catch (Exception $e) {
+                $proprietario = null;
             }
-            $idGerente = $pessoaDAO->cadastrar($gerente);
-            if ($idGerente) {
-                $gerente->setId($idGerente);
-            } else {
-                $gerente = null;
-            }
-            $idCliente = $pessoaDAO->cadastrar($cliente);
-            if ($idCliente) {
-                $cliente->setId($idCliente);
-            } else {
-                $cliente = null;
-            }
-            $idAdministrador = $pessoaDAO->cadastrar($administrador);
-            if ($idAdministrador) {
-                $administrador->setId($idAdministrador);
-            } else {
-                $administrador = null;
-            }
-            $idVistoriador = $pessoaDAO->cadastrar($vistoriador);
-            if ($idVistoriador) {
-                $vistoriador->setId($idVistoriador);
-            } else {
-                $vistoriador = null;
-            }
-            $idFinanceiro = $pessoaDAO->cadastrar($financeiro);
-            if ($idFinanceiro) {
-                $financeiro->setId($idFinanceiro);
-            } else {
+
+            try {
+                $financeiro = $pessoaService->cadastrar($financeiro);
+            } catch (Exception $e) {
                 $financeiro = null;
             }
-            $pessoaDAO->cadastrar($proprietario);
+
+            try {
+                $vistoriador = $pessoaService->cadastrar($vistoriador);
+            } catch (Exception $e) {
+                $vistoriador = null;
+            }
+
+            try {
+                $administrador = $pessoaService->cadastrar($administrador);
+            } catch (Exception $e) {
+                $administrador = null;
+            }
+
+            try {
+                $cliente = $pessoaService->cadastrar($cliente);
+            } catch (Exception $e) {
+                $cliente = null;
+            }
+
+            try {
+                $gerente = $pessoaService->cadastrar($gerente);
+            } catch (Exception $e) {
+                $gerente = null;
+            }
+
+            try {
+                $captador = $pessoaService->cadastrar($captador);
+            } catch (Exception $e) {
+                $captador = null;
+            }
 
             $numeroAleatorioEndereco = rand(0, count($enderecos) - 1);
 
@@ -707,6 +718,7 @@ function initialize()
             );
 
             $endereco->setNumero($i);
+            $endereco->setComplemento($numeroAleatorioEndereco ? $numeroAleatorioEndereco . " " . $complementos[array_rand($complementos)] : "");
 
             $verificar = $enderecoDAO->verificar($endereco);
 
@@ -718,6 +730,7 @@ function initialize()
                     $endereco->setId($idEndereco);
                 } else {
                     $endereco = null;
+                    continue;
                 }
             }
 
@@ -726,7 +739,6 @@ function initialize()
 
             $imovel = new Imovel($endereco, Status::tryFrom($lista_status[array_rand($lista_status)]), Categoria::tryFrom($categorias[array_rand($categorias)]));
             $numeroComplemento = rand(1, 100);
-            $imovel->setComplemento($numeroComplemento ? $numeroComplemento . " " . $complementos[array_rand($complementos)] : null);
             $imovel->setValorVenda($venda);
             $imovel->setValorAluguel($aluguel);
             $imovel->setAndar((((string) $numeroComplemento)[0]) ?? 0);
@@ -750,15 +762,20 @@ function initialize()
             $imovel->setFiltros($opcao[array_rand($opcao)]);
             $listaProprietarios = $pessoaDAO->listar("PROPRIETARIO");
             $listaProprietarios = array_values($listaProprietarios);
-            $limiteMaximo = min(
-                count($listaProprietarios) - 1,
-                isset($i) ? $i - 1 : count($listaProprietarios) - 1
-            );
-            $opcao = [
-                [],
-                [$listaProprietarios[rand(0, $limiteMaximo)]]
-            ];
-            $imovel->setProprietarios($opcao[array_rand($opcao)]);
+            if (empty($listaProprietarios)) {
+                $imovel->setProprietarios([]);
+            } else {
+                $limiteMaximo = min(
+                    count($listaProprietarios) - 1,
+                    isset($i) ? $i - 1 : count($listaProprietarios) - 1
+                );
+                $limiteMaximo = max(0, $limiteMaximo);
+                $opcao = [
+                    [],
+                    [$listaProprietarios[rand(0, $limiteMaximo)]]
+                ];
+                $imovel->setProprietarios($opcao[array_rand($opcao)]);
+            }
             $opcao = [
                 null,
                 $corretor,
@@ -792,12 +809,15 @@ function initialize()
             $descricao = "Imóvel localizado no bairro " . $imovel->getEndereco()->getBairro() . ", com " . ($imovel->getQuantidadeQuartos() ? $imovel->getQuantidadeQuartos() . " quartos" : $imovel->getAreaTotal() . " m²" ?? "") . ". Valor de venda: R$ " . number_format($imovel->getValorVenda(), 2, ",", ".") . ". Valor de aluguel: R$ " . number_format($imovel->getValorAluguel(), 2, ",", ".") . ".";
 
             $anuncio = new Anuncio();
-
-
             $anuncio->setTitulo($titulo);
             $anuncio->setDescricao($descricao);
-            $imovel = $imovelService->cadastrar($imovel);
+            $imovel->setAnuncio($anuncio);
 
+            try {
+                $idImovel = $imovelService->cadastrar($imovel);
+            } catch (Exception $e) {
+                continue;
+            }
 
             if ($imovel->getAnuncio()) {
                 $imagem = new Anexo(
@@ -806,7 +826,11 @@ function initialize()
                     TipoAnexo::IMAGEM
                 );
                 $anuncio->setImagens([$imagem, $imagem, $imagem, $imagem, $imagem, $imagem, $imagem, $imagem, $imagem, $imagem, $imagem, $imagem, $imagem, $imagem, $imagem]);
-                $anuncioService->atualizar($anuncio);
+                try {
+                    $imovelService->atualizarAnuncio($anuncio);
+                } catch (Exception $e) {
+                    continue;
+                }
             }
 
             // $condominio = new Condominio($nomesCondominio[array_rand($nomesCondominio)], $endereco);
@@ -817,7 +841,7 @@ function initialize()
             //     array_slice($filtrosCondominio, 0, rand(0, $limiteMaximo))
             // ];
             // $condominio->setFiltros($opcao[array_rand($opcao)]);
-            // ->cadastrar($condominio);
+            // $condominioService->cadastrar($condominio);
         }
     }
 }

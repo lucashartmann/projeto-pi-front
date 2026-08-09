@@ -10,7 +10,7 @@ enum TipoInteresse: string
     case VENDA_ALUGUEL = "Venda e Aluguel";
 }
 
-class Cliente extends Pessoa 
+class Cliente extends Pessoa
 {
     private array $tipoImoveisDesejado;
     private int $quantQuartosDesejado;

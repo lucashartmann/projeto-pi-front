@@ -15,7 +15,7 @@ class TelefoneDAO
         return $this->bancoDados;
     }
 
-    function listarPorPessoa(int $id)
+    public  function listarPorPessoa(int $id): array
     {
 
         try {
@@ -35,11 +35,12 @@ class TelefoneDAO
 
             return $telefones;
         } catch (Exception $e) {
+            error_log("ERRO! telefoneDAO->listarPorPessoa: " . $e->getMessage());
             throw new Exception("Erro ao listar telefones: " . $e->getMessage());
         }
     }
 
-    public function cadastrar(Pessoa $pessoa): void
+    public  function cadastrar(Pessoa $pessoa): void
     {
         try {
             $stmtTel = $this->bancoDados->prepare("
@@ -61,6 +62,7 @@ class TelefoneDAO
                 ]);
             }
         } catch (Exception $e) {
+            error_log("ERRO! telefoneDAO->cadastrar: " . $e->getMessage());
             throw new Exception("Erro ao cadastrar telefone: " . $e->getMessage());
         }
     }

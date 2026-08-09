@@ -32,6 +32,7 @@ class ClienteDAO
                 ':valor_maximo' => $cliente->getValorMaximo()
             ]);
         } catch (Exception $e) {
+            error_log("clienteDAO::cadastrar - Error: " . $e->getMessage());
             throw new Exception("Erro ao cadastrar cliente: " . $e->getMessage());
         }
     }
@@ -54,6 +55,7 @@ class ClienteDAO
                 ':valor_maximo' => $cliente->getValorMaximo()
             ]);
         } catch (Exception $e) {
+            error_log("clienteDAO::atualizar - Error: " . $e->getMessage());
             throw new Exception("Erro ao atualizar cliente: " . $e->getMessage());
         }
     }

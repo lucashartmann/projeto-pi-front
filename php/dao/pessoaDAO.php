@@ -7,20 +7,17 @@ require_once __DIR__ . '/../model/cliente.php';
 require_once __DIR__ . '/../model/corretor.php';
 require_once __DIR__ . '/../model/proprietario.php';
 require_once __DIR__ . '/../model/funcionario.php';
-require_once __DIR__ . '/imovelDAO.php';
+require_once __DIR__ . '/proprietarioImovelDAO.php';
 require_once __DIR__ . '/telefoneDAO.php';
 
 class PessoaDAO
 {
     private Banco $bancoDados;
-    private ImovelDAO $imovelDAO;
-    private TelefoneDAO $telefoneDAO;
+
 
     public function __construct()
     {
         $this->bancoDados = Banco::getInstance();
-        $this->imovelDAO = new ImovelDAO();
-        $this->telefoneDAO = new TelefoneDAO();
     }
 
     public function getConexao()
@@ -28,14 +25,14 @@ class PessoaDAO
         return $this->bancoDados;
     }
 
-    public function cadastrar(Pessoa $pessoa)
+    public  function cadastrar(Pessoa $pessoa): int
     {
         try {
             $sql = "
-                INSERT INTO pessoa (email, nome, cpf_cnpj, rg, id_endereco, data_nascimento, ativo)
-                VALUES (:email, :nome, :cpf_cnpj, :rg, :id_endereco, :data_nascimento, :ativo)
+                INSERT IGNORE INTO pessoa (email, nome, cpf_cnpj, rg, id_endereco, data_nascimento)
+                VALUES (:email, :nome, :cpf_cnpj, :rg, :id_endereco, :data_nascimento)
             ";
-            $stmt = $this->bancoDados->prepare($sql);
+            $stmt = Banco::getInstance()->prepare($sql);
             $stmt->execute([
                 ':email' => $pessoa->getEmail(),
                 ':nome' => $pessoa->getNome(),
@@ -43,15 +40,15 @@ class PessoaDAO
                 ':rg' => $pessoa->getRg(),
                 ':id_endereco' => $pessoa->getEndereco() ? $pessoa->getEndereco()->getId() : null,
                 ':data_nascimento' => $pessoa->getDataNascimento() ? $pessoa->getDataNascimento()->format('Y-m-d') : null,
-                ':ativo' => true
             ]);
-            return (int)$this->bancoDados->lastInsertId();
+            return (int)Banco::getInstance()->lastInsertId();
         } catch (Exception $e) {
+            error_log("ERRO! pessoaDAO->cadastrar: " . $e->getMessage());
             throw new Exception("Erro ao cadastrar pessoa: " . $e->getMessage());
         }
     }
 
-    public function atualizar(Pessoa $pessoa)
+    public  function atualizar(Pessoa $pessoa): void
     {
         try {
             $sql = "
@@ -62,11 +59,10 @@ class PessoaDAO
                     rg = :rg,
                     id_endereco = :id_endereco,
                     data_nascimento = :data_nascimento,
-                    ativo = :ativo,
                     data_modificacao = CURRENT_TIMESTAMP
                 WHERE id = :id
             ";
-            $stmt = $this->bancoDados->prepare($sql);
+            $stmt = Banco::getInstance()->prepare($sql);
             $stmt->execute([
                 ':id' => $pessoa->getId(),
                 ':email' => $pessoa->getEmail(),
@@ -74,23 +70,37 @@ class PessoaDAO
                 ':cpf_cnpj' => $pessoa->getCpfCnpj(),
                 ':rg' => $pessoa->getRg(),
                 ':id_endereco' => $pessoa->getEndereco() ? $pessoa->getEndereco()->getId() : null,
-                ':data_nascimento' => $pessoa->getDataNascimento() ? $pessoa->getDataNascimento()->format('Y-m-d') : null,
-                ':ativo' => $pessoa->isAtivo()
+                ':data_nascimento' => $pessoa->getDataNascimento() ? $pessoa->getDataNascimento()->format('Y-m-d') : null
             ]);
         } catch (Exception $e) {
+            error_log("ERRO! pessoaDAO->atualizar: " . $e->getMessage());
             throw new Exception("Erro ao atualizar pessoa: " . $e->getMessage());
         }
     }
 
-    public function montar(array $registro): ?Pessoa
+    public  function montar(array $registro): ?Pessoa
     {
         try {
             $pessoa = null;
 
-            $endereco = new Endereco($registro["rua"], $registro["bairro"], $registro["cep"], $registro["cidade"], $registro["uf"]);
-            $endereco->setId($registro["id_endereco"]);
-            $endereco->setComplemento($registro["complemento"]);
-            $endereco->setNumero($registro["numero"]);
+            if ($registro["id"] === null) {
+                return null;
+            }
+
+            if ($registro["id_endereco"] !== null) {
+                $endereco = new Endereco(
+                    $registro["rua"],
+                    $registro["bairro"],
+                    $registro["cep"],
+                    $registro["cidade"],
+                    $registro["uf"]
+                );
+                $endereco->setId($registro["id_endereco"]);
+                $endereco->setNumero((int)$registro["numero"]);
+                $endereco->setComplemento($registro["complemento"]);
+            } else {
+                $endereco = null;
+            }
 
             if ($registro["funcionario_id"] !== null) {
                 $pessoa = new Funcionario($registro["email"], $registro["nome"], $registro["cpf_cnpj"], $registro["cargo"] ? Cargo::tryFrom($registro["cargo"]) : null);
@@ -105,7 +115,8 @@ class PessoaDAO
 
             if ($registro["proprietario_id"] !== null && $registro["corretor_id"] === null) {
                 $pessoa = new Proprietario($registro["email"], $registro["nome"], $registro["cpf_cnpj"]);
-                $pessoa->setImoveis($this->imovelDAO->listarPorProprietario($pessoa));
+                $proprietarioImovelDAO = new ProprietarioImovelDAO();
+                $pessoa->setImoveis($proprietarioImovelDAO->listarPorProprietario($registro["proprietario_id"]));
             }
 
             if ($registro["corretor_id"] !== null) {
@@ -124,24 +135,21 @@ class PessoaDAO
             $pessoa->setDataNascimento($registro["data_nascimento"] ? new DateTime($registro["data_nascimento"]) : null);
             $pessoa->setDataCadastro($registro["data_cadastro"] ? new DateTime($registro["data_cadastro"]) : null);
             $pessoa->setDataModificacao($registro["data_modificacao"] ? new DateTime($registro["data_modificacao"]) : null);
-            $pessoa->setTelefones($this->telefoneDAO->listarPorPessoa($registro["id"]));
+            $telefoneDAO = new TelefoneDAO();
+            $pessoa->setTelefones($telefoneDAO->listarPorPessoa((int) $registro["id"]));
             $pessoa->setEndereco($endereco);
-            $pessoa->setAtivo($registro["ativo"]);
-            if ($registro['senha'] !== null) {
-                $pessoa->setSenha($registro['senha']);
-            }
-            if ($registro["ativo"] !== null) {
-                $pessoa->setAtivo((bool)$registro["ativo"]);
-            }
-            $pessoa->setUltimoLogin($registro['ultimo_login'] ? new DateTime($registro['ultimo_login']) : null);
+            $pessoa->setSenha($registro['senha']);
+            $pessoa->setAtivo($registro["ativo"] !== null ? (bool)$registro["ativo"] : null);
+            $pessoa->setUltimoLogin($registro['ultimo_login']  ? new DateTime($registro['ultimo_login']) : null);
 
             return $pessoa;
         } catch (Exception $e) {
+            error_log("ERRO! pessoaDAO->montar: " . $e->getMessage());
             throw new Exception("Erro ao montar pessoa: " . $e->getMessage());
         }
     }
 
-    public function buscarPorId(int $id): ?Pessoa
+    public  function buscarPorId(int $id): ?Pessoa
     {
         try {
             $sql = "
@@ -168,22 +176,23 @@ class PessoaDAO
             WHERE pessoa.id = ?
             ";
 
-            $stmt = $this->bancoDados->prepare($sql);
+            $stmt = Banco::getInstance()->prepare($sql);
             $stmt->execute([$id]);
 
             $registro = $stmt->fetch(PDO::FETCH_ASSOC);
 
-            if ($registro === false) {
+            if (!$registro) {
                 return null;
             }
 
             return $this->montar($registro);
         } catch (Exception $e) {
+            error_log("ERRO! pessoaDAO->buscarPorId: " . $e->getMessage());
             throw new Exception("Erro ao buscar usuário por ID: " . $e->getMessage());
         }
     }
 
-    public function listar($tipo = null): array
+    public function listar(String $tipo = null): array
     {
         try {
             $sql = "
@@ -223,41 +232,16 @@ class PessoaDAO
 
             return $pessoas;
         } catch (Exception $e) {
+            error_log("ERRO! pessoaDAO->listar: " . $e->getMessage());
             throw new Exception("Erro ao listar pessoas: " . $e->getMessage());
         }
     }
 
-    public function listarPorIdImovel($idImovel): array
-    {
-        try {
-            $sql = "
-            SELECT
-                p.*,
-                e.*,
-                e.id AS id_endereco
-            FROM pessoa p
-            INNER JOIN proprietario_imovel pi
-                ON pi.id_proprietario = p.id
-            LEFT JOIN endereco e
-                ON e.id = p.id_endereco
-            WHERE pi.id_imovel = ?
-            ";
 
-            $stmt = $this->bancoDados->prepare($sql);
-            $stmt->execute([$idImovel]);
 
-            $pessoas = [];
-            while ($registro = $stmt->fetch(PDO::FETCH_ASSOC)) {
-                $pessoas[] = $this->montar($registro);
-            }
 
-            return $pessoas;
-        } catch (Exception $e) {
-            throw new Exception("Erro ao listar pessoas por ID do imóvel: " . $e->getMessage());
-        }
-    }
 
-    public function verificar($email, $senha, bool $google = false)
+    public function verificar(String $email, String $senha, bool $google = false): ?Pessoa
     {
         try {
 
@@ -287,7 +271,7 @@ class PessoaDAO
             $registro = $stmt->fetch(PDO::FETCH_ASSOC);
 
             if (!$registro) {
-                throw new Exception("Usuário não encontrado");
+                return null;
             }
 
             $senha_hash_banco = "";
@@ -305,6 +289,7 @@ class PessoaDAO
 
             return $this->montar($registro);
         } catch (Exception $e) {
+            error_log("ERRO! pessoaDAO->verificar: " . $e->getMessage());
             throw new Exception("Erro ao verificar usuário: " . $e->getMessage());
         }
     }

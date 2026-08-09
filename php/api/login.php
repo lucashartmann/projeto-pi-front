@@ -2,7 +2,7 @@
 
 
 require_once __DIR__ . '/../controllers/loginController.php';
-require_once __DIR__ . '/../controllers/usuarioController.php';
+require_once __DIR__ . '/../controllers/pessoaController.php';
 require_once __DIR__ . '/../controllers/atendimentoController.php';
 // ob_start();
 header('Content-Type: application/json');
@@ -31,7 +31,7 @@ switch ($acao) {
         break;
 
     case "cadastro":
-        $controller = new UsuarioController();
+        $controller = new PessoaController();
         $body = file_get_contents("php://input");
         $data = json_decode($body, true);
 
@@ -98,8 +98,4 @@ switch ($acao) {
     default:
         $resultado = (["status" => "erro", "mensagem" => "Ação inválida"]);
         break;
-}
-
-if ($acao) {
-    echo json_encode($resultado);
 }
