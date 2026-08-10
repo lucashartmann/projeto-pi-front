@@ -160,12 +160,42 @@ class AtendimentoDAO
 
             $sql = "
             SELECT
-                atendimento.id AS atendimento_id,
-                atendimento.id_imovel AS atendimento_id_imovel,
-                atendimento.id_corretor AS atendimento_id_corretor,
-                atendimento.id_cliente AS atendimento_id_cliente,
-                atendimento.status AS atendimento_status
+                atendimento.id,
+                atendimento.id_imovel,
+                atendimento.id_corretor,
+                atendimento.id_cliente,
+                atendimento.status,
 
+                imovel.id AS imovel_id,
+                imovel.valor_venda AS imovel_valor_venda,
+                imovel.valor_aluguel AS imovel_valor_aluguel,
+                imovel.quant_quartos AS imovel_quant_quartos,
+                imovel.quant_salas AS imovel_quant_salas,
+                imovel.quant_vagas AS imovel_quant_vagas,
+                imovel.quant_banheiros AS imovel_quant_banheiros,
+                imovel.quant_varandas AS imovel_quant_varandas,
+                imovel.categoria AS imovel_categoria,
+                imovel.id_endereco AS imovel_id_endereco,
+                imovel.status AS imovel_status,
+                imovel.iptu AS imovel_iptu,
+                imovel.valor_condominio AS imovel_valor_condominio,
+                imovel.andar AS imovel_andar,
+                imovel.estado AS imovel_estado,
+                imovel.bloco AS imovel_bloco,
+                imovel.ano_construcao AS imovel_ano_construcao,
+                imovel.area_total AS imovel_area_total,
+                imovel.area_privativa AS imovel_area_privativa,
+                imovel.situacao AS imovel_situacao,
+                imovel.ocupacao AS imovel_ocupacao,
+                imovel.id_corretor AS imovel_id_corretor,
+                imovel.id_captador AS imovel_id_captador,
+                imovel.data_cadastro AS imovel_data_cadastro,
+                imovel.data_modificacao AS imovel_data_modificacao,
+                imovel.id_anuncio AS imovel_id_anuncio,
+                imovel.id_condominio AS imovel_id_condominio,
+                imovel.quant_clicks AS imovel_quant_clicks,
+                imovel.destacado AS imovel_destacado,
+              
                 imovel_endereco.id AS imovel_endereco_id,
                 imovel_endereco.rua AS imovel_endereco_rua,
                 imovel_endereco.numero AS imovel_endereco_numero,
@@ -175,131 +205,190 @@ class AtendimentoDAO
                 imovel_endereco.cidade AS imovel_endereco_cidade,
                 imovel_endereco.uf AS imovel_endereco_uf,
 
-                imovel_condominio.id AS imovel_condominio_id,
-                imovel_condominio.nome AS imovel_condominio_nome,
-                imovel_condominio.endereco_id AS imovel_condominio_endereco_id,
-                imovel_condominio.endereco_rua AS imovel_condominio_endereco_rua,
-                imovel_condominio.endereco_numero AS imovel_condominio_endereco_numero,
-                imovel_condominio.endereco_complemento AS imovel_condominio_endereco_complemento,
-                imovel_condominio.endereco_bairro AS imovel_condominio_endereco_bairro,
-                imovel_condominio.endereco_cep AS imovel_condominio_endereco_cep,
-                imovel_condominio.endereco_cidade AS imovel_condominio_endereco_cidade,
-                imovel_condominio.endereco_uf AS imovel_condominio_endereco_uf,
+                imovel_endereco_corretor.id AS imovel_corretor_endereco_id,
+                imovel_endereco_corretor.rua AS imovel_corretor_rua,
+                imovel_endereco_corretor.numero AS imovel_corretor_numero,
+                imovel_endereco_corretor.complemento AS imovel_corretor_complemento,
+                imovel_endereco_corretor.bairro AS imovel_corretor_bairro,
+                imovel_endereco_corretor.cep AS imovel_corretor_cep,
+                imovel_endereco_corretor.cidade AS imovel_corretor_cidade,
+                imovel_endereco_corretor.uf AS imovel_corretor_uf,
 
-                imovel_usuario_corretor.id AS imovel_corretor_id,
-                imovel_usuario_corretor.senha AS imovel_corretor_senha,
-                imovel_usuario_corretor.email AS imovel_corretor_email,
-                imovel_usuario_corretor.nome AS imovel_corretor_nome,
-                imovel_usuario_corretor.cpf_cnpj AS imovel_corretor_cpf_cnpj,
-                imovel_usuario_corretor.rg AS imovel_corretor_rg,
-                imovel_corretor.creci AS imovel_corretor_creci,
+                atendimento_endereco_corretor.id AS atendimento_corretor_endereco_id,
+                atendimento_endereco_corretor.rua AS atendimento_corretor_rua,
+                atendimento_endereco_corretor.numero AS atendimento_corretor_numero,
+                atendimento_endereco_corretor.complemento AS atendimento_corretor_complemento,
+                atendimento_endereco_corretor.bairro AS atendimento_corretor_bairro,
+                atendimento_endereco_corretor.cep AS atendimento_corretor_cep,
+                atendimento_endereco_corretor.cidade AS atendimento_corretor_cidade,
+                atendimento_endereco_corretor.uf AS atendimento_corretor_uf,
 
-                imovel_usario_captador.id AS imovel_captador_id,
-                imovel_usario_captador.senha AS imovel_captador_senha,
-                imovel_usario_captador.email AS imovel_captador_email,
-                imovel_usario_captador.nome AS imovel_captador_nome,
-                imovel_usario_captador.cpf_cnpj AS imovel_captador_cpf_cnpj,
-                imovel_usario_captador.rg AS imovel_captador_rg,
-                imovel_captador.salario AS imovel_captador_salario,
+                atendimento_endereco_cliente.id AS atendimento_cliente_endereco_id,
+                atendimento_endereco_cliente.rua AS atendimento_cliente_rua,
+                atendimento_endereco_cliente.numero AS atendimento_cliente_numero,
+                atendimento_endereco_cliente.complemento AS atendimento_cliente_complemento,
+                atendimento_endereco_cliente.bairro AS atendimento_cliente_bairro,
+                atendimento_endereco_cliente.cep AS atendimento_cliente_cep,
+                atendimento_endereco_cliente.cidade AS atendimento_cliente_cidade,
+                atendimento_endereco_cliente.uf AS atendimento_cliente_uf,
 
-                imovel_anuncio.id AS imovel_anuncio_id,
-                imovel_anuncio.descricao AS imovel_anuncio_descricao,
-                imovel_anuncio.titulo AS imovel_anuncio_titulo
+                imovel_endereco_captador.id AS imovel_captador_endereco_id,
+                imovel_endereco_captador.rua AS imovel_captador_rua,
+                imovel_endereco_captador.numero AS imovel_captador_numero,
+                imovel_endereco_captador.complemento AS imovel_captador_complemento,
+                imovel_endereco_captador.bairro AS imovel_captador_bairro,
+                imovel_endereco_captador.cep AS imovel_captador_cep,
+                imovel_endereco_captador.cidade AS imovel_captador_cidade,
+                imovel_endereco_captador.uf AS imovel_captador_uf,
 
-                imovel.id AS imovel_id,
-                imovel.valor_venda as imovel_valor_venda 
-                imovel.valor_aluguel as imovel_valor_aluguel
-                imovel.quant_quartos as imovel_quant_quartos
-                imovel.quant_salas as imovel_quant_salas
-                imovel.quant_vagas as imovel_quant_vagas
-                imovel.quant_banheiros as imovel_quant_banheiros
-                imovel.quant_varandas as imovel_quant_varandas
-                imovel.categoria as imovel_categoria
-                imovel.id_endereco as imovel_id_endereco
-                imovel.status as imovel_status
-                imovel.iptu as imovel_iptu
-                imovel.valor_condominio as imovel_valor_condominio
-                imovel.andar as imovel_andar
-                imovel.estado as imovel_estado
-                imovel.bloco as imovel_bloco
-                imovel.ano_construcao as imovel_ano_construcao
-                imovel.area_total as imovel_area_total
-                imovel.area_privativa as imovel_area_privativa
-                imovel.situacao as imovel_situacao
-                imovel.ocupacao as imovel_ocupacao
-                imovel.id_corretor as imovel_id_corretor
-                imovel.id_captador as imovel_id_captador
-                imovel.data_cadastro as imovel_data_cadastro
-                imovel.data_modificacao as imovel_data_modificacao
-                imovel.id_anuncio as imovel_id_anuncio
-                imovel.id_condominio as imovel_id_condominio
-                imovel.quant_clicks as imovel_quant_clicks
-                imovel.destacado as imovel_destacado
-               
-                atendimento_corretor_usuario.id as atendimento_corretor_id 
-                atendimento_corretor_usuario.senha as atendimento_corretor_senha
-                atendimento_corretor_usuario.email as atendimento_corretor_email
-                atendimento_corretor_usuario.nome as atendimento_corretor_nome
-                atendimento_corretor_usuario.cpf_cnpj as atendimento_corretor_cpf_cnpj
-                atendimento_corretor_usuario.rg as atendimento_corretor_rg
-                atendimento_corretor_usuario.id_endereco as atendimento_corretor_id_endereco
-                atendimento_corretor_usuario.data_nascimento as atendimento_corretor_data_nascimento
-                atendimento_corretor_usuario.tipo as atendimento_corretor_tipo
-                atendimento_corretor_usuario.data_cadastro as atendimento_corretor_data_cadastro
-                atendimento_corretor_usuario.data_modificacao as atendimento_corretor_data_modificacao
+                condominio.id AS imovel_condominio_id,
+                condominio.nome AS imovel_condominio_nome,
+
+                imovel_pessoa_corretor.id as imovel_corretor_id,
+                imovel_pessoa_corretor.email AS imovel_corretor_email,
+                imovel_pessoa_corretor.nome AS imovel_corretor_nome,
+                imovel_pessoa_corretor.cpf_cnpj AS imovel_corretor_cpf_cnpj,
+                imovel_pessoa_corretor.rg AS imovel_corretor_rg,
+                imovel_pessoa_corretor.id_endereco AS imovel_corretor_id_endereco,
+                imovel_pessoa_corretor.data_nascimento AS imovel_corretor_data_nascimento,
+                imovel_pessoa_corretor.data_cadastro AS imovel_corretor_data_cadastro,
+                imovel_pessoa_corretor.data_modificacao AS imovel_corretor_data_modificacao,
+                imovel_usuario_corretor.senha as imovel_corretor_senha,
+                imovel_usuario_corretor.ultimo_login as imovel_corretor_ultimo_login,
+                imovel_usuario_corretor.ativo AS imovel_corretor_ativo,
+                imovel_usuario_corretor.id_pessoa AS imovel_corretor_usuario_id,
+                imovel_funcionario_corretor.id_pessoa AS imovel_corretor_funcionario_id,
+                imovel_funcionario_corretor.salario AS imovel_corretor_salario,
+                imovel_funcionario_corretor.matricula AS imovel_corretor_matricula,
+                imovel_funcionario_corretor.data_admissao AS imovel_corretor_data_admissao,
+                imovel_funcionario_corretor.cargo AS imovel_corretor_cargo,
+                imovel_corretor.creci as imovel_corretor_creci,
+                imovel_corretor.id_funcionario AS imovel_corretor_corretor_id,
+
+                atendimento_pessoa_corretor.id as atendimento_corretor_id,
+                atendimento_pessoa_corretor.email AS atendimento_corretor_email,
+                atendimento_pessoa_corretor.nome AS atendimento_corretor_nome,
+                atendimento_pessoa_corretor.cpf_cnpj AS atendimento_corretor_cpf_cnpj,
+                atendimento_pessoa_corretor.rg AS atendimento_corretor_rg,
+                atendimento_pessoa_corretor.id_endereco AS atendimento_corretor_id_endereco,
+                atendimento_pessoa_corretor.data_nascimento AS atendimento_corretor_data_nascimento,
+                atendimento_pessoa_corretor.data_cadastro AS atendimento_corretor_data_cadastro,
+                atendimento_pessoa_corretor.data_modificacao AS atendimento_corretor_data_modificacao,
+                atendimento_usuario_corretor.senha as atendimento_corretor_senha,
+                atendimento_usuario_corretor.ultimo_login as atendimento_corretor_ultimo_login,
+                atendimento_usuario_corretor.ativo AS atendimento_corretor_ativo,
+                atendimento_usuario_corretor.id_pessoa AS atendimento_corretor_usuario_id,
+                atendimento_funcionario_corretor.id_pessoa AS atendimento_corretor_funcionario_id,
+                atendimento_funcionario_corretor.salario AS atendimento_corretor_salario,
+                atendimento_funcionario_corretor.matricula AS atendimento_corretor_matricula,
+                atendimento_funcionario_corretor.data_admissao AS atendimento_corretor_data_admissao,
+                atendimento_funcionario_corretor.cargo AS atendimento_corretor_cargo,
                 atendimento_corretor.creci as atendimento_corretor_creci,
-               
+                atendimento_corretor.id_funcionario AS atendimento_corretor_corretor_id,
 
-                atendimento_cliente_usuario.id as atendimento_cliente_id 
-                atendimento_cliente_usuario.senha as atendimento_cliente_senha
-                atendimento_cliente_usuario.email as atendimento_cliente_email
-                atendimento_cliente_usuario.nome as atendimento_cliente_nome
-                atendimento_cliente_usuario.cpf_cnpj as atendimento_cliente_cpf_cnpj
-                atendimento_cliente_usuario.rg as atendimento_cliente_rg
-                atendimento_cliente_usuario.id_endereco as atendimento_cliente_id_endereco
-                atendimento_cliente_usuario.data_nascimento as atendimento_cliente_data_nascimento
-                atendimento_cliente_usuario.tipo as atendimento_cliente_tipo
-                atendimento_cliente_usuario.data_cadastro as atendimento_cliente_data_cadastro
-                atendimento_cliente_usuario.data_modificacao as atendimento_cliente_data_modificacao
+                imovel_pessoa_captador.id as imovel_captador_id,
+                imovel_pessoa_captador.email AS imovel_captador_email,
+                imovel_pessoa_captador.nome AS imovel_captador_nome,
+                imovel_pessoa_captador.cpf_cnpj AS imovel_captador_cpf_cnpj,
+                imovel_pessoa_captador.rg AS imovel_captador_rg,
+                imovel_pessoa_captador.id_endereco AS imovel_captador_id_endereco,
+                imovel_pessoa_captador.data_nascimento AS imovel_captador_data_nascimento,
+                imovel_pessoa_captador.data_cadastro AS imovel_captador_data_cadastro,
+                imovel_pessoa_captador.data_modificacao AS imovel_captador_data_modificacao,
+                imovel_usuario_captador.senha as imovel_captador_senha,
+                imovel_usuario_captador.ultimo_login as captador_ultimo_login,
+                imovel_usuario_captador.ativo AS imovel_captador_ativo,
+                imovel_usuario_captador.id_pessoa AS imovel_captador_usuario_id,
+                imovel_funcionario_captador.id_pessoa AS imovel_captador_funcionario_id,
+                imovel_funcionario_captador.salario AS imovel_captador_salario,
+                imovel_funcionario_captador.matricula AS imovel_captador_matricula,
+                imovel_funcionario_captador.data_admissao AS imovel_captador_data_admissao,
+                imovel_funcionario_captador.cargo AS imovel_captador_cargo,
 
-           
+                atendimento_pessoa_cliente.id as atendimento_cliente_id,
+                atendimento_pessoa_cliente.email AS atendimento_cliente_email,
+                atendimento_pessoa_cliente.nome AS atendimento_cliente_nome,
+                atendimento_pessoa_cliente.cpf_cnpj AS atendimento_cliente_cpf_cnpj,
+                atendimento_pessoa_cliente.rg AS atendimento_cliente_rg,
+                atendimento_pessoa_cliente.id_endereco AS atendimento_cliente_id_endereco,
+                atendimento_pessoa_cliente.data_nascimento AS atendimento_cliente_data_nascimento,
+                atendimento_pessoa_cliente.data_cadastro AS atendimento_cliente_data_cadastro,
+                atendimento_pessoa_cliente.data_modificacao AS atendimento_cliente_data_modificacao,
+                atendimento_usuario_cliente.senha as atendimento_cliente_senha,
+                atendimento_usuario_cliente.ultimo_login as atendimento_cliente_ultimo_login,
+                atendimento_usuario_cliente.ativo AS atendimento_cliente_ativo,
+                atendimento_usuario_cliente.id_pessoa AS atendimento_cliente_usuario_id,
+
+                anuncio.id AS imovel_anuncio_id,
+                anuncio.descricao AS imovel_anuncio_descricao,
+                anuncio.titulo AS imovel_anuncio_titulo
+
                 FROM atendimento 
 
-                LEFT JOIN imovel  
-                    ON imovel.id = atendimento.id_imovel
-                    
-                LEFT JOIN usuario atendimento_usuario_corretor
-                    ON atendimento_usuario_corretor.id = atendimento.id_corretor
-
-                LEFT JOIN corretor atendimento_corretor
-                    ON atendimento_corretor.id_usuario = atendimento_usuario_corretor.id
-
-                LEFT JOIN usuario atendimento_usuario_captador
-                    ON atendimento_usuario_captador.id = atendimento.id_captador
-
-                LEFT JOIN captador atendimento_captador
-                    ON atendimento_captador.id_usuario = atendimento_usuario_captador.id
-
-                LEFT JOIN condominio imovel_condominio
-                    ON imovel_condominio.id = imovel.id_condominio
+                LEFT JOIN imovel
+                ON imovel.id = atendimento.id_imovel
 
                 LEFT JOIN endereco imovel_endereco
-                    ON imovel_endereco.id = imovel.id_endereco
+                ON imovel_endereco.id = imovel.id_endereco
 
-                LEFT JOIN usuario imovel_usuario_corretor
-                    ON imovel_usuario_corretor.id = imovel.id_corretor
+            LEFT JOIN condominio 
+                ON condominio.id = imovel.id_condominio
 
-                LEFT JOIN corretor imovel_corretor
-                    ON imovel_corretor.id_usuario = imovel_usuario_corretor.id
+            LEFT JOIN anuncio 
+                ON anuncio.id = imovel.id_anuncio
 
-                LEFT JOIN usuario imovel_usuario_captador
-                    ON imovel_usuario_captador.id = imovel.id_captador
+            LEFT JOIN pessoa atendimento_pessoa_corretor
+                ON atendimento_pessoa_corretor.id = atendimento.id_corretor
 
-                LEFT JOIN captador imovel_captador
-                    ON imovel_captador.id_usuario = imovel_usuario_captador.id
+            LEFT JOIN pessoa atendimento_pessoa_cliente
+                ON atendimento_pessoa_cliente.id = atendimento.id_cliente
 
-                LEFT JOIN anuncio imovel_anuncio
-                    ON imovel_anuncio.id = imovel.id_anuncio  
+            LEFT JOIN pessoa imovel_pessoa_corretor
+                ON imovel_pessoa_corretor.id = imovel.id_corretor
+
+            LEFT JOIN pessoa imovel_pessoa_captador
+                ON imovel_pessoa_captador.id = imovel.id_captador
+
+            LEFT JOIN usuario imovel_usuario_corretor
+                ON imovel_usuario_corretor.id_pessoa = imovel_pessoa_corretor.id
+
+            LEFT JOIN usuario imovel_usuario_captador
+                ON imovel_usuario_captador.id_pessoa = imovel_pessoa_captador.id
+
+            LEFT JOIN usuario atendimento_usuario_corretor
+                ON atendimento_usuario_corretor.id_pessoa = atendimento_pessoa_corretor.id
+
+            LEFT JOIN usuario atendimento_usuario_cliente
+                ON atendimento_usuario_cliente.id_pessoa = atendimento_pessoa_cliente.id
+
+            LEFT JOIN funcionario imovel_funcionario_corretor
+                ON imovel_funcionario_corretor.id_pessoa = imovel_pessoa_corretor.id
+
+            LEFT JOIN funcionario imovel_funcionario_captador
+                ON imovel_funcionario_captador.id_pessoa = imovel_pessoa_captador.id
+
+            LEFT JOIN funcionario atendimento_funcionario_corretor
+                ON atendimento_funcionario_corretor.id_pessoa = atendimento_pessoa_corretor.id
+
+            LEFT JOIN corretor imovel_corretor
+                ON imovel_corretor.id_funcionario = imovel_funcionario_corretor.id_pessoa
+
+            LEFT JOIN corretor atendimento_corretor
+                ON atendimento_corretor.id_funcionario = atendimento_funcionario_corretor.id_pessoa
+
+            LEFT JOIN endereco imovel_endereco_captador
+                ON imovel_endereco_captador.id = imovel_pessoa_captador.id_endereco
+
+            LEFT JOIN endereco imovel_endereco_corretor
+                ON imovel_endereco_corretor.id = imovel_pessoa_corretor.id_endereco
+
+            LEFT JOIN endereco atendimento_endereco_cliente
+                ON atendimento_endereco_cliente.id = atendimento_pessoa_cliente.id_endereco
+
+            LEFT JOIN endereco atendimento_endereco_corretor
+                ON atendimento_endereco_corretor.id = atendimento_pessoa_corretor.id_endereco
+
+                
             ";
             $stmt = $this->bancoDados->prepare($sql);
             $stmt->execute();
@@ -317,26 +406,90 @@ class AtendimentoDAO
                 $corretor = null;
                 $cliente = null;
                 if ($idImovel) {
-                    $registroImovel = $registro->filter(function ($key) {
+                    $dadosImovel = array_filter($registro, function ($key) {
                         return strpos($key, 'imovel_') === 0;
                     }, ARRAY_FILTER_USE_KEY);
-                    $imovel = $imovelDAO->montar($registroImovel);
+                    $dadosImovel = array_combine(
+                        array_map(function ($key) {
+                            return preg_replace('/imovel_/', '', $key, 1);
+                        }, array_keys($dadosImovel)),
+                        $dadosImovel
+                    );
+                    $imovel = $imovelDAO->montar($dadosImovel);
+                    if ($imovel) {
+                        $dadosCorretor = array_filter($registro, function ($key) {
+                            return strpos($key, 'imovel_corretor_') === 0;
+                        }, ARRAY_FILTER_USE_KEY);
+                        $dadosCorretor = array_combine(
+                            array_map(function ($key) {
+                                return preg_replace('/imovel_corretor_/', '', $key, 1);
+                            }, array_keys($dadosCorretor)),
+                            $dadosCorretor
+                        );
+                        $dadosCaptador = array_filter($registro, function ($key) {
+                            return strpos($key, 'imovel_captador_') === 0;
+                        }, ARRAY_FILTER_USE_KEY);
+                        $dadosCaptador = array_combine(
+                            array_map(function ($key) {
+                                return str_replace('imovel_captador_', '', $key);
+                            }, array_keys($dadosCaptador)),
+                            $dadosCaptador
+                        );
+                        $corretor = null;
+                        $captador = null;
+                        try {
+                            if ($dadosCorretor['id'] !== null) {
+                                $corretor = $pessoaDAO->montar($dadosCorretor);
+                            }
+                        } catch (Exception $e) {
+                            error_log("ERRO! imovelDAO->listarDisponiveis: " . $e->getMessage());
+                        }
+                        try {
+                            if ($dadosCaptador['id'] !== null) {
+                                $captador = $pessoaDAO->montar($dadosCaptador);
+                            }
+                        } catch (Exception $e) {
+                            error_log("ERRO! imovelDAO->listarDisponiveis: " . $e->getMessage());
+                        }
+
+                        if ($corretor) {
+                            $imovel->setCorretor($corretor);
+                        }
+                        if ($captador) {
+                            $imovel->setCaptador($captador);
+                        }
+                    }
                 }
+                $corretor = null;
+                $cliente = null;
                 if ($idCorretor) {
-                    $registroCorretor = $registro->filter(function ($key) {
+                    $dadosCorretor = array_filter($registro, function ($key) {
                         return strpos($key, 'atendimento_corretor_') === 0;
                     }, ARRAY_FILTER_USE_KEY);
-                    $corretor = $pessoaDAO->montar($registroCorretor);
+                    $dadosCorretor = array_combine(
+                        array_map(function ($key) {
+                            return preg_replace('/atendimento_corretor_/', '', $key, 1);
+                        }, array_keys($dadosCorretor)),
+                        $dadosCorretor
+                    );
+                    $corretor = $pessoaDAO->montar($dadosCorretor);
                 }
                 if ($idComprador) {
-                    $registroComprador = $registro->filter(function ($key) {
+                    $dadosComprador = array_filter($registro, function ($key) {
                         return strpos($key, 'atendimento_cliente_') === 0;
                     }, ARRAY_FILTER_USE_KEY);
-                    $cliente = $pessoaDAO->montar($registroComprador);
+                    $dadosComprador = array_combine(
+                        array_map(function ($key) {
+                            return preg_replace('/atendimento_cliente_/', '', $key, 1);
+                        }, array_keys($dadosComprador)),
+                        $dadosComprador
+                    );
+                    $cliente = $pessoaDAO->montar($dadosComprador);
                 }
                 if ($status) {
                     $status = StatusAtendimento::tryFrom($status);
                 }
+                error_log("atendimentoDAO::listar - Atendimento ID: $idAtendimento, Imovel ID: $idImovel, Corretor ID: $idCorretor, Cliente ID: $idComprador, Status: $status");
                 $atendimentoObj = new Atendimento();
                 $atendimentoObj->setStatus($status);
                 $atendimentoObj->setId($idAtendimento);

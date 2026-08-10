@@ -12,21 +12,24 @@ async function listarAtendimentos() {
             throw new Error(`HTTP ${res.status}`);
         }
 
-        if (res.status == "erro") {
-            alert("Erro ao listar atendimentos: " + res.mensagem);
-            return null;
-        }
-
         const contentType = res.headers.get("content-type");
 
         if (contentType && contentType.includes("application/json")) {
-            return await res.json();
+            const dados = await res.json();
+            if (dados.status === "erro") {
+                console.warn("Erro ao listar atendimentos: " + dados.mensagem);
+                return null;
+            }
+            else {
+                return dados;
+            }
         } else {
             const texto = await res.text();
-            alert("Resposta inesperada do servidor");
+            console.warn("Resposta inesperada do servidor");
             console.error("Resposta não é JSON:", texto);
             return null;
         }
+        
 
     } catch (erro) {
         console.error("Falha ao conectar com o backend:", erro);
@@ -111,7 +114,7 @@ async function carregarAtendimentos() {
 async function abrirAtendimento(atendimentoId) {
     let atendimento = listaAtendimentos.find(a => a.id === atendimentoId);
     if (!atendimento) {
-        alert("Atendimento não encontrado.");
+        console.warn("Atendimento não encontrado.");
         return;
     }
     let html = `

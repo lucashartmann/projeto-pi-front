@@ -39,6 +39,7 @@ class AtendimentoController
         try {
             $atendimentoDAO = new AtendimentoDAO();
             $atendimentos = $atendimentoDAO->listar();
+            error_log(count($atendimentos) . " atendimentos encontrados.");
             if (!$atendimentos) {
                 return (["status" => "erro", "mensagem" => "Nenhum atendimento encontrado"]);
             }
