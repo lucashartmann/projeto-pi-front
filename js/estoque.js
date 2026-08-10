@@ -453,7 +453,7 @@ async function filtrar() {
             case "proprietario":
                 carregarUsuarios("PROPRIETARIO");
                 break;
-            case "todos usuarios":
+            case "todos":
                 carregarUsuarios("TODOS");
                 break;
             default:
@@ -476,18 +476,23 @@ function trocarCadastro() {
         case "vistoriador":
             filtrar();
             document.querySelector("#select-cadastro").value = "vistoriador";
+            break;
         case "financeiro":
             filtrar();
             document.querySelector("#select-cadastro").value = "financeiro";
+            break;
         case "captador":
             filtrar();
             document.querySelector("#select-cadastro").value = "captador";
+            break;
         case "administrador":
             filtrar();
             document.querySelector("#select-cadastro").value = "administrador";
+            break;
         case "gerente":
             filtrar();
             document.querySelector("#select-cadastro").value = "gerente";
+            break;
         case "imovel":
             filtrar();
             nav.style.display = "none";
@@ -506,9 +511,9 @@ function trocarCadastro() {
             filtrar();
             document.querySelector("#select-cadastro").value = "proprietario";
             break;
-        case "todos usuarios":
+        case "todos":
             filtrar();
-            document.querySelector("#select-cadastro").value = "";
+            document.querySelector("#select-cadastro").value = "todos";
             break;
         default:
             break;
@@ -524,11 +529,18 @@ async function carregarUsuarios(tipo) {
     }
 
     if (tipo !== "") {
-        dados = dados.filter(usuario => usuario.tipo === tipo);
+        if (tipo !== "TODOS") {
+            dados = dados.filter(usuario => usuario.tipo === tipo);
+        }
+
     }
 
-    if (dados.length === 0) {
-        alert("Nenhum usuário encontrado para o tipo selecionado.");
+    if (dados.length === 0 || !dados) {
+         const divVazio = document.createElement("div");
+        divVazio.id = "vazio";
+        divVazio.textContent = "Nenhum usuário encontrado.";
+        section.innerHTML = "";
+        section.appendChild(divVazio);
         return;
     }
 
@@ -541,14 +553,6 @@ async function carregarUsuarios(tipo) {
 
     section.innerHTML = "";
 
-    if (dados.length === 0 || !dados) {
-        const divVazio = document.createElement("div");
-        divVazio.id = "vazio";
-        divVazio.textContent = "Nenhum usuário encontrado.";
-        section.innerHTML = "";
-        section.appendChild(divVazio);
-        return;
-    }
 
     let html = `
     <table class="resultado">                

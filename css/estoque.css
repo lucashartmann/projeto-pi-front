@@ -132,7 +132,8 @@ table {
     }
 
     tbody>tr:nth-of-type(even) {
-        background-color: rgb(237 238 242);
+        background-color: var(--background-custom);
+        a{color: var(--cor-texto) !important;}
     }
 
     tfoot th {
