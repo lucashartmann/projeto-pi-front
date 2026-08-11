@@ -8,28 +8,51 @@ function imagemParaWebpBlob($caminho, $qualidade = 80, $larguraMax = 1920)
         switch ($info['mime']) {
 
             case 'image/jpeg':
-                $imagem = imagecreatefromjpeg($caminho);
+                $imagemOriginal = imagecreatefromjpeg($caminho);
                 break;
 
             case 'image/png':
-                $imagem = imagecreatefrompng($caminho);
+                $imagemOriginal = imagecreatefrompng($caminho);
                 break;
 
             case 'image/webp':
-                $imagem = imagecreatefromwebp($caminho);
+                $imagemOriginal = imagecreatefromwebp($caminho);
                 break;
 
             default:
                 return false;
         }
 
-        $larguraOriginal = imagesx($imagem);
-        $alturaOriginal = imagesy($imagem);
+        $larguraOriginal = imagesx($imagemOriginal);
+        $alturaOriginal = imagesy($imagemOriginal);
 
+
+        $imagem = imagecreatetruecolor(
+            $larguraOriginal,
+            $alturaOriginal
+        );
+
+
+        imagealphablending($imagem, false);
+        imagesavealpha($imagem, true);
+
+        imagecopy(
+            $imagem,
+            $imagemOriginal,
+            0,
+            0,
+            0,
+            0,
+            $larguraOriginal,
+            $alturaOriginal
+        );
+
+        imagedestroy($imagemOriginal);
 
         if ($larguraOriginal > $larguraMax) {
 
             $novaLargura = $larguraMax;
+
             $novaAltura = intval(
                 ($alturaOriginal / $larguraOriginal) * $novaLargura
             );
@@ -38,6 +61,9 @@ function imagemParaWebpBlob($caminho, $qualidade = 80, $larguraMax = 1920)
                 $novaLargura,
                 $novaAltura
             );
+
+            imagealphablending($novaImagem, false);
+            imagesavealpha($novaImagem, true);
 
             imagecopyresampled(
                 $novaImagem,
@@ -58,6 +84,7 @@ function imagemParaWebpBlob($caminho, $qualidade = 80, $larguraMax = 1920)
         }
 
 
+
         ob_start();
 
         imagewebp($imagem, null, $qualidade);
@@ -68,9 +95,24 @@ function imagemParaWebpBlob($caminho, $qualidade = 80, $larguraMax = 1920)
 
         return $blob;
     } catch (Exception $e) {
-        error_log("Erro ao processar a imagem: " . $e->getMessage());
+
+        error_log(
+            "Erro ao processar a imagem: " . $e->getMessage()
+        );
+
         return false;
     }
+}
+
+
+
+function listarArquivos($id)
+{
+    $diretorio = str_replace("\\php\\utils", "\\assets\\imoveis\\", __DIR__) . $id;
+    if (file_exists($diretorio) && is_dir($diretorio)) {
+        return scandir($diretorio);
+    }
+    return [];
 }
 
 function salvarArquivo($nomeTemporario, $nomeArquivo, $id, $tipo)

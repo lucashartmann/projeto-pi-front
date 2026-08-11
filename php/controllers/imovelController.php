@@ -226,17 +226,12 @@ class ImovelController
             $complemento = array_key_exists("complemento", $data) ? $data["complemento"] : "";
             $uf = array_key_exists("uf", $data) ? $data["uf"] : "";
             $numero = array_key_exists("numero", $data) ? (int) trim($data["numero"] ?? null) : null;
+            $filtrosApartamento = array_key_exists("filtros_apartamento", $data) ? (array)
+            str_replace(['[', ']', '"'], '', $data["filtros_apartamento"]) : [];
+            $filtrosCondominio = array_key_exists("filtros_condominio", $data) ?  (array) str_replace(['[', ']', '"'], '', $data["filtros_condominio"]) : [];
 
-            $complemento += $bloco;
 
-            $enderecoObj = new Endereco($rua, $bairro, $cep, $cidade, $uf);
-            $enderecoObj->setNumero($numero);
-            $enderecoObj->setComplemento($complemento);
-            $enderecoObj->setUf($uf);
-            $condominioObj = new Condominio(
-                $nomeCondominio,
-                $enderecoObj
-            );
+            $complemento .= $bloco;
 
             $corretor = null;
             $captador = null;
@@ -264,24 +259,57 @@ class ImovelController
                 $proprietarios = $proprietariosObjs;
             }
 
-            $filtros_apartamento = array_key_exists("filtros_apartamento", $data) ? (array)
-            str_replace(['[', ']', '"'], '', $data["filtros_apartamento"]) : [];
-            $filtros_condominio = array_key_exists("filtros_condominio", $data) ?  (array) str_replace(['[', ']', '"'], '', $data["filtros_condominio"]) : [];
 
 
-            $anuncioObj = new Anuncio();
+
             $imovelObj = NULL;
+            $anuncioObj = new Anuncio();
             $imovelDAO = new ImovelDAO();
+            $enderecoObj = null;
+            $condominioObj = null;
             if ($id) {
                 $imovelObj = $imovelDAO->buscarPorId($id);
                 if (!$imovelObj) {
                     return (["status" => "erro", "mensagem" => "ERRO ao atualizar imóvel! Imóvel não encontrado"]);
                 }
                 $imovelObj->setDataModificacao(DateTime::createFromFormat('Y-m-d H:i:s', date('Y-m-d H:i:s')));
+                $anuncioObj = $imovelObj->getAnuncio();
+                $enderecoObj = $imovelObj->getEndereco();
+                $condominioObj = $imovelObj->getCondominio();
+                if ($anuncioObj == null) {
+                    $anuncioObj = new Anuncio();
+                    $anuncioObj->setIdImovel($imovelObj->getId());
+                }
+            } else {
+                $imovelObj = new Imovel($enderecoObj, $status, $categoria);
             }
+
+            if ($enderecoObj == null) {
+                $enderecoObj = new Endereco($rua, $bairro, $cep, $cidade, $uf);
+            }
+
+            if ($condominioObj == null && ($nomeCondominio || $filtrosCondominio)) {
+                $condominioObj = new Condominio(
+                    $nomeCondominio,
+                    $enderecoObj
+                );
+                $condominioObj->setFiltros($filtrosCondominio);
+            } else if ($condominioObj != null) {
+                $condominioObj->setNome($nomeCondominio);
+                $condominioObj->setFiltros($filtrosCondominio);
+            }
+
+
+            $enderecoObj->setRua($rua);
+            $enderecoObj->setBairro($bairro);
+            $enderecoObj->setCep($cep);
+            $enderecoObj->setCidade($cidade);
+            $enderecoObj->setUf($uf);
+            $enderecoObj->setNumero($numero);
+            $enderecoObj->setComplemento($complemento);
+
             $imovelObj->setProprietarios($proprietarios);
-            $imovelObj->setFiltros($filtros_apartamento);
-            $condominioObj->setFiltros($filtros_condominio);
+            $imovelObj->setFiltros($filtrosApartamento);
             $anuncioObj->setTitulo($titulo);
             $anuncioObj->setDescricao($descricao);
             $imovelObj->setValorVenda($valorVenda);
@@ -308,7 +336,7 @@ class ImovelController
             $imovelObj->setAnuncio($anuncioObj);
             $imovelObj->setCondominio($condominioObj);
 
-            if (!$imovelObj->getEndereco() || !$imovelObj->getEndereco()->getId()) {
+            if (!$imovelObj->getEndereco()) {
                 return (["status" => "erro", "mensagem" => "ERRO ao cadastrar imóvel! Endereço nulo, contate o administrador"]);
             }
 
@@ -316,38 +344,36 @@ class ImovelController
             $imovelObj->setDataCadastro(DateTime::createFromFormat('Y-m-d H:i:s', date('Y-m-d H:i:s')));
             $cadastrado = false;
             $imovelService = new ImovelService();
-
+            error_log("ID: " . $id);
             if ($id) {
-                $atualizado = $imovelDAO->atualizar($imovelObj);
-                if ($atualizado != false) {
-                    $cadastrado = $id;
-                } else {
-                    $cadastrado = false;
-                }
+                $imovelService->atualizar($imovelObj);
+                $cadastrado = $imovelObj;
 
                 limparPasta($imovelObj->getAnuncio()->getImagens(), $imovelObj->getId());
                 limparPasta($imovelObj->getAnuncio()->getAnexos(), $imovelObj->getId());
             } else {
-
                 $cadastrado = $imovelService->cadastrar($imovelObj);
             }
 
 
-            if ($cadastrado  && $cadastrado->getAnuncio() != null && is_array($imagens) && count($imagens) > 0) {
+            if ($cadastrado && $cadastrado->getId() && $cadastrado->getAnuncio() != null && is_array($imagens) && count($imagens) > 0) {
                 $imagensObjetos = [];
+                $id = $cadastrado->getId();
+
                 foreach ($imagens['tmp_name'] as $i => $nomeTemporario) {
                     try {
+
                         if ($imagens['error'][$i] !== UPLOAD_ERR_OK) {
                             error_log("Erro ao fazer upload da imagem: " . $imagens['name'][$i] . " - Código de erro: " . $imagens['error'][$i]);
                             continue;
                         }
-                        $caminho = salvarArquivo($nomeTemporario, $imagens['name'][$i], $cadastrado, 'imagem');
+                        $caminho = salvarArquivo($nomeTemporario, $imagens['name'][$i], $id, 'imagem');
                         if (!$caminho) {
                             error_log("Erro ao salvar a imagem: " . $imagens['name'][$i]);
                             continue;
                         }
                         $imagemObj = new Anexo(
-                            $cadastrado->getAnuncio()->getId(),
+                            $cadastrado->getAnuncio()->getIdImovel(),
                             $caminho,
                             TipoAnexo::IMAGEM
                         );
@@ -357,27 +383,49 @@ class ImovelController
                         continue;
                     }
                 }
-                $anuncioObj->setImagens($imagensObjetos);
+                $arquivos = listarArquivos($cadastrado->getId());
+                $listaAnexosSalvos = [];
+                foreach ($imagensObjetos as $imagem) {
+                    $caminho = $imagem->getCaminho();
+                    $busca = $imovelObj->getId() . '/';
+                    $posicao = strpos($caminho, $busca);
+                    if ($posicao !== false) {
+                        $caminhoFormatado = substr(
+                            $caminho,
+                            $posicao + strlen($busca)
+                        );
+                        if (in_array($caminhoFormatado, $arquivos)) {
+                            $listaAnexosSalvos[] = $imagem;
+                        }
+                    }
+                }
+                $cadastrado->getAnuncio()->setImagens($listaAnexosSalvos);
                 $imovelService->atualizarAnuncio($cadastrado->getAnuncio());
             }
 
-            if ($cadastrado != false && $cadastrado->getAnuncio() != null && is_array($documentos) && count($documentos) > 0) {
+            if ($cadastrado != null && $cadastrado->getId() && $cadastrado->getAnuncio() != null && is_array($documentos) && count($documentos) > 0) {
+                $id = $cadastrado->getId();
                 $documentosObjetos = [];
                 foreach ($documentos['tmp_name'] as $i => $nomeTemporario) {
                     try {
                         $nomeArquivo = $documentos['name'][$i];
 
+                        if (!is_string($nomeArquivo) || empty($nomeArquivo)) {
+                            error_log("Nome do arquivo inválido para o documento: " . $nomeArquivo);
+                            continue;
+                        }
+
                         if ($documentos['error'][$i] !== UPLOAD_ERR_OK) {
                             error_log("Erro ao fazer upload do documento: " . $nomeArquivo . " - Código de erro: " . $documentos['error'][$i]);
                             continue;
                         }
-                        $caminho = salvarArquivo($nomeTemporario, $nomeArquivo, $cadastrado, 'documento');
+                        $caminho = salvarArquivo($nomeTemporario, $nomeArquivo, $id, 'documento');
                         if (!$caminho) {
                             error_log("Erro ao salvar o documento: " . $nomeArquivo);
                             continue;
                         }
                         $documentoObj = new Anexo(
-                            $cadastrado->getAnuncio()->getId(),
+                            $cadastrado->getAnuncio()->getIdImovel(),
                             $caminho,
                             TipoAnexo::DOCUMENTO
                         );
@@ -387,17 +435,30 @@ class ImovelController
                         continue;
                     }
                 }
-                $anuncioObj->setAnexos($documentosObjetos);
+                $arquivos = listarArquivos($cadastrado->getId());
+                $listaAnexosSalvos = [];
+                foreach ($documentosObjetos as $documento) {
+                    $caminho = $documento->getCaminho();
+                    $busca = $imovelObj->getId() . '/';
+                    $posicao = strpos($caminho, $busca);
+                    if ($posicao !== false) {
+                        $caminhoFormatado = substr(
+                            $caminho,
+                            $posicao + strlen($busca)
+                        );
+                        if (in_array($caminhoFormatado, $arquivos)) {
+                            $listaAnexosSalvos[] = $documento;
+                        }
+                    }
+                }
+                $cadastrado->getAnuncio()->setAnexos($documentosObjetos);
                 $imovelService->atualizarAnuncio($cadastrado->getAnuncio());
             }
-            if ($cadastrado != false) {
-                if ($id) {
-                    return (["status" => "sucesso", "mensagem" => "imovel atualizado!\n"]);
-                }
-                return (["status" => "sucesso", "mensagem" => "imovel cadastrado!\n"]);
-            } else {
-                return (["status" => "erro", "mensagem" => "ERRO ao cadastrar imóvel"]);
+
+            if ($id) {
+                return (["status" => "sucesso", "mensagem" => "imovel atualizado!\n"]);
             }
+            return (["status" => "sucesso", "mensagem" => "imovel cadastrado!\n"]);
         } catch (Exception $e) {
             return (["status" => "erro", "mensagem" => "Erro interno: " . $e->getMessage()]);
         }
@@ -472,7 +533,7 @@ class ImovelController
             $endereco = null;
             if ($imovel->getEndereco()) {
                 $enderecoObj = $imovel->getEndereco();
-      
+
                 $endereco = [
                     "rua" => $enderecoObj->getRua() ?? null,
                     "numero" => $enderecoObj->getNumero() ?? null,

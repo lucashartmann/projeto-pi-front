@@ -19,14 +19,15 @@ class AnuncioDAO
 
 
             $sql = "
-            INSERT INTO anuncio (descricao, titulo) 
-            VALUES (?, ?)
+            INSERT INTO anuncio (descricao, titulo, id_imovel) 
+            VALUES (?, ?, ?)
         ";
 
             $stmt = $this->bancoDados->prepare($sql);
             $stmt->execute([
                 $anuncio->getDescricao(),
-                $anuncio->getTitulo()
+                $anuncio->getTitulo(),
+                $anuncio->getIdImovel()
             ]);
 
             return $this->bancoDados->lastInsertId();
@@ -45,15 +46,15 @@ class AnuncioDAO
             $sql = "
             UPDATE anuncio
             SET descricao = :descricao,
-                titulo = :titulo
-            WHERE id = :id
+                titulo = :titulo,
+            WHERE id_imovel = :id_imovel
         ";
 
             $stmt = $this->bancoDados->prepare($sql);
             $stmt->execute([
                 ':descricao' => $anuncio->getDescricao(),
                 ':titulo' => $anuncio->getTitulo(),
-                ':id' => $anuncio->getId()
+                ':id_imovel' => $anuncio->getIdImovel()
             ]);
 
             $sql = "
@@ -63,7 +64,7 @@ class AnuncioDAO
 
             $stmt = $this->bancoDados->prepare($sql);
             $stmt->execute([
-                ':id_anuncio' => $anuncio->getId()
+                ':id_anuncio' => $anuncio->getIdImovel()
             ]);
 
             return true;
@@ -81,7 +82,7 @@ class AnuncioDAO
 
             $stmt = $this->bancoDados->prepare("
                         SELECT * FROM anuncio
-                        WHERE id = ?
+                        WHERE id_imovel = ?
                     ");
             $stmt->execute([$idAnuncio]);
             $registro = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -89,7 +90,7 @@ class AnuncioDAO
                 throw new Exception("Não existe anúncio com id $idAnuncio");
             }
             $anuncioObj = new Anuncio();
-            $idAnuncio = $registro['id'];
+            $idAnuncio = $registro['id_imovel'];
             if ($idAnuncio) {
                 $idAnuncio = (int) ($idAnuncio);
             }

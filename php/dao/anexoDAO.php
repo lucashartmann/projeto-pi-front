@@ -13,6 +13,11 @@ class AnexoDAO
         $this->bancoDados = Banco::getInstance();
     }
 
+    public function getConexao()
+    {
+        return $this->bancoDados;
+    }
+
     public function buscarPorCaminho(String $caminho)
     {
         try {
@@ -41,7 +46,8 @@ class AnexoDAO
         }
     }
 
-    public function listarPorIdAnuncio(int $idAnuncio)
+
+    public function listarPorIdAnuncio(int $idAnuncio): array
     {
         try {
 
@@ -102,6 +108,8 @@ class AnexoDAO
                     VALUES(:id_anuncio, :nome_arquivo, :tipo)
                     ";
             $stmt = $this->bancoDados->prepare($sqlQuery);
+
+            error_log($anexo->getIdAnuncio() . " - " . $anexo->getCaminho() . " - " . $anexo->getTipo()->value);
 
             return $stmt->execute([
                 ':id_anuncio' => $anexo->getIdAnuncio(),

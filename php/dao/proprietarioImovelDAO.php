@@ -324,6 +324,44 @@ class ProprietarioImovelDAO
         }
     }
 
+    public function removerProprietarioImovel(int $idProprietario, int $idImovel): bool
+    {
+        try {
+            $stmt = $this->bancoDados->prepare("
+                DELETE FROM proprietario_imovel
+                WHERE id_proprietario = :id_proprietario AND id_imovel = :id_imovel
+            ");
+            $stmt->execute([
+                ':id_proprietario' => $idProprietario,
+                ':id_imovel' => $idImovel
+            ]);
+
+            return true;
+        } catch (Exception $e) {
+            error_log("ERRO! ProprietarioImovelDAO->removerProprietarioImovel: " . $e->getMessage());
+            throw new Exception("Erro ao remover proprietário do imóvel: " . $e->getMessage());
+        }
+    }
+
+    public function cadastrarProprietarioImovel(int $idProprietario, int $idImovel): bool
+    {
+        try {
+            $stmt = $this->bancoDados->prepare("
+                INSERT INTO proprietario_imovel (id_proprietario, id_imovel)
+                VALUES (:id_proprietario, :id_imovel)
+            ");
+            $stmt->execute([
+                ':id_proprietario' => $idProprietario,
+                ':id_imovel' => $idImovel
+            ]);
+
+            return true;
+        } catch (Exception $e) {
+            error_log("ERRO! ProprietarioImovelDAO->cadastrarProprietarioImovel: " . $e->getMessage());
+            throw new Exception("Erro ao cadastrar proprietário ao imóvel: " . $e->getMessage());
+        }
+    }
+
     public  function listarPorIdImovel(int $idImovel): array
     {
         try {

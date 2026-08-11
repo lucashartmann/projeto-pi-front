@@ -67,11 +67,13 @@
     }
 
     table {
-        width: 100%;
+        width: 40%;
         height: 100%;
         border-collapse: collapse;
         letter-spacing: 1px;
         overflow-y: auto;
+        margin: 0 !important;
+        padding: 0 !important;
 
         a {
             text-decoration: none;

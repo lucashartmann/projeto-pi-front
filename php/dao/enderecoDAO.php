@@ -99,6 +99,40 @@ class EnderecoDAO
         }
     }
 
+    public function buscarPorIdImovel(int $idImovel) {
+        try {
+            $stmt = $this->bancoDados->prepare("
+                SELECT e.*
+                FROM endereco e
+                INNER JOIN imovel i ON i.id_endereco = e.id
+                WHERE i.id = :id_imovel
+            ");
+            $stmt->execute([':id_imovel' => $idImovel]);
+            $registro = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if (!$registro) {
+                throw new Exception("Não há endereço cadastrado para o imóvel com id {$idImovel}");
+            }
+
+            $endereco = new Endereco(
+                $registro['rua'],
+                $registro['bairro'],
+                $registro['cep'],
+                $registro['cidade'],
+                $registro['uf']
+            );
+
+            $endereco->setId((int)$registro['id']);
+            $endereco->setNumero($registro['numero']);
+            $endereco->setComplemento($registro['complemento']);
+
+            return $endereco;
+        } catch (Exception $e) {
+            error_log("endereçoDAO::buscarPorIdImovel - Error: " . $e->getMessage());
+            throw $e;
+        }
+    }
+
     public  function buscarPorId(int $id)
     {
         try {

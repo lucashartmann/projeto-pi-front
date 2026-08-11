@@ -14,66 +14,7 @@ class CondominioDAO
         $this->bancoDados = Banco::getInstance();
     }
 
-    public function getIdFiltroCondominioPorNome(string $nome)
-    {
-        try {
-
-            $stmt = $this->bancoDados->prepare("
-            SELECT id 
-            FROM filtros
-            WHERE nome = :nome
-        ");
-            $stmt->execute([':nome' => $nome]);
-
-            $row = $stmt->fetch(PDO::FETCH_ASSOC);
-
-            return $row ? (int) $row['id'] : null;
-        } catch (Exception $e) {
-            error_log("condominioDAO::getIdFiltroCondominioPorNome - Error: " . $e->getMessage());
-            throw $e;
-        }
-    }
-
-    public function cadastrarFiltro(int $idCondominio, int $idFiltro)
-    {
-        try {
-
-            $stmt = $this->bancoDados->prepare("
-            INSERT INTO condominio_filtros (id_filtro, id_condominio)
-            VALUES (:id_filtro, :id_condominio)
-        ");
-
-
-            return $stmt->execute([
-                ':id_filtro' => $idFiltro,
-                ':id_condominio' => $idCondominio
-            ]);
-        } catch (Exception $e) {
-            error_log("condominioDAO::cadastrarFiltro - Error: " . $e->getMessage());
-            throw $e;
-        }
-    }
-
-    public function removerFiltro(int $idCondominio, int $idFiltro)
-    {
-        try {
-
-            $stmt = $this->bancoDados->prepare("
-            DELETE FROM condominio_filtros
-            WHERE id_condominio = :id_condominio 
-              AND id_filtro = :id_filtro
-        ");
-
-
-            return $stmt->execute([
-                ':id_condominio' => $idCondominio,
-                ':id_filtro' => $idFiltro
-            ]);
-        } catch (Exception $e) {
-            error_log("condominioDAO::removerFiltro - Error: " . $e->getMessage());
-            throw $e;
-        }
-    }
+   
 
     public function atualizar(Condominio $condominio)
     {
@@ -91,33 +32,6 @@ class CondominioDAO
                 ':nome' => $condominio->getNome(),
                 ':id' => $condominio->getId()
             ]);
-
-            $condominioDb = $this->buscarPorId(
-                $condominio->getId()
-            );
-
-            $filtrosAntigos = $condominioDb ? $condominioDb->getFiltros() : [];
-            $filtrosNovos = $condominio->getFiltros() ?: [];
-
-
-            foreach ($filtrosAntigos as $filtro) {
-                if (!in_array($filtro, $filtrosNovos)) {
-                    $id = $this->getIdFiltroCondominioPorNome($filtro);
-                    if ($id !== null) {
-                        $this->removerFiltro($condominio->getId(), $id);
-                    }
-                }
-            }
-
-
-            foreach ($filtrosNovos as $filtro) {
-                if (!in_array($filtro, $filtrosAntigos)) {
-                    $id = $this->getIdFiltroCondominioPorNome($filtro);
-                    if ($id !== null) {
-                        $this->cadastrarFiltro($condominio->getId(), $id);
-                    }
-                }
-            }
 
             return true;
         } catch (Exception $e) {
@@ -147,36 +61,6 @@ class CondominioDAO
                 $condominio->getNome(),
                 $idEndereco
             ]);
-
-            $idCondominio = $this->bancoDados->lastInsertId();
-
-            if ($condominio->getFiltros()) {
-                foreach ($condominio->getFiltros() as $filtro) {
-                    $stmt = $this->bancoDados->prepare("
-                        INSERT IGNORE INTO filtros (nome)
-                        VALUES (:nome)
-                    ");
-                    $stmt->execute([':nome' => $filtro]);
-
-                    $stmt = $this->bancoDados->prepare("
-                        SELECT id
-                        FROM filtros
-                        WHERE nome = :nome
-                    ");
-                    $stmt->execute([':nome' => $filtro]);
-
-                    $idFiltro = $stmt->fetchColumn();
-
-                    $stmt = $this->bancoDados->prepare("
-                        INSERT INTO condominio_filtros (id_condominio, id_filtro)
-                        VALUES (:id_condominio, :id_filtro)
-                    ");
-                    $stmt->execute([
-                        ':id_condominio' => $idCondominio,
-                        ':id_filtro' => $idFiltro
-                    ]);
-                }
-            }
 
             return $this->bancoDados->lastInsertId();
         } catch (Exception $e) {
@@ -245,7 +129,10 @@ class CondominioDAO
     {
         try {
             $stmt = $this->bancoDados->prepare("
-                SELECT *,  
+                SELECT 
+                
+                condominio.id as condominio_id,
+                condominio.nome,  
                 
                 endereco.id as endereco_id,
                 endereco.rua,
@@ -261,7 +148,7 @@ class CondominioDAO
                 LEFT JOIN endereco ON condominio.id_endereco = endereco.id
 
                 WHERE endereco.cep = :cep
-                AND endereco.numero <=> :numero
+                AND endereco.numero = :numero
             ");
 
             $stmt->execute([
@@ -274,7 +161,7 @@ class CondominioDAO
                 return null;
             }
 
-            $idCondominio = (int) $registro['id'];
+            $idCondominio = (int) $registro['condominio_id'];
             $nome = $registro['nome'];
             $condominio_obj = new Condominio($nome, $endereco);
             $condominio_obj->setId($idCondominio);

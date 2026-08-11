@@ -157,7 +157,8 @@ class ImovelDAO
             $imovelObj->setQuantClicks($dados['quant_clicks'] !== null ? (int) $dados['quant_clicks'] : 0);
             $proprietarioImovelDAO = new ProprietarioImovelDAO();
             $imovelObj->setProprietarios($proprietarioImovelDAO->listarPorIdImovel($dados['id']) ?? []);
-            $imovelObj->setFiltros($this->listarFiltros($dados['id']) ?? []);
+            $filtroDAO = new FiltroDAO();
+            $imovelObj->setFiltros($filtroDAO->listarPorIdImovel($dados['id']) ?? []);
             return $imovelObj;
         } catch (Exception $e) {
             error_log("ERRO! imovelDAO->buscarPorId: " . $e->getMessage());
@@ -165,30 +166,7 @@ class ImovelDAO
         }
     }
 
-    public function listarFiltros(int $id): array
-    {
-        try {
-            $stmt = $this->bancoDados->prepare("
-                SELECT fi.nome
-                FROM imovel_filtros ifi
-                JOIN filtro fi
-                    ON fi.id = ifi.id_filtro
-                WHERE ifi.id_imovel = :id
-            ");
-            $stmt->execute([':id' => $id]);
-
-            $filtros = [];
-            while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-                $filtros[] = $row['nome'];
-            }
-
-            return $filtros;
-        } catch (Exception $e) {
-            error_log("ERRO! imovelDAO->listarFiltros: " . $e->getMessage());
-            throw $e;
-        }
-    }
-
+  
     public function listarDestacados(): array
     {
         try {
@@ -279,7 +257,7 @@ class ImovelDAO
                 ON condominio.id = imovel.id_condominio
 
             LEFT JOIN anuncio 
-                ON anuncio.id = imovel.id_anuncio
+                ON anuncio.id_imovel = imovel.id
 
             LEFT JOIN pessoa pessoa_corretor
                 ON pessoa_corretor.id = imovel.id_corretor
@@ -470,7 +448,7 @@ class ImovelDAO
                 ON condominio.id = imovel.id_condominio
 
             LEFT JOIN anuncio 
-                ON anuncio.id = imovel.id_anuncio
+                ON anuncio.id_imovel = imovel.id
 
             LEFT JOIN pessoa pessoa_corretor
                 ON pessoa_corretor.id = imovel.id_corretor
@@ -660,7 +638,7 @@ class ImovelDAO
                 ON condominio.id = imovel.id_condominio
 
             LEFT JOIN anuncio 
-                ON anuncio.id = imovel.id_anuncio
+                ON anuncio.id_imovel = imovel.id
 
             LEFT JOIN pessoa pessoa_corretor
                 ON pessoa_corretor.id = imovel.id_corretor
@@ -848,7 +826,7 @@ class ImovelDAO
                 ON condominio.id = imovel.id_condominio
 
             LEFT JOIN anuncio 
-                ON anuncio.id = imovel.id_anuncio
+                ON anuncio.id_imovel = imovel.id
 
             LEFT JOIN pessoa pessoa_corretor
                 ON pessoa_corretor.id = imovel.id_corretor
@@ -1030,7 +1008,7 @@ class ImovelDAO
                 ON condominio.id = imovel.id_condominio
 
             LEFT JOIN anuncio 
-                ON anuncio.id = imovel.id_anuncio
+                ON anuncio.id_imovel = imovel.id
 
             LEFT JOIN pessoa pessoa_corretor
                 ON pessoa_corretor.id = imovel.id_corretor
@@ -1127,70 +1105,11 @@ class ImovelDAO
         }
     }
 
-    public function cadastrarImoveisCliente(int $idCliente, array $idImoveis): bool
-    {
-        $idImoveis = array_map('intval', $idImoveis);
-
-        try {
-            $this->bancoDados->beginTransaction();
-
-            error_log("Imóveis a serem cadastrados para o cliente {$idCliente}: " . implode(',', $idImoveis));
-
-            if (empty($idImoveis)) {
-                $stmt = $this->bancoDados->prepare("
-                DELETE FROM imovel_cliente
-                WHERE id_cliente = :id_cliente
-            ");
-
-                $resultado = $stmt->execute([
-                    ':id_cliente' => $idCliente
-                ]);
-
-                $this->bancoDados->commit();
-                return $resultado;
-            }
-
-            $stmt = $this->bancoDados->prepare("
-            DELETE FROM imovel_cliente
-            WHERE id_cliente = :id_cliente
-            AND id_imovel NOT IN (" . implode(',', $idImoveis) . ")
-        ");
-
-            $resultado = $stmt->execute([
-                ':id_cliente' => $idCliente
-            ]);
-
-            error_log("Resultado da exclusão de imóveis do cliente: " . ($resultado ? "Sucesso" : "Falha"));
-
-            $stmt = $this->bancoDados->prepare("
-            INSERT IGNORE INTO imovel_cliente (id_cliente, id_imovel)
-            VALUES (:id_cliente, :id_imovel)
-        ");
-
-            foreach ($idImoveis as $idImovel) {
-                $stmt->execute([
-                    ':id_cliente' => $idCliente,
-                    ':id_imovel' => $idImovel
-                ]);
-            }
-
-            $this->bancoDados->commit();
-            return true;
-        } catch (Exception $e) {
-            if ($this->bancoDados->inTransaction()) {
-                $this->bancoDados->rollBack();
-            }
-            error_log("ERRO! imovelDAO->cadastrarImoveisCliente: " . $e->getMessage());
-            throw $e;
-        }
-    }
 
     public  function atualizar(Imovel $imovel): bool
     {
 
         try {
-
-            $this->bancoDados->beginTransaction();
             $categoria = $imovel->getCategoria();
             $categoria = $categoria ? $categoria->value : null;
             $status = $imovel->getStatus();
@@ -1203,8 +1122,6 @@ class ImovelDAO
             $ocupacao = $ocupacao ? $ocupacao->value : null;
             $endereco = $imovel->getEndereco();
             $endereco = ($endereco && $endereco->getId()) ? $endereco->getId() : null;
-            $anuncio = $imovel->getAnuncio();
-            $anuncio = ($anuncio && $anuncio->getId()) ? $anuncio->getId() : null;
             $condominio = $imovel->getCondominio();
             $condominio = $condominio ? $condominio->getId() : null;
             $corretor = $imovel->getCorretor();
@@ -1215,61 +1132,6 @@ class ImovelDAO
             $dataCadastro = $dataCadastro ? $dataCadastro->format("Y-m-d") : null;
             $dataModificacao = $imovel->getDataModificacao();
             $dataModificacao = $dataModificacao ? $dataModificacao->format("Y-m-d") : null;
-            $imovelDb = $this->buscarPorId($imovel->getId());
-            $propsAntigos = $imovelDb ? $imovelDb->getProprietarios() : [];
-            $propsNovos = $imovel->getProprietarios() ?: [];
-
-            foreach ($propsAntigos as $p) {
-                if (!in_array($p, $propsNovos)) {
-
-                    $stmt = $this->bancoDados->prepare("
-                    DELETE FROM proprietario_imovel
-                    WHERE id_proprietario = :id_proprietario
-                      AND id_imovel = :id
-                ");
-                    $stmt->execute([
-                        ':id_proprietario' => $p->getId(),
-                        ':id' => $imovel->getId()
-                    ]);
-                }
-            }
-
-            foreach ($propsNovos as $p) {
-                if (!in_array($p, $propsAntigos)) {
-
-                    $stmt = $this->bancoDados->prepare("
-                    INSERT INTO proprietario_imovel (id_proprietario, id_imovel)
-                    VALUES (:id_proprietario, :id_imovel)
-                ");
-                    $stmt->execute([
-                        ':id_proprietario' => $p->getId(),
-                        ':id_imovel' => $imovel->getId()
-                    ]);
-                }
-            }
-
-
-            $filtrosAntigos = $imovelDb ? $imovelDb->getFiltros() : [];
-            $filtrosNovos = $imovel->getFiltros() ?: [];
-
-            foreach ($filtrosAntigos as $f) {
-                if (!in_array($f, $filtrosNovos)) {
-                    $id = $this->getIdFiltroImovelPorNome($f);
-                    if ($id !== null) {
-                        $this->removerFiltro($imovel->getId(), $id);
-                    }
-                }
-            }
-
-            foreach ($filtrosNovos as $f) {
-                if (!in_array($f, $filtrosAntigos)) {
-                    $id = $this->getIdFiltroImovelPorNome($f);
-                    if ($id !== null) {
-                        $this->cadastrarFiltro($imovel->getId(), $id);
-                    }
-                }
-            }
-
 
             $sql = "
             UPDATE imovel SET
@@ -1297,7 +1159,6 @@ class ImovelDAO
                 id_captador = :captador,
                 data_cadastro = :data_cadastro,
                 data_modificacao = :data_modificacao,
-                id_anuncio = :anuncio,
                 id_condominio = :condominio,
                 destacado = :destacado,
                 quant_clicks = :quant_clicks
@@ -1330,17 +1191,13 @@ class ImovelDAO
                 ':captador' => $captador,
                 ':data_cadastro' => $dataCadastro,
                 ':data_modificacao' => $dataModificacao,
-                ':anuncio' => $anuncio,
                 ':condominio' => $condominio,
                 ':destacado' => $imovel->isDestacado() ? 1 : 0,
                 ':quant_clicks' => $imovel->getQuantClicks(),
                 ':id' => $imovel->getId()
             ]);
-            return $this->bancoDados->commit();
+            return true;
         } catch (Exception $e) {
-            if ($this->bancoDados->inTransaction()) {
-                $this->bancoDados->rollBack();
-            }
             error_log("ERRO! imovelDAO->atualizar: " . $e->getMessage());
             throw $e;
         }
@@ -1357,9 +1214,9 @@ class ImovelDAO
                 iptu, valor_condominio, andar, estado, bloco, ano_construcao,
                 area_total, area_privativa, situacao, ocupacao,
                 id_corretor, id_captador,
-                data_cadastro, data_modificacao, id_anuncio, id_condominio, destacado, quant_clicks
+                data_cadastro, data_modificacao, id_condominio, destacado, quant_clicks
             ) 
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         ";
 
 
@@ -1368,9 +1225,6 @@ class ImovelDAO
 
             $endereco = $imovel->getEndereco();
             $idEndereco = ($endereco && $endereco->getId()) ? $endereco->getId() : null;
-
-            $anuncio = $imovel->getAnuncio();
-            $idAnuncio = ($anuncio && $anuncio->getId()) ? $anuncio->getId() : null;
 
             $status = $imovel->getStatus();
             $status = $status ? $status->value : null;
@@ -1434,7 +1288,6 @@ class ImovelDAO
                 $cpf_captador,
                 $dataCadastro,
                 $dataModificacao,
-                $idAnuncio,
                 $idCondominio,
                 $imovel->isDestacado() ? 1 : 0,
                 $imovel->getQuantClicks()
@@ -1447,62 +1300,4 @@ class ImovelDAO
         }
     }
 
-
-    public function getIdFiltroImovelPorNome(String $nome): ?int
-    {
-        try {
-
-            $stmt = $this->bancoDados->prepare("
-                SELECT id 
-                FROM filtro
-                WHERE nome = :nome
-            ");
-            $stmt->execute([':nome' => $nome]);
-
-            $row = $stmt->fetch(PDO::FETCH_ASSOC);
-
-            return $row ? (int) $row['id'] : null;
-        } catch (Exception $e) {
-            error_log("ERRO! imovelDAO->getIdFiltroImovelPorNome: " . $e->getMessage());
-            throw $e;
-        }
-    }
-
-    public function cadastrarFiltro(int $idImovel, int $idFiltro): bool
-    {
-        try {
-
-            $stmt = $this->bancoDados->prepare("
-            INSERT INTO imovel_filtros (id_imovel, id_filtro)
-            VALUES (:id_imovel, :id_filtro)
-        ");
-
-            return $stmt->execute([
-                ':id_imovel' => $idImovel,
-                ':id_filtro' => $idFiltro
-            ]);;
-        } catch (Exception $e) {
-            error_log("ERRO! imovelDAO->cadastrarFiltro: " . $e->getMessage());
-            throw $e;
-        }
-    }
-
-    public function removerFiltro(int $idImovel, int $idFiltro): bool
-    {
-        try {
-
-            $stmt = $this->bancoDados->prepare("
-            DELETE FROM imovel_filtros
-            WHERE id_imovel = :id_imovel 
-              AND id_filtro = :id_filtro
-        ");
-            return $stmt->execute([
-                ':id_imovel' => $idImovel,
-                ':id_filtro' => $idFiltro
-            ]);
-        } catch (Exception $e) {
-            error_log("ERRO! imovelDAO->removerFiltro: " . $e->getMessage());
-            throw $e;
-        }
-    }
 }

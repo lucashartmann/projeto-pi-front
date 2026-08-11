@@ -8,15 +8,27 @@ class Anuncio
     private array $imagens;
     private array $videos;
     private array $anexos;
+    private ?int $idImovel;
 
     public function __construct()
     {
         $this->id = 0;
+        $this->idImovel = null;
         $this->descricao = "";
         $this->titulo = "";
         $this->imagens = [];
         $this->videos = [];
         $this->anexos = [];
+    }
+
+    public function getIdImovel()
+    {
+        return $this->idImovel;
+    }
+
+    public function setIdImovel(int $idImovel)
+    {
+        $this->idImovel = $idImovel;
     }
 
     public function setAnexos(array $value)

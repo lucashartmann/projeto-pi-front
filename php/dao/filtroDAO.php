@@ -40,7 +40,105 @@ class FiltroDAO
         }
     }
 
-    public function cadastrarLista(array $listaNomes, string $tipo = null)
+    public function verificar(string $nome, string $tipo, int $id)
+    {
+        try {
+            $stmt = null;
+            if ($tipo === 'imovel') {
+                $stmt = $this->bancoDados->prepare("SELECT id FROM imovel_filtros WHERE id_filtro = :id_filtro AND id_imovel = :id_imovel");
+                $stmt->execute([':id_filtro' => $id, ':id_imovel' => $id]);
+            } elseif ($tipo === 'condominio') {
+                $stmt = $this->bancoDados->prepare("SELECT id FROM condominio_filtros WHERE id_filtro = :id_filtro AND id_condominio = :id_condominio");
+                $stmt->execute([':id_filtro' => $id, ':id_condominio' => $id]);
+            }
+
+            return $stmt->fetchColumn();
+        } catch (Exception $e) {
+            error_log("filtroDAO::verificar - Error: " . $e->getMessage());
+            throw new Exception("Erro ao verificar filtro: " . $e->getMessage());
+        }
+    }
+
+
+    public function listarPorIdImovel(int $idImovel): array
+    {
+        try {
+            $stmt = $this->bancoDados->prepare(" 
+                SELECT
+                    f.*
+                FROM filtro f
+                INNER JOIN imovel_filtros imf
+                    ON imf.id_filtro = f.id
+                WHERE imf.id_imovel = :id_imovel;
+            ");
+
+            $stmt->execute([':id_imovel' => (int) $idImovel]);
+            $dados = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            $filtros = [];
+            foreach ($dados as $registro) {
+                $filtro = $registro["nome"];
+                if ($filtro !== null) {
+                    $filtros[] = $filtro;
+                }
+            }
+
+            return $filtros;
+        } catch (Exception $e) {
+            error_log('ERRO! FiltroDAO->listarPorIdImovel: ' . $e->getMessage());
+            throw new Exception('Erro ao listar filtros do imóvel: ' . $e->getMessage());
+        }
+    }
+
+    public function removerDoImovel($filtroExistente, $idImovel)
+    {
+        try {
+            $stmt = $this->bancoDados->prepare("
+                DELETE FROM imovel_filtros
+                WHERE id_filtro = :id_filtro AND id_imovel = :id_imovel
+            ");
+            $stmt->execute([
+                ':id_filtro' => $filtroExistente,
+                ':id_imovel' => $idImovel
+            ]);
+
+            return true;
+        } catch (Exception $e) {
+            error_log("ERRO! FiltroDAO->removerDoImovel: " . $e->getMessage());
+            throw new Exception("Erro ao remover filtro do imóvel: " . $e->getMessage());
+        }
+    }
+
+    public function cadastrarAosFiltros(Imovel | Condominio $imovel)
+    {
+        try {
+            if ($imovel->getFiltros()) {
+                foreach ($imovel->getFiltros() as $filtro) {
+                    $stmt = $this->bancoDados->prepare("INSERT IGNORE INTO filtro (nome) VALUES (:nome)");
+                    $stmt->execute([':nome' => $filtro]);
+
+                    $stmt = $this->bancoDados->prepare("SELECT id FROM filtro WHERE nome = :nome");
+                    $stmt->execute([':nome' => $filtro]);
+                    $idFiltro = $stmt->fetchColumn();
+
+                    if ($imovel instanceof Imovel) {
+                        $stmt = $this->bancoDados->prepare("INSERT IGNORE INTO imovel_filtros (id_filtro, id_imovel) VALUES (:id_filtro, :id_imovel)");
+                        $stmt->execute([':id_filtro' => $idFiltro, ':id_imovel' => $imovel->getId()]);
+                    } elseif ($imovel instanceof Condominio) {
+                        $stmt = $this->bancoDados->prepare("INSERT IGNORE INTO condominio_filtros (id_filtro, id_condominio) VALUES (:id_filtro, :id_condominio)");
+                        $stmt->execute([':id_filtro' => $idFiltro, ':id_condominio' => $imovel->getId()]);
+                    }
+                }
+            }
+
+            return true;
+        } catch (Exception $e) {
+            error_log("filtroDAO::cadastrarAosFiltros - Error: " . $e->getMessage());
+            throw new Exception("Erro ao cadastrar filtros ao imóvel: " . $e->getMessage());
+        }
+    }
+
+    public function cadastrarLista(array $listaNomes, string $tipo = null, int $id = null)
     {
         try {
             foreach ($listaNomes as $nome) {
@@ -51,12 +149,12 @@ class FiltroDAO
                 $stmt->execute([':nome' => $nome]);
                 $idFiltro = $stmt->fetchColumn();
 
-                if ($tipo === 'imovel') {
-                    $stmt = $this->bancoDados->prepare("INSERT IGNORE INTO imovel_filtros (id_filtro) VALUES (:id_filtro)");
-                    $stmt->execute([':id_filtro' => $idFiltro]);
-                } elseif ($tipo === 'condominio') {
-                    $stmt = $this->bancoDados->prepare("INSERT IGNORE INTO condominio_filtros (id_filtro) VALUES (:id_filtro)");
-                    $stmt->execute([':id_filtro' => $idFiltro]);
+                if ($tipo === 'imovel' && $id !== null) {
+                    $stmt = $this->bancoDados->prepare("INSERT IGNORE INTO imovel_filtros (id_filtro, id_imovel) VALUES (:id_filtro, :id_imovel)");
+                    $stmt->execute([':id_filtro' => $idFiltro, ':id_imovel' => $id]);
+                } elseif ($tipo === 'condominio' && $id !== null) {
+                    $stmt = $this->bancoDados->prepare("INSERT IGNORE INTO condominio_filtros (id_filtro, id_condominio) VALUES (:id_filtro, :id_condominio)");
+                    $stmt->execute([':id_filtro' => $idFiltro, ':id_condominio' => $id]);
                 }
             }
 

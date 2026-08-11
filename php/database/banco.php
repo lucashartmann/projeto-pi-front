@@ -130,13 +130,6 @@ class Banco extends PDO
                     ON DELETE CASCADE
             )",
 
-
-            "CREATE TABLE IF NOT EXISTS anuncio (
-                id INTEGER PRIMARY KEY AUTO_INCREMENT,
-                descricao TEXT NULL,
-                titulo VARCHAR(255) NULL
-            )",
-
             "CREATE TABLE IF NOT EXISTS condominio (
                 id INTEGER PRIMARY KEY AUTO_INCREMENT,
                 nome VARCHAR(255) NULL,
@@ -171,12 +164,9 @@ class Banco extends PDO
                 id_captador INT NULL,
                 data_cadastro TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 data_modificacao DATETIME NULL,
-                id_anuncio INT NULL UNIQUE,
                 id_condominio INT NULL,
                 quant_clicks INTEGER DEFAULT 0,
                 destacado BOOLEAN DEFAULT FALSE,
-                FOREIGN KEY (id_anuncio) 
-                    REFERENCES anuncio(id),
                 FOREIGN KEY (id_endereco) 
                     REFERENCES endereco(id),
                 FOREIGN KEY (id_corretor) 
@@ -185,6 +175,16 @@ class Banco extends PDO
                     REFERENCES funcionario(id_pessoa),
                 FOREIGN KEY (id_condominio) 
                     REFERENCES condominio(id)
+            )",
+
+
+            "CREATE TABLE IF NOT EXISTS anuncio (
+                id_imovel INTEGER PRIMARY KEY,
+                descricao TEXT NULL,
+                titulo VARCHAR(255) NULL.
+                FOREIGN KEY (id_imovel) 
+                    REFERENCES imovel(id) 
+                    ON DELETE CASCADE
             )",
 
             "CREATE TABLE IF NOT EXISTS favoritos (
@@ -206,7 +206,7 @@ class Banco extends PDO
                 tipo ENUM('imagem', 'video', 'documento') NULL,
                 UNIQUE(id_anuncio, nome_arquivo, tipo),
                 FOREIGN KEY (id_anuncio) 
-                    REFERENCES anuncio(id) ON DELETE CASCADE
+                    REFERENCES anuncio(id_imovel) ON DELETE CASCADE
             )",
 
             "CREATE TABLE IF NOT EXISTS venda_aluguel (
