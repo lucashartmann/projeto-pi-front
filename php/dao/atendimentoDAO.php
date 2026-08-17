@@ -191,7 +191,6 @@ class AtendimentoDAO
                 imovel.id_captador AS imovel_id_captador,
                 imovel.data_cadastro AS imovel_data_cadastro,
                 imovel.data_modificacao AS imovel_data_modificacao,
-                imovel.id_anuncio AS imovel_id_anuncio,
                 imovel.id_condominio AS imovel_id_condominio,
                 imovel.quant_clicks AS imovel_quant_clicks,
                 imovel.destacado AS imovel_destacado,
@@ -319,7 +318,7 @@ class AtendimentoDAO
                 atendimento_usuario_cliente.ativo AS atendimento_cliente_ativo,
                 atendimento_usuario_cliente.id_pessoa AS atendimento_cliente_usuario_id,
 
-                anuncio.id AS imovel_anuncio_id,
+                anuncio.id_imovel AS imovel_anuncio_id,
                 anuncio.descricao AS imovel_anuncio_descricao,
                 anuncio.titulo AS imovel_anuncio_titulo
 
@@ -335,7 +334,7 @@ class AtendimentoDAO
                 ON condominio.id = imovel.id_condominio
 
             LEFT JOIN anuncio 
-                ON anuncio.id = imovel.id_anuncio
+                ON anuncio.id_imovel = imovel.id
 
             LEFT JOIN pessoa atendimento_pessoa_corretor
                 ON atendimento_pessoa_corretor.id = atendimento.id_corretor
@@ -489,7 +488,6 @@ class AtendimentoDAO
                 if ($status) {
                     $status = StatusAtendimento::tryFrom($status);
                 }
-                error_log("atendimentoDAO::listar - Atendimento ID: $idAtendimento, Imovel ID: $idImovel, Corretor ID: $idCorretor, Cliente ID: $idComprador, Status: $status");
                 $atendimentoObj = new Atendimento();
                 $atendimentoObj->setStatus($status);
                 $atendimentoObj->setId($idAtendimento);

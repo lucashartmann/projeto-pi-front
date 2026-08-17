@@ -1,7 +1,6 @@
 import { listarImoveis } from "./modules/imoveis.js";
 import { usuarioLogado, carregarUser } from "./modules/usuario.js";
 import { listarPessoas, listarUsuarios } from "./modules/usuarios.js";
-import { listarProprietarios } from "./modules/proprietarios.js";
 import { getCaminhoRelativo } from "./modules/utils.js";
 
 window.listarImoveis = listarImoveis;
@@ -198,9 +197,8 @@ document.addEventListener('DOMContentLoaded', async function () {
   calendar();
   let dados = [];
   let dadosUsuarios = await listarUsuarios();
-  let dadosProprietarios = await listarProprietarios();
   dadosUsuarios = dadosUsuarios?.filter(usuario => usuario.tipo === "CLIENTE");
-  dados = [...dadosUsuarios, ...dadosProprietarios];
+  dados = [...dadosUsuarios];
   if (dados.length === 0 || !dados) {
     const section = document.getElementById("container-pai");
     const divVazio = document.createElement("div");

@@ -342,7 +342,6 @@ class ImovelController
             $enderecoObj->setUf($uf);
             $enderecoObj->setNumero($numero);
             $enderecoObj->setComplemento($complemento);
-
             $imovelObj->setProprietarios($proprietarios);
             $imovelObj->setFiltros($filtrosApartamento);
             $anuncioObj->setTitulo($titulo);
@@ -379,7 +378,6 @@ class ImovelController
             $imovelObj->setDataCadastro(DateTime::createFromFormat('Y-m-d H:i:s', date('Y-m-d H:i:s')));
             $cadastrado = false;
             $imovelService = new ImovelService();
-            error_log("ID: " . $id);
             if ($id) {
                 $imovelService->atualizar($imovelObj);
                 $cadastrado = $imovelObj;
@@ -422,7 +420,7 @@ class ImovelController
                 $listaAnexosSalvos = [];
                 foreach ($imagensObjetos as $imagem) {
                     $caminho = $imagem->getCaminho();
-                    $busca = $imovelObj->getId() . '/';
+                    $busca = $cadastrado->getId()  . '/';
                     $posicao = strpos($caminho, $busca);
                     if ($posicao !== false) {
                         $caminhoFormatado = substr(
@@ -546,7 +544,6 @@ class ImovelController
         try {
             $imovelDAO = new ImovelDAO();
             $imovelObj = $imovelDAO->buscarPorId((int) $id);
-
             if (!$imovelObj) {
                 return [
                     "status" => "erro",
@@ -568,8 +565,8 @@ class ImovelController
             $endereco = null;
             if ($imovel->getEndereco()) {
                 $enderecoObj = $imovel->getEndereco();
-
                 $endereco = [
+                    "id" => $enderecoObj->getId(),
                     "rua" => $enderecoObj->getRua() ?? null,
                     "numero" => $enderecoObj->getNumero() ?? null,
                     "bairro" => $enderecoObj->getBairro() ?? null,

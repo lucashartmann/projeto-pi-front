@@ -11,9 +11,9 @@ class HistoricoDAO
     private $sql = "
                 SELECT 
                  
-                anuncio.id AS imovel_anuncio_id,
+                anuncio.id_imovel AS imovel_anuncio_id,
                 anuncio.descricao AS imovel_anuncio_descricao,
-                anuncio.titulo AS imovel_anuncio_titulo
+                anuncio.titulo AS imovel_anuncio_titulo,
 
                 condominio.id AS imovel_condominio_id,
                 condominio.nome AS imovel_condominio_nome,
@@ -43,7 +43,6 @@ class HistoricoDAO
                 imovel.id_captador AS imovel_id_captador,
                 imovel.data_cadastro AS imovel_data_cadastro,
                 imovel.data_modificacao AS imovel_data_modificacao,
-                imovel.id_anuncio AS imovel_id_anuncio,
                 imovel.id_condominio AS imovel_id_condominio,
                 imovel.quant_clicks AS imovel_quant_clicks,
                 imovel.destacado AS imovel_destacado,
@@ -170,7 +169,7 @@ class HistoricoDAO
                 historico_endereco_cliente.bairro AS historico_cliente_bairro,
                 historico_endereco_cliente.cep AS historico_cliente_cep,
                 historico_endereco_cliente.cidade AS historico_cliente_cidade,
-                historico_endereco_cliente.uf AS historico_cliente_uf,
+                historico_endereco_cliente.uf AS historico_cliente_uf
 
               
                 FROM historico_alteracoes as historico
@@ -185,7 +184,7 @@ class HistoricoDAO
                     ON condominio.id = imovel.id_condominio
 
                 LEFT JOIN anuncio anuncio
-                    ON anuncio.id = imovel.id_anuncio
+                    ON anuncio.id_imovel = imovel.id
 
                 LEFT JOIN pessoa historico_pessoa_cliente
                     ON historico_pessoa_cliente.id = historico.id_cliente
@@ -205,11 +204,11 @@ class HistoricoDAO
                 LEFT JOIN usuario imovel_usuario_captador
                     ON imovel_usuario_captador.id_pessoa = imovel_pessoa_captador.id
 
-                LEFT JOIN usuario historico_corretor
-                    ON historico_corretor.id_pessoa = historico_pessoa_corretor.id
-
                 LEFT JOIN usuario historico_usuario_cliente
                     ON historico_usuario_cliente.id_pessoa = historico_pessoa_cliente.id
+
+                LEFT JOIN usuario historico_usuario_funcionario
+                    ON historico_usuario_funcionario.id_pessoa = historico_pessoa_funcionario.id
 
                 LEFT JOIN funcionario imovel_funcionario_corretor
                     ON imovel_funcionario_corretor.id_pessoa = ipco.id

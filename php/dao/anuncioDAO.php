@@ -46,7 +46,7 @@ class AnuncioDAO
             $sql = "
             UPDATE anuncio
             SET descricao = :descricao,
-                titulo = :titulo,
+                titulo = :titulo
             WHERE id_imovel = :id_imovel
         ";
 

@@ -40,22 +40,38 @@ async function listarAtendimentos() {
 async function carregarAtendimentos() {
     const dados = listaAtendimentos;
     const section = document.getElementById("container-horizontal");
+    const divRecemCadastrados = document.getElementById("container-cadastrados");
+    const divEmAndamento = document.getElementById("container-andamento");
+    const divPendente = document.getElementById("container-esperando");
+    let divVazio = null;
+
+    if (!dados || dados.length === 0) {
+        divVazio = document.createElement("div");
+        divVazio.className = "vazio";
+        divVazio.textContent = "Nenhum atendimento encontrado.";
+        divRecemCadastrados.appendChild(divVazio);
+        divVazio = document.createElement("div");
+        divVazio.className = "vazio";
+        divVazio.textContent = "Nenhum atendimento encontrado.";
+        divEmAndamento.appendChild(divVazio);
+        divVazio = document.createElement("div");
+        divVazio.className = "vazio";
+        divVazio.textContent = "Nenhum atendimento encontrado.";
+        divPendente.appendChild(divVazio);
+    }
 
     if (!section || !dados) return;
 
-    const divRecemCadastrados = document.getElementById("container-cadastrados");
 
     for (child of divRecemCadastrados.children) {
         child.remove();
     }
 
-    const divEmAndamento = document.getElementById("container-andamento");
 
     for (child of divEmAndamento.children) {
         child.remove();
     }
 
-    const divPendente = document.getElementById("container-esperando");
 
     for (child of divPendente.children) {
         child.remove();
@@ -75,6 +91,8 @@ async function carregarAtendimentos() {
         `;
         divRecemCadastrados.appendChild(divCard);
     }
+
+
 
 
     for (const atendimento of dados) {
@@ -107,6 +125,20 @@ async function carregarAtendimentos() {
             `;
             divPendente.appendChild(divCard);
         }
+    }
+
+    if (dados.filter(a => a.status === "Em andamento").length === 0) {
+        divVazio = document.createElement("div");
+        divVazio.class = "vazio";
+        divVazio.textContent = "Nenhum atendimento encontrado.";
+        divEmAndamento.appendChild(divVazio);
+    }
+
+    if (dados.filter(a => a.status === "Pendente").length === 0) {
+        divVazio = document.createElement("div");
+        divVazio.class = "vazio";
+        divVazio.textContent = "Nenhum atendimento encontrado.";
+        divPendente.appendChild(divVazio);
     }
 
 }

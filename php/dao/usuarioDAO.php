@@ -65,9 +65,6 @@ class UsuarioDAO
     public function verificar(String $email, String $senha, bool $google = false): ?Pessoa
     {
         try {
-
-            error_log("Verificando usuário com email: " . $email . " e senha: " . $senha . " (Google: " . ($google ? "sim" : "não") . ")");
-
             $stmt = $this->bancoDados->prepare("
             SELECT
                 pessoa.*,

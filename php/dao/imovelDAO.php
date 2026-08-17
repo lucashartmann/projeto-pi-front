@@ -254,17 +254,7 @@ class ImovelDAO
             $anuncio->setVideos($anexos['Videos'] ?? null);
             $anuncio->setAnexos($anexos['Documentos'] ?? null);
 
-            $condominio = null;
-            if ($dados['condominio_id']) {
-                $condominio = new Condominio(
-                    $dados['condominio_nome'],
-                    $endereco
-                );
-                if ($condominio->getEndereco()) {
-                    $condominio->getEndereco()->setComplemento('');
-                }
-                $condominio->setId((int) $dados['condominio_id']);
-            }
+
 
             $dataCadastro = $dados['data_cadastro']
                 ? new DateTime($dados['data_cadastro'])
@@ -275,6 +265,17 @@ class ImovelDAO
                 : null;
 
             $imovelObj = new Imovel($endereco, Status::tryFrom($dados['status']), Categoria::tryFrom($dados['categoria']));
+
+            $condominio = null;
+            if ($dados['condominio_id']) {
+                $copiaEndereco = $endereco ? clone $endereco : null;
+                $copiaEndereco ? $copiaEndereco->setComplemento('') : null;
+                $condominio = new Condominio(
+                    $dados['condominio_nome'],
+                    $copiaEndereco
+                );
+                $condominio->setId((int) $dados['condominio_id']);
+            }
 
             $imovelObj->setId((int) $dados['id']);
             $imovelObj->setValorVenda($dados['valor_venda'] !== null ? (float) $dados['valor_venda'] : 0);
@@ -307,7 +308,7 @@ class ImovelDAO
             $imovelObj->setFiltros($filtroDAO->listarPorIdImovel($dados['id']) ?? []);
             return $imovelObj;
         } catch (Exception $e) {
-            error_log("ERRO! imovelDAO->buscarPorId: " . $e->getMessage());
+            error_log("ERRO! imovelDAO->montar: " . $e->getMessage());
             return null;
         }
     }

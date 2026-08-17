@@ -1,3 +1,14 @@
+.vazio {
+    width: 98%;
+    justify-self: center;
+    color: var(--cor-texto);
+    text-align: center;
+    background: rgba(36, 30, 30, 0.92);
+    height: 4rem;
+    align-items: center;
+    align-content: center;
+}
+
 body {
     min-height: 100vh;
     display: flex;

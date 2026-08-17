@@ -109,8 +109,6 @@ class AnexoDAO
                     ";
             $stmt = $this->bancoDados->prepare($sqlQuery);
 
-            error_log($anexo->getIdAnuncio() . " - " . $anexo->getCaminho() . " - " . $anexo->getTipo()->value);
-
             return $stmt->execute([
                 ':id_anuncio' => $anexo->getIdAnuncio(),
                 ':nome_arquivo' => $anexo->getCaminho(),
