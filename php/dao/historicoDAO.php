@@ -211,10 +211,10 @@ class HistoricoDAO
                     ON historico_usuario_funcionario.id_pessoa = historico_pessoa_funcionario.id
 
                 LEFT JOIN funcionario imovel_funcionario_corretor
-                    ON imovel_funcionario_corretor.id_pessoa = ipco.id
+                    ON imovel_funcionario_corretor.id_pessoa = imovel_pessoa_corretor.id
 
                 LEFT JOIN funcionario imovel_funcionario_captador
-                    ON imovel_funcionario_captador.id_pessoa = ipca.id
+                    ON imovel_funcionario_captador.id_pessoa = imovel_pessoa_captador.id
 
                 LEFT JOIN funcionario historico_funcionario
                     ON historico_funcionario.id_pessoa = historico_pessoa_funcionario.id

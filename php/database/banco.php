@@ -343,7 +343,7 @@ class Banco extends PDO
                 descricao TEXT NULL,
                 data TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 FOREIGN KEY (id_funcionario) 
-                    REFERENCES funcionario(id) 
+                    REFERENCES funcionario(id_pessoa) 
                     ON DELETE CASCADE,
                 FOREIGN KEY (id_cliente) 
                     REFERENCES pessoa(id) 
