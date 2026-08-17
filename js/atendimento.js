@@ -29,7 +29,7 @@ async function listarAtendimentos() {
             console.error("Resposta não é JSON:", texto);
             return null;
         }
-        
+
 
     } catch (erro) {
         console.error("Falha ao conectar com o backend:", erro);

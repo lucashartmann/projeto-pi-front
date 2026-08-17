@@ -114,19 +114,18 @@ class ProprietarioImovelDAO
             $imovel->setDestacado((bool) ($dados['destacado'] ?? false));
             $imovel->setQuantClicks($dados['quant_clicks'] !== null ? (int) $dados['quant_clicks'] : 0);
 
-            if (!empty($dados['anuncio_id'])) {
-                $anuncio = new Anuncio();
-                $anuncio->setId((int) $dados['anuncio_id']);
-                $anuncio->setDescricao((string) ($dados['anuncio_descricao'] ?? ''));
-                $anuncio->setTitulo((string) ($dados['anuncio_titulo'] ?? ''));
-                $anexoDAO = new AnexoDAO();
-                $anexos = $anexoDAO->listarPorIdAnuncio((int) $dados['anuncio_id']);
-                $anuncio->setImagens($anexos['Imagens'] ?? []);
-                $anuncio->setVideos($anexos['Videos'] ?? []);
-                $anuncio->setAnexos($anexos['Documentos'] ?? []);
+            $anuncio = new Anuncio();
+            $anuncio->setIdImovel((int) $dados['id']);
+            $anuncio->setDescricao((string) ($dados['anuncio_descricao'] ?? ''));
+            $anuncio->setTitulo((string) ($dados['anuncio_titulo'] ?? ''));
+            $anexoDAO = new AnexoDAO();
+            $anexos = $anexoDAO->listarPorIdAnuncio((int) $dados['id']);
+            $anuncio->setImagens($anexos['Imagens'] ?? []);
+            $anuncio->setVideos($anexos['Videos'] ?? []);
+            $anuncio->setAnexos($anexos['Documentos'] ?? []);
 
-                $imovel->setAnuncio($anuncio);
-            }
+            $imovel->setAnuncio($anuncio);
+
 
             if (!empty($dados['condominio_id'])) {
                 $condominio = new Condominio((string) ($dados['condominio_nome'] ?? ''), $endereco);
@@ -268,7 +267,6 @@ class ProprietarioImovelDAO
                     p_cap.rg AS captador_rg,
                 ca.salario AS captador_salario,
 
-                a.id AS anuncio_id,
                 a.descricao AS anuncio_descricao,
                 a.titulo AS anuncio_titulo
 
@@ -302,7 +300,7 @@ class ProprietarioImovelDAO
                     ON ca.id_pessoa = u_cap.id_pessoa
 
                 LEFT JOIN anuncio a
-                    ON a.id = i.id_anuncio  
+                    ON a.id_imovel = i.id  
                 WHERE pi.id_proprietario = :id_proprietario
             ");
 
@@ -324,7 +322,7 @@ class ProprietarioImovelDAO
         }
     }
 
-    public function removerProprietarioImovel(int $idProprietario, int $idImovel): bool
+    public function remover(int $idProprietario, int $idImovel): bool
     {
         try {
             $stmt = $this->bancoDados->prepare("
@@ -338,12 +336,12 @@ class ProprietarioImovelDAO
 
             return true;
         } catch (Exception $e) {
-            error_log("ERRO! ProprietarioImovelDAO->removerProprietarioImovel: " . $e->getMessage());
+            error_log("ERRO! ProprietarioImovelDAO->remover: " . $e->getMessage());
             throw new Exception("Erro ao remover proprietário do imóvel: " . $e->getMessage());
         }
     }
 
-    public function cadastrarProprietarioImovel(int $idProprietario, int $idImovel): bool
+    public function cadastrar(int $idProprietario, int $idImovel): bool
     {
         try {
             $stmt = $this->bancoDados->prepare("
@@ -357,7 +355,7 @@ class ProprietarioImovelDAO
 
             return true;
         } catch (Exception $e) {
-            error_log("ERRO! ProprietarioImovelDAO->cadastrarProprietarioImovel: " . $e->getMessage());
+            error_log("ERRO! ProprietarioImovelDAO->cadastrar: " . $e->getMessage());
             throw new Exception("Erro ao cadastrar proprietário ao imóvel: " . $e->getMessage());
         }
     }

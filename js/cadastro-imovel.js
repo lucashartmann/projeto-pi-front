@@ -1,4 +1,5 @@
 import { getDadosImovel, destacarImovel, excluirImovel, listarImoveis } from "./modules/imoveis.js";
+import { listarHistoricoPorIdImovel } from "./modules/historico.js";
 import { listarPessoas } from "./modules/usuarios.js";
 import { getCaminhoRelativo } from "./modules/utils.js";
 import { buscarCoordenadas, carregarMapa } from "./modules/mapa.js";
@@ -19,6 +20,7 @@ window.compartilhar = compartilhar;
 window.abrirAnuncio = abrirAnuncio;
 window.abrirImagem = abrirImagem;
 window.abrirMultiplos = abrirMultiplos;
+window.listarHistoricoPorIdImovel = listarHistoricoPorIdImovel;
 
 function calcularMediaAluguel(imovelAlvo) {
     const listaImoveis = listarImoveis() || [];
@@ -1004,6 +1006,28 @@ function adicionarAnexo(event) {
     input.click();
 }
 
+async function carregarHistorico(idImovel) {
+    const lista = await listarHistoricoPorIdImovel(idImovel);
+    if (lista != null && lista.length > 0) {
+        const tabela = document.getElementById("historico");
+        tabela.style.display = "flex";
+        tabela.style.flexDirection = "column";
+        for (let item of lista) {
+            let tr = document.createElement("tr");
+            let tdData = document.createElement("td");
+            tdData.textContent = item.data;
+            tr.appendChild(tdData);
+            let tdUsuario = document.createElement("td");
+            tdUsuario.textContent = item.usuario.nome;
+            tr.appendChild(tdUsuario);
+            let tdAlteracao = document.createElement("td");
+            tdAlteracao.textContent = item.alteracao;
+            tr.appendChild(tdAlteracao);
+            document.getElementById("historico-body").appendChild(tr);
+        }
+    }
+}
+
 window.addEventListener("DOMContentLoaded", async function () {
 
     sessionStorage.getItem("cadastro-imovel: abaAtiva") ? abrirTab(parseInt(sessionStorage.getItem("cadastro-imovel: abaAtiva"))) : abrirTab(0);
@@ -1011,6 +1035,14 @@ window.addEventListener("DOMContentLoaded", async function () {
     const id = new URLSearchParams(window.location.search).get("id");
     imovel = id ? await getDadosImovel(id) : null;
     if (imovel) {
+        carregarHistorico(imovel.id);
+        if (imovel.endereco.complemento && /[a-zA-ZÀ-ÿ]/i.test(imovel.endereco.complemento)) {
+            if (imovel.bloco == null || imovel.bloco === "") {
+                imovel.bloco
+                    = imovel.endereco.complemento.match(/[a-zA-ZÀ-ÿ]/g).join('') || null;
+            }
+            imovel.endereco.complemento = imovel.endereco.complemento.replace(/[a-zA-ZÀ-ÿ]/g, "").trim();
+        }
         await abrirCadastro(imovel);
         calcularMedia();
     }
@@ -1019,7 +1051,7 @@ window.addEventListener("DOMContentLoaded", async function () {
         destacarImovel(imovel.id);
     });
 
-    
+
     const usuario = usuarioLogado || await carregarUser();
 
     if (usuario && usuario.tipo && usuario.tipo === "ADMIN") {

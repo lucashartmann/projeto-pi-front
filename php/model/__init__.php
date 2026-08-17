@@ -718,7 +718,7 @@ function initialize()
             );
 
             $endereco->setNumero($i);
-            $endereco->setComplemento($numeroAleatorioEndereco ? $numeroAleatorioEndereco . " " . $complementos[array_rand($complementos)] : "");
+            $endereco->setComplemento($numeroAleatorioEndereco ? $numeroAleatorioEndereco . "" . $complementos[array_rand($complementos)] : "");
 
             $verificar = $enderecoDAO->verificar($endereco);
 

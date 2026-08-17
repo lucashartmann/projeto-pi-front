@@ -14,6 +14,50 @@ class PessoaDAO
 {
     private Banco $bancoDados;
 
+    private $sqlConsulta =
+    "
+            SELECT
+                pessoa.*,
+                
+                usuario.id_pessoa AS usuario_id,
+                usuario.senha,
+                usuario.ultimo_login,
+                usuario.ativo,
+
+                corretor.id_funcionario AS corretor_id,
+                corretor.creci,
+
+                proprietario.id_pessoa AS proprietario_id,
+                
+                cliente.id_pessoa AS cliente_id,
+                cliente.tipo_interesse,
+                cliente.valor_minimo,
+                cliente.valor_maximo,
+
+                funcionario.id_pessoa AS funcionario_id,
+                funcionario.matricula,
+                funcionario.salario,
+                funcionario.data_admissao,
+                funcionario.cargo,
+
+                endereco.id AS endereco_id,
+                endereco.rua,
+                endereco.numero,
+                endereco.bairro,
+                endereco.cep,
+                endereco.complemento,
+                endereco.cidade,
+                endereco.uf
+            
+                FROM pessoa 
+                LEFT JOIN usuario  ON usuario.id_pessoa = pessoa.id
+                LEFT JOIN funcionario  ON funcionario.id_pessoa = pessoa.id
+                LEFT JOIN corretor  ON corretor.id_funcionario = funcionario.id_pessoa
+                LEFT JOIN cliente  ON cliente.id_pessoa = pessoa.id
+                LEFT JOIN endereco  ON endereco.id = pessoa.id_endereco
+                LEFT JOIN proprietario  ON proprietario.id_pessoa = pessoa.id
+                ";
+
 
     public function __construct()
     {
@@ -146,56 +190,14 @@ class PessoaDAO
             return $pessoa;
         } catch (Exception $e) {
             error_log("ERRO! pessoaDAO->montar: " . $e->getMessage());
-            throw new Exception("Erro ao montar pessoa: " . $e->getMessage());
+            return null;
         }
     }
 
     public  function buscarPorId(int $id): ?Pessoa
     {
         try {
-            $sql = "
-            SELECT
-                pessoa.*,
-                
-                usuario.id_pessoa AS usuario_id,
-                usuario.senha,
-                usuario.ultimo_login,
-                usuario.ativo,
-
-                corretor.id_funcionario AS corretor_id,
-                corretor.creci,
-
-                proprietario.id_pessoa AS proprietario_id,
-                
-                cliente.id_pessoa AS cliente_id,
-                cliente.tipo_interesse,
-                cliente.valor_minimo,
-                cliente.valor_maximo,
-
-                funcionario.id_pessoa AS funcionario_id,
-                funcionario.matricula,
-                funcionario.salario,
-                funcionario.data_admissao,
-                funcionario.cargo,
-
-                endereco.id AS endereco_id,
-                endereco.rua,
-                endereco.numero,
-                endereco.bairro,
-                endereco.cep,
-                endereco.complemento,
-                endereco.cidade,
-                endereco.uf
-            
-                FROM pessoa 
-                LEFT JOIN usuario  ON usuario.id_pessoa = pessoa.id
-                LEFT JOIN funcionario  ON funcionario.id_pessoa = pessoa.id
-                LEFT JOIN corretor  ON corretor.id_funcionario = funcionario.id_pessoa
-                LEFT JOIN cliente  ON cliente.id_pessoa = pessoa.id
-                LEFT JOIN endereco  ON endereco.id = pessoa.id_endereco
-                LEFT JOIN proprietario  ON proprietario.id_pessoa = pessoa.id
-                WHERE pessoa.id = ?
-            ";
+            $sql = $this->sqlConsulta . "WHERE pessoa.id = ?";
 
             $stmt = Banco::getInstance()->prepare($sql);
             $stmt->execute([$id]);
@@ -216,48 +218,7 @@ class PessoaDAO
     public function listar(String $tipo = null): array
     {
         try {
-            $sql = "
-            SELECT
-             pessoa.*,
-                
-                usuario.id_pessoa AS usuario_id,
-                usuario.senha,
-                usuario.ultimo_login,
-                usuario.ativo,
-
-                corretor.id_funcionario AS corretor_id,
-                corretor.creci,
-
-                proprietario.id_pessoa AS proprietario_id,
-                
-                cliente.id_pessoa AS cliente_id,
-                cliente.tipo_interesse,
-                cliente.valor_minimo,
-                cliente.valor_maximo,
-
-                funcionario.id_pessoa AS funcionario_id,
-                funcionario.matricula,
-                funcionario.salario,
-                funcionario.data_admissao,
-                funcionario.cargo,
-
-                endereco.id AS endereco_id,
-                endereco.rua,
-                endereco.numero,
-                endereco.bairro,
-                endereco.cep,
-                endereco.complemento,
-                endereco.cidade,
-                endereco.uf
-            
-                FROM pessoa 
-                LEFT JOIN usuario  ON usuario.id_pessoa = pessoa.id
-                LEFT JOIN funcionario  ON funcionario.id_pessoa = pessoa.id
-                LEFT JOIN corretor  ON corretor.id_funcionario = funcionario.id_pessoa
-                LEFT JOIN cliente  ON cliente.id_pessoa = pessoa.id
-                LEFT JOIN endereco  ON endereco.id = pessoa.id_endereco
-                LEFT JOIN proprietario  ON proprietario.id_pessoa = pessoa.id
-            ";
+            $sql = $this->sqlConsulta;
 
             if ($tipo !== null) {
                 $sql .= " WHERE " . $tipo . ".id_pessoa IS NOT NULL";

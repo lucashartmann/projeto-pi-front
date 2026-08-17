@@ -277,6 +277,9 @@ async function filtrar() {
     let seta = document.querySelector("#seta");
     let nome = document.getElementById("select-filtro") ? document.getElementById("select-filtro").value : null;
 
+    sessionStorage.setItem("anuncios-filtroSelecionado", nome);
+    sessionStorage.setItem("anuncios-seta", seta.className);
+
     if (seta && nome) {
         switch (nome) {
             case "referencia":
@@ -446,6 +449,23 @@ window.addEventListener("beforeunload", () => {
 
 window.addEventListener("DOMContentLoaded", async () => {
     const favoritos = "?favoritos=true" === window.location.search;
+
+    const filtroSelecionado = sessionStorage.getItem("anuncios-filtroSelecionado");
+    const seta = sessionStorage.getItem("anuncios-seta");
+
+    if (filtroSelecionado) {
+        const selectFiltro = document.getElementById("select-filtro");
+        if (selectFiltro) {
+            selectFiltro.value = filtroSelecionado;
+        }
+    }
+
+    if (seta) {
+        const setaElement = document.getElementById("seta");
+        if (setaElement) {
+            setaElement.className = seta;
+        }
+    }
 
     let dados = [];
 

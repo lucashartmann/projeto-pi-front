@@ -54,7 +54,7 @@ class NotificacaoDAO
         }
     }
 
-    public function buscarPorUsuario(Pessoa $usuario): array
+    public function listarPorUsuario(Pessoa $usuario): array
     {
         try {
             $stmt = $this->bancoDados->prepare("

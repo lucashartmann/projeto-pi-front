@@ -24,12 +24,10 @@ class loginController
     {
         try {
             session_start();
-            if (!isset($_SESSION['usuario_id'])) {
+            if (!isset($_SESSION['usuario'])) {
                 return (["status" => "erro", "mensagem" => "Usuário não logado"]);
             }
-            $idUsuario = $_SESSION['usuario_id'];
-            $pessoaDAO = new PessoaDAO();
-            $usuario = $pessoaDAO->buscarPorId($idUsuario);
+            $usuario = $_SESSION['usuario'];
             if (!$usuario) {
                 return (["status" => "erro", "mensagem" => "Usuário não encontrado"]);
             }
@@ -70,17 +68,15 @@ class loginController
     {
         try {
             session_start();
-            if (!isset($_SESSION['usuario_id'])) {
+            if (!isset($_SESSION['usuario'])) {
                 return (["status" => "erro", "mensagem" => "Usuário não logado"]);
             }
-            $idUsuario = $_SESSION['usuario_id'];
-            $pessoaDAO = new PessoaDAO();
-            $usuario = $pessoaDAO->buscarPorId($_SESSION['usuario_id']);
+            $usuario = $_SESSION['usuario'];
             if (!$usuario) {
                 return (["status" => "erro", "mensagem" => "Usuário não encontrado"]);
             }
             $notificacaoDAO = new NotificacaoDAO();
-            $notificacoes = $notificacaoDAO->buscarPorUsuario($usuario);
+            $notificacoes = $notificacaoDAO->listarPorUsuario($usuario);
             if (!$notificacoes) {
                 return [
                     "status" => "erro",
@@ -99,12 +95,11 @@ class loginController
 
         try {
             session_start();
-            if (!isset($_SESSION['usuario_id'])) {
+            if (!isset($_SESSION['usuario'])) {
                 return (["status" => "erro", "mensagem" => "Usuário não logado"]);
             }
-            $idUsuario = $_SESSION['usuario_id'];
             $atendimentoDAO = new AtendimentoDAO();
-            $atendimentos = $atendimentoDAO->listarPorUsuario($idUsuario);
+            $atendimentos = $atendimentoDAO->listarPorUsuario($_SESSION['usuario']->getId());
             if (!$atendimentos) {
                 return [
                     "status" => "erro",
@@ -123,12 +118,11 @@ class loginController
     {
         try {
             session_start();
-            if (!isset($_SESSION['usuario_id'])) {
+            if (!isset($_SESSION['usuario'])) {
                 return (["status" => "erro", "mensagem" => "Usuário não logado"]);
             }
-            $idCliente = $_SESSION['usuario_id'];
             $imovelDAO = new ImovelDAO();
-            $imoveisFavoritos = $imovelDAO->listarFavoritos($idCliente);
+            $imoveisFavoritos = $imovelDAO->listarFavoritos($_SESSION['usuario']->getId());
             if (!$imoveisFavoritos) {
                 return [
                     "status" => "erro",
@@ -154,9 +148,8 @@ class loginController
             session_start();
             $usuario = null;
 
-            if (isset($_SESSION['usuario_id'])) {
-                $pessoaDAO = new PessoaDAO();
-                $usuario = $pessoaDAO->buscarPorId($_SESSION['usuario_id']);
+            if (isset($_SESSION['usuario'])) {
+                $usuario = $_SESSION['usuario'];
             } else {
                 return (["status" => "erro", "mensagem" => "Usuário não logado"]);
             }
@@ -175,7 +168,7 @@ class loginController
             //     return (["status" => "sucesso", "mensagem" => "Imóveis já favoritados"]);
             // }
             $imovelDAO = new ImovelDAO();
-            $resultado = $imovelDAO->cadastrarImoveisCliente($idCliente, $idImoveis);
+            $resultado = $imovelDAO->favoritar($idCliente, $idImoveis);
             if ($resultado) {
                 return (["status" => "sucesso", "mensagem" => "Imóveis favoritados com sucesso"]);
             } else {
@@ -257,9 +250,8 @@ class loginController
     {
         try {
             session_start();
-            if (isset($_SESSION['usuario_id'])) {
-                $usuarioDAO = new UsuarioDAO();
-                $usuario = $usuarioDAO->buscarPorId($_SESSION['usuario_id']);
+            if (isset($_SESSION['usuario'])) {
+                $usuario = $_SESSION['usuario'];
                 $pessoaController = new PessoaController();
                 $dados = $pessoaController->montarJson([$usuario]);
 
@@ -323,12 +315,10 @@ class loginController
                 }
 
                 $consulta = $usuarioDAO->verificar($usuario, $senha);
-
-                error_log("Resultado da verificação de login: " . print_r($consulta, true));
             }
 
             if ($consulta) {
-                $_SESSION['usuario_id'] = $consulta->getId();
+                $_SESSION['usuario'] = $consulta;
                 if ($consulta instanceof Cliente) {
                     $_SESSION['tipo'] = "CLIENTE";
                 } else if ($consulta  instanceof Corretor) {

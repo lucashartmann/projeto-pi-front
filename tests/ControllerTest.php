@@ -113,7 +113,7 @@ class ControllerTest extends TestCase
 
         $this->assertEquals('sucesso', $res['status']);
         $this->assertEquals(77, $res['usuario']['id']);
-        $this->assertEquals(77, $_SESSION['usuario_id']);
+        $this->assertEquals(77, $_SESSION['usuario']);
     }
 
     public function testCarregarUsuarioReturnsErrorWhenNotLogged()
@@ -143,7 +143,7 @@ class ControllerTest extends TestCase
 
         $_SESSION = [];
         session_start();
-        $_SESSION['usuario_id'] = 88;
+        $_SESSION['usuario'] = 88;
         $_SESSION['tipo'] = $user->getTipo();
 
         $ctrl = new LoginController();

@@ -256,7 +256,7 @@ window.addEventListener("DOMContentLoaded", async () => {
 
 function abrirImagem(src) {
     // document.querySelector(".swiper-destaque").swiper.slideTo(imovel.anuncio.imagens.indexOf(src));
-    
+
     document.querySelector(".swiper-destaque").classList.toggle("modal-imagem");
 
     // document.addEventListener("click", function () {
@@ -300,9 +300,9 @@ function inicializarSwiper() {
         spaceBetween: 30,
         centeredSlides: false,
         breakpoints: {
-            0: { slidesPerView: imovel.anuncio.imagens.length > 1 ? 1 : imovel.anuncio.imagens.length  },
-            640: { slidesPerView: imovel.anuncio.imagens.length > 2 ? 2 : imovel.anuncio.imagens.length  },
-            768: { slidesPerView: imovel.anuncio.imagens.length > 3 ? 3 : imovel.anuncio.imagens.length  },
+            0: { slidesPerView: imovel.anuncio.imagens.length > 1 ? 1 : imovel.anuncio.imagens.length },
+            640: { slidesPerView: imovel.anuncio.imagens.length > 2 ? 2 : imovel.anuncio.imagens.length },
+            768: { slidesPerView: imovel.anuncio.imagens.length > 3 ? 3 : imovel.anuncio.imagens.length },
             1024: { slidesPerView: imovel.anuncio.imagens.length > 4 ? 4 : imovel.anuncio.imagens.length },
         },
     });

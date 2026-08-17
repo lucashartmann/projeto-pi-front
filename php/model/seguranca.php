@@ -11,7 +11,7 @@ class Seguranca
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
         }
-        if (!isset($_SESSION['usuario_id']) || empty($_SESSION['usuario_id'])) {
+        if (!isset($_SESSION['usuario']) || empty($_SESSION['usuario'])) {
             return json_encode(['status' => 'error', 'message' => 'Acesso negado. Faça login para continuar.']);
         } else {
             return;

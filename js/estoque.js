@@ -267,6 +267,9 @@ async function filtrar() {
         let seta = document.querySelector("#seta");
         let nome = document.getElementById("select-filtro") ? document.getElementById("select-filtro").value : null;
 
+        sessionStorage.setItem("estoque-filtroSelecionado", nome);
+        sessionStorage.setItem("estoque-seta", seta.className);
+
         if (seta && nome) {
             switch (nome) {
                 case "referencia":
@@ -536,7 +539,7 @@ async function carregarUsuarios(tipo) {
     }
 
     if (dados.length === 0 || !dados) {
-         const divVazio = document.createElement("div");
+        const divVazio = document.createElement("div");
         divVazio.id = "vazio";
         divVazio.textContent = "Nenhum usuário encontrado.";
         section.innerHTML = "";
@@ -544,7 +547,7 @@ async function carregarUsuarios(tipo) {
         return;
     }
 
-    let classID = document.querySelector(".seta")?.className || "fa fa-angle-up seta";
+    let classID = document.querySelector(".set a")?.className || "fa fa-angle-up seta";
     let classNome = document.querySelectorAll(".seta")[1]?.className || "fa fa-angle-up seta";
     let classEmail = document.querySelectorAll(".seta")[2]?.className || "fa fa-angle-up seta";
     let classTelefone = document.querySelectorAll(".seta")[3]?.className || "fa fa-angle-up seta";
@@ -755,6 +758,23 @@ function selecionarTodos() {
 
 window.addEventListener("DOMContentLoaded", async () => {
     document.addEventListener("change", montarOpcoes);
+
+    const filtroSelecionado = sessionStorage.getItem("estoque-filtroSelecionado");
+    const seta = sessionStorage.getItem("estoque-seta");
+
+    if (filtroSelecionado) {
+        const selectFiltro = document.getElementById("select-filtro");
+        if (selectFiltro) {
+            selectFiltro.value = filtroSelecionado;
+        }
+    }
+
+    if (seta) {
+        const setaElement = document.getElementById("seta");
+        if (setaElement) {
+            setaElement.className = seta;
+        }
+    }
 
     let dados = [];
     let dadosUsuarios = await listarUsuarios();

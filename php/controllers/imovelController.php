@@ -52,6 +52,16 @@ class ImovelController
                 if (!$resultado) {
                     return (["status" => "erro", "mensagem" => "Erro ao destacar imóveis"]);
                 }
+                $historicoDAO = new HistoricoDAO();
+                try {
+                    foreach ($id as $idImovel) {
+                        $usuarioAtual = $_SESSION['usuario'] ?? null;
+                        $historico = new Historico(alteracao: $_SESSION['usuario']->getNome() . " destacou o imóvel", imovel: $imovelDAO->buscarPorId($idImovel), funcionario: $usuarioAtual);
+                        $historicoDAO->cadastrar($historico);
+                    }
+                } catch (Exception $e) {
+                    error_log("Erro ao registrar histórico de destaque de imóveis: " . $e->getMessage());
+                }
                 return (["status" => "sucesso", "mensagem" => "Imóveis destacados com sucesso"]);
             } catch (Exception $e) {
                 return (["status" => "erro", "mensagem" => "Erro ao destacar imóveis: " . $e->getMessage()]);
@@ -61,6 +71,14 @@ class ImovelController
                 $resultado = $imovelDAO->destacar($id);
                 if (!$resultado) {
                     return (["status" => "erro", "mensagem" => "Erro ao destacar imóvel"]);
+                }
+                try {
+                    $historicoDAO = new HistoricoDAO();
+                    $usuarioAtual = $_SESSION['usuario'] ?? null;
+                    $historico = new Historico(alteracao: $_SESSION['usuario']->getNome() . " destacou o imóvel", imovel: $imovelDAO->buscarPorId($id), funcionario: $usuarioAtual);
+                    $historicoDAO->cadastrar($historico);
+                } catch (Exception $e) {
+                    error_log("Erro ao registrar histórico de destaque de imóveis: " . $e->getMessage());
                 }
                 return (["status" => "sucesso", "mensagem" => "Imóvel destacado com sucesso"]);
             } catch (Exception $e) {
@@ -97,11 +115,20 @@ class ImovelController
             try {
 
                 $remocao = $imovelDAO->getConexao()->removerLista("id", $listaIDS, "imovel");
+                $historicoDAO = new HistoricoDAO();
                 foreach ($listaIDS as $id) {
                     $imovel = $imovelDAO->buscarPorId($id);
                     if (!$imovel) {
                         // return (["status" => "erro", "mensagem" => "Imóvel não encontrado com ID: " . $id]);
                         continue;
+                    }
+                    try {
+
+                        $usuarioAtual = $_SESSION['usuario'] ?? null;
+                        $historico = new Historico(alteracao: $_SESSION['usuario']->getNome() . " removeu o imóvel", imovel: $imovelDAO->buscarPorId($id), funcionario: $usuarioAtual);
+                        $historicoDAO->cadastrar($historico);
+                    } catch (Exception $e) {
+                        error_log("Erro ao registrar histórico de destaque de imóveis: " . $e->getMessage());
                     }
 
                     if ($imovel->getAnuncio() && $imovel->getAnuncio()->getImagens()) {
@@ -125,6 +152,14 @@ class ImovelController
                 if ($imovel) {
                     $remocao = $imovelDAO->getConexao()->remover("id", $id, "imovel");
                     if ($remocao) {
+                        try {
+                            $historicoDAO = new HistoricoDAO();
+                            $usuarioAtual = $_SESSION['usuario'] ?? null;
+                            $historico = new Historico(alteracao: $_SESSION['usuario']->getNome() . " removeu o imóvel", imovel: $imovelDAO->buscarPorId($id), funcionario: $usuarioAtual);
+                            $historicoDAO->cadastrar($historico);
+                        } catch (Exception $e) {
+                            error_log("Erro ao registrar histórico de destaque de imóveis: " . $e->getMessage());
+                        }
                         if ($imovel->getAnuncio() && $imovel->getAnuncio()->getImagens()) {
                             limparPasta($imovel->getAnuncio()->getImagens(), $imovel->getId());
                         } else if ($imovel->getAnuncio() && $imovel->getAnuncio()->getAnexos()) {
@@ -161,11 +196,11 @@ class ImovelController
             $valorAluguel = $valorAluguel ? str_replace(",", ".", $valorAluguel ?? 0.0) : 0.0;
             $valorAluguel = $valorAluguel ? (float) trim(str_replace(['-', 'R$'], '', $valorAluguel) ?? 0) : 0.0;
 
-            $quantQuartos = array_key_exists("quantidade_quartos", $data) ? (int) ($data["quantidade_quartos"] ?? 0) : 0;
-            $quantSalas = array_key_exists("quantidade_salas", $data) ? (int) ($data["quantidade_salas"] ?? 0) : 0;
-            $quantVagas = array_key_exists("quantidade_vagas", $data) ? (int) ($data["quantidade_vagas"] ?? 0) : 0;
-            $quantBanheiros = array_key_exists("quantidade_banheiros", $data) ? (int) ($data["quantidade_banheiros"] ?? 0) : 0;
-            $quantVarandas = array_key_exists("quantidade_varandas", $data) ? (int) ($data["quantidade_varandas"] ?? 0) : 0;
+            $quantQuartos = array_key_exists("quantidade_quartos", $data) ? (int) trim(($data["quantidade_quartos"] ?? 0)) : 0;
+            $quantSalas = array_key_exists("quantidade_salas", $data) ? (int) trim(($data["quantidade_salas"] ?? 0)) : 0;
+            $quantVagas = array_key_exists("quantidade_vagas", $data) ? (int) trim(($data["quantidade_vagas"] ?? 0)) : 0;
+            $quantBanheiros = array_key_exists("quantidade_banheiros", $data) ? (int) trim(($data["quantidade_banheiros"] ?? 0)) : 0;
+            $quantVarandas = array_key_exists("quantidade_varandas", $data) ? (int) trim(($data["quantidade_varandas"] ?? 0)) : 0;
             $categoria = null;
             if (isset($data["categoria"])) {
                 $valor = $data["categoria"];
@@ -190,7 +225,7 @@ class ImovelController
             $andar = array_key_exists("andar", $data) ? (int) trim($data["andar"] ?? 0) : 0;
             $estado = null;
             isset($data["estado_imovel"]) ? $estado = Estado::tryFrom($data["estado_imovel"]) : null;
-            $bloco = array_key_exists("bloco", $data) ? $data["bloco"] : "";
+            $bloco = array_key_exists("bloco", $data) ? trim($data["bloco"]) : "";
             $anoConstrucao = array_key_exists("ano_construcao", $data) ? (int) trim($data["ano_construcao"] ?? 0) : 0;
 
             $areaTotal = array_key_exists("area_total", $data) ? $data["area_total"] : 0.0;
@@ -223,8 +258,8 @@ class ImovelController
             $cidade = array_key_exists("cidade", $data) ? $data["cidade"] : "";
             $titulo = array_key_exists("titulo", $data) ? $data["titulo"] : "";
             $descricao = array_key_exists("descricao", $data) ? $data["descricao"] : "";
-            $complemento = array_key_exists("complemento", $data) ? $data["complemento"] : "";
-            $uf = array_key_exists("uf", $data) ? $data["uf"] : "";
+            $complemento = array_key_exists("complemento", $data) ? trim($data["complemento"]) : "";
+            $uf = array_key_exists("uf", $data) ? trim($data["uf"]) : "";
             $numero = array_key_exists("numero", $data) ? (int) trim($data["numero"] ?? null) : null;
             $filtrosApartamento = array_key_exists("filtros_apartamento", $data) ? (array)
             str_replace(['[', ']', '"'], '', $data["filtros_apartamento"]) : [];

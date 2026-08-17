@@ -14,7 +14,7 @@ class CondominioDAO
         $this->bancoDados = Banco::getInstance();
     }
 
-   
+
 
     public function atualizar(Condominio $condominio)
     {

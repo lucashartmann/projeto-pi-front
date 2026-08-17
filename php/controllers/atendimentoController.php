@@ -39,7 +39,6 @@ class AtendimentoController
         try {
             $atendimentoDAO = new AtendimentoDAO();
             $atendimentos = $atendimentoDAO->listar();
-            error_log(count($atendimentos) . " atendimentos encontrados.");
             if (!$atendimentos) {
                 return (["status" => "erro", "mensagem" => "Nenhum atendimento encontrado"]);
             }
@@ -65,12 +64,11 @@ class AtendimentoController
                 $notificacaoDAO->cadastrar($corretor, "Cliente $usuario->getNome() quer atendimento para o imóvel de ID $idImovel", "atendimento");
             }
         }
-        if (isset($_SESSION['usuario_id'])) {
+        if (isset($_SESSION['usuario'])) {
 
-            $idUsuario = $_SESSION['usuario_id'];
             $imovelDAO = new ImovelDAO();
             $atendimento = new Atendimento();
-            $atendimento->setCliente($pessoaDAO->buscarPorId($idUsuario));
+            $atendimento->setCliente($_SESSION['usuario']);
             $atendimento->setImovel($imovelDAO->buscarPorId($idImovel));
             $atendimento->setStatus(StatusAtendimento::PENDENTE);
 

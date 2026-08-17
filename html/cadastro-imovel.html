@@ -411,7 +411,7 @@
             <button onclick="compartilhar('anuncio')"><i class="fas fa-share-alt"></i> Compartilhar anúncio</button>
             <button onclick="compartilhar('cadastro')"><i class="fas fa-share-alt"></i> Compartilhar cadastro</button>
 
-            <div id="historico">
+            <div style="display: none;" id="historico">
                 <h3>Historico de Alterações</h3>
                 <div id="container-historico" class="container">
                     <table id="historico-table">
@@ -434,7 +434,7 @@
             </div>
 
             <div id="media-valores">
-              
+
             </div>
         </div>
     </div>
@@ -468,6 +468,7 @@
         });
 </script>
 <script type="module" src="../js/modules/utils.js"></script>
+<script type="module" src="../js/modules/historico.js"></script>
 <script type="module" src="../js/modules/usuario.js"></script>
 <script type="module" src="../js/modules/usuarios.js"></script>
 <script type="module" src="../js/modules/imoveis.js"></script>

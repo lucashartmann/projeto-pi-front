@@ -71,7 +71,7 @@ class ImovelService
             $proprietarioImovelDAO = new ProprietarioImovelDAO();
             if ($imovel->getProprietarios()) {
                 foreach ($imovel->getProprietarios() as $proprietario) {
-                    $proprietarioImovelDAO->cadastrarProprietarioImovel($proprietario->getId(), $imovel->getId());
+                    $proprietarioImovelDAO->cadastrar($proprietario->getId(), $imovel->getId());
                 }
             }
 
@@ -173,8 +173,6 @@ class ImovelService
             $condominioDAO = new CondominioDAO();
             $condominioConsulta = $condominioDAO->buscarPorEndereco($imovel->getEndereco());
 
-            error_log("Condominio do imovel" . $imovel->getCondominio()->getId() . "Condominio consulta" . ($condominioConsulta ? $condominioConsulta->getId() : "null"));
-
             if ($condominioConsulta !== null) {
                 if ($imovel->getCondominio() == null) {
                     $imovel->setCondominio($condominioConsulta);
@@ -199,7 +197,7 @@ class ImovelService
 
             foreach ($proprietariosNovos as $proprietario) {
                 if (!in_array($proprietario->getId(), $idsExistentes)) {
-                    $proprietarioImovelDAO->cadastrarProprietarioImovel(
+                    $proprietarioImovelDAO->cadastrar(
                         $proprietario->getId(),
                         $imovel->getId()
                     );
@@ -213,7 +211,7 @@ class ImovelService
 
             foreach ($proprietariosExistentes as $proprietarioExistente) {
                 if (!in_array($proprietarioExistente->getId(), $idsNovos)) {
-                    $proprietarioImovelDAO->removerProprietarioImovel(
+                    $proprietarioImovelDAO->remover(
                         $proprietarioExistente->getId(),
                         $imovel->getId()
                     );
@@ -272,9 +270,6 @@ class ImovelService
                 $mapa["Documentos"]
             );
 
-            error_log("quantidade de anexos existentes: " . count($anexosExistentes));
-            error_log("quantidade de anexos novos: " . count($anexos));
-
             foreach ($anexos as $a) {
                 $existe = false;
 
@@ -289,7 +284,6 @@ class ImovelService
                 }
 
                 if (!$existe) {
-                    error_log("Cadastrando novo anexo: " . $a->getCaminho());
                     $a->setIdAnuncio($anuncio->getIdImovel());
                     $a->setAnuncio($anuncio);
                     $anexoDAO->cadastrar($a);

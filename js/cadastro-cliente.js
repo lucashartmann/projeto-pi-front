@@ -1,6 +1,7 @@
 import { getCaminhoRelativo } from "./modules/utils.js";
 import { usuarioLogado, carregarUser } from "./modules/usuario.js";
 import { getUsuario } from "./modules/usuarios.js";
+import { listarHistoricoPorIdCliente } from "./modules/historico.js";
 
 Inputmask("(99) 99999-9999").mask("#inpt-telefone");
 Inputmask("999.999.999-99").mask("#inpt-cpf");
@@ -216,6 +217,28 @@ async function abrirCadastro(usuario) {
 
 }
 
+async function carregarHistorico(idCliente) {
+    const lista = await listarHistoricoPorIdCliente(idCliente);
+    if (lista != null && lista.length > 0) {
+        const tabela = document.getElementById("historico");
+        tabela.style.display = "flex";
+        tabela.style.flexDirection = "column";
+        for (let item of lista) {
+            let tr = document.createElement("tr");
+            let tdData = document.createElement("td");
+            tdData.textContent = item.data;
+            tr.appendChild(tdData);
+            let tdUsuario = document.createElement("td");
+            tdUsuario.textContent = item.usuario.nome;
+            tr.appendChild(tdUsuario);
+            let tdAlteracao = document.createElement("td");
+            tdAlteracao.textContent = item.alteracao;
+            tr.appendChild(tdAlteracao);
+            document.getElementById("historico-body").appendChild(tr);
+        }
+    }
+}
+
 window.addEventListener('DOMContentLoaded', async function (event) {
     usuario = usuarioLogado || await carregarUser();
 
@@ -224,6 +247,7 @@ window.addEventListener('DOMContentLoaded', async function (event) {
     select.innerHTML = '<option value="" selected>Selecione uma opção...</option>'
 
     if (usuario && usuario.tipo) {
+        carregarHistorico(usuario.id);
         switch (usuario.tipo) {
             case 'ADMIN':
                 select.innerHTML += `<option value="Proprietário">Proprietário</option>

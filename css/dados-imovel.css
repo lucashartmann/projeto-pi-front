@@ -4,7 +4,7 @@
     border-radius: 8px;
     margin: 60px 0;
     z-index: 0;
-   margin-left: 30px;
+    margin-left: 30px;
 }
 
 #dados-imovel {
@@ -328,11 +328,11 @@ img {
 .modal-imagem {
     position: fixed !important;
     top: 0 !important;
-    left: 0 !important; 
+    left: 0 !important;
     right: 0 !important;
     bottom: 5% !important;
     width: 90% !important;
-    height: 80% !important;  
+    height: 80% !important;
     background-color: rgba(0, 0, 0, 0.8) !important;
     display: flex !important;
     align-self: center !important;

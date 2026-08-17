@@ -99,7 +99,8 @@ class EnderecoDAO
         }
     }
 
-    public function buscarPorIdImovel(int $idImovel) {
+    public function buscarPorIdImovel(int $idImovel)
+    {
         try {
             $stmt = $this->bancoDados->prepare("
                 SELECT e.*

@@ -7,41 +7,44 @@ require_once __DIR__ . '/pessoa.php';
 
 class Historico
 {
-    private int $id;
-    private string $alteracao;
+    private ?int $id;
+    private ?string $alteracao;
     private ?DateTime $dataAlteracao;
-    private ?Proprietario $proprietario;
-    private ?Cliente $cliente;
+    private ?Pessoa $cliente;
     private ?Imovel $imovel;
-    private ?Pessoa $usuario;
+    private ?Pessoa $funcionario;
 
-    public function __construct(int $id, string $alteracao, ?DateTime $dataAlteracao = null, ?Proprietario $proprietario = null, ?Cliente $cliente = null, ?Imovel $imovel = null, ?Pessoa $usuario = null)
+    public function __construct(?string $alteracao, ?DateTime $dataAlteracao = null, ?Proprietario $proprietario = null, ?Pessoa $cliente = null, ?Imovel $imovel = null, ?Pessoa $funcionario = null)
     {
-        $this->id = $id;
+        $this->id = null;
         $this->alteracao = $alteracao;
         $this->dataAlteracao = $dataAlteracao;
-        $this->proprietario = $proprietario;
+        $this->funcionario = $funcionario;
         $this->cliente = $cliente;
         $this->imovel = $imovel;
-        $this->usuario = $usuario;
     }
 
-    public function getUsuario(): ?Pessoa
+    public function getFuncionario(): ?Pessoa
     {
-        return $this->usuario;
+        return $this->funcionario;
     }
 
-    public function setUsuario(?Pessoa $usuario): void
+    public function getCliente(): ?Pessoa
     {
-        $this->usuario = $usuario;
+        return $this->cliente;
     }
 
-    public function getId(): int
+    public function setFuncionario(?Pessoa $funcionario): void
     {
-        return $this->id;
+        $this->funcionario = $funcionario;
     }
 
-    public function getAlteracao(): string
+    public function setId(?int $id): void
+    {
+        $this->id = $id;
+    }
+
+    public function getAlteracao(): ?string
     {
         return $this->alteracao;
     }
@@ -51,27 +54,12 @@ class Historico
         return $this->dataAlteracao;
     }
 
-    public function getProprietario(): ?Proprietario
-    {
-        return $this->proprietario;
-    }
-
-    public function getCliente(): ?Cliente
-    {
-        return $this->cliente;
-    }
-
     public function getImovel(): ?Imovel
     {
         return $this->imovel;
     }
 
-    public function setId(int $id): void
-    {
-        $this->id = $id;
-    }
-
-    public function setAlteracao(string $alteracao): void
+    public function setAlteracao(?string $alteracao): void
     {
         $this->alteracao = $alteracao;
     }
@@ -81,12 +69,8 @@ class Historico
         $this->dataAlteracao = $dataAlteracao;
     }
 
-    public function setProprietario(?Proprietario $proprietario): void
-    {
-        $this->proprietario = $proprietario;
-    }
 
-    public function setCliente(?Cliente $cliente): void
+    public function setCliente(?Pessoa $cliente): void
     {
         $this->cliente = $cliente;
     }

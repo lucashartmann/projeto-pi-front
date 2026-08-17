@@ -181,7 +181,7 @@ class Banco extends PDO
             "CREATE TABLE IF NOT EXISTS anuncio (
                 id_imovel INTEGER PRIMARY KEY,
                 descricao TEXT NULL,
-                titulo VARCHAR(255) NULL.
+                titulo VARCHAR(255) NULL,
                 FOREIGN KEY (id_imovel) 
                     REFERENCES imovel(id) 
                     ON DELETE CASCADE
@@ -337,20 +337,16 @@ class Banco extends PDO
 
             "CREATE TABLE IF NOT EXISTS historico_alteracoes (
                 id INTEGER PRIMARY KEY AUTO_INCREMENT,
-                id_usuario INTEGER NULL,
+                id_funcionario INTEGER NULL,
                 id_cliente INTEGER NULL,
-                id_proprietario INTEGER NULL,
                 id_imovel INTEGER NULL,
                 descricao TEXT NULL,
                 data TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                FOREIGN KEY (id_usuario) 
-                    REFERENCES usuario(id_pessoa) 
+                FOREIGN KEY (id_funcionario) 
+                    REFERENCES funcionario(id) 
                     ON DELETE CASCADE,
                 FOREIGN KEY (id_cliente) 
-                    REFERENCES cliente(id_pessoa) 
-                    ON DELETE CASCADE,
-                FOREIGN KEY (id_proprietario) 
-                    REFERENCES proprietario(id_pessoa) 
+                    REFERENCES pessoa(id) 
                     ON DELETE CASCADE,
                 FOREIGN KEY (id_imovel) 
                     REFERENCES imovel(id) 

@@ -70,7 +70,7 @@
     }
 
     button {
-         width: 9rem;
+        width: 9rem;
         border-radius: 5% / 30%;
         height: 2.1rem !important;
     }
@@ -133,7 +133,10 @@ table {
 
     tbody>tr:nth-of-type(even) {
         background-color: var(--background-custom);
-        a{color: var(--cor-texto) !important;}
+
+        a {
+            color: var(--cor-texto) !important;
+        }
     }
 
     tfoot th {
