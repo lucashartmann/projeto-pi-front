@@ -57,7 +57,8 @@ switch ($acao) {
 
 
     case "listar":
-        $resultado = $controller->listar();
+        $tipo = $_GET['tipo'] ?? null;
+        $resultado = $controller->listar($tipo);
         break;
 
     default:

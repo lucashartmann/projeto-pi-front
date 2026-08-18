@@ -175,6 +175,8 @@ export async function listarImoveisDisponiveis() {
 
         let imoveis = [];
         imoveis = resposta.filter(imovel => imovel.anuncio && imovel.anuncio.imagens && imovel.anuncio.imagens.length > 0);
+        imoveis = resposta.filter(imovel => imovel.valor_venda > 0 || imovel.valor_aluguel > 0);
+
         console.log("Imóveis disponíveis:", imoveis);
 
         return imoveis;

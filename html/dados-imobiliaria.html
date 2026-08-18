@@ -8,7 +8,6 @@
     <link rel="stylesheet" href="../css/base.css">
     <link rel="stylesheet" href="../css/dados-imobiliaria.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <link rel="icon" type="image/x-icon" href="../assets/logo.webp">
     <script>
         if (localStorage.getItem("tema") === "escuro") {
@@ -30,16 +29,7 @@
         <button onclick="altoContraste()"><i class="fas fa-adjust"></i></button>
         <button onclick="modoNoturno()"><i class="fas fa-moon"></i></button>
     </div>
-    <div id="container-pai-graficos">
-        <!--  Gráfico com os dados da imobiliária, como número de imóveis cadastrados, número de clientes, etc. Quantos imoveis cadas funcionario cadastratou, quantos clientes cadastrou, etc., quantos imoveis o corretor alugou, vendeu, quantos estao para alugar/venda, se teve crerscimento de clientes com base no ultimos meses, quanto foi gasto em comissao com cada funcionario, etc. -->
-        <div class="container-graficos">
-            <canvas id="meuGrafico"></canvas>
-        </div>
-        <div class="container-graficos">
-            <canvas id="myHorizontalBarChart"></canvas>
-        </div>
-        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    </div>
+
     <footer>
         <p>Copyright 2025 - By Lucas Hartmann</p>
         <a href="https://github.com/lucashartmann" target="_blank"><i class="fab fa-github"></i></a>
@@ -70,6 +60,10 @@
 <script type="module" src="../js/modules/usuario.js"></script>
 <script type="module" src="../js/base.js"></script>
 <script type="module" src="js/modules/notificacoes.js"></script>
-<script src="../js/dados-imobiliaria.js"></script>
+<script type="module" src="../js/modules/usuarios.js"></script>
+<script type="module" src="../js/modules/imoveis.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="js/dados-imobiliaria.js"></script>
+<script type="module" src="../js/dados-imobiliaria.js"></script>
 
 </html>

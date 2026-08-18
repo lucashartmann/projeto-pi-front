@@ -3,6 +3,7 @@
 require_once __DIR__ . '/../dao/pessoaDAO.php';
 require_once __DIR__ . '/../dao/proprietarioDAO.php';
 require_once __DIR__ . '/../dao/corretorDAO.php';
+require_once __DIR__ . '/../dao/historicoDAO.php';
 require_once __DIR__ . '/../dao/clienteDAO.php';
 require_once __DIR__ . '/../dao/funcionarioDAO.php';
 require_once __DIR__ . '/../dao/pessoaDAO.php';
@@ -182,10 +183,32 @@ class PessoaController
             $pessoaService = new PessoaService();
             if ($id > 0) {
                 $pessoaService->atualizar($pessoa);
+
+                if (isset($_SESSION['usuario']) || !empty($_SESSION['usuario'])) {
+                    try {
+                        $historicoDAO = new HistoricoDAO();
+                        $usuarioAtual = $_SESSION['usuario'] ?? null;
+                        $historico = new Historico(alteracao: $_SESSION['usuario']->getNome() . " atualizou " . $pessoa->getNome(), cliente: $pessoa, funcionario: $usuarioAtual);
+                        $historicoDAO->cadastrar($historico);
+                    } catch (Exception $e) {
+                        error_log("Erro ao registrar histórico de destaque de imóveis: " . $e->getMessage());
+                    }
+                }
+
                 return (["status" => "sucesso", "mensagem" => "Usuário atualizado com sucesso"]);
             } else {
                 $pessoa->setDataCadastro(DateTime::createFromFormat('Y-m-d H:i:s', date('Y-m-d H:i:s')));
                 $pessoaService->cadastrar($pessoa);
+                if (isset($_SESSION['usuario']) || !empty($_SESSION['usuario'])) {
+                    try {
+                        $historicoDAO = new HistoricoDAO();
+                        $usuarioAtual = $_SESSION['usuario'] ?? null;
+                        $historico = new Historico(alteracao: $_SESSION['usuario']->getNome() . " cadastrou " . $pessoa->getNome(), cliente: $pessoa, funcionario: $usuarioAtual);
+                        $historicoDAO->cadastrar($historico);
+                    } catch (Exception $e) {
+                        error_log("Erro ao registrar histórico de destaque de imóveis: " . $e->getMessage());
+                    }
+                }
                 return (["status" => "sucesso", "mensagem" => "Usuário cadastrado com sucesso"]);
             }
         } catch (Exception $e) {
@@ -216,6 +239,16 @@ class PessoaController
             if ($usuario) {
                 $remocao = $pessoaDAO->getConexao()->remover("id", $id, "usuario");
                 if ($remocao) {
+                    if (isset($_SESSION['usuario']) || !empty($_SESSION['usuario'])) {
+                        try {
+                            $historicoDAO = new HistoricoDAO();
+                            $usuarioAtual = $_SESSION['usuario'] ?? null;
+                            $historico = new Historico(alteracao: $_SESSION['usuario']->getNome() . " apagou " . $usuario->getNome(), cliente: $usuario, funcionario: $usuarioAtual);
+                            $historicoDAO->cadastrar($historico);
+                        } catch (Exception $e) {
+                            error_log("Erro ao registrar histórico de destaque de imóveis: " . $e->getMessage());
+                        }
+                    }
                     return (["status" => "sucesso", "mensagem" => "Usuário removido com sucesso"]);
                 } else {
                     return (["status" => "erro", "mensagem" => "Erro ao remover usuário"]);

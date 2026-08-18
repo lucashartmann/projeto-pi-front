@@ -3,6 +3,7 @@
 require_once __DIR__ . '/../dao/imovelDAO.php';
 require_once __DIR__ . '/../dao/pessoaDAO.php';
 require_once __DIR__ . '/../dao/enderecoDAO.php';
+require_once __DIR__ . '/../dao/historicoDAO.php';
 require_once __DIR__ . '/../dao/condominioDAO.php';
 require_once __DIR__ . '/../dao/anuncioDAO.php';
 require_once __DIR__ . '/../utils/imagem.php';
@@ -53,14 +54,16 @@ class ImovelController
                     return (["status" => "erro", "mensagem" => "Erro ao destacar imóveis"]);
                 }
                 $historicoDAO = new HistoricoDAO();
-                try {
-                    foreach ($id as $idImovel) {
-                        $usuarioAtual = $_SESSION['usuario'] ?? null;
-                        $historico = new Historico(alteracao: $_SESSION['usuario']->getNome() . " destacou o imóvel", imovel: $imovelDAO->buscarPorId($idImovel), funcionario: $usuarioAtual);
-                        $historicoDAO->cadastrar($historico);
+                if (isset($_SESSION['usuario']) || !empty($_SESSION['usuario'])) {
+                    try {
+                        foreach ($id as $idImovel) {
+                            $usuarioAtual = $_SESSION['usuario'] ?? null;
+                            $historico = new Historico(alteracao: $_SESSION['usuario']->getNome() . " destacou o imóvel", imovel: $imovelDAO->buscarPorId($idImovel), funcionario: $usuarioAtual);
+                            $historicoDAO->cadastrar($historico);
+                        }
+                    } catch (Exception $e) {
+                        error_log("Erro ao registrar histórico de destaque de imóveis: " . $e->getMessage());
                     }
-                } catch (Exception $e) {
-                    error_log("Erro ao registrar histórico de destaque de imóveis: " . $e->getMessage());
                 }
                 return (["status" => "sucesso", "mensagem" => "Imóveis destacados com sucesso"]);
             } catch (Exception $e) {
@@ -72,13 +75,15 @@ class ImovelController
                 if (!$resultado) {
                     return (["status" => "erro", "mensagem" => "Erro ao destacar imóvel"]);
                 }
-                try {
-                    $historicoDAO = new HistoricoDAO();
-                    $usuarioAtual = $_SESSION['usuario'] ?? null;
-                    $historico = new Historico(alteracao: $_SESSION['usuario']->getNome() . " destacou o imóvel", imovel: $imovelDAO->buscarPorId($id), funcionario: $usuarioAtual);
-                    $historicoDAO->cadastrar($historico);
-                } catch (Exception $e) {
-                    error_log("Erro ao registrar histórico de destaque de imóveis: " . $e->getMessage());
+                if (isset($_SESSION['usuario']) || !empty($_SESSION['usuario'])) {
+                    try {
+                        $historicoDAO = new HistoricoDAO();
+                        $usuarioAtual = $_SESSION['usuario'] ?? null;
+                        $historico = new Historico(alteracao: $_SESSION['usuario']->getNome() . " destacou o imóvel", imovel: $imovelDAO->buscarPorId($id), funcionario: $usuarioAtual);
+                        $historicoDAO->cadastrar($historico);
+                    } catch (Exception $e) {
+                        error_log("Erro ao registrar histórico de destaque de imóveis: " . $e->getMessage());
+                    }
                 }
                 return (["status" => "sucesso", "mensagem" => "Imóvel destacado com sucesso"]);
             } catch (Exception $e) {
@@ -122,13 +127,14 @@ class ImovelController
                         // return (["status" => "erro", "mensagem" => "Imóvel não encontrado com ID: " . $id]);
                         continue;
                     }
-                    try {
-
-                        $usuarioAtual = $_SESSION['usuario'] ?? null;
-                        $historico = new Historico(alteracao: $_SESSION['usuario']->getNome() . " removeu o imóvel", imovel: $imovelDAO->buscarPorId($id), funcionario: $usuarioAtual);
-                        $historicoDAO->cadastrar($historico);
-                    } catch (Exception $e) {
-                        error_log("Erro ao registrar histórico de destaque de imóveis: " . $e->getMessage());
+                    if (isset($_SESSION['usuario']) || !empty($_SESSION['usuario'])) {
+                        try {
+                            $usuarioAtual = $_SESSION['usuario'] ?? null;
+                            $historico = new Historico(alteracao: $_SESSION['usuario']->getNome() . " removeu o imóvel", imovel: $imovelDAO->buscarPorId($id), funcionario: $usuarioAtual);
+                            $historicoDAO->cadastrar($historico);
+                        } catch (Exception $e) {
+                            error_log("Erro ao registrar histórico de destaque de imóveis: " . $e->getMessage());
+                        }
                     }
 
                     if ($imovel->getAnuncio() && $imovel->getAnuncio()->getImagens()) {
@@ -152,13 +158,15 @@ class ImovelController
                 if ($imovel) {
                     $remocao = $imovelDAO->getConexao()->remover("id", $id, "imovel");
                     if ($remocao) {
-                        try {
-                            $historicoDAO = new HistoricoDAO();
-                            $usuarioAtual = $_SESSION['usuario'] ?? null;
-                            $historico = new Historico(alteracao: $_SESSION['usuario']->getNome() . " removeu o imóvel", imovel: $imovelDAO->buscarPorId($id), funcionario: $usuarioAtual);
-                            $historicoDAO->cadastrar($historico);
-                        } catch (Exception $e) {
-                            error_log("Erro ao registrar histórico de destaque de imóveis: " . $e->getMessage());
+                        if (isset($_SESSION['usuario']) || !empty($_SESSION['usuario'])) {
+                            try {
+                                $historicoDAO = new HistoricoDAO();
+                                $usuarioAtual = $_SESSION['usuario'] ?? null;
+                                $historico = new Historico(alteracao: $_SESSION['usuario']->getNome() . " removeu o imóvel", imovel: $imovelDAO->buscarPorId($id), funcionario: $usuarioAtual);
+                                $historicoDAO->cadastrar($historico);
+                            } catch (Exception $e) {
+                                error_log("Erro ao registrar histórico de destaque de imóveis: " . $e->getMessage());
+                            }
                         }
                         if ($imovel->getAnuncio() && $imovel->getAnuncio()->getImagens()) {
                             limparPasta($imovel->getAnuncio()->getImagens(), $imovel->getId());
@@ -381,11 +389,35 @@ class ImovelController
             if ($id) {
                 $imovelService->atualizar($imovelObj);
                 $cadastrado = $imovelObj;
+                if (isset($_SESSION['usuario']) || !empty($_SESSION['usuario'])) {
+                    if ($cadastrado) {
+                        try {
+                            $historicoDAO = new HistoricoDAO();
+                            $usuarioAtual = $_SESSION['usuario'] ?? null;
+                            $historico = new Historico(alteracao: $_SESSION['usuario']->getNome() . " atualizou o imóvel", imovel: $imovelDAO->buscarPorId($id), funcionario: $usuarioAtual);
+                            $historicoDAO->cadastrar($historico);
+                        } catch (Exception $e) {
+                            error_log("Erro ao registrar histórico de destaque de imóveis: " . $e->getMessage());
+                        }
+                    }
+                }
 
                 limparPasta($imovelObj->getAnuncio()->getImagens(), $imovelObj->getId());
                 limparPasta($imovelObj->getAnuncio()->getAnexos(), $imovelObj->getId());
             } else {
                 $cadastrado = $imovelService->cadastrar($imovelObj);
+                if (isset($_SESSION['usuario']) || !empty($_SESSION['usuario'])) {
+                    if ($cadastrado) {
+                        try {
+                            $historicoDAO = new HistoricoDAO();
+                            $usuarioAtual = $_SESSION['usuario'] ?? null;
+                            $historico = new Historico(alteracao: $_SESSION['usuario']->getNome() . " cadastrou o imóvel", imovel: $imovelDAO->buscarPorId($id), funcionario: $usuarioAtual);
+                            $historicoDAO->cadastrar($historico);
+                        } catch (Exception $e) {
+                            error_log("Erro ao registrar histórico de destaque de imóveis: " . $e->getMessage());
+                        }
+                    }
+                }
             }
 
 
@@ -395,7 +427,6 @@ class ImovelController
 
                 foreach ($imagens['tmp_name'] as $i => $nomeTemporario) {
                     try {
-
                         if ($imagens['error'][$i] !== UPLOAD_ERR_OK) {
                             error_log("Erro ao fazer upload da imagem: " . $imagens['name'][$i] . " - Código de erro: " . $imagens['error'][$i]);
                             continue;

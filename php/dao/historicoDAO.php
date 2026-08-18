@@ -150,7 +150,7 @@ class HistoricoDAO
                 historico_funcionario.data_admissao AS historico_funcionario_data_admissao,
                 historico_funcionario.cargo AS historico_funcionario_cargo,
                 historico_corretor.creci as historico_funcionario_creci,
-                historico_usuario_funcionario.id_funcionario AS historico_funcionario_corretor_id,
+                historico_corretor.id_funcionario AS historico_funcionario_corretor_id,
     
 
                 historico_endereco_funcionario.id AS historico_funcionario_endereco_id,
@@ -234,8 +234,8 @@ class HistoricoDAO
                 LEFT JOIN endereco historico_endereco_cliente
                     ON historico_endereco_cliente.id = historico_pessoa_cliente.id_endereco
 
-                LEFT JOIN endereco historico_endereco_corretor
-                    ON historico_endereco_corretor.id = historico_pessoa_corretor.id_endereco
+                LEFT JOIN endereco historico_endereco_funcionario
+                    ON historico_endereco_funcionario.id = historico_pessoa_corretor.id_endereco
             ";
 
 

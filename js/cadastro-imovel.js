@@ -192,59 +192,113 @@ async function preencherEndereco(event) {
     }
 }
 
-
-
-
-let lista = null;
-
 async function editarPessoa(tipo) {
-    if (tipo !== "proprietario" && tipo !== "corretor" && tipo !== "captador") {
+
+    if (tipo !== "PROPRIETARIO" && tipo !== "CORRETOR" && tipo !== "CAPTADOR") {
         alert("Tipo de pessoa inválido!");
         return;
     }
 
-    if (!lista) {
-        console.log("Carregando lista de pessoas...");
-        lista = await listarPessoas(tipo);
-    }
+    let lista = await listarPessoas(tipo);
 
-    if (!lista || lista.length === 0 || !lista.dados || lista.dados.length === 0) {
+    if (lista == null || lista == [] || lista.length === 0) {
         alert("Nenhuma pessoa encontrada para editar!");
         return;
     }
 
-
     const container = document.createElement("div");
+    container.classList = "div-dados";
     const click = function (event) {
         if (document.body.contains(container) && !container.contains(event.target)) {
+
             const checkboxes = container.querySelectorAll("input[type='checkbox']");
             const selecionados = Array.from(checkboxes).filter(checkbox => checkbox.checked);
+
+
             if (selecionados.length > 0) {
                 for (let checkbox of selecionados) {
                     let containerPessoa = checkbox.closest(".resultado-pessoa");
+                    const id = containerPessoa.querySelector(".div-right .id-pessoa").value;
+                    let pessoasExistentes = null;
+                    let encontrou = false;
+
                     switch (tipo) {
-                        case "proprietario":
-                            containerPessoa.classList.add("pessoa-selecionada");
-                            document.getElementById("container-proprietario").appendChild(containerPessoa.cloneNode(true));
+                        case "PROPRIETARIO":
+                            pessoasExistentes = document
+                                .getElementById("container-proprietario")
+                                .querySelectorAll(".id-pessoa");
+
+                            encontrou = false;
+
+                            pessoasExistentes.forEach(input => {
+                                if (input.value == id) {
+                                    encontrou = true;
+                                }
+                            });
+
+                            if (!encontrou) {
+                                containerPessoa.classList.add("pessoa-selecionada");
+                                document
+                                    .getElementById("container-proprietario")
+                                    .appendChild(containerPessoa.cloneNode(true));
+                            }
+
                             break;
-                        case "corretor":
-                            document.getElementById("container-corretor").appendChild(containerPessoa.cloneNode(true));
+
+                        case "CORRETOR":
+                            pessoasExistentes = document
+                                .getElementById("container-corretor")
+                                .querySelectorAll(".id-pessoa");
+
+                            encontrou = false;
+
+                            pessoasExistentes.forEach(input => {
+                                if (input.value == id) {
+                                    encontrou = true;
+                                }
+                            });
+
+                            if (!encontrou) {
+                                containerPessoa.classList.add("pessoa-selecionada");
+                                document
+                                    .getElementById("container-corretor")
+                                    .appendChild(containerPessoa.cloneNode(true));
+                            }
+
                             break;
-                        case "captador":
-                            document.getElementById("container-captador").appendChild(containerPessoa.cloneNode(true));
+
+                        case "CAPTADOR":
+                            pessoasExistentes = document
+                                .getElementById("container-captador")
+                                .querySelectorAll(".id-pessoa");
+
+                            encontrou = false;
+
+                            pessoasExistentes.forEach(input => {
+                                if (input.value == id) {
+                                    encontrou = true;
+                                }
+                            });
+
+                            if (!encontrou) {
+                                containerPessoa.classList.add("pessoa-selecionada");
+                                document
+                                    .getElementById("container-captador")
+                                    .appendChild(containerPessoa.cloneNode(true));
+                            }
+
                             break;
                     }
-
                 }
             }
+
             document.body.removeChild(container);
+            document.removeEventListener("click", click);
         }
-        document.removeEventListener("click", click);
-        console.log("É para o evento ser removido")
     };
     if (!document.eventListenerList || !document.eventListenerList.some(listener => listener.type === "click" && listener.listener === click)) {
         setTimeout(() => {
-            document.addEventListener("click", click, { once: true });
+            document.addEventListener("click", click);
         }, 0);
     }
     const pesquisarInput = document.createElement("input");
@@ -254,47 +308,44 @@ async function editarPessoa(tipo) {
         const query = pesquisarInput.value.toLowerCase();
         const resultados = container.querySelectorAll("div");
         resultados.forEach(resultado => {
-            const nome = resultado.querySelector("label")?.textContent.toLowerCase();
-            resultado.style.display = nome.includes(query) ? "flex" : "none";
-            const creciLabel = resultado.querySelector("label:nth-child(2)");
-            if (creciLabel) {
-                const creci = creciLabel.textContent.toLowerCase();
-                resultado.style.display = (nome.includes(query) || creci.includes(query)) ? "flex" : "none";
-            }
-            const emailLabel = resultado.querySelector("label:nth-child(3)");
-            if (emailLabel) {
-                const email = emailLabel.textContent.toLowerCase();
-                resultado.style.display = (nome.includes(query) || email.includes(query)) ? "flex" : "none";
-            }
-            const telefoneLabel = resultado.querySelector("label:nth-child(4)");
-            if (telefoneLabel) {
-                const telefone = telefoneLabel.textContent.toLowerCase();
-                resultado.style.display = (nome.includes(query) || email.includes(query) || telefone.includes(query)) ? "flex" : "none";
-            }
+            const labels = resultado.querySelectorAll("label");
+            let encontrou = false;
+            labels.forEach(label => {
+                if (label.textContent.toLowerCase().includes(query.toLowerCase())) {
+                    encontrou = true;
+                }
+            });
+            resultado.closest(".resultado-pessoa").style.display = encontrou ? "flex" : "none";
         });
     };
 
-    idsExistentes = [];
+    let idsExistentes = [];
 
     switch (tipo) {
-        case "proprietario":
-            idsExistentes = document.getElementById("container-proprietario").querySelectorAll(".resultado-pessoa .id-pessoa");
+        case "PROPRIETARIO":
+            idsExistentes = Array.from(
+                document.getElementById("container-proprietario")
+                    .querySelectorAll(".resultado-pessoa .div-right .id-pessoa")
+            ).map(input => input.value);
             break;
-        case "corretor":
-            idsExistentes = document.getElementById("container-corretor").querySelectorAll(".resultado-pessoa .id-pessoa");
+        case "CORRETOR":
+            idsExistentes = Array.from(document.getElementById("container-corretor").querySelectorAll(".resultado-pessoa .div-right .id-pessoa")
+            ).map(input => input.value);
             break;
-        case "captador":
-            idsExistentes = document.getElementById("container-captador").querySelectorAll(".resultado-pessoa .id-pessoa");
+        case "CAPTADOR":
+            idsExistentes = Array.from(document.getElementById("container-captador").querySelectorAll(".resultado-pessoa .div-right .id-pessoa")
+            ).map(input => input.value);
             break;
     }
 
     container.appendChild(pesquisarInput);
-    for (let pessoa of lista.dados) {
+
+    for (let pessoa of lista) {
         let div_resultado = document.createElement("div");
         div_resultado.classList.add("resultado-pessoa");
         let checkbox = document.createElement("input");
         checkbox.type = "checkbox";
-        checkbox.value = (pessoa.id in idsExistentes) ? true : false;
+        checkbox.checked = (idsExistentes?.includes(pessoa.id?.toString())) ? true : false;
         checkbox.name = "pessoa-selecionada";
 
         let div_left = document.createElement("div");
@@ -303,7 +354,7 @@ async function editarPessoa(tipo) {
 
         div_resultado.appendChild(div_left);
         let nome = document.createElement("label");
-        nome.textContent = pessoa.nome;
+        nome.textContent = "Nome: " + (pessoa.nome ? pessoa.nome : "");
         nome.classList.add("nome-pessoa");
 
         let div_right = document.createElement("div");
@@ -323,10 +374,10 @@ async function editarPessoa(tipo) {
             div_right.appendChild(creci);
         }
         let email = document.createElement("label");
-        email.textContent = "Email: " + pessoa.email;
+        email.textContent = "Email: " + (pessoa.email ? pessoa.email : "");
         div_right.appendChild(email);
         let telefone = document.createElement("label");
-        telefone.textContent = "Telefone: " + pessoa.telefone;
+        telefone.textContent = "Telefone: " + (pessoa.telefone ? pessoa.telefone : "");
         div_right.appendChild(telefone);
         div_resultado.appendChild(div_right);
         container.appendChild(div_resultado);
@@ -671,9 +722,9 @@ async function abrirCadastro(imovel) {
                 for (let pessoa of pessoas[chave]) {
                     let div_resultado = document.createElement("div");
                     div_resultado.classList.add("resultado-pessoa");
+                    div_resultado.classList.add("pessoa-selecionada");
                     let checkbox = document.createElement("input");
                     checkbox.type = "checkbox";
-                    checkbox.value = pessoa.id;
                     checkbox.name = "pessoa-selecionada";
 
                     let div_left = document.createElement("div");
@@ -682,7 +733,7 @@ async function abrirCadastro(imovel) {
 
                     div_resultado.appendChild(div_left);
                     let nome = document.createElement("label");
-                    nome.textContent = pessoa.nome;
+                    nome.textContent = "Nome: " + (pessoa.nome ? pessoa.nome : "");
                     nome.classList.add("nome-pessoa");
 
                     let div_right = document.createElement("div");
@@ -694,7 +745,6 @@ async function abrirCadastro(imovel) {
                     inputHidden.value = pessoa.id;
                     inputHidden.classList.add("id-pessoa");
                     div_right.appendChild(inputHidden);
-
                     if (pessoa?.creci) {
                         let creci = document.createElement("label");
                         creci.textContent = "CRECI: " + pessoa.creci;
@@ -702,10 +752,10 @@ async function abrirCadastro(imovel) {
                         div_right.appendChild(creci);
                     }
                     let email = document.createElement("label");
-                    email.textContent = "Email: " + pessoa.email;
+                    email.textContent = "Email: " + (pessoa.email ? pessoa.email : "");
                     div_right.appendChild(email);
                     let telefone = document.createElement("label");
-                    telefone.textContent = "Telefone: " + pessoa.telefone;
+                    telefone.textContent = "Telefone: " + (pessoa.telefone ? pessoa.telefone : "");
                     div_right.appendChild(telefone);
                     div_resultado.appendChild(div_right);
                     container.appendChild(div_resultado);

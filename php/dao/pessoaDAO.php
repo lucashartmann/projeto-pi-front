@@ -220,8 +220,25 @@ class PessoaDAO
         try {
             $sql = $this->sqlConsulta;
 
-            if ($tipo !== null) {
-                $sql .= " WHERE " . $tipo . ".id_pessoa IS NOT NULL";
+            if ($tipo !== null && is_string($tipo)) {
+                switch (strtoupper($tipo)) {
+                    case "CORRETOR":
+                    case "ADMIN":
+                    case "GERENTE":
+                    case "CAPTADOR":
+                    case "FINANCEIRO":
+                    case "VISTORIADOR":
+                        $sql .= " WHERE cargo = '$tipo'";
+                        break;
+                    case "PROPRIETARIO":
+                        $sql .= " WHERE proprietario.id_pessoa IS NOT NULL";
+                        break;
+                    case "CLIENTE":
+                        $sql .= " WHERE cliente.id_pessoa IS NOT NULL";
+                        break;
+                    default:
+                        break;
+                }
             }
 
             $stmt = $this->bancoDados->prepare($sql);

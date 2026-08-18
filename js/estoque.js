@@ -273,8 +273,6 @@ async function filtrar() {
         if (seta && nome) {
             switch (nome) {
                 case "referencia":
-                case "ref":
-                case "id":
                     if (seta.classList.contains("fa-arrow-down")) {
                         imoveisFiltrados.sort((a, b) => a.id - b.id);
                     } else {
@@ -628,15 +626,15 @@ function carregarAnuncios() {
     <div id="h-filtro">
                 <div id="filtro-seta">
                     <select id="select-filtro" onchange="filtrar()">
-                        <option value="referencia">Referência</option>
-                        <option value="categoria">Categoria</option>
-                        <option value="status">Status</option>
-                        <option value="cep">CEP</option>
-                        <option value="numero">Número</option>
-                        <option value="aluguel">Aluguel</option>
-                        <option value="venda">Venda</option>
-                        <option value="data_cadastro" selected>Data de Cadastro</option>
-                        <option value="data_modificacao">Data de Modificação</option>
+                        <option value="referencia" ${sessionStorage.getItem("estoque-filtroSelecionado") == "referencia" ? "selected" : ""}>Referência</option>
+                        <option value="categoria" ${sessionStorage.getItem("estoque-filtroSelecionado") == "categoria" ? "selected" : ""}>Categoria</option>
+                        <option value="status" ${sessionStorage.getItem("estoque-filtroSelecionado") == "status" ? "selected" : ""}>Status</option>
+                        <option value="cep" ${sessionStorage.getItem("estoque-filtroSelecionado") == "cep" ? "selected" : ""}>CEP</option>
+                        <option value="numero" ${sessionStorage.getItem("estoque-filtroSelecionado") == "numero" ? "selected" : ""}>Número</option>
+                        <option value="aluguel" ${sessionStorage.getItem("estoque-filtroSelecionado") == "aluguel" ? "selected" : ""}>Aluguel</option>
+                        <option value="venda" ${sessionStorage.getItem("estoque-filtroSelecionado") == "venda" ? "selected" : ""}>Venda</option>
+                        <option value="data_cadastro" ${sessionStorage.getItem("estoque-filtroSelecionado") == "data_cadastro" ? "selected" : ""}>Data de Cadastro</option>
+                        <option value="data_modificacao" ${sessionStorage.getItem("estoque-filtroSelecionado") == "data_modificacao" ? "selected" : ""}>Data de Modificação</option>
                     </select>
                     <i class="${classSeta}" id="seta" flat=True onclick="filtroOrdenado()"></i>
                 </div>

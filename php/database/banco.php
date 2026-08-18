@@ -209,7 +209,7 @@ class Banco extends PDO
                     REFERENCES anuncio(id_imovel) ON DELETE CASCADE
             )",
 
-            "CREATE TABLE IF NOT EXISTS venda_aluguel (
+            "CREATE TABLE IF NOT EXISTS contrato (
                 id INTEGER PRIMARY KEY AUTO_INCREMENT,
                 id_cliente INT NULL,
                 id_proprietario INTEGER,

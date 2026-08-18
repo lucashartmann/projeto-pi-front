@@ -88,6 +88,21 @@ function inicializarSwiper() {
         slidesPerView: 1,
         navigation: { nextEl: '.swiper-anuncio .swiper-button-next', prevEl: '.swiper-anuncio .swiper-button-prev' },
     });
+    var swiper = new Swiper('.swiper-mais-vistos', {
+        direction: 'horizontal',
+        initialSlide: 0,
+        scrollbar: false,
+        obeserver: false,
+        navigation: { nextEl: '.swiper-anuncio .swiper-button-next', prevEl: '.swiper-anuncio .swiper-button-prev' },
+        spaceBetween: 30,
+        centeredSlides: false,
+        breakpoints: {
+            0: { slidesPerView: imovel.anuncio.imagens.length > 1 ? 1 : imovel.anuncio.imagens.length },
+            640: { slidesPerView: imovel.anuncio.imagens.length > 2 ? 2 : imovel.anuncio.imagens.length },
+            768: { slidesPerView: imovel.anuncio.imagens.length > 3 ? 3 : imovel.anuncio.imagens.length },
+            1024: { slidesPerView: imovel.anuncio.imagens.length > 4 ? 4 : imovel.anuncio.imagens.length },
+        },
+    });
 }
 
 function nextSlide() {
@@ -311,6 +326,68 @@ function estilizarDiv() {
     });
 }
 
+function maisVistos(dados) {
+    const section = document.getElementById('mais-vistos');
+    const swiper = document.querySelector(".swiper-mais-vistos");
+    const wrapper = document.querySelector(".swiper-mais-vistos .swiper-wrapper");
+    const tamanho = dados.length < 5 ? dados.length : 5;
+    if (tamanho === 0) return;
+    if (!Array.isArray(dados)) return;
+    if (dados.length === 0) return;
+    if (dados.filter(imovel => imovel?.anuncio?.imagens?.[0]).length === 0) return;
+    if (dados.filter(imovel => imovel?.quant_clicks > 0).length < 5) return;
+    if (tamanho < 5) return;
+    dados = dados.filter(imovel => imovel?.quant_clicks > 0);
+    section.style.display = "flex";
+    section.style.flexDirection = "column";
+    for (var i = 0; i < tamanho; i++) {
+        var imovel = dados[i];
+        const b64 = imovel.anuncio?.imagens?.[0] || null;
+        if (!b64) continue;
+        let precoVenda = "";
+        let precoAluguel = "";
+        if (imovel.valor_aluguel && imovel.valor_venda) {
+            precoVenda = `<span>Venda: <span class="preco">${formatarValor(imovel.valor_venda)}</span></span>`;
+            precoAluguel = `<span>Aluguel: <span class="preco">${formatarValor(imovel.valor_aluguel)}</span></span>`;
+        } else if (imovel.valor_venda) {
+            precoVenda = `<span>Venda: <span class="preco">${formatarValor(imovel.valor_venda)}</span></span>`;
+        } else {
+            precoAluguel = `<span>Aluguel: <span class="preco">${formatarValor(imovel.valor_aluguel)}</span></span>`;
+        }
+
+        const classe = $usuario && $usuario.favoritos && $usuario.favoritos.includes(imovel.id) ? "curtido" : "";
+
+        html = `
+            <a href="html/dados-imovel.html?id=${imovel.id}" class="swiper-slide anuncio-link anuncio-imovel" >
+                <i class="fas fa-heart ${classe}" onclick="curtirImovel(event, ${imovel.id})"></i>
+                <div class="swiper swiper-anuncio">
+                    <div class="swiper-wrapper">
+                        ${imovel.anuncio.imagens.map(img => `
+                            <div class="swiper-slide" style="background-image: url(${img})">
+                            </div>
+                        `).join('')}
+                        </div>
+                    <div class="swiper-button-prev" onclick="prevSlide()"></div>
+                    <div class="swiper-button-next" onclick="nextSlide()"></div>
+                </div>
+                <h2>${imovel.anuncio?.titulo}</h2>
+                <p>${imovel.endereco?.rua}, ${imovel.endereco?.numero}, ${imovel.endereco?.bairro}</p>
+                ${precoVenda}
+                ${precoAluguel}
+                <p class="descricao">${imovel.anuncio?.descricao}</p>
+                <div class="emojis">
+                    <i class="fas fa-ruler-combined"><p>${imovel.area_total != null ? imovel.area_total : 'N/A'} m²</p></i> 
+                    <i class="fas fa-bath"><p>${imovel.quantidade_banheiros != null ? imovel.quantidade_banheiros : 'N/A'}</p></i> 
+                    <i class="fas fa-couch"><p>${imovel.quantidade_salas != null ? imovel.quantidade_salas : 'N/A'}</p></i> 
+                    <i class="fas fa-bed"><p>${imovel.quantidade_quartos != null ? imovel.quantidade_quartos : 'N/A'}</p></i>
+                    <i class="fas fa-car"><p>${imovel.quantidade_vagas != null ? imovel.quantidade_vagas : 'N/A'}</p></i>
+                </div>
+            </a>
+        `;
+        wrapper.innerHTML += html;
+    }
+}
+
 window.addEventListener("DOMContentLoaded", async () => {
     const dados = await listarImoveisDisponiveis() || null;
     let destacados = null;
@@ -322,6 +399,7 @@ window.addEventListener("DOMContentLoaded", async () => {
     if (dados && dados.length > 0 && dados.filter(imovel => imovel?.anuncio?.imagens?.[0]).length > 0) {
         carregarAnuncios(dados);
         imovelPrincipal(dados);
+        maisVistos(dados);
     } else {
         console.error("Não foi possível carregar os imóveis");
     }

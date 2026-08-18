@@ -27,7 +27,7 @@
     margin-top: 40px;
     width: 17%;
     justify-self: center;
-    gap: 10px;
+    gap: 20px;
     position: sticky !important;
     height: 18rem;
     top: 20% !important;
@@ -50,70 +50,70 @@
         height: auto;
     }
 
+    #historico {
+        height: auto;
+        width: 90%;
+        gap: 0;
 
-}
-
-
-
-#historico {
-    height: auto;
-    width: 90%;
-
-    h3 {
-        color: var(--cor-texto-alternativa);
-        font-size: 1.2rem;
-        font-weight: 500;
-        margin-bottom: 10px;
-    }
-
-    table {
-        width: 40%;
-        height: 100%;
-        border-collapse: collapse;
-        letter-spacing: 1px;
-        overflow-y: auto;
-        margin: 0 !important;
-        padding: 0 !important;
-
-        a {
-            text-decoration: none;
+        h3 {
             color: var(--cor-texto-alternativa);
+            font-size: 1.2rem;
+            font-weight: 500;
+            margin-bottom: 10px;
         }
 
-        th,
-        td {
-            border: 1px solid rgb(160 160 160);
-            padding: 8px 0px;
-        }
+        table {
+            width: 100%;
+            height: 100%;
+            border-collapse: collapse;
+            letter-spacing: 1px;
+            overflow-y: auto;
+            margin: 0 !important;
+            padding: 0 !important;
+            background: rgba(65, 65, 65, 0.7);
+            border: 1px groove color-mix(in srgb, var(--background-claro) 60%, black);
 
-        tbody>tr:nth-of-type(even) {
-            background-color: rgb(237 238 242);
-        }
-
-        tfoot {
-            th {
-                text-align: right;
+            a {
+                text-decoration: none;
+                color: var(--cor-texto-alternativa);
             }
 
+            th,
             td {
-                font-weight: bold;
+                border: 1px solid rgb(105, 104, 104);
+                padding: 8px 0px;
+                color: var(--cor-texto);
             }
 
+            tbody>tr:nth-of-type(even) {
+                background-color: rgb(237 238 242);
+            }
 
+            tfoot {
+                th {
+                    text-align: right;
+                }
+
+                td {
+                    font-weight: bold;
+                }
+
+            }
+
+            thead {
+                background-color: var(--background-custom) !important;
+                width: 100% !important;
+            }
+
+            tbody {
+                background-color: rgba(65, 65, 65, 0.7) !important;
+                width: 100% !important;
+            }
         }
 
-        thead {
-            background-color: var(--background-custom) !important;
-        }
-
-        tbody {
-            background-color: rgba(65, 65, 65, 0.7) !important;
-        }
     }
 
 }
-
-
 
 textarea {
     height: 90%;
@@ -162,9 +162,6 @@ label {
     background-color: #ccc;
     border: rgb(195, 174, 14) dashed 2px;
 }
-
-
-
 
 #container-anuncio {
     display: flex;
@@ -480,15 +477,14 @@ label {
     margin: 20px auto;
     min-height: 10rem;
     height: auto;
-    color: white;
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    row-gap: 20px;
-    /* column-gap: 20px; */
-    justify-self: center;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
     justify-content: center;
-    justify-items: center;
+    justify-items: stretch;
     color: var(--cor-texto);
+    /* column-gap: 20px; */
+    /* justify-self: center; */
     /* padding: 20px 0px; */
     /* border: 0.3px groove color-mix(in srgb, var(--background-claro) 60%, rgba(255, 255, 255, 0.001)); */
 
@@ -546,6 +542,36 @@ label {
     }
 }
 
+
+#container-proprietario {
+    padding-bottom: 20px;
+
+    > :not(header) {
+        padding-left: 20px !important;
+        padding-right: 20px !important;
+    }
+
+    div {
+        display: flex;
+        position: static;
+        width: auto;
+        border: 1px groove color-mix(in srgb, var(--background-claro) 60%, black);
+        z-index: 0;
+
+        .div-left {
+            margin-right: 10px;
+            border: none;
+        }
+
+        .div-right {
+            display: flex;
+            flex-direction: column;
+            border: none;
+            width: 20rem;
+        }
+    }
+}
+
 #container-imagens {
     margin-top: 50px;
 }
@@ -569,53 +595,7 @@ label {
 }
 
 
-.form-container {
-    z-index: 1000;
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: rgba(36, 30, 30, 0.5);
-    backdrop-filter: blur(40px) !important;
-    box-shadow: var(--shadow);
-    height: 80vw;
-    width: 50vw;
-    color: white;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    overflow-y: auto;
-    overflow-x: hidden;
-    max-height: 70vh;
 
-    input[type=checkbox] {
-        height: 3rem;
-        width: 100%;
-        margin: 5px;
-    }
-
-    input[type=text] {
-        height: 2.8rem !important;
-        width: 100%;
-        margin: 10px;
-    }
-
-    .resultado-pessoa {
-        margin: 10px 0px;
-        display: flex;
-
-        .div-left {
-            margin-right: 20px;
-        }
-
-        .div-right {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
-    }
-
-}
 
 #container-anexos {
     grid-template-columns: repeat(auto-fit, minmax(30%, 1fr));
@@ -696,4 +676,56 @@ label {
         max-height: 80%;
         justify-self: center;
     }
+}
+
+.div-dados {
+    z-index: 1000;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: var(--background-custom);
+    backdrop-filter: blur(40px) !important;
+    box-shadow: var(--shadow);
+    height: 80vw;
+    width: 50vw;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow-y: auto;
+    overflow-x: hidden;
+    max-height: 70vh;
+
+    input:not([type="checkbox"]) {
+        min-height: 3rem !important;
+        width: 100%;
+        margin: 5px;
+        border-radius: 0%;
+    }
+
+    input[type=checkbox] {
+        height: 3rem;
+        width: 100%;
+        margin: 5px;
+    }
+  
+    .resultado-pessoa {
+        margin: 10px 0px;
+        display: flex;
+        width: 100%;
+        height: auto;
+        border: 1px groove color-mix(in srgb, var(--background-claro) 90%, black);
+
+        .div-left {
+            margin-right: 20px;
+        }
+
+        .div-right {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+    }
+
 }

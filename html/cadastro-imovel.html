@@ -351,10 +351,8 @@
                 <header><label for="">Imagens:</label>
                     <button id="bt-adicionar-imagens" onclick="adicionarAnexo(event)">Adicionar</button>
                     <button class="selecionar-todos" onclick="selecionarTodos(event)">Selecionar Todos</button>
-                    <button class="abrir-multiplos" style="display: none;"
-                        onclick="abrirMultiplos(event)">Abrir</button>
-                    <button class="apagar-multiplos" style="display: none;"
-                        onclick="apagarMultiplos(event)">Apagar</button>
+                    <button class="abrir-multiplos" onclick="abrirMultiplos(event)">Abrir</button>
+                    <button class="apagar-multiplos" onclick="apagarMultiplos(event)">Apagar</button>
                     <p id="contador-imagens">0 imagens</p>
                 </header>
 
@@ -363,30 +361,37 @@
                 <header><label for="">Anexos:</label>
                     <button class="bt-adicionar-anexos" onclick="adicionarAnexo(event)">Adicionar</button>
                     <button class="selecionar-todos" onclick="selecionarTodos(event)">Selecionar Todos</button>
-                    <button class="abrir-multiplos" style="display: none;"
-                        onclick="abrirMultiplos(event)">Abrir</button>
-                    <button class="apagar-multiplos" style="display: none;"
-                        onclick="apagarMultiplos(event)">Apagar</button>
+                    <button class="abrir-multiplos" onclick="abrirMultiplos(event)">Abrir</button>
+                    <button class="apagar-multiplos" onclick="apagarMultiplos(event)">Apagar</button>
                     <p id="contador-documentos">0 anexos</p>
                 </header>
             </div>
             <div id="container-proprietario" class="container">
                 <header><label for="" classes="stt-container-titulo">Proprietário: </label>
                     <button classes="bt-editar-pessoa" id="br-editar-proprietario"
-                        onclick="editarPessoa('proprietario')">Editar</button>
+                        onclick="editarPessoa('PROPRIETARIO')">Editar</button>
 
+                    <button class="selecionar-todos" onclick="selecionarTodos(event)">Selecionar Todos</button>
+                    <button class="abrir-multiplos" onclick="abrirMultiplos(event)">Abrir</button>
+                    <button class="apagar-multiplos" onclick="apagarMultiplos(event)">Apagar</button>
                 </header>
             </div>
             <div id="container-corretor" class="container">
                 <header><label for="" classes="stt-container-titulo">Corretor: </label>
                     <button id="br-editar-corretor" classes="bt-editar-pessoa"
-                        onclick="editarPessoa('corretor')">Editar</button>
+                        onclick="editarPessoa('CORRETOR')">Editar</button>
+                    <button class="selecionar-todos" onclick="selecionarTodos(event)">Selecionar Todos</button>
+                    <button class="abrir-multiplos" onclick="abrirMultiplos(event)">Abrir</button>
+                    <button class="apagar-multiplos" onclick="apagarMultiplos(event)">Apagar</button>
                 </header>
             </div>
             <div id="container-captador" class="container">
                 <header><label for="" classes="stt-container-titulo">Captador: </label>
                     <button classes="bt-editar-pessoa" id="br-editar-captador"
-                        onclick="editarPessoa('captador')">Editar</button>
+                        onclick="editarPessoa('CAPTADOR')">Editar</button>
+                    <button class="selecionar-todos" onclick="selecionarTodos(event)">Selecionar Todos</button>
+                    <button class="abrir-multiplos" onclick="abrirMultiplos(event)">Abrir</button>
+                    <button class="apagar-multiplos" onclick="apagarMultiplos(event)">Apagar</button>
                 </header>
             </div>
             <div id="container-portais" class="container">
@@ -403,34 +408,32 @@
             <button class="bt-success" type="submit" onclick="salvarMultiplosForms()">Salvar</button>
             <button class="bt-delete" onclick="excluir()">Apagar</button>
             <button class="bt-open" onclick="abrirAnuncio()">Abrir anúncio</button>
+            <button onclick="compartilhar('anuncio')"><i class="fas fa-share-alt"></i> Compartilhar anúncio</button>
+            <button onclick="compartilhar('cadastro')"><i class="fas fa-share-alt"></i> Compartilhar cadastro</button>
             <div id="checkbox">
                 <label for="destacar">Destacar imóvel:</label>
                 <input type="checkbox" name="destacar" id="destacar">
             </div>
             <label for="" id="quant-clicks">Quantidade de cliques: 0</label>
-            <button onclick="compartilhar('anuncio')"><i class="fas fa-share-alt"></i> Compartilhar anúncio</button>
-            <button onclick="compartilhar('cadastro')"><i class="fas fa-share-alt"></i> Compartilhar cadastro</button>
 
-            <div style="display: none;" id="historico">
-                <h3>Historico de Alterações</h3>
-                <div id="container-historico" class="container">
-                    <table id="historico-table">
-                        <thead>
-                            <tr>
-                                <th>Data</th>
-                                <th>Usuário</th>
-                                <th>Alteração</th>
-                            </tr>
-                        </thead>
-                        <tbody id="historico-body">
-                            <tr>
-                                <td>2023-01-01</td>
-                                <td>João Silva</td>
-                                <td>Alteração no endereço</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
+
+            <div id="historico">
+                <h3>Historico de Alterações:</h3>
+
+                <table id="historico-table">
+                    <thead>
+                        <tr>
+                            <th>Data</th>
+                            <th>Usuário</th>
+                            <th>Alteração</th>
+                        </tr>
+                    </thead>
+                    <tbody id="historico-body">
+                        <tr>
+
+                        </tr>
+                    </tbody>
+                </table>
             </div>
 
             <div id="media-valores">
