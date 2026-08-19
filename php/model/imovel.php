@@ -73,6 +73,7 @@ class Imovel
     private int $quantVagas;
     private int $quantBanheiros;
     private int $quantVarandas;
+    private int $quantSuites;
     private ?Categoria $categoria;
     private ?Endereco $endereco;
     private ?Status $status;
@@ -245,6 +246,16 @@ class Imovel
     public function setQuantSalas(int $value)
     {
         $this->quantSalas = $value;
+    }
+
+    public function setQuantSuites(int $value)
+    {
+        $this->quantSuites = $value;
+    }
+
+    public function getQuantSuites()
+    {
+        return $this->quantSuites;
     }
 
     public function getQuantVagas()

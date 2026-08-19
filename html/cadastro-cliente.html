@@ -48,7 +48,7 @@
                                 <option value="CLIENTE">Cliente</option>
                                 <option value="VISTORIADOR">Vistoriador</option>
                                 <option value="GERENTE">Gerente</option>
-                                <option value="ADMIN">Administrador</option>
+                                <option value="ADMINISTRADOR">Administrador</option>
                             </select>
                         </div>
                         <div class="vertical-separator">
@@ -82,7 +82,7 @@
                         </div>
                         <div class="vertical-separator">
                             <label for="" id="stt-numero">Número</label>
-                            <input type="number" placeholder="" id="ta-numero" name="numero" required>
+                            <input type="number" placeholder="" id="ta-numero" name="numero">
                         </div>
                         <div class="vertical-separator">
                             <label for="" id="stt-complemento">Complemento</label>
@@ -109,7 +109,7 @@
                         </div>
                         <div class="vertical-separator">
                             <label for="" id="stt-cep">CEP</label>
-                            <input type="text" id="ta-cep" name="cep" required oninput="preencherEndereco(event)"
+                            <input type="text" id="ta-cep" name="cep" oninput="preencherEndereco(event)"
                                 minlength="14" maxlength="14" placeholder="">
                         </div>
                     </div>
@@ -158,23 +158,24 @@
             <button id="bt-salvar-alteracoes" class="bt-success" onclick="salvar()">Salvar</button>
             <button id="bt-apagar-cadastro" class="bt-delete" onclick="apagar()">Apagar</button>
             <button onclick="compartilhar('cadastro')"><i class="fas fa-share-alt"></i> Compartilhar cadastro</button>
-        </div>
-        <div id="historico">
-            <h3>Historico de Alterações:</h3>
-            <table id="historico-table">
-                <thead>
-                    <tr>
-                        <th>Data</th>
-                        <th>Usuário</th>
-                        <th>Alteração</th>
-                    </tr>
-                </thead>
-                <tbody id="historico-body">
-                    <tr>
 
-                    </tr>
-                </tbody>
-            </table>
+            <div id="historico">
+                <h3>Historico de Alterações:</h3>
+                <table id="historico-table">
+                    <thead>
+                        <tr>
+                            <th>Data</th>
+                            <th>Usuário</th>
+                            <th>Alteração</th>
+                        </tr>
+                    </thead>
+                    <tbody id="historico-body">
+                        <tr>
+
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 

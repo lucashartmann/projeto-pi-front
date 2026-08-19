@@ -99,6 +99,7 @@ class ProprietarioImovelDAO
             $imovel->setQuantVagas($dados['quant_vagas'] !== null ? (int) $dados['quant_vagas'] : 0);
             $imovel->setQuantBanheiros($dados['quant_banheiros'] !== null ? (int) $dados['quant_banheiros'] : 0);
             $imovel->setQuantVarandas($dados['quant_varandas'] !== null ? (int) $dados['quant_varandas'] : 0);
+            $imovel->setQuantSuites($dados['quant_suites'] !== null ? (int) $dados['quant_suites'] : 0);
             $imovel->setIptu($dados['iptu'] !== null ? (float) $dados['iptu'] : 0);
             $imovel->setValorCondominio($dados['valor_condominio'] !== null ? (float) $dados['valor_condominio'] : 0);
             $imovel->setAndar($dados['andar'] !== null ? (int) $dados['andar'] : 0);

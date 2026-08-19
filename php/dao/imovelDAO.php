@@ -254,16 +254,6 @@ class ImovelDAO
             $anuncio->setVideos($anexos['Videos'] ?? null);
             $anuncio->setAnexos($anexos['Documentos'] ?? null);
 
-
-
-            $dataCadastro = $dados['data_cadastro']
-                ? new DateTime($dados['data_cadastro'])
-                : null;
-
-            $dataModificacao = $dados['data_modificacao']
-                ? new DateTime($dados['data_modificacao'])
-                : null;
-
             $imovelObj = new Imovel($endereco, Status::tryFrom($dados['status']), Categoria::tryFrom($dados['categoria']));
 
             $condominio = null;
@@ -285,6 +275,7 @@ class ImovelDAO
             $imovelObj->setQuantVagas($dados['quant_vagas'] !== null ? (int) $dados['quant_vagas'] : 0);
             $imovelObj->setQuantBanheiros($dados['quant_banheiros'] !== null ? (int) $dados['quant_banheiros'] : 0);
             $imovelObj->setQuantVarandas($dados['quant_varandas'] !== null ? (int) $dados['quant_varandas'] : 0);
+            $imovelObj->setQuantSuites($dados['quant_suites'] !== null ? (int) $dados['quant_suites'] : 0);
             $imovelObj->setIptu($dados['iptu'] !== null ? (float) $dados['iptu'] : 0);
             $imovelObj->setValorCondominio($dados['valor_condominio'] !== null ? (float) $dados['valor_condominio'] : 0);
             $imovelObj->setAndar($dados['andar'] !== null ? (int) $dados['andar'] : 0);
@@ -295,9 +286,12 @@ class ImovelDAO
             $imovelObj->setAreaPrivativa($dados['area_privativa'] !== null ? (float) $dados['area_privativa'] : 0);
             $imovelObj->setSituacao($dados['situacao'] ? Situacao::tryFrom($dados['situacao']) : null);
             $imovelObj->setOcupacao($dados['ocupacao'] ? Ocupacao::tryFrom($dados['ocupacao']) : null);
-
-            $imovelObj->setDataCadastro($dataCadastro);
-            $imovelObj->setDataModificacao($dataModificacao);
+            $imovelObj->setDataCadastro($dados['data_cadastro']
+                ? new DateTime($dados['data_cadastro'])
+                : null);
+            $imovelObj->setDataModificacao($dados['data_modificacao']
+                ? new DateTime($dados['data_modificacao'])
+                : null);
             $imovelObj->setAnuncio($anuncio);
             $imovelObj->setCondominio($condominio);
             $imovelObj->setDestacado((bool) $dados['destacado']);
@@ -677,6 +671,7 @@ class ImovelDAO
                 quant_vagas = :vagas,
                 quant_banheiros = :banheiros,
                 quant_varandas = :varandas,
+                quant_suites = :quant_suites,
                 categoria = :categoria,
                 id_endereco = :endereco,
                 status = :status,
@@ -709,6 +704,7 @@ class ImovelDAO
                 ':vagas' => $imovel->getQuantVagas(),
                 ':banheiros' => $imovel->getQuantBanheiros(),
                 ':varandas' => $imovel->getQuantVarandas(),
+                ':quant_suites' => $imovel->getQuantSuites(),
                 ':categoria' => $imovel->getCategoria() ? $imovel->getCategoria()->value : null,
                 ':endereco' => $imovel->getEndereco() ? $imovel->getEndereco()->getId() : null,
                 ':status' => $imovel->getStatus() ? $imovel->getStatus()->value : null,
@@ -745,13 +741,13 @@ class ImovelDAO
             $sql = "
             INSERT INTO imovel (
                 valor_venda, valor_aluguel, quant_quartos, quant_salas, quant_vagas,
-                quant_banheiros, quant_varandas, categoria, id_endereco, status,
+                quant_banheiros, quant_varandas, quant_suites, categoria, id_endereco, status,
                 iptu, valor_condominio, andar, estado, bloco, ano_construcao,
                 area_total, area_privativa, situacao, ocupacao,
                 id_corretor, id_captador,
                 data_cadastro, data_modificacao, id_condominio, destacado, quant_clicks
             ) 
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         ";
 
 
@@ -764,6 +760,7 @@ class ImovelDAO
                 $imovel->getQuantVagas(),
                 $imovel->getQuantBanheiros(),
                 $imovel->getQuantVarandas(),
+                $imovel->getQuantSuites(),
                 $imovel->getCategoria() ? $imovel->getCategoria()->value : null,
                 $imovel->getEndereco() ? $imovel->getEndereco()->getId() : null,
                 $imovel->getStatus() ? $imovel->getStatus()->value : null,

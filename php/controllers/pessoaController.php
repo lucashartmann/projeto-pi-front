@@ -9,6 +9,7 @@ require_once __DIR__ . '/../dao/funcionarioDAO.php';
 require_once __DIR__ . '/../dao/pessoaDAO.php';
 require_once __DIR__ . '/../dao/enderecoDAO.php';
 require_once __DIR__ . '/../services/pessoaService.php';
+require_once __DIR__ . '/../model/validacao.php';
 
 class PessoaController
 {
@@ -44,7 +45,9 @@ class PessoaController
                     "creci" => $usuario instanceof Corretor ? $usuario->getCreci() ?? null : null,
                     "salario" => method_exists($usuario, 'getSalario') ? $usuario->getSalario() ?? null : null,
                     "data_nascimento" => $usuario->getDataNascimento() ? $usuario->getDataNascimento()->format('d-m-Y') : null,
-                    "tipo" => ($usuario instanceof Proprietario ? "PROPRIETARIO" : ($usuario instanceof Cliente ? "CLIENTE" : $usuario->getCargo() ?? null)),
+
+
+                    "tipo" => ($usuario instanceof Proprietario ? "PROPRIETARIO" : ($usuario instanceof Cliente ? "CLIENTE" : $usuario?->getCargo()->value ?? null)),
                     "data_cadastro" => $usuario->getDataCadastro() ? $usuario->getDataCadastro() : null,
                     "data_modificacao" => $usuario->getDataModificacao() ? $usuario->getDataModificacao() : null,
                     "imoveis" => array_map(function ($imovel) {
@@ -92,6 +95,7 @@ class PessoaController
     function atualizar($dados)
     {
         try {
+            session_start();
             $nome = array_key_exists('nome', $dados) ? $dados['nome'] : "";
             $email = array_key_exists('email', $dados) ? $dados['email'] : "";
             $senha = array_key_exists('senha', $dados) ? $dados['senha'] : "";
@@ -111,12 +115,12 @@ class PessoaController
             $uf = array_key_exists('uf', $dados) ? $dados['uf'] : "";
             $cep = array_key_exists('cep', $dados) && Validacao::validarCEP($dados['cep']) ? str_replace('-', '', $dados['cep']) : "";
             $complemento = array_key_exists('complemento', $dados) ? $dados['complemento'] : "";
-
+            
             if ($id > 0) {
                 $pessoaDAO = new PessoaDAO();
                 $pessoa = $pessoaDAO->buscarPorId($id);
             } else {
-                switch ($tipo) {
+                switch (strtoupper($tipo)) {
                     case "CORRETOR":
                         $pessoa = new Corretor($email, $nome, $cpfCnpj, $creci);
                         $pessoa->setSalario($salario);
@@ -150,6 +154,7 @@ class PessoaController
                         $pessoa->setSalario($salario);
                         break;
                     default:
+                    error_log("Tipo de pessoa inválido: " . $tipo);
                         return (["status" => "erro", "mensagem" => "Tipo de usuário inválido"]);
                 }
             }
@@ -188,7 +193,7 @@ class PessoaController
                     try {
                         $historicoDAO = new HistoricoDAO();
                         $usuarioAtual = $_SESSION['usuario'] ?? null;
-                        $historico = new Historico(alteracao: $_SESSION['usuario']->getNome() . " atualizou " . $pessoa->getNome(), cliente: $pessoa, funcionario: $usuarioAtual);
+                        $historico = new Historico(alteracao: "Atualizou a pessoa", cliente: $pessoa, funcionario: $usuarioAtual);
                         $historicoDAO->cadastrar($historico);
                     } catch (Exception $e) {
                         error_log("Erro ao registrar histórico de destaque de imóveis: " . $e->getMessage());
@@ -203,7 +208,7 @@ class PessoaController
                     try {
                         $historicoDAO = new HistoricoDAO();
                         $usuarioAtual = $_SESSION['usuario'] ?? null;
-                        $historico = new Historico(alteracao: $_SESSION['usuario']->getNome() . " cadastrou " . $pessoa->getNome(), cliente: $pessoa, funcionario: $usuarioAtual);
+                        $historico = new Historico(alteracao: "Cadastrou a pessoa", cliente: $pessoa, funcionario: $usuarioAtual);
                         $historicoDAO->cadastrar($historico);
                     } catch (Exception $e) {
                         error_log("Erro ao registrar histórico de destaque de imóveis: " . $e->getMessage());
@@ -222,7 +227,7 @@ class PessoaController
             $pessoaDAO = new PessoaDAO();
             $usuario = $pessoaDAO->buscarPorId($id);
             if ($usuario) {
-                return self::montarJson([$usuario]);
+                return self::montarJson([$usuario])[0];
             } else {
                 return (["status" => "erro", "mensagem" => "Usuário não encontrado"]);
             }
@@ -234,6 +239,7 @@ class PessoaController
     function apagar(int $id)
     {
         try {
+            session_start();
             $pessoaDAO = new PessoaDAO();
             $usuario = $pessoaDAO->buscarPorId($id);
             if ($usuario) {
@@ -243,7 +249,7 @@ class PessoaController
                         try {
                             $historicoDAO = new HistoricoDAO();
                             $usuarioAtual = $_SESSION['usuario'] ?? null;
-                            $historico = new Historico(alteracao: $_SESSION['usuario']->getNome() . " apagou " . $usuario->getNome(), cliente: $usuario, funcionario: $usuarioAtual);
+                            $historico = new Historico(alteracao: "Apagou a pessoa ", cliente: $usuario, funcionario: $usuarioAtual);
                             $historicoDAO->cadastrar($historico);
                         } catch (Exception $e) {
                             error_log("Erro ao registrar histórico de destaque de imóveis: " . $e->getMessage());

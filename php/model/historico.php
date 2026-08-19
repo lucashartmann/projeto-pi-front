@@ -24,6 +24,11 @@ class Historico
         $this->imovel = $imovel;
     }
 
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
+
     public function getFuncionario(): ?Pessoa
     {
         return $this->funcionario;

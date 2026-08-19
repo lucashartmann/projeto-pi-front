@@ -210,7 +210,7 @@ async function carregarDados() {
                 </div>
                 <div class="separador">
                     <label for="" id="lbl-data-cadastro">Data de Cadastro</label>
-                    <label id="lbl-data-cadastro" name="data-cadastro">${new Date(dados.usuario.data_cadastro?.date).toLocaleDateString()}</label>
+                    <label id="lbl-data-cadastro" name="data-cadastro">${new Date(dados.usuario.data_cadastro?.date).toLocaleString()}</label>
                 </div>
         `;
         let dadosBasicos = document.getElementById("dados-basicos");

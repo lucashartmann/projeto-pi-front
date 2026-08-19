@@ -1068,7 +1068,7 @@ async function carregarHistorico(idImovel) {
             tdData.textContent = item.data;
             tr.appendChild(tdData);
             let tdUsuario = document.createElement("td");
-            tdUsuario.textContent = item.usuario.nome;
+            tdUsuario.textContent = item.funcionario.nome;
             tr.appendChild(tdUsuario);
             let tdAlteracao = document.createElement("td");
             tdAlteracao.textContent = item.alteracao;

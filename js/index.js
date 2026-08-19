@@ -91,16 +91,17 @@ function inicializarSwiper() {
     var swiper = new Swiper('.swiper-mais-vistos', {
         direction: 'horizontal',
         initialSlide: 0,
+        loop: true,
         scrollbar: false,
         obeserver: false,
-        navigation: { nextEl: '.swiper-anuncio .swiper-button-next', prevEl: '.swiper-anuncio .swiper-button-prev' },
+        navigation: { nextEl: '.swiper-mais-vistos .swiper-button-next', prevEl: '.swiper-mais-vistos .swiper-button-prev' },
         spaceBetween: 30,
         centeredSlides: false,
         breakpoints: {
-            0: { slidesPerView: imovel.anuncio.imagens.length > 1 ? 1 : imovel.anuncio.imagens.length },
-            640: { slidesPerView: imovel.anuncio.imagens.length > 2 ? 2 : imovel.anuncio.imagens.length },
-            768: { slidesPerView: imovel.anuncio.imagens.length > 3 ? 3 : imovel.anuncio.imagens.length },
-            1024: { slidesPerView: imovel.anuncio.imagens.length > 4 ? 4 : imovel.anuncio.imagens.length },
+            0: { slidesPerView:1 },
+            640: { slidesPerView:2 },
+            768: { slidesPerView:3 },
+            1024: { slidesPerView: 4 },
         },
     });
 }
@@ -122,12 +123,13 @@ function prevSlide() {
 
 async function carregarAnuncios(dados) {
     const section = document.getElementById("anuncios");
-    let $usuario = usuarioLogado;
+    let usuario = usuarioLogado;
     if (!section || !dados) return;
     if (dados.length === 0) return;
     if (dados.filter(imovel => imovel?.anuncio?.imagens?.[0]).length === 0) return;
     section.innerHTML = "";
     let html = "";
+    html += `<h3>Imóveis Disponíveis</h3>`;
     for (const imovel of dados) {
         const b64 = imovel.anuncio?.imagens?.[0] || null;
         if (!b64) continue;
@@ -142,7 +144,7 @@ async function carregarAnuncios(dados) {
             precoAluguel = `<span>Aluguel: <span class="preco">${formatarValor(imovel.valor_aluguel)}</span></span>`;
         }
 
-        const classe = $usuario && $usuario.favoritos && $usuario.favoritos.includes(imovel.id) ? "curtido" : "";
+        const classe = usuario && usuario.favoritos && usuario.favoritos.includes(imovel.id) ? "curtido" : "";
 
         // TODO: Botar os ids dos imóveis favoritados na lista imoveisCurtidos
 
@@ -340,6 +342,7 @@ function maisVistos(dados) {
     dados = dados.filter(imovel => imovel?.quant_clicks > 0);
     section.style.display = "flex";
     section.style.flexDirection = "column";
+    let usuario = usuarioLogado;
     for (var i = 0; i < tamanho; i++) {
         var imovel = dados[i];
         const b64 = imovel.anuncio?.imagens?.[0] || null;
@@ -355,9 +358,9 @@ function maisVistos(dados) {
             precoAluguel = `<span>Aluguel: <span class="preco">${formatarValor(imovel.valor_aluguel)}</span></span>`;
         }
 
-        const classe = $usuario && $usuario.favoritos && $usuario.favoritos.includes(imovel.id) ? "curtido" : "";
+        const classe = usuario && usuario.favoritos && usuario.favoritos.includes(imovel.id) ? "curtido" : "";
 
-        html = `
+        let html = `
             <a href="html/dados-imovel.html?id=${imovel.id}" class="swiper-slide anuncio-link anuncio-imovel" >
                 <i class="fas fa-heart ${classe}" onclick="curtirImovel(event, ${imovel.id})"></i>
                 <div class="swiper swiper-anuncio">
@@ -423,6 +426,12 @@ window.addEventListener("DOMContentLoaded", async () => {
                     swiper.slideNext();
                 }
             }, 7500);
+            setInterval(() => {
+                const swiper = document.querySelector('.swiper-mais-vistos').swiper;
+                if (swiper) {
+                    swiper.slideNext();
+                }
+            }, 8000);
         }
     }
 

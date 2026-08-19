@@ -26,6 +26,7 @@ class HistoricoDAO
                 imovel.quant_vagas AS imovel_quant_vagas,
                 imovel.quant_banheiros AS imovel_quant_banheiros,
                 imovel.quant_varandas AS imovel_quant_varandas,
+                imovel.quant_suites AS imovel_quant_suites,
                 imovel.categoria AS imovel_categoria,
                 imovel.id_endereco AS imovel_id_endereco,
                 imovel.status AS imovel_status,
@@ -116,8 +117,9 @@ class HistoricoDAO
 
                 historico.id,
                 historico.descricao,
+                historico.data,
 
-                historico_pessoa_cliente.id as historico_cliente_id,
+                historico_pessoa_cliente.id as historico_cliente_cliente_id,
                 historico_pessoa_cliente.email AS historico_cliente_email,
                 historico_pessoa_cliente.nome AS historico_cliente_nome,
                 historico_pessoa_cliente.cpf_cnpj AS historico_cliente_cpf_cnpj,
@@ -144,7 +146,7 @@ class HistoricoDAO
                 historico_usuario_funcionario.ultimo_login as historico_funcionario_ultimo_login,
                 historico_usuario_funcionario.ativo AS historico_funcionario_ativo,
                 historico_usuario_funcionario.id_pessoa AS historico_funcionario_usuario_id,
-                historico_funcionario.id_pessoa AS historico_funcionario_id,
+                historico_funcionario.id_pessoa AS historico_funcionario_funcionario_id,
                 historico_funcionario.salario AS historico_funcionario_salario,
                 historico_funcionario.matricula AS historico_funcionario_matricula,
                 historico_funcionario.data_admissao AS historico_funcionario_data_admissao,
@@ -220,10 +222,10 @@ class HistoricoDAO
                     ON historico_funcionario.id_pessoa = historico_pessoa_funcionario.id
 
                 LEFT JOIN corretor imovel_corretor
-                    ON imvovel_corretor.id_funcionario = imovel_funcionario_corretor.id_pessoa
+                    ON imovel_corretor.id_funcionario = imovel_funcionario_corretor.id_pessoa
 
                 LEFT JOIN corretor historico_corretor
-                    ON historico_corretor.id_funcionario = historico_funcionario_corretor.id_pessoa
+                    ON historico_corretor.id_funcionario = historico_funcionario.id_pessoa
 
                 LEFT JOIN endereco imovel_endereco_captador
                     ON imovel_endereco_captador.id = imovel_pessoa_captador.id_endereco
@@ -235,7 +237,7 @@ class HistoricoDAO
                     ON historico_endereco_cliente.id = historico_pessoa_cliente.id_endereco
 
                 LEFT JOIN endereco historico_endereco_funcionario
-                    ON historico_endereco_funcionario.id = historico_pessoa_corretor.id_endereco
+                    ON historico_endereco_funcionario.id = historico_pessoa_funcionario.id_endereco
             ";
 
 
@@ -346,6 +348,9 @@ class HistoricoDAO
             $historicoObj->setFuncionario($funcionario);
             $historicoObj->setCliente($cliente);
             $historicoObj->setImovel($imovel);
+            $historicoObj->setDataAlteracao($registro['data']
+                ? new DateTime($registro['data'])
+                : null);
             return $historicoObj;
         } catch (Exception $e) {
             error_log("historicoDAO::montar - Error: " . $e->getMessage());

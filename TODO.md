@@ -1,6 +1,7 @@
 ## Ideias:
 
 - Botar um botao X na imagem no cadastro do imóvel para remover a imagem especifica
+- Adicionar icons no cadastro
 
 # Implementar:
 
@@ -8,14 +9,14 @@
 
 - [ ] Quando eu cadastro uma imagem ao imovel, ele remove as imagens de todos os imóveis pré cadastrados pelo **init** na tabela midia_anuncio
 - [ ] Quando eu clico em semana ou dia no calendario, deixa de ser possivel adicionar um evento a uma data, pois o JS aplica só ao carregar a pagina
+- [ ] Tem algum problema no cadastro de filtros no __init__, ele está cadastrando varios filtos em uma só row, e filtros duplicados.
 
 ## Geral:
 
 - [ ] As notificaçoes botar q se um cliente for cadastrado mandar uma notificação para todos os corretores cadastrando por id do corretor na tabela notificacao e botar o tipo ser "atendimento', "cadastro", etc
-
-- [ ] !!! Continuar reformulação do banco de dados. Implementar funcionarioController, corretorController e etc. No JS implementar buscarCorretor e etc. Ser especifico, mudar a API tambem do PHP.
-
 - [ ] Adicionar clicks aos imóveis do banco, e também reiniciar o banco
+- [ ] Adicionar quantidade de suites ao imovel no banco, controller, cadastro, dados-imovel e etc
+- [ ] Refazer a proprietarioImovelDAO
 
 ### Login:
 
@@ -41,7 +42,8 @@
 
 ### Estoque e Anuncios:
 
-- [ ] Salvar na sessao o filtro usado para ordenar as listas
+- [ ] Salvar na sessao a tabela escolhida do select. Se for imóvel ou pessoas e qual tipo de pessoa
+- [ ] Na tabela de pessoas botar um botao de editar ao lado do de apagar, e linkar o de apagar com a função de apagar
 
 ### Dados da imobiliaria:
 

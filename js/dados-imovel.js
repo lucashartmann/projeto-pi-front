@@ -137,14 +137,19 @@ async function setupDados(imovel) {
     document.querySelector("#entrar-contato #area-total").innerText = `${imovel.area_total != null ? imovel.area_total : 'n/a'} m²`;
     document.querySelector("#entrar-contato #area-privativa").innerText = `${imovel.area_privativa != null ? imovel.area_privativa : 'n/a'} m²`;
     document.querySelector("#entrar-contato #quartos").innerText = imovel.quantidade_quartos != null ? imovel.quantidade_quartos : 'n/a';
-    // document.querySelector("#entrar-contato #suite").innerText = imovel.suite;
+    document.querySelector("#entrar-contato #suites").innerText = imovel.quantidade_suites != null ? imovel.quantidade_suites : 'n/a';
     document.querySelector("#entrar-contato #banheiros").innerText = imovel.quantidade_banheiros != null ? imovel.quantidade_banheiros : 'n/a';
     document.querySelector("#entrar-contato #vagas").innerText = imovel.quantidade_vagas != null ? imovel.quantidade_vagas : "n/a";
 
     if (imovel.filtros && imovel.filtros.length > 0) {
         const divFiltros = document.createElement("div");
         divFiltros.className = "div-filtros";
+        console.log("Filtros do imóvel:", imovel.filtros);
         for (const filtro of imovel.filtros) {
+            if (!filtro || filtro.trim() === "") {
+                console.warn("Filtro inválido encontrado:", filtro);
+                continue;
+            }
             divFiltros.innerHTML += `<input type="checkbox" checked disabled><label>${filtro}</label>`;
         }
         const h3Filtros = document.createElement("h3");
@@ -154,10 +159,14 @@ async function setupDados(imovel) {
         divPai.insertBefore(divFiltros, document.getElementById("mapa"));
     }
 
-    if (imovel.condominio?.filtros) {
+    if (imovel.condominio?.filtros && imovel.condominio.filtros.length > 0) {
         const divFiltros = document.createElement("div");
         divFiltros.className = "div-filtros";
         for (const filtro of imovel.condominio.filtros) {
+            if (!filtro || filtro.trim() === "") {
+                console.warn("Filtro inválido encontrado:", filtro);
+                continue;
+            }
             divFiltros.innerHTML += `<input type="checkbox" checked disabled><label>${filtro}</label>`;
         }
         const h3Filtros = document.createElement("h3");

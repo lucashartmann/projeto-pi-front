@@ -85,7 +85,6 @@ document.addEventListener("DOMContentLoaded", async () => {
                     legend: {
                         position: 'top',
                         labels: {
-                            color: 'white',
                             font: {
                                 size: 16
                             }
@@ -94,7 +93,6 @@ document.addEventListener("DOMContentLoaded", async () => {
                     title: {
                         display: true,
                         text: 'Quantidade de Pessoas por Tipo',
-                        color: 'white',
                         font: {
                             size: 16
                         }
@@ -103,7 +101,6 @@ document.addEventListener("DOMContentLoaded", async () => {
                 scales: {
                     x: {
                         ticks: {
-                            color: 'white',
                             font: {
                                 size: 16
                             }
@@ -111,7 +108,6 @@ document.addEventListener("DOMContentLoaded", async () => {
                     },
                     y: {
                         ticks: {
-                            color: 'white',
                             font: {
                                 size: 16
                             }
@@ -168,7 +164,6 @@ document.addEventListener("DOMContentLoaded", async () => {
                     legend: {
                         position: 'top',
                         labels: {
-                            color: 'white',
                             font: {
                                 size: 16
                             }
@@ -177,7 +172,6 @@ document.addEventListener("DOMContentLoaded", async () => {
                     title: {
                         display: true,
                         text: 'Quantidade de Imóveis por Tipo',
-                        color: 'white',
                         font: {
                             size: 16
                         }
@@ -186,7 +180,6 @@ document.addEventListener("DOMContentLoaded", async () => {
                 scales: {
                     x: {
                         ticks: {
-                            color: 'white',
                             font: {
                                 size: 16
                             }
@@ -194,7 +187,6 @@ document.addEventListener("DOMContentLoaded", async () => {
                     },
                     y: {
                         ticks: {
-                            color: 'white',
                             font: {
                                 size: 16
                             }

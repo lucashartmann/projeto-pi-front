@@ -147,6 +147,7 @@ class Banco extends PDO
                 quant_vagas INTEGER NULL,
                 quant_banheiros INTEGER NULL,
                 quant_varandas INTEGER NULL,
+                quant_suites INTEGER NULL,
                 categoria ENUM('Sala Comercial', 'Apartamento', 'Casa', 'Loja', 'Galpão', 'Cobertura', 'Loft', 'Studio', 'Depósito', 'Pavilhão', 'Prédio Comercial', 'Ponto Comercial', 'Empreendimento', 'Casa em Condomínio', 'Sobrado', 'Sítio', 'Terreno', 'Kitnet', 'Chácara', 'Fazenda') NOT NULL,
                 id_endereco INTEGER NULL UNIQUE,
                 status ENUM('Venda', 'Aluguel', 'Venda e Aluguel', 'Alugado', 'Vendido', 'Pendente') NOT NULL,

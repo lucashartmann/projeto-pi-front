@@ -9,6 +9,9 @@
     <link rel="stylesheet" href="../css/estoque.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://cdn.jsdelivr.net/npm/inputmask/dist/inputmask.min.js"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <link rel="icon" type="image/x-icon" href="../assets/logo.webp">
     <script>
         if (localStorage.getItem("tema") === "escuro") {
@@ -138,6 +141,14 @@
                 <input type="number" name="quantidade_maxima_banheiros" id="banheiros-maximo" min="0" max="20"
                     placeholder="Máximo">
             </div>
+            <label for="">Suítes: </label>
+            <div id="preco">
+                <input type="number" name="quantidade_minima_suites" id="suítes-minimo" min="0" max="20"
+                    placeholder="Mínimo">
+                <label>-</label>
+                <input type="number" name="quantidade_maxima_suites" id="suítes-maximo" min="0" max="20"
+                    placeholder="Máximo">
+            </div>
             <label for="">Vagas: </label>
             <div id="preco">
                 <input type="number" name="quantidade_minima_vagas" id="vagas-minimo" min="0" max="20"
@@ -162,47 +173,64 @@
                 <input type="number" name="quantidade_maxima_varandas" id="varandas-maximo" min="0" max="20"
                     placeholder="Máximo">
             </div>
-            <label>Preço:</label>
+            <label for="">Andar: </label>
             <div id="preco">
-                <input type="number" name="preco_minimo" id="preco-minimo" min="0" max="10000000" placeholder="Mínimo">
+                <input type="number" name="minimo_andar" id="minimo_andar" min="0" max="20" placeholder="Mínimo">
                 <label>-</label>
-                <input type="number" name="preco_maximo" id="preco-maximo" min="0" max="10000000" placeholder="Máximo">
+                <input type="number" name="maximo_andar" id="maximo_andar" min="0" max="20" placeholder="Máximo">
+            </div>
+            <label for="">Valor Venda:</label>
+            <div id="preco">
+                <input type="text" name="valor_minimo_venda" id="valor_minimo_venda" min="0" max="20"
+                    placeholder="Mínimo">
+                <label>-</label>
+                <input type="text" name="valor_maximo_venda" id="valor_maximo_venda" min="0" max="20"
+                    placeholder="Máximo">
+            </div>
+            <label for="">Valor Aluguel:</label>
+            <div id="preco">
+                <input type="text" name="valor_minimo_aluguel" id="valor_minimo_aluguel" min="0" max="20"
+                    placeholder="Mínimo">
+                <label>-</label>
+                <input type="text" name="valor_maximo_aluguel" id="valor_maximo_aluguel" min="0" max="20"
+                    placeholder="Máximo">
             </div>
             <label for="" id="stt-area-total">Área Total</label>
             <div id="preco">
-                <input type="number" name="area_total_minima" id="area-total-minimo" min="0" max="20"
+                <input type="text" name="area_minima_total" id="area_minima_total" min="0" max="20"
                     placeholder="Mínimo">
                 <label>-</label>
-                <input type="number" name="area_total_maxima" id="area-total-maximo" min="0" max="20"
+                <input type="text" name="area_maxima_total" id="area_maxima_total" min="0" max="20"
                     placeholder="Máximo">
             </div>
             <label for="" id="stt-area-privativa">Área Privativa</label>
             <div id="preco">
-                <input type="number" name="area_privativa_minima" id="area-privativa-minimo" min="0" max="20"
+                <input type="text" name="area_minima_privativa" id="area_minima_privativa" min="0" max="20"
                     placeholder="Mínimo">
                 <label>-</label>
-                <input type="number" name="area_privativa_maxima" id="area-privativa-maximo" min="0" max="20"
+                <input type="text" name="area_maxima_privativa" id="area_maxima_privativa" min="0" max="20"
                     placeholder="Máximo">
             </div>
             <label for="" id="stt-condominio">Valor Condomínio:</label>
             <div id="preco">
-                <input type="number" name="valor_condominio_minimo" id="valor-condominio-minimo" min="0" max="20"
+                <input type="text" name="valor_minimo_condominio" id="valor_minimo_condominio" min="0" max="20"
                     placeholder="Mínimo">
                 <label>-</label>
-                <input type="number" name="valor_condominio_maximo" id="valor-condominio-maximo" min="0" max="20"
+                <input type="text" name="valor_maximo_condominio" id="valor_maximo_condominio" min="0" max="20"
                     placeholder="Máximo">
             </div>
             <label for="" id="stt-iptu">Valor IPTU:</label>
             <div id="preco">
-                <input type="number" name="valor_iptu_minimo" id="valor-iptu-minimo" min="0" max="20"
+                <input type="text" name="valor_minimo_iptu" id="valor_minimo_iptu" min="0" max="20"
                     placeholder="Mínimo">
                 <label>-</label>
-                <input type="number" name="valor_iptu_maximo" id="valor-iptu-maximo" min="0" max="20"
+                <input type="text" name="valor_maximo_iptu" id="valor_maximo_iptu" min="0" max="20"
                     placeholder="Máximo">
             </div>
 
+
             <label>CEP</label>
-            <input type="text" name="cep" id="input-cep" oninput="pesquisarCEP(event)">
+            <input type="text" name="cep" id="input-cep">
             <label for="" id="stt-rua">Rua</label>
             <textarea id="ta-rua" readonly=True name="rua"></textarea>
             <label for="" id="stt-numero">Número</label>

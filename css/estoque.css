@@ -161,9 +161,11 @@ table {
     flex-direction: column;
     margin-top: 20px;
     width: 100%;
+   
 
     .resultado {
         display: flex;
+         position: relative;
         gap: 20px;
         /* background-color: #414141; */
         border: #414141 2px groove;
@@ -180,7 +182,7 @@ table {
         }
 
         &:hover {
-            background-color: rgba(186, 174, 174, 0.8);
+            background-color: color-mix(in srgb, var(--background-custom) 75%, var(--background-nav));
             cursor: pointer;
         }
 
@@ -221,7 +223,7 @@ body {
 }
 
 .menu-opcoes {
-    position: fixed;
+    position: absolute; 
     background: var(--background-custom);
     backdrop-filter: blur(40px) !important;
     min-width: 20rem;

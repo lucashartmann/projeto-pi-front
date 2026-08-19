@@ -166,24 +166,19 @@ async function abrirCadastro(usuario) {
         document.getElementById("inpt-creci").value = usuario.creci || "";
         document.getElementById("inpt-salario").value = usuario.salario || "";
         document.getElementById("select-tipo").value = usuario.tipo || "";
-        if (dados.usuario?.data_nascimento) {
+        if (usuario?.data_nascimento) {
             document.getElementById("inpt-data-nascimento").value = usuario.data_nascimento ? formatarData(usuario.data_nascimento) : "";
         }
         if (usuario.telefones && Array.isArray(usuario.telefones)) {
-            const containerTelefones = document.getElementById("container-telefones");
-            containerTelefones.innerHTML = "";
-            usuario.telefones.forEach(telefone => {
-                const novoTelefone = document.createElement("input");
-                novoTelefone.type = "text";
-                novoTelefone.name = "telefone";
-                novoTelefone.value = telefone;
-                novoTelefone.classList.add("inpt-telefone");
-                Inputmask("+99 (99) 99999-9999").mask(novoTelefone);
-                containerTelefones.appendChild(novoTelefone);
+            const telefoneInputs = document.querySelectorAll("input[name='telefone']");
+            usuario.telefones.forEach((telefone, index) => {
+                if (index < telefoneInputs.length) {
+                    telefoneInputs[index].value = telefone;
+                }
             });
         }
         if (usuario.imoveis) {
-            html = "";
+            let html = "";
 
             usuario.imoveis.forEach(imovel => {
                 html += `
@@ -229,7 +224,7 @@ async function carregarHistorico(idCliente) {
             tdData.textContent = item.data;
             tr.appendChild(tdData);
             let tdUsuario = document.createElement("td");
-            tdUsuario.textContent = item.usuario.nome;
+            tdUsuario.textContent = item.funcionario.nome;
             tr.appendChild(tdUsuario);
             let tdAlteracao = document.createElement("td");
             tdAlteracao.textContent = item.alteracao;
@@ -250,33 +245,33 @@ window.addEventListener('DOMContentLoaded', async function (event) {
         carregarHistorico(usuario.id);
         switch (usuario.tipo) {
             case 'ADMIN':
-                select.innerHTML += `<option value="Proprietário">Proprietário</option>
-                <option value="Financeiro">Financeiro</option>
-                <option value="Captador">Captador</option>
-                <option value="Corretor">Corretor</option>
-                <option value="Cliente">Cliente</option>
-                <option value="Vistoriador">Vistoriador</option>
-                <option value="Gerente">Gerente</option>
-                <option value="Administrador">Administrador</option>`
+                select.innerHTML += `<option value="PROPRIETARIO">Proprietário</option>
+                <option value="FINANCEIRO">Financeiro</option>
+                <option value="CAPTADOR">Captador</option>
+                <option value="CORRETOR">Corretor</option>
+                <option value="CLIENTE">Cliente</option>
+                <option value="VISTORIADOR">Vistoriador</option>
+                <option value="GERENTE">Gerente</option>
+                <option value="ADMINISTRADOR">Administrador</option>`
                 break;
 
             case "CORRETOR":
-                select.innerHTML += `<option value="Proprietário">Proprietário</option>
-                <option value="Cliente">Cliente</option>`
+                select.innerHTML += `<option value="PROPRIETARIO">Proprietário</option>
+                <option value="CLIENTE">Cliente</option>`
                 break;
 
             case "GERENTE":
-                select.innerHTML += `<option value="Proprietário">Proprietário</option>
-                <option value="Financeiro">Financeiro</option>
-                <option value="Captador">Captador</option>
-                <option value="Corretor">Corretor</option>
-                <option value="Cliente">Cliente</option>
-                <option value="Vistoriador">Vistoriador</option>`
+                select.innerHTML += `<option value="PROPRIETARIO">Proprietário</option>
+                <option value="FINANCEIRO">Financeiro</option>
+                <option value="CAPTADOR">Captador</option>
+                <option value="CORRETOR">Corretor</option>
+                <option value="CLIENTE">Cliente</option>
+                <option value="VISTORIADOR">Vistoriador</option>`
                 break;
 
             case "CAPTADOR":
-                select.innerHTML += `<option value="Proprietário">Proprietário</option>
-                <option value="Cliente">Cliente</option>`
+                select.innerHTML += `<option value="PROPRIETARIO">Proprietário</option>
+                <option value="CLIENTE">Cliente</option>`
                 break;
 
             case "CLIENTE":
@@ -286,7 +281,7 @@ window.addEventListener('DOMContentLoaded', async function (event) {
     }
 
     const id = new URLSearchParams(window.location.search).get("id");
-    let usuario2 = id ? await getDadosUsuario(id) : null;
+    let usuario2 = id ? await getUsuario(id) : null;
     if (usuario2) {
         await abrirCadastro(usuario2);
     }

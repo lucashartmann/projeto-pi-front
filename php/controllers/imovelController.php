@@ -40,6 +40,7 @@ class ImovelController
 
     function destacar($id)
     {
+        session_start();
         if (str_contains(",", $id)) {
             $id = (array) $id;
         } else {
@@ -58,7 +59,7 @@ class ImovelController
                     try {
                         foreach ($id as $idImovel) {
                             $usuarioAtual = $_SESSION['usuario'] ?? null;
-                            $historico = new Historico(alteracao: $_SESSION['usuario']->getNome() . " destacou o imóvel", imovel: $imovelDAO->buscarPorId($idImovel), funcionario: $usuarioAtual);
+                            $historico = new Historico(alteracao: "Destacou o imóvel", imovel: $imovelDAO->buscarPorId($idImovel), funcionario: $usuarioAtual);
                             $historicoDAO->cadastrar($historico);
                         }
                     } catch (Exception $e) {
@@ -79,7 +80,7 @@ class ImovelController
                     try {
                         $historicoDAO = new HistoricoDAO();
                         $usuarioAtual = $_SESSION['usuario'] ?? null;
-                        $historico = new Historico(alteracao: $_SESSION['usuario']->getNome() . " destacou o imóvel", imovel: $imovelDAO->buscarPorId($id), funcionario: $usuarioAtual);
+                        $historico = new Historico(alteracao: "Destacou o imóvel", imovel: $imovelDAO->buscarPorId($id), funcionario: $usuarioAtual);
                         $historicoDAO->cadastrar($historico);
                     } catch (Exception $e) {
                         error_log("Erro ao registrar histórico de destaque de imóveis: " . $e->getMessage());
@@ -113,6 +114,7 @@ class ImovelController
 
     function apagar(int $id)
     {
+         session_start();
         $imovelDAO = new ImovelDAO();
         if (is_array($id)) {
             $listaIDS = $id;
@@ -130,7 +132,7 @@ class ImovelController
                     if (isset($_SESSION['usuario']) || !empty($_SESSION['usuario'])) {
                         try {
                             $usuarioAtual = $_SESSION['usuario'] ?? null;
-                            $historico = new Historico(alteracao: $_SESSION['usuario']->getNome() . " removeu o imóvel", imovel: $imovelDAO->buscarPorId($id), funcionario: $usuarioAtual);
+                            $historico = new Historico(alteracao: "Removeu o imóvel", imovel: $imovelDAO->buscarPorId($id), funcionario: $usuarioAtual);
                             $historicoDAO->cadastrar($historico);
                         } catch (Exception $e) {
                             error_log("Erro ao registrar histórico de destaque de imóveis: " . $e->getMessage());
@@ -162,7 +164,7 @@ class ImovelController
                             try {
                                 $historicoDAO = new HistoricoDAO();
                                 $usuarioAtual = $_SESSION['usuario'] ?? null;
-                                $historico = new Historico(alteracao: $_SESSION['usuario']->getNome() . " removeu o imóvel", imovel: $imovelDAO->buscarPorId($id), funcionario: $usuarioAtual);
+                                $historico = new Historico(alteracao: "Removeu o imóvel", imovel: $imovelDAO->buscarPorId($id), funcionario: $usuarioAtual);
                                 $historicoDAO->cadastrar($historico);
                             } catch (Exception $e) {
                                 error_log("Erro ao registrar histórico de destaque de imóveis: " . $e->getMessage());
@@ -192,6 +194,7 @@ class ImovelController
     public function cadastrar($data)
     {
         try {
+             session_start();
             $id = array_key_exists("ref", $data) ? $data["ref"] : 0;
             $nomeCondominio = array_key_exists("nome_condominio", $data) ? $data["nome_condominio"] : "";
             $valorVenda = array_key_exists("valor_venda", $data) ? $data["valor_venda"] : 0.0;
@@ -205,6 +208,7 @@ class ImovelController
             $valorAluguel = $valorAluguel ? (float) trim(str_replace(['-', 'R$'], '', $valorAluguel) ?? 0) : 0.0;
 
             $quantQuartos = array_key_exists("quantidade_quartos", $data) ? (int) trim(($data["quantidade_quartos"] ?? 0)) : 0;
+            $quantSuites = array_key_exists("quantidade_suites", $data) ? (int) trim(($data["quantidade_suites"] ?? 0)) : 0;
             $quantSalas = array_key_exists("quantidade_salas", $data) ? (int) trim(($data["quantidade_salas"] ?? 0)) : 0;
             $quantVagas = array_key_exists("quantidade_vagas", $data) ? (int) trim(($data["quantidade_vagas"] ?? 0)) : 0;
             $quantBanheiros = array_key_exists("quantidade_banheiros", $data) ? (int) trim(($data["quantidade_banheiros"] ?? 0)) : 0;
@@ -273,7 +277,6 @@ class ImovelController
             str_replace(['[', ']', '"'], '', $data["filtros_apartamento"]) : [];
             $filtrosCondominio = array_key_exists("filtros_condominio", $data) ?  (array) str_replace(['[', ']', '"'], '', $data["filtros_condominio"]) : [];
 
-
             $complemento .= $bloco;
 
             $corretor = null;
@@ -301,9 +304,6 @@ class ImovelController
                 }
                 $proprietarios = $proprietariosObjs;
             }
-
-
-
 
             $imovelObj = NULL;
             $anuncioObj = new Anuncio();
@@ -357,6 +357,7 @@ class ImovelController
             $imovelObj->setValorVenda($valorVenda);
             $imovelObj->setValorAluguel($valorAluguel);
             $imovelObj->setQuantQuartos($quantQuartos);
+            $imovelObj->setQuantSuites($quantSuites);
             $imovelObj->setQuantSalas($quantSalas);
             $imovelObj->setQuantVagas($quantVagas);
             $imovelObj->setQuantBanheiros($quantBanheiros);
@@ -394,7 +395,7 @@ class ImovelController
                         try {
                             $historicoDAO = new HistoricoDAO();
                             $usuarioAtual = $_SESSION['usuario'] ?? null;
-                            $historico = new Historico(alteracao: $_SESSION['usuario']->getNome() . " atualizou o imóvel", imovel: $imovelDAO->buscarPorId($id), funcionario: $usuarioAtual);
+                            $historico = new Historico(alteracao: "Atualizou o imóvel", imovel: $imovelDAO->buscarPorId($id), funcionario: $usuarioAtual);
                             $historicoDAO->cadastrar($historico);
                         } catch (Exception $e) {
                             error_log("Erro ao registrar histórico de destaque de imóveis: " . $e->getMessage());
@@ -411,7 +412,7 @@ class ImovelController
                         try {
                             $historicoDAO = new HistoricoDAO();
                             $usuarioAtual = $_SESSION['usuario'] ?? null;
-                            $historico = new Historico(alteracao: $_SESSION['usuario']->getNome() . " cadastrou o imóvel", imovel: $imovelDAO->buscarPorId($id), funcionario: $usuarioAtual);
+                            $historico = new Historico(alteracao: "Cadastrou o imóvel", imovel: $imovelDAO->buscarPorId($id), funcionario: $usuarioAtual);
                             $historicoDAO->cadastrar($historico);
                         } catch (Exception $e) {
                             error_log("Erro ao registrar histórico de destaque de imóveis: " . $e->getMessage());
@@ -581,7 +582,7 @@ class ImovelController
                     "mensagem" => "Nenhum imóvel encontrado com o ID fornecido"
                 ];
             } else {
-                return self::montarJson([$imovelObj]);
+                return self::montarJson([$imovelObj])[0];
             }
         } catch (Exception $e) {
             return (["status" => "erro", "mensagem" => "Erro ao obter imóvel: " . $e->getMessage()]);
@@ -751,6 +752,7 @@ class ImovelController
                 "quantidade_varandas" => $imovel->getQuantidadeVarandas() ?? 0,
                 "quantidade_quartos" => $imovel->getQuantidadeQuartos() ?? 0,
                 "quantidade_vagas" => $imovel->getQuantidadeVagas() ?? 0,
+                "quantidade_suites" => $imovel->getQuantSuites() ?? 0,
                 "bloco" => $imovel->getBloco() ?? null,
                 "andar" => $imovel->getAndar() ?? null,
                 "situacao" => $imovel->getSituacao() ?? null,

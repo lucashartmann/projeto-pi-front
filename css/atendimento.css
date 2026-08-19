@@ -1,5 +1,5 @@
 .vazio {
-    width: 98%;
+    width: 100%;
     justify-self: center;
     color: var(--cor-texto);
     text-align: center;
@@ -47,7 +47,7 @@ footer {
 }
 
 .container {
-    background: var(--background-nav);
+    background: var(--background-custom);
     height: 74vh;
     justify-items: center;
     overflow-y: auto;

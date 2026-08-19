@@ -174,6 +174,7 @@ class AtendimentoDAO
                 imovel.quant_vagas AS imovel_quant_vagas,
                 imovel.quant_banheiros AS imovel_quant_banheiros,
                 imovel.quant_varandas AS imovel_quant_varandas,
+                imovel.quant_suites AS imovel_quant_suites,
                 imovel.categoria AS imovel_categoria,
                 imovel.id_endereco AS imovel_id_endereco,
                 imovel.status AS imovel_status,

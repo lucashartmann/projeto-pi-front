@@ -23,6 +23,7 @@ window.abrirCadastro = abrirCadastro;
 window.duplicarImovel = duplicarImovel;
 window.destacarImovel = destacarImovel;
 window.montarOpcoes = montarOpcoes;
+window.abrirAnuncio = abrirAnuncio;
 
 function abrirCadastro(id) {
     if (id) {
@@ -86,8 +87,6 @@ async function filtroOrdenado() {
         }) : null;
     }
 
-
-
     if (seta.classList.contains("fa-arrow-down")) {
         seta.classList.remove("fa-arrow-down");
         seta.classList.add("fa-arrow-up");
@@ -130,10 +129,10 @@ async function filtrar() {
                     imoveisFiltrados = imoveisFiltrados.filter((imovel) => imovel.status.toLowerCase().includes(valor.toLowerCase()));
                     break;
                 case "cep":
-                    imoveisFiltrados = imoveisFiltrados.filter((imovel) => imovel.endereco?.cep.toString().includes(valor));
+                    imoveisFiltrados = imoveisFiltrados.filter((imovel) => imovel.endereco?.cep.toString().includes(valor.replace(/-/g, '').replace(/\_/g, '').trim()));
                     break;
                 case "numero":
-                    imoveisFiltrados = imoveisFiltrados.filter((imovel) => imovel.endereco?.numero.toString().includes(valor));
+                    imoveisFiltrados = imoveisFiltrados.filter((imovel) => imovel.endereco?.numero.toString().includes(valor.trim()));
                     break;
                 case "data_cadastro":
                     imoveisFiltrados = imoveisFiltrados.filter((imovel) => imovel.data_cadastro?.date.toString().includes(valor));
@@ -151,70 +150,70 @@ async function filtrar() {
                     imoveisFiltrados = imoveisFiltrados.filter((imovel) => imovel.ocupacao.toLowerCase().includes(valor.toLowerCase()));
                     break;
                 case "quantidade_minima_quartos":
-                    imoveisFiltrados = imoveisFiltrados.filter((imovel) => imovel.quantidade_quartos >= parseInt(valor));
+                    imoveisFiltrados = imoveisFiltrados.filter((imovel) => imovel.quantidade_quartos >= parseInt(valor.trim()));
                     break;
                 case "quantidade_maxima_quartos":
-                    imoveisFiltrados = imoveisFiltrados.filter((imovel) => imovel.quantidade_quartos <= parseInt(valor));
+                    imoveisFiltrados = imoveisFiltrados.filter((imovel) => imovel.quantidade_quartos <= parseInt(valor.trim()));
                     break;
                 case "quantidade_minima_banheiros":
-                    imoveisFiltrados = imoveisFiltrados.filter((imovel) => imovel.quantidade_banheiros >= parseInt(valor));
+                    imoveisFiltrados = imoveisFiltrados.filter((imovel) => imovel.quantidade_banheiros >= parseInt(valor.trim()));
                     break;
                 case "quantidade_maxima_banheiros":
-                    imoveisFiltrados = imoveisFiltrados.filter((imovel) => imovel.quantidade_banheiros <= parseInt(valor));
+                    imoveisFiltrados = imoveisFiltrados.filter((imovel) => imovel.quantidade_banheiros <= parseInt(valor.trim()));
                     break;
                 case "quantidade_minima_vagas":
-                    imoveisFiltrados = imoveisFiltrados.filter((imovel) => imovel.quantidade_vagas >= parseInt(valor));
+                    imoveisFiltrados = imoveisFiltrados.filter((imovel) => imovel.quantidade_vagas >= parseInt(valor.trim()));
                     break;
                 case "quantidade_maxima_vagas":
-                    imoveisFiltrados = imoveisFiltrados.filter((imovel) => imovel.quantidade_vagas <= parseInt(valor));
+                    imoveisFiltrados = imoveisFiltrados.filter((imovel) => imovel.quantidade_vagas <= parseInt(valor.trim()));
                     break;
                 case "quantidade_minima_salas":
-                    imoveisFiltrados = imoveisFiltrados.filter((imovel) => imovel.quantidade_salas >= parseInt(valor));
+                    imoveisFiltrados = imoveisFiltrados.filter((imovel) => imovel.quantidade_salas >= parseInt(valor.trim()));
                     break;
                 case "quantidade_maxima_salas":
-                    imoveisFiltrados = imoveisFiltrados.filter((imovel) => imovel.quantidade_salas <= parseInt(valor));
+                    imoveisFiltrados = imoveisFiltrados.filter((imovel) => imovel.quantidade_salas <= parseInt(valor.trim()));
                     break;
                 case "quantidade_minima_varandas":
-                    imoveisFiltrados = imoveisFiltrados.filter((imovel) => imovel.quantidade_varandas >= parseInt(valor));
+                    imoveisFiltrados = imoveisFiltrados.filter((imovel) => imovel.quantidade_varandas >= parseInt(valor.trim()));
                     break;
                 case "quantidade_maxima_varandas":
-                    imoveisFiltrados = imoveisFiltrados.filter((imovel) => imovel.quantidade_varandas <= parseInt(valor));
+                    imoveisFiltrados = imoveisFiltrados.filter((imovel) => imovel.quantidade_varandas <= parseInt(valor.trim()));
                     break;
                 case "valor_minimo_aluguel":
-                    imoveisFiltrados = imoveisFiltrados.filter((imovel) => imovel.valor_aluguel >= parseFloat(valor));
+                    imoveisFiltrados = imoveisFiltrados.filter((imovel) => imovel.valor_aluguel >= parseFloat(valor.replace(/[^0-9,]/g, '').replace(',', '.').trim()));
                     break;
                 case "valor_maximo_aluguel":
-                    imoveisFiltrados = imoveisFiltrados.filter((imovel) => imovel.valor_aluguel <= parseFloat(valor));
+                    imoveisFiltrados = imoveisFiltrados.filter((imovel) => imovel.valor_aluguel <= parseFloat(valor.replace(/[^0-9,]/g, '').replace(',', '.').trim()));
                     break;
                 case "valor_minimo_venda":
-                    imoveisFiltrados = imoveisFiltrados.filter((imovel) => imovel.valor_venda >= parseFloat(valor));
+                    imoveisFiltrados = imoveisFiltrados.filter((imovel) => imovel.valor_venda >= parseFloat(valor.replace(/[^0-9,]/g, '').replace(',', '.').trim()));
                     break;
                 case "valor_maximo_venda":
-                    imoveisFiltrados = imoveisFiltrados.filter((imovel) => imovel.valor_venda <= parseFloat(valor));
+                    imoveisFiltrados = imoveisFiltrados.filter((imovel) => imovel.valor_venda <= parseFloat(valor.replace(/[^0-9,]/g, '').replace(',', '.').trim()));
                     break;
                 case "area_minima_total":
-                    imoveisFiltrados = imoveisFiltrados.filter((imovel) => imovel.area_total >= parseFloat(valor));
+                    imoveisFiltrados = imoveisFiltrados.filter((imovel) => imovel.area_total >= parseFloat(valor.replace("m²", '').replace(',', '.').trim()));
                     break;
                 case "area_maxima_total":
-                    imoveisFiltrados = imoveisFiltrados.filter((imovel) => imovel.area_total <= parseFloat(valor));
+                    imoveisFiltrados = imoveisFiltrados.filter((imovel) => imovel.area_total <= parseFloat(valor.replace("m²", '').replace(',', '.').trim()));
                     break;
                 case "area_minima_privativa":
-                    imoveisFiltrados = imoveisFiltrados.filter((imovel) => imovel.area_privativa >= parseFloat(valor));
+                    imoveisFiltrados = imoveisFiltrados.filter((imovel) => imovel.area_privativa >= parseFloat(valor.replace("m²", '').replace(',', '.').trim()));
                     break;
                 case "area_maxima_privativa":
-                    imoveisFiltrados = imoveisFiltrados.filter((imovel) => imovel.area_privativa <= parseFloat(valor));
+                    imoveisFiltrados = imoveisFiltrados.filter((imovel) => imovel.area_privativa <= parseFloat(valor.replace("m²", '').replace(',', '.').trim()));
                     break;
                 case "valor_minimo_condominio":
-                    imoveisFiltrados = imoveisFiltrados.filter((imovel) => imovel.valor_condominio >= parseFloat(valor));
+                    imoveisFiltrados = imoveisFiltrados.filter((imovel) => imovel.valor_condominio >= parseFloat(valor.replace(/[^0-9.,]/g, '').replace(',', '.').replace("R$", '').trim()));
                     break;
                 case "valor_maximo_condominio":
-                    imoveisFiltrados = imoveisFiltrados.filter((imovel) => imovel.valor_condominio <= parseFloat(valor));
+                    imoveisFiltrados = imoveisFiltrados.filter((imovel) => imovel.valor_condominio <= parseFloat(valor.replace(/[^0-9.,]/g, '').replace(',', '.').replace("R$", '').trim()));
                     break;
                 case "valor_minimo_iptu":
-                    imoveisFiltrados = imoveisFiltrados.filter((imovel) => imovel.valor_iptu >= parseFloat(valor));
+                    imoveisFiltrados = imoveisFiltrados.filter((imovel) => imovel.valor_iptu >= parseFloat(valor.replace(/[^0-9.,]/g, '').replace(',', '.').replace("R$", '').trim()));
                     break;
                 case "valor_maximo_iptu":
-                    imoveisFiltrados = imoveisFiltrados.filter((imovel) => imovel.valor_iptu <= parseFloat(valor));
+                    imoveisFiltrados = imoveisFiltrados.filter((imovel) => imovel.valor_iptu <= parseFloat(valor.replace(/[^0-9.,]/g, '').replace(',', '.').replace("R$", '').trim()));
                     break;
                 case "rua":
                     imoveisFiltrados = imoveisFiltrados.filter((imovel) => imovel.endereco?.rua.toLowerCase().includes(valor.toLowerCase()));
@@ -229,16 +228,22 @@ async function filtrar() {
                     imoveisFiltrados = imoveisFiltrados.filter((imovel) => imovel.endereco?.uf.toLowerCase().includes(valor.toLowerCase()));
                     break;
                 case "minimo_andar":
-                    imoveisFiltrados = imoveisFiltrados.filter((imovel) => imovel.andar >= parseInt(valor));
+                    imoveisFiltrados = imoveisFiltrados.filter((imovel) => imovel.andar >= parseInt(valor.trim()));
                     break;
                 case "maximo_andar":
-                    imoveisFiltrados = imoveisFiltrados.filter((imovel) => imovel.andar <= parseInt(valor));
+                    imoveisFiltrados = imoveisFiltrados.filter((imovel) => imovel.andar <= parseInt(valor.trim()));
                     break;
                 case "numero_imovel":
-                    imoveisFiltrados = imoveisFiltrados.filter((imovel) => imovel.endereco?.numero.toString().includes(valor));
+                    imoveisFiltrados = imoveisFiltrados.filter((imovel) => imovel.endereco?.numero.toString().includes(valor.trim()));
                     break;
                 case "bloco":
                     imoveisFiltrados = imoveisFiltrados.filter((imovel) => imovel.endereco?.bloco.toLowerCase().includes(valor.toLowerCase()));
+                    break;
+                case "quantidade_minima_suites":
+                    imoveisFiltrados = imoveisFiltrados.filter((imovel) => imovel.quantidade_suites >= parseInt(valor.trim()));
+                    break;
+                case "quantidade_maxima_suites":
+                    imoveisFiltrados = imoveisFiltrados.filter((imovel) => imovel.quantidade_suites <= parseInt(valor.trim()));
                     break;
                 default:
                     break;
@@ -251,7 +256,6 @@ async function filtrar() {
             let filtrosSelecionados = Array.from(filtros).filter(checkbox => checkbox.checked);
             filtrosSelecionados.forEach(checkbox => {
                 imoveisFiltrados = imoveisFiltrados.filter(imovel => imovel.filtros.includes(checkbox.value));
-
             });
         }
 
@@ -268,7 +272,7 @@ async function filtrar() {
         let nome = document.getElementById("select-filtro") ? document.getElementById("select-filtro").value : null;
 
         sessionStorage.setItem("estoque-filtroSelecionado", nome);
-        sessionStorage.setItem("estoque-seta", seta.className);
+        sessionStorage.setItem("estoque-seta", seta?.className);
 
         if (seta && nome) {
             switch (nome) {
@@ -588,8 +592,8 @@ async function carregarUsuarios(tipo) {
                             <td><a href="cadastro-cliente.html?id=${usuario.id}">${usuario.nome}</a></td>
                             <td><a href="cadastro-cliente.html?id=${usuario.id}">${usuario.email}</a></td>
                             <td class="telefones"><a href="cadastro-cliente.html?id=${usuario.id}">${telefonesFormatados.join('<br>')}</a></td>
-                            <td><a href="cadastro-cliente.html?id=${usuario.id}">${usuario.data_cadastro ? new Date(usuario.data_cadastro?.date).toLocaleDateString() : ''}</a></td>
-                            <td><a href="cadastro-cliente.html?id=${usuario.id}">${usuario.data_modificacao ? new Date(usuario.data_modificacao?.date).toLocaleDateString() : ''}</a></td>
+                            <td><a href="cadastro-cliente.html?id=${usuario.id}">${usuario.data_cadastro ? new Date(usuario.data_cadastro?.date).toLocaleString() : ''}</a></td>
+                            <td><a href="cadastro-cliente.html?id=${usuario.id}">${usuario.data_modificacao ? new Date(usuario.data_modificacao?.date).toLocaleString() : ''}</a></td>
                             <td><button>Deletar</button></td>
                         </tr>
                     
@@ -651,7 +655,7 @@ function carregarAnuncios() {
         const b64 = imovel.anuncio?.imagens?.[0] || null;
         html += `
             <a class="resultado" href="cadastro-imovel.html?id=${imovel.id}">
-                <input type="checkbox" class="checkbox-selecionar" onclick="montarOpcoes()">
+                <input type="checkbox" class="checkbox-selecionar" onclick="event.preventDefault(); event.stopPropagation(); montarOpcoes()">
                 <img src="${b64}" alt="">
                 <div class="dados">
                     <label>Ref: ${imovel.id}</label>
@@ -660,11 +664,11 @@ function carregarAnuncios() {
                     <label for="">Status: ${imovel.status}</label>
                     <label for="">Aluguel: ${formatarValor(imovel.valor_aluguel)}</label>
                     <label for="">Venda: ${formatarValor(imovel.valor_venda)}</label>
-                    <label for="">Data de Cadastro: ${new Date(imovel.data_cadastro?.date).toLocaleDateString()}</label>
-                    <label for="">Data de Modificação: ${imovel.data_modificacao ? new Date(imovel.data_modificacao?.date).toLocaleDateString() : ''}</label>
+                    <label for="">Data de Cadastro: ${new Date(imovel.data_cadastro?.date).toLocaleString()}</label>
+                    <label for="">Data de Modificação: ${imovel.data_modificacao ? new Date(imovel.data_modificacao?.date).toLocaleString() : ''}</label>
                 </div>
                 <li style="list-style: none;">
-                    <i class="fas fa-bars" onclick="openMenu(this)"></i>
+                    <i class="fas fa-bars" onclick="event.preventDefault(); event.stopPropagation(); openMenu(this)"></i>
                 </li>
             </a>
         `;
@@ -675,35 +679,52 @@ function carregarAnuncios() {
 
 let barra = null;
 
-
+function abrirAnuncio(imovelId) {
+    let urlAtual = window.location.href;
+    urlAtual = urlAtual.replace("estoque.html", `dados-imovel.html?id=${imovelId}`);
+    window.open(urlAtual);
+}
 
 function openMenu(element) {
-    if (document.querySelector(".menu-opcoes")) {
-        document.querySelector(".menu-opcoes").remove();
+    if (window.event) {
+        window.event.preventDefault();
+        window.event.stopPropagation();
+    }
+
+    const menuExistente = document.querySelector(".menu-opcoes");
+    if (menuExistente) {
+        menuExistente.remove();
     }
 
     if (barra === element) {
         barra = null;
-        document.querySelector(".menu-opcoes").remove();
         return;
     }
 
     barra = element;
+    const cardPai = element.closest('.resultado');
+    const idImovel = cardPai.querySelector('.dados label').textContent.split('Ref: ')[1];
+
     const menu = document.createElement("div");
     menu.classList.add("menu-opcoes");
     menu.innerHTML = `
-        <button onclick="abrirCadastro(null, ${element.closest('.resultado').querySelector('.dados label').textContent.split('Ref: ')[1]})">Editar</button>
-        <button onclick="apagarImovel(${element.closest('.resultado').querySelector('.dados label').textContent.split('Ref: ')[1]})">Apagar</button>
-        <button onclick="duplicarImovel(${element.closest('.resultado').querySelector('.dados label').textContent.split('Ref: ')[1]})">Duplicar</button>
-        <button onclick="destacarImovel(${element.closest('.resultado').querySelector('.dados label').textContent.split('Ref: ')[1]})">Tornar Destaque</button>
+        <button onclick="abrirCadastro(null, ${idImovel})">Editar</button>
+        <button onclick="apagarImovel(${idImovel})">Apagar</button>
+        <button onclick="duplicarImovel(${idImovel})">Duplicar</button>
+        <button onclick="destacarImovel(${idImovel})">Tornar Destaque</button>
+        <button onclick="abrirAnuncio(${idImovel})">Abrir Anuncio</button>
     `;
-    document.body.appendChild(menu);
-    let posicao = element.getBoundingClientRect();
-    menu.style.top = `${posicao.bottom}px`;
-    menu.style.left = `${posicao.left - 320}px`;
+
+    cardPai.appendChild(menu);
+
+    menu.style.top = `${element.offsetTop + element.offsetHeight}px`;
+    menu.style.right = `10px`;
+    menu.style.left = `auto`;
+
     document.addEventListener("click", function handler(event) {
         if (!menu.contains(event.target) && event.target !== element) {
             menu.remove();
+            barra = null;
             document.removeEventListener("click", handler);
         }
     });
@@ -815,4 +836,31 @@ window.addEventListener("DOMContentLoaded", async () => {
             select.addEventListener("change", filtrar);
         });
     });
+
+    Inputmask("99999-999").mask("#input-cep");
+
+    Inputmask('currency', {
+        prefix: 'R$ ',
+        groupSeparator: '.',
+        radixPoint: ',',
+        digits: 2,
+        autoGroup: true,
+        allowMinus: false,
+        rightAlign: false,
+        placeholder: '0',
+        numericInput: true,
+        positionCaretOnClick: "radixFocus"
+    }).mask('#valor_minimo_aluguel, #valor_maximo_aluguel, #valor_minimo_venda, #valor_maximo_venda, #valor_minimo_iptu, #valor_maximo_iptu, #valor_minimo_condominio, #valor_maximo_condominio, #valor-iptu-maximo, #valor-iptu-minimo');
+
+    Inputmask({
+        alias: 'decimal',
+        rightAlign: false,
+        radixPoint: ',',
+        groupSeparator: '.',
+        autoGroup: true,
+        suffix: ' m²',
+        digits: 2,
+        allowMinus: false,
+        placeholder: '0'
+    }).mask('#area_minima_privativa, #area_maxima_privativa, #area_minima_total, #area_maxima_total');
 });

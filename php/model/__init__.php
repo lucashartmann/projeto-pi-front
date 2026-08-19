@@ -6,7 +6,7 @@ require_once __DIR__ . '/imovel.php';
 require_once __DIR__ . '/atendimento.php';
 require_once __DIR__ . '/endereco.php';
 require_once __DIR__ . '/anuncio.php';
-require_once __DIR__ . '/vendaAluguel.php';
+require_once __DIR__ . '/contrato.php';
 require_once __DIR__ . '/condominio.php';
 require_once __DIR__ . '/proprietario.php';
 require_once __DIR__ . '/funcionario.php';

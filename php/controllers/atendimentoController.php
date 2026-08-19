@@ -51,6 +51,7 @@ class AtendimentoController
 
     function cadastrar(int $idImovel)
     {
+        session_start();
         $usuario = $_GET['usuario'] ?? null;
         $pessoaDAO = new PessoaDAO();
 

@@ -16,10 +16,10 @@ class HistoricoController
         foreach ($historicos as $historico) {
             $json[] = [
                 "id" => $historico->getId(),
-                "imovel" => $historico->getImovel() !== null ? $imovelController->montarJson([$historico->getImovel()]) : null,
-                "cliente" => $historico->getCliente() !== null ? $pessoaController->montarJson([$historico->getCliente()]) : null,
-                "funcionario" => $historico->getFuncionario() !== null ? $pessoaController->montarJson([$historico->getFuncionario()]) : null,
-                "data" => $historico->getDataAlteracao()->format("Y-m-d"),
+                "imovel" => $historico->getImovel() ? $imovelController->montarJson([$historico->getImovel()])[0] : null,
+                "cliente" => $historico->getCliente()  ? $pessoaController->montarJson([$historico->getCliente()])[0] : null,
+                "funcionario" => $historico->getFuncionario() ? $pessoaController->montarJson([$historico->getFuncionario()])[0] : null,
+                "data" => $historico->getDataAlteracao() ? $historico->getDataAlteracao()->format("Y-m-d H:i:s"): null,
                 "alteracao" => $historico->getAlteracao()
             ];
         }

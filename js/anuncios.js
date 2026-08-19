@@ -140,10 +140,10 @@ async function filtrar() {
                 imoveisFiltrados = imoveisFiltrados.filter((imovel) => imovel.status.toLowerCase().includes(valor.toLowerCase()));
                 break;
             case "cep":
-                imoveisFiltrados = imoveisFiltrados.filter((imovel) => imovel.endereco?.cep.toString().includes(valor));
+                imoveisFiltrados = imoveisFiltrados.filter((imovel) => imovel.endereco?.cep.toString().includes(valor.replace(/-/g, '').replace(/\_/g, '').trim()));
                 break;
             case "numero":
-                imoveisFiltrados = imoveisFiltrados.filter((imovel) => imovel.endereco?.numero.toString().includes(valor));
+                imoveisFiltrados = imoveisFiltrados.filter((imovel) => imovel.endereco?.numero.toString().includes(valor.trim()));
                 break;
             case "data_cadastro":
                 imoveisFiltrados = imoveisFiltrados.filter((imovel) => imovel.data_cadastro?.date.toString().includes(valor));
@@ -161,70 +161,70 @@ async function filtrar() {
                 imoveisFiltrados = imoveisFiltrados.filter((imovel) => imovel.ocupacao.toLowerCase().includes(valor.toLowerCase()));
                 break;
             case "quantidade_minima_quartos":
-                imoveisFiltrados = imoveisFiltrados.filter((imovel) => imovel.quantidade_quartos >= parseInt(valor));
+                imoveisFiltrados = imoveisFiltrados.filter((imovel) => imovel.quantidade_quartos >= parseInt(valor.trim()));
                 break;
             case "quantidade_maxima_quartos":
-                imoveisFiltrados = imoveisFiltrados.filter((imovel) => imovel.quantidade_quartos <= parseInt(valor));
+                imoveisFiltrados = imoveisFiltrados.filter((imovel) => imovel.quantidade_quartos <= parseInt(valor.trim()));
                 break;
             case "quantidade_minima_banheiros":
-                imoveisFiltrados = imoveisFiltrados.filter((imovel) => imovel.quantidade_banheiros >= parseInt(valor));
+                imoveisFiltrados = imoveisFiltrados.filter((imovel) => imovel.quantidade_banheiros >= parseInt(valor.trim()));
                 break;
             case "quantidade_maxima_banheiros":
-                imoveisFiltrados = imoveisFiltrados.filter((imovel) => imovel.quantidade_banheiros <= parseInt(valor));
+                imoveisFiltrados = imoveisFiltrados.filter((imovel) => imovel.quantidade_banheiros <= parseInt(valor.trim()));
                 break;
             case "quantidade_minima_vagas":
-                imoveisFiltrados = imoveisFiltrados.filter((imovel) => imovel.quantidade_vagas >= parseInt(valor));
+                imoveisFiltrados = imoveisFiltrados.filter((imovel) => imovel.quantidade_vagas >= parseInt(valor.trim()));
                 break;
             case "quantidade_maxima_vagas":
-                imoveisFiltrados = imoveisFiltrados.filter((imovel) => imovel.quantidade_vagas <= parseInt(valor));
+                imoveisFiltrados = imoveisFiltrados.filter((imovel) => imovel.quantidade_vagas <= parseInt(valor.trim()));
                 break;
             case "quantidade_minima_salas":
-                imoveisFiltrados = imoveisFiltrados.filter((imovel) => imovel.quantidade_salas >= parseInt(valor));
+                imoveisFiltrados = imoveisFiltrados.filter((imovel) => imovel.quantidade_salas >= parseInt(valor.trim()));
                 break;
             case "quantidade_maxima_salas":
-                imoveisFiltrados = imoveisFiltrados.filter((imovel) => imovel.quantidade_salas <= parseInt(valor));
+                imoveisFiltrados = imoveisFiltrados.filter((imovel) => imovel.quantidade_salas <= parseInt(valor.trim()));
                 break;
             case "quantidade_minima_varandas":
-                imoveisFiltrados = imoveisFiltrados.filter((imovel) => imovel.quantidade_varandas >= parseInt(valor));
+                imoveisFiltrados = imoveisFiltrados.filter((imovel) => imovel.quantidade_varandas >= parseInt(valor.trim()));
                 break;
             case "quantidade_maxima_varandas":
-                imoveisFiltrados = imoveisFiltrados.filter((imovel) => imovel.quantidade_varandas <= parseInt(valor));
+                imoveisFiltrados = imoveisFiltrados.filter((imovel) => imovel.quantidade_varandas <= parseInt(valor.trim()));
                 break;
             case "valor_minimo_aluguel":
-                imoveisFiltrados = imoveisFiltrados.filter((imovel) => imovel.valor_aluguel >= parseFloat(valor));
+                imoveisFiltrados = imoveisFiltrados.filter((imovel) => imovel.valor_aluguel >= parseFloat(valor.replace(/[^0-9,]/g, '').replace(',', '.').trim()));
                 break;
             case "valor_maximo_aluguel":
-                imoveisFiltrados = imoveisFiltrados.filter((imovel) => imovel.valor_aluguel <= parseFloat(valor));
+                imoveisFiltrados = imoveisFiltrados.filter((imovel) => imovel.valor_aluguel <= parseFloat(valor.replace(/[^0-9,]/g, '').replace(',', '.').trim()));
                 break;
             case "valor_minimo_venda":
-                imoveisFiltrados = imoveisFiltrados.filter((imovel) => imovel.valor_venda >= parseFloat(valor));
+                imoveisFiltrados = imoveisFiltrados.filter((imovel) => imovel.valor_venda >= parseFloat(valor.replace(/[^0-9,]/g, '').replace(',', '.').trim()));
                 break;
             case "valor_maximo_venda":
-                imoveisFiltrados = imoveisFiltrados.filter((imovel) => imovel.valor_venda <= parseFloat(valor));
+                imoveisFiltrados = imoveisFiltrados.filter((imovel) => imovel.valor_venda <= parseFloat(valor.replace(/[^0-9,]/g, '').replace(',', '.').trim()));
                 break;
             case "area_minima_total":
-                imoveisFiltrados = imoveisFiltrados.filter((imovel) => imovel.area_total >= parseFloat(valor));
+                imoveisFiltrados = imoveisFiltrados.filter((imovel) => imovel.area_total >= parseFloat(valor.replace("m²", '').replace(',', '.').trim()));
                 break;
             case "area_maxima_total":
-                imoveisFiltrados = imoveisFiltrados.filter((imovel) => imovel.area_total <= parseFloat(valor));
+                imoveisFiltrados = imoveisFiltrados.filter((imovel) => imovel.area_total <= parseFloat(valor.replace("m²", '').replace(',', '.').trim()));
                 break;
             case "area_minima_privativa":
-                imoveisFiltrados = imoveisFiltrados.filter((imovel) => imovel.area_privativa >= parseFloat(valor));
+                imoveisFiltrados = imoveisFiltrados.filter((imovel) => imovel.area_privativa >= parseFloat(valor.replace("m²", '').replace(',', '.').trim()));
                 break;
             case "area_maxima_privativa":
-                imoveisFiltrados = imoveisFiltrados.filter((imovel) => imovel.area_privativa <= parseFloat(valor));
+                imoveisFiltrados = imoveisFiltrados.filter((imovel) => imovel.area_privativa <= parseFloat(valor.replace("m²", '').replace(',', '.').trim()));
                 break;
             case "valor_minimo_condominio":
-                imoveisFiltrados = imoveisFiltrados.filter((imovel) => imovel.valor_condominio >= parseFloat(valor));
+                imoveisFiltrados = imoveisFiltrados.filter((imovel) => imovel.valor_condominio >= parseFloat(valor.replace(/[^0-9.,]/g, '').replace(',', '.').replace("R$", '').trim()));
                 break;
             case "valor_maximo_condominio":
-                imoveisFiltrados = imoveisFiltrados.filter((imovel) => imovel.valor_condominio <= parseFloat(valor));
+                imoveisFiltrados = imoveisFiltrados.filter((imovel) => imovel.valor_condominio <= parseFloat(valor.replace(/[^0-9.,]/g, '').replace(',', '.').replace("R$", '').trim()));
                 break;
             case "valor_minimo_iptu":
-                imoveisFiltrados = imoveisFiltrados.filter((imovel) => imovel.valor_iptu >= parseFloat(valor));
+                imoveisFiltrados = imoveisFiltrados.filter((imovel) => imovel.valor_iptu >= parseFloat(valor.replace(/[^0-9.,]/g, '').replace(',', '.').replace("R$", '').trim()));
                 break;
             case "valor_maximo_iptu":
-                imoveisFiltrados = imoveisFiltrados.filter((imovel) => imovel.valor_iptu <= parseFloat(valor));
+                imoveisFiltrados = imoveisFiltrados.filter((imovel) => imovel.valor_iptu <= parseFloat(valor.replace(/[^0-9.,]/g, '').replace(',', '.').replace("R$", '').trim()));
                 break;
             case "rua":
                 imoveisFiltrados = imoveisFiltrados.filter((imovel) => imovel.endereco?.rua.toLowerCase().includes(valor.toLowerCase()));
@@ -239,16 +239,22 @@ async function filtrar() {
                 imoveisFiltrados = imoveisFiltrados.filter((imovel) => imovel.endereco?.uf.toLowerCase().includes(valor.toLowerCase()));
                 break;
             case "minimo_andar":
-                imoveisFiltrados = imoveisFiltrados.filter((imovel) => imovel.andar >= parseInt(valor));
+                imoveisFiltrados = imoveisFiltrados.filter((imovel) => imovel.andar >= parseInt(valor.trim()));
                 break;
             case "maximo_andar":
-                imoveisFiltrados = imoveisFiltrados.filter((imovel) => imovel.andar <= parseInt(valor));
+                imoveisFiltrados = imoveisFiltrados.filter((imovel) => imovel.andar <= parseInt(valor.trim()));
                 break;
             case "numero_imovel":
-                imoveisFiltrados = imoveisFiltrados.filter((imovel) => imovel.endereco?.numero.toString().includes(valor));
+                imoveisFiltrados = imoveisFiltrados.filter((imovel) => imovel.endereco?.numero.toString().includes(valor.trim()));
                 break;
             case "bloco":
                 imoveisFiltrados = imoveisFiltrados.filter((imovel) => imovel.endereco?.bloco.toLowerCase().includes(valor.toLowerCase()));
+                break;
+            case "quantidade_minima_suites":
+                imoveisFiltrados = imoveisFiltrados.filter((imovel) => imovel.quantidade_suites >= parseInt(valor.trim()));
+                break;
+            case "quantidade_maxima_suites":
+                imoveisFiltrados = imoveisFiltrados.filter((imovel) => imovel.quantidade_suites <= parseInt(valor.trim()));
                 break;
             default:
                 break;
@@ -278,7 +284,7 @@ async function filtrar() {
     let nome = document.getElementById("select-filtro") ? document.getElementById("select-filtro").value : null;
 
     sessionStorage.setItem("anuncios-filtroSelecionado", nome);
-    sessionStorage.setItem("anuncios-seta", seta.className);
+    sessionStorage.setItem("anuncios-seta", seta?.className);
 
     if (seta && nome) {
         switch (nome) {
@@ -517,6 +523,33 @@ window.addEventListener("DOMContentLoaded", async () => {
             });
         }
     }
+
+    Inputmask("99999-999").mask("#input-cep");
+
+    Inputmask('currency', {
+        prefix: 'R$ ',
+        groupSeparator: '.',
+        radixPoint: ',',
+        digits: 2,
+        autoGroup: true,
+        allowMinus: false,
+        rightAlign: false,
+        placeholder: '0',
+        numericInput: true,
+        positionCaretOnClick: "radixFocus"
+    }).mask('#valor_minimo_aluguel, #valor_maximo_aluguel, #valor_minimo_venda, #valor_maximo_venda, #valor_minimo_iptu, #valor_maximo_iptu, #valor_minimo_condominio, #valor_maximo_condominio, #valor-iptu-maximo, #valor-iptu-minimo');
+
+    Inputmask({
+        alias: 'decimal',
+        rightAlign: false,
+        radixPoint: ',',
+        groupSeparator: '.',
+        autoGroup: true,
+        suffix: ' m²',
+        digits: 2,
+        allowMinus: false,
+        placeholder: '0'
+    }).mask('#area_minima_privativa, #area_maxima_privativa, #area_minima_total, #area_maxima_total');
 });
 
 window.addEventListener('beforeunload', async function (event) {
