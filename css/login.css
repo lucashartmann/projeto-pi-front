@@ -212,3 +212,18 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     }
 
 }
+
+@media screen and (max-width: 669px) {
+    #login-container {
+
+        width: 90vw;
+
+    }
+
+    #login-header {
+        width: 90%;
+        h1 {
+        font-size: 1.8rem;
+        }
+    }
+}

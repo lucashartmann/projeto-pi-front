@@ -537,31 +537,100 @@ button {
     top: 0;
     left: 0;
     overflow-x: hidden;
+    overflow-y: auto;
     padding-top: 60px;
     transition: 0.5s;
-    position: fixed;
     z-index: 99999;
-    backdrop-filter: blur(2px) !important;
+
+    background: rgba(65, 65, 65, 0.95);
+    backdrop-filter: blur(20px) !important;
     box-shadow: var(--shadow);
+
+    box-sizing: border-box;
 
     .closebtn {
         position: absolute;
-        top: 0;
-        right: 25px;
+        top: 10px;
+        right: 20px;
         font-size: 36px;
-        margin-left: 50px;
+        margin-left: 0;
     }
 
-    a {
-        padding: 8px 8px 8px 32px;
+    >a {
+        padding: 15px 25px;
         text-decoration: none;
-        font-size: 25px;
+        font-size: 1.05rem;
         color: var(--cor-texto);
         display: block;
         transition: 0.3s;
 
         &:hover {
             color: var(--hover);
+            background: var(--hover-soft);
+        }
+
+        &::after {
+            display: none;
+        }
+    }
+
+    .mobile-menu-group {
+        width: 100%;
+    }
+
+    .mobile-menu-title {
+        width: 100%;
+        padding: 15px 25px;
+
+        border: none;
+        outline: none;
+
+        background: transparent;
+        color: var(--cor-texto);
+
+        font-family: inherit;
+        font-size: 1.05rem;
+        text-align: left;
+
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        cursor: pointer;
+
+        transition: 0.3s;
+
+        &:hover {
+            color: var(--hover);
+            background: var(--hover-soft);
+        }
+    }
+
+    .mobile-arrow {
+        font-size: 0.9rem;
+        transition: transform 0.3s ease;
+    }
+
+    .mobile-submenu {
+        display: none;
+        width: 100%;
+    }
+
+    .mobile-submenu.aberto {
+        display: block;
+    }
+
+    .mobile-submenu a {
+        padding: 12px 25px 12px 45px;
+        font-size: 0.95rem;
+
+        &::after {
+            display: none;
+        }
+
+        &:hover {
+            color: var(--hover);
+            background: var(--hover-soft);
         }
     }
 }
@@ -570,15 +639,6 @@ main {
     transition: margin-left .5s;
 }
 
-@media screen and (max-height: 450px) {
-    .sidenav {
-        padding-top: 15px;
-    }
-
-    .sidenav a {
-        font-size: 18px;
-    }
-}
 
 .vertical-separator {
     display: flex;
@@ -625,4 +685,35 @@ main {
 div[vw-access-button] {
     border: none !important;
     background: none !important;
+}
+
+@media screen and (max-width: 669px) {
+    #top-nav {
+       
+       .so-texto {
+            display: none;
+        }
+       
+    }
+  
+    #acessibilidade {
+        right: 0px;
+        top: 150px;
+    }
+
+    div[vw-access-button] {
+        top: 100px;
+        right: 0px;
+    }
+}
+
+
+@media screen and (max-height: 450px) {
+    .sidenav {
+        padding-top: 15px;
+    }
+
+    .sidenav a {
+        font-size: 18px;
+    }
 }

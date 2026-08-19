@@ -247,6 +247,7 @@ section#anuncios {
     justify-items: center;
     justify-content: center;
     height: auto;
+
     h3 {
         color: var(--cor-texto-alternativa);
         font-size: 1.5rem;
@@ -255,7 +256,7 @@ section#anuncios {
         grid-column: 1 / -1;
         justify-self: left;
         margin-bottom: 20px;
-        }
+    }
 }
 
 #link-anuncios {
@@ -908,5 +909,152 @@ section#anuncios {
 
     #section-footer {
         height: auto;
+    }
+}
+
+@media screen and (max-width: 669px) {
+    #container-filtragem {
+        display: flex;
+        flex-direction: column;
+    }
+
+    #gallery {
+        margin: 0px !important;
+        justify-self: center !important;
+        height: 10rem !important;
+        overflow: hidden;
+
+        a {
+            height: 100% !important;
+            overflow: hidden;
+
+            img {
+                width: 100%;
+                height: 100%;
+                overflow: hidden;
+            }
+        }
+    }
+
+    #gallery2 {
+        margin: 0px !important;
+        justify-self: center !important;
+        height: 15rem !important;
+        overflow: hidden;
+
+        a {
+            height: 100% !important;
+            overflow: hidden;
+
+            img {
+                width: 100%;
+                height: 100%;
+                overflow: hidden;
+            }
+        }
+
+    }
+
+    #gallery3 {
+        margin: 0px !important;
+        justify-self: center !important;
+        min-height: 0px;
+        height: 15rem !important;
+        overflow: hidden;
+        /* margin-bottom: 20px !important; */
+
+        a {
+            width: 50%;
+            height: 100%;
+            overflow: hidden;
+
+            img {
+                width: 100%;
+                height: 100%;
+                overflow: hidden;
+            }
+        }
+    }
+
+    .swiper-destaque {
+        height: 20rem;
+
+        .swiper-slide {
+            div {
+                height: 4rem;
+                width: 15rem;
+                overflow: hidden;
+                gap: 0px !important;
+                padding: 0px !important;
+            }
+
+            p,
+            span,
+            h2 {
+                font-size: 1rem !important;
+                width: auto !important;
+                height: auto !important;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: clip;
+                margin: 0px !important;
+            }
+        }
+    }
+
+    #section-footer {
+        /* margin: 0px !important; */
+        min-height: 0;
+        height: 6rem;
+        font-size: 0.9rem !important;
+        overflow: hidden;
+
+        #sobre {
+            display: block;
+            margin: 0px;
+            margin-left: 9px;
+            width: 5rem;
+            overflow: hidden;
+
+            h2,
+            p {
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: clip;
+                width: 100%;
+            }
+
+            p {
+                height: auto;
+            }
+        }
+
+        div {
+            width: 5rem;
+            overflow: hidden;
+
+            p,
+            h2 {
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: clip;
+                width: 100%;
+            }
+
+            a {
+                text-overflow: clip !important;
+            }
+
+
+        }
+    }
+
+
+    section#anuncios {
+
+        grid-template-columns: repeat(auto-fit, minmax(60%, 100fr));
+        row-gap: 30px;
+        column-gap: 40px;
+
     }
 }

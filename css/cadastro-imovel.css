@@ -716,20 +716,18 @@ label {
 
 }
 
-@media screen and (max-width: 820px) {
-    #container-cadastro {
-        grid-template-columns: repeat(auto-fit, minmax(20%, 2fr));
-    }
-}
 
-@media screen and (max-width: 700px) {
-    #h-buttons {
-        width: 45%;
-    }
-}
 
-@media screen and (max-width: 404px) {
-    #container-cadastro {
-        grid-template-columns: repeat(auto-fit, minmax(30%, 2fr));
+@media screen and (max-width: 669px) {
+    #tataravo {
+        width: 90% !important;
+
+        #avo {
+            width: 90% !important;
+
+            #cadastro-pai {
+                width: 90% !important;
+            }
+        }
     }
 }

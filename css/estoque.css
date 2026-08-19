@@ -161,7 +161,7 @@ table {
     flex-direction: column;
     margin-top: 20px;
     width: 100%;
-   
+
 
     .resultado {
         display: flex;
@@ -179,6 +179,7 @@ table {
             width: 1.5rem;
             height: 1.5rem;
             align-self: center;
+
             &:checked {
                 accent-color: var(--cor-texto-alternativa) !important;
             }
@@ -226,7 +227,7 @@ body {
 }
 
 .menu-opcoes {
-    position: absolute; 
+    position: absolute;
     background: var(--background-custom);
     backdrop-filter: blur(40px) !important;
     min-width: 20rem;
@@ -318,4 +319,34 @@ body {
 
 main {
     display: flex;
+}
+
+
+@media screen and (max-width: 669px) {
+
+    #container-filtragem,
+    #sidebar-pessoas,
+    .sidebar-anuncios {
+        display: none !important;
+    }
+
+    #container-resultado {
+        width: 90% !important;
+        /* overflow: hidden hidden; */
+
+        .resultado {
+            width: 100% !important;
+            height: 6rem;
+            white-space: nowrap;
+            overflow: hidden hidden;
+            text-overflow: clip;
+        }
+
+        img {
+            height: 5rem;
+            width: 10rem;
+            align-self: center;
+        }
+    }
+
 }

@@ -74,167 +74,328 @@ function closeNav() {
 
 function carregarTabs(usuario) {
     const nav = document.getElementById("top-nav");
-    if (!nav) return;
+    const navMobile = document.getElementById("mySidenav");
+
+    if (!nav && !navMobile) return;
+
     let tabs = [];
     let cadastros = [];
     let dados = [];
+
     if (!usuario || !usuario.tipo) {
         console.warn("Tipo de usuário não encontrado:", usuario);
         return;
     }
+
     switch (usuario.tipo) {
-        case 'ADMIN':
+
+        case "ADMIN":
             tabs = [
                 { text: "Atendimento", href: "html/atendimento.html" },
                 { text: "Estoque", href: "html/estoque.html" },
                 { text: "Agendar Visita", href: "html/agendar-visita.html" }
             ];
+
             cadastros = [
                 { text: "Imóveis", href: "html/cadastro-imovel.html" },
                 { text: "Cliente", href: "html/cadastro-cliente.html" },
                 { text: "Contratos", href: "html/contratos.html" }
             ];
+
             dados = [
                 { text: "Imobiliária", href: "html/dados-imobiliaria.html" },
                 { text: "Dados Cliente", href: "html/dados-cliente.html" }
             ];
             break;
+
         case "FINANCEIRO":
             tabs = [
                 { text: "Contratos", href: "html/contratos.html" }
             ];
             break;
+
         case "VISTORIADOR":
             tabs = [
                 { text: "Agendar Vistoria", href: "html/agendar-visita.html" },
                 { text: "Relatório", href: "html/relatorio.html" }
             ];
             break;
+
         case "CORRETOR":
             tabs = [
                 { text: "Atendimento", href: "html/atendimento.html" },
                 { text: "Estoque", href: "html/estoque.html" },
                 { text: "Agendar Visita", href: "html/agendar-visita.html" }
             ];
+
             cadastros = [
                 { text: "Imóveis", href: "html/cadastro-imovel.html" },
                 { text: "Venda/Aluguel", href: "html/cadastro-venda-aluguel.html" },
-                { text: "Cliente", href: "html/cadastro-cliente.html" },
+                { text: "Cliente", href: "html/cadastro-cliente.html" }
             ];
             break;
+
         case "GERENTE":
             tabs = [
                 { text: "Estoque", href: "html/estoque.html" }
             ];
+
             cadastros = [
                 { text: "Imobiliária", href: "html/dados-imobiliaria.html" }
             ];
+
             dados = [
-                { text: "Imobiliária", href: "html/dados-imobiliaria.html" },
+                { text: "Imobiliária", href: "html/dados-imobiliaria.html" }
             ];
             break;
+
         case "CAPTADOR":
             tabs = [
                 { text: "Estoque", href: "html/estoque.html" }
             ];
+
             cadastros = [
                 { text: "Imóveis", href: "html/cadastro-imovel.html" },
-                { text: "Cliente", href: "html/cadastro-cliente.html" },
+                { text: "Cliente", href: "html/cadastro-cliente.html" }
             ];
             break;
+
         case "CLIENTE":
             tabs = [
-                { text: "Atendimento", href: "html/atendimento-cliente.html" },
-                { text: "Favoritos", href: "html/anuncios.html?favoritos=true" },
-                { text: "<i class='fas fa-user'></i>", href: "html/dados-cliente.html" },
+                {
+                    text: "Atendimento",
+                    href: "html/atendimento-cliente.html"
+                },
+                {
+                    text: "Favoritos",
+                    href: "html/anuncios.html?favoritos=true"
+                },
+                {
+                    text: "<i class='fas fa-user'></i>",
+                    href: "html/dados-cliente.html"
+                }
             ];
             break;
     }
-    let html = tabs.map(tab =>
-        `<li><a href="${getCaminhoRelativo(tab.href)}">${tab.text}</a></li>`
-    ).join("");
-    if (dados.length > 0 && cadastros.length > 0) {
-        html += `
-        <li class="dropdown">
-            <a href="#">Cadastro ▾</a>
-            <div class="dropdown-content">
-                ${cadastros.map(c =>
-            `<a href="${getCaminhoRelativo(c.href)}">${c.text}</a>`
-        ).join("")}
-            </div>
-        </li>
-        <li class="dropdown">
-            <a href="#">Dados ▾</a>
-            <div class="dropdown-content">
-                ${dados.map(d =>
-            `<a href="${getCaminhoRelativo(d.href)}">${d.text}</a>`
-        ).join("")}
-            </div>
-        </li>
-        `;
 
-    } else if (cadastros.length > 0) {
-        html += `
-        <li class="dropdown">
-            <a href="#">Cadastro ▾</a>
-            <div class="dropdown-content">
-                ${cadastros.map(c =>
-            `<a href="${getCaminhoRelativo(c.href)}">${c.text}</a>`
+    if (nav) {
 
-        ).join("")}
-            </div>
-        </li>
-        `;
-    } else if (dados.length > 0) {
-        html += `
-        <li class="dropdown">
-            <a href="#">Dados ▾</a>
-            <div class="dropdown-content">
-                ${dados.map(d =>
-            `<a href="${getCaminhoRelativo(d.href)}">${d.text}</a>`
-        ).join("")}
-            </div>
-        </li>
-        `;
-    }
-    let div = nav.querySelector(".right");
-    if (div) {
-        html += `
-        <li class="dropdown notificacoes">
-            <a href="#"><i class="fas fa-bell"></i> ${notificacoes.some(n => !n.lida) ? '<i class="fa fa-exclamation" aria-hidden="true" style="color: red; position: absolute; top: 5px; right: 0px;"></i>' : ''}</a>
-            <div class="dropdown-content notificacoes-content">
-                <p>Nenhuma Notificação</p>
-            </div>
-        </li>
-        <li><a href="#" onclick="deslogar()" id="logout">Sair</a></li>`;
-        div.innerHTML = html;
-        const dropdownContent = document.querySelector(".notificacoes-content");
-        dropdownContent.addEventListener('scroll', function (event) {
-            if (notificacoes) {
-                const elementos = dropdownContent.querySelectorAll('p');
-                elementos.forEach((elemento, index) => {
-                    const rect = elemento.getBoundingClientRect();
-                    if (rect.top >= 0 && rect.bottom <= window.innerHeight) {
-                        notificacoes[index].lida = true;
+        let html = tabs.map(tab =>
+            `<li>
+                <a href="${getCaminhoRelativo(tab.href)}">${tab.text}</a>
+            </li>`
+        ).join("");
+
+        if (dados.length > 0 && cadastros.length > 0) {
+
+            html += `
+                <li class="dropdown">
+                    <a href="#">Cadastro ▾</a>
+                    <div class="dropdown-content">
+                        ${cadastros.map(c =>
+                `<a href="${getCaminhoRelativo(c.href)}">
+                                ${c.text}
+                        </a>`
+            ).join("")}
+
+                </div>
+                </li>
+
+                <li class="dropdown">
+                    <a href="#">Dados ▾</a>
+                    <div class="dropdown-content">
+                        ${dados.map(d =>
+                `<a href="${getCaminhoRelativo(d.href)}">
+                                ${d.text}
+                        </a>`
+            ).join("")}
+
+                </div>
+                </li>
+            `;
+
+        } else if (cadastros.length > 0) {
+
+            html += `
+                <li class="dropdown">
+                    <a href="#">Cadastro ▾</a>
+                    <div class="dropdown-content">
+                        ${cadastros.map(c =>
+                `<a href="${getCaminhoRelativo(c.href)}">
+                                ${c.text}
+                    </a>`
+            ).join("")}
+                    </div>
+                </li>
+            `;
+
+        } else if (dados.length > 0) {
+            html += `
+                <li class="dropdown">
+                    <a href="#">Dados ▾</a>
+
+                    <div class="dropdown-content">
+                        ${dados.map(d =>
+                `<a href="${getCaminhoRelativo(d.href)}">
+                                ${d.text}
+                            </a>`
+            ).join("")}
+                    </div>
+                </li>
+            `;
+        }
+
+        const div = nav.querySelector(".right");
+
+        if (div) {
+
+            html += `
+                <li class="dropdown notificacoes">
+
+                    <a href="#">
+                        <i class="fas fa-bell"></i>
+                        ${notificacoes.some(n => !n.lida)
+                    ?
+                    `<i class="fa fa-exclamation" aria-hidden="true" style="color: red;position: absolute; top: 5px; right: 0px;"></i>`
+                    : ""
+                }
+                    </a>
+                    <div class="dropdown-content notificacoes-content">
+                        <p>Nenhuma Notificação</p>
+                    </div>
+                </li>
+                <li>
+                    <a href="#" onclick="deslogar()" id="logout">Sair</a>
+                </li>
+            `;
+
+            div.innerHTML = html;
+
+            const dropdownContent = document.querySelector(".notificacoes-content");
+
+            if (dropdownContent) {
+                dropdownContent.addEventListener("scroll", function () {
+                    if (notificacoes) {
+                        const elementos = dropdownContent.querySelectorAll("p");
+                        elementos.forEach((elemento, index) => {
+                            const rect = elemento.getBoundingClientRect();
+                            if (rect.top >= 0 && rect.bottom <= window.innerHeight) {
+                                if (notificacoes[index]) {
+                                    notificacoes[index].lida = true;
+                                }
+                            }
+                        });
+                    }
+                });
+
+                dropdownContent.addEventListener("mouseleave", function () {
+
+                    if (notificacoes) {
+
+                        const alerta =
+                            document.querySelector(".fa-exclamation");
+
+                        if (alerta) {
+                            alerta.remove();
+                        }
+
+                        const elementos =
+                            dropdownContent.querySelectorAll("p");
+
+                        elementos.forEach((elemento, index) => {
+
+                            const rect =
+                                elemento.getBoundingClientRect();
+
+                            if (rect.top >= 0 && rect.bottom <= window.innerHeight) {
+                                if (notificacoes[index]) {
+                                    notificacoes[index].lida = true;
+                                }
+                            }
+                        });
+                        atualizarNotificacoes();
                     }
                 });
             }
-        });
+        }
+    }
 
-        dropdownContent.addEventListener('mouseleave', function (event) {
-            if (notificacoes) {
-                document.querySelector('.fa-exclamation') ? document.querySelector('.fa-exclamation').remove() : null;
-                const elementos = dropdownContent.querySelectorAll('p');
-                elementos.forEach((elemento, index) => {
-                    const rect = elemento.getBoundingClientRect();
-                    if (rect.top >= 0 && rect.bottom <= window.innerHeight) {
-                        notificacoes[index].lida = true;
+    if (navMobile) {
+        let mobileHtml = "";
+        mobileHtml += tabs.map(tab => `
+            <a href="${getCaminhoRelativo(tab.href)}">
+                ${tab.text}
+            </a>
+        `).join("");
+
+        if (cadastros.length > 0) {
+            mobileHtml += `
+                <div class="mobile-menu-group">
+                    <button type="button" class="mobile-menu-title">
+                        <span>Cadastro</span>
+                        <span class="mobile-arrow">▾</span>
+                    </button>
+                    <div class="mobile-submenu">
+                        ${cadastros.map(c => `
+                            <a href="${getCaminhoRelativo(c.href)}">
+                                ${c.text}
+                            </a>
+                        `).join("")}
+                    </div>
+                </div>
+            `;
+        }
+
+        if (dados.length > 0) {
+            mobileHtml += `
+                <div class="mobile-menu-group">
+                    <button type="button" class="mobile-menu-title">
+                    <span>Dados</span>
+                    <span class="mobile-arrow">▾</span>
+                    </button>
+                    <div class="mobile-submenu">
+                        ${dados.map(d => `
+                            <a href="${getCaminhoRelativo(d.href)}">
+                                ${d.text}
+                            </a>
+                        `).join("")}
+                    </div>
+                </div>
+            `;
+        }
+
+        mobileHtml += `
+            <a href="#" class="mobile-notificacoes"><i class="fas fa-bell"></i>Notificações</a>`;
+
+        mobileHtml += `
+            <a href="#" onclick="deslogar()" id="mobile-logout">Sair</a>`;
+
+        navMobile.innerHTML = mobileHtml;
+
+        navMobile
+            .querySelectorAll(".mobile-menu-title")
+            .forEach(botao => {
+
+                botao.addEventListener("click", function () {
+
+                    const submenu =
+                        this.nextElementSibling;
+
+                    const aberto =
+                        submenu.classList.toggle("aberto");
+
+                    const seta =
+                        this.querySelector(".mobile-arrow");
+
+                    if (seta) {
+                        seta.textContent =
+                            aberto ? "▴" : "▾";
                     }
                 });
-                atualizarNotificacoes();
-            }
-        });
+            });
     }
+
+
 }
 
 async function marcarComoLida() {
@@ -344,6 +505,12 @@ async function setup() {
     if (nav) {
         document.querySelector(".left").querySelector("a").href = getCaminhoRelativo("index.html");
         document.querySelector(".center").querySelector("a").href = getCaminhoRelativo("index.html");
+        document.querySelectorAll('#top-nav li a').forEach(link => {
+            const temImagemOuIcone = link.querySelector('img, i, svg');
+            if (!temImagemOuIcone) {
+                link.classList.add('so-texto');
+            }
+        });
     }
 
     if (usuario) {
@@ -351,10 +518,18 @@ async function setup() {
         if (notificacoes && notificacoes.length > 0) {
             atualizarNotificacoes();
         }
+        document.querySelectorAll('#top-nav li a').forEach(link => {
+            const temImagemOuIcone = link.querySelector('img, i, svg');
+            if (!temImagemOuIcone) {
+                link.classList.add('so-texto');
+            }
+        });
     } else {
         if (!nav) return;
-        document.querySelector(".right").querySelectorAll("a")[0].href = getCaminhoRelativo("html/sobre-nos.html");
-        document.querySelector(".right").querySelectorAll("a")[1].href = getCaminhoRelativo("html/login.html");
+        document.querySelector(".right") ? document.querySelector(".right").querySelectorAll("a")[0].href = getCaminhoRelativo("html/sobre-nos.html") : null;
+        document.querySelector(".right") ? document.querySelector(".right").querySelectorAll("a")[1].href = getCaminhoRelativo("html/login.html") : null;
+        document.querySelector(".sidenav").querySelectorAll("a")[1].href = getCaminhoRelativo("html/sobre-nos.html");
+        document.querySelector(".sidenav").querySelectorAll("a")[2].href = getCaminhoRelativo("html/login.html");
     }
 
     if (document.getElementById("logo")) {
