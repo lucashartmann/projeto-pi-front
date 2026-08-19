@@ -559,7 +559,6 @@ class ImovelController
         try {
             $imovelDAO = new ImovelDAO();
             $imoveis = $imovelDAO->listarDisponiveis();
-            error_log("Quantidade de imóveis disponíveis encontrados: " . count($imoveis));
             if (!$imoveis) {
                 return [
                     "status" => "erro",

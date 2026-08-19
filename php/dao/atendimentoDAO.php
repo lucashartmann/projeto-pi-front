@@ -306,6 +306,7 @@ class AtendimentoDAO
                 imovel_funcionario_captador.cargo AS imovel_captador_cargo,
 
                 atendimento_pessoa_cliente.id as atendimento_cliente_id,
+                atendimento_cliente.id_pessoa as atendimento_cliente_cliente_id,
                 atendimento_pessoa_cliente.email AS atendimento_cliente_email,
                 atendimento_pessoa_cliente.nome AS atendimento_cliente_nome,
                 atendimento_pessoa_cliente.cpf_cnpj AS atendimento_cliente_cpf_cnpj,
@@ -369,6 +370,9 @@ class AtendimentoDAO
 
             LEFT JOIN funcionario atendimento_funcionario_corretor
                 ON atendimento_funcionario_corretor.id_pessoa = atendimento_pessoa_corretor.id
+
+            LEFT JOIN cliente atendimento_cliente
+                ON atendimento_cliente.id_pessoa = atendimento_pessoa_cliente.id
 
             LEFT JOIN corretor imovel_corretor
                 ON imovel_corretor.id_funcionario = imovel_funcionario_corretor.id_pessoa

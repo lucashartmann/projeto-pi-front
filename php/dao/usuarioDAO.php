@@ -110,8 +110,6 @@ class UsuarioDAO
 
             $registro = $stmt->fetch(PDO::FETCH_ASSOC);
 
-            error_log(serialize($registro));
-
             if (!$registro) {
                 error_log("Nenhum registro encontrado para o usuário com email: " . $email);
                 return null;

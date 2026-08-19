@@ -2,7 +2,8 @@
 
 - Botar um botao X na imagem no cadastro do imóvel para remover a imagem especifica
 - Adicionar icons no cadastro
-- Mudar fonte 
+- Dar sugestao no input ao digitar
+- Dar destaque maior para os valores e mudar a ordem, se baseando nos comércios como Mercado Livre, OLX.
 
 # Implementar:
 
@@ -10,7 +11,7 @@
 
 - [ ] Quando eu cadastro uma imagem ao imovel, ele remove as imagens de todos os imóveis pré cadastrados pelo **init** na tabela midia_anuncio
 - [ ] Quando eu clico em semana ou dia no calendario, deixa de ser possivel adicionar um evento a uma data, pois o JS aplica só ao carregar a pagina
-- [ ] Tem algum problema no cadastro de filtros no __init__, ele está cadastrando varios filtos em uma só row, e filtros duplicados.
+- [ ] Tem algum problema no cadastro de filtros no **init**, ele está cadastrando varios filtos em uma só row, e filtros duplicados.
 
 ## Geral:
 
@@ -18,6 +19,9 @@
 - [ ] Adicionar clicks aos imóveis do banco, e também reiniciar o banco
 - [ ] Adicionar quantidade de suites ao imovel no banco, controller, cadastro, dados-imovel e etc
 - [ ] Refazer a proprietarioImovelDAO
+- [ ] !!! Mudar fonte
+- [ ] !!! Responsividade
+- [ ] Contratos
 
 ### Login:
 

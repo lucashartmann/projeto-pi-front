@@ -58,11 +58,14 @@ class AtendimentoController
         if ($usuario) {
             $listaUsuarios = $pessoaDAO->listar();
             $corretores = array_filter($listaUsuarios, function ($usuario) {
+                if (!($usuario instanceof Funcionario)) {
+                    return false;
+                }
                 return $usuario->getCargo() === Cargo::CORRETOR;
             });
             foreach ($corretores as $corretor) {
                 $notificacaoDAO = new NotificacaoDAO();
-                $notificacaoDAO->cadastrar($corretor, "Cliente $usuario->getNome() quer atendimento para o imóvel de ID $idImovel", "atendimento");
+                $notificacaoDAO->cadastrar($corretor, "Cliente " . $usuario->getNome() . " quer atendimento para o imóvel de ID $idImovel", "atendimento");
             }
         }
         if (isset($_SESSION['usuario'])) {

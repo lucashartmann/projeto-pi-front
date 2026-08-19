@@ -61,14 +61,14 @@ footer {
 }
 
 .card {
-    background: rgba(204, 184, 184, 0.9);
+    background: rgba(36, 30, 30, 0.5);
     backdrop-filter: blur(40px) !important;
     box-shadow: var(--shadow);
     width: 90%;
     height: auto;
     min-height: 17%;
     margin: 10px 10px 10px 10px;
-    color: rgb(0, 0, 0);
+    color: var(--cor-texto);
     font-size: 1.5rem;
     font-weight: 500;
 
