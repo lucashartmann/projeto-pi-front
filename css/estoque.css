@@ -165,7 +165,7 @@ table {
 
     .resultado {
         display: flex;
-         position: relative;
+        position: relative;
         gap: 20px;
         /* background-color: #414141; */
         border: #414141 2px groove;
@@ -179,6 +179,9 @@ table {
             width: 1.5rem;
             height: 1.5rem;
             align-self: center;
+            &:checked {
+                accent-color: var(--cor-texto-alternativa) !important;
+            }
         }
 
         &:hover {

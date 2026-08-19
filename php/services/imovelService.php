@@ -111,6 +111,8 @@ class ImovelService
                 }
             }
 
+            error_log("Endereço: " . $imovel->getEndereco()->getRua() . ", " . $imovel->getEndereco()->getNumero() . ", " . $imovel->getEndereco()->getBairro() . ", " . $imovel->getEndereco()->getCep() . ", " . $imovel->getEndereco()->getComplemento() . ", " . $imovel->getEndereco()->getCidade() . ", " . $imovel->getEndereco()->getUf() . ", " . $imovel->getEndereco()->getComplemento());
+
             $anuncioDAO = new AnuncioDAO();
             $anuncioDAO->atualizar($imovel->getAnuncio());
 

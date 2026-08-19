@@ -108,6 +108,7 @@ class Imovel
         $this->quantVagas = 0;
         $this->quantBanheiros = 0;
         $this->quantVarandas = 0;
+        $this->quantSuites = 0;
         $this->categoria = $categoria;
         $this->endereco = $endereco;
         $this->status = $status;

@@ -10,6 +10,7 @@ require_once __DIR__ . '/../dao/pessoaDAO.php';
 require_once __DIR__ . '/../dao/enderecoDAO.php';
 require_once __DIR__ . '/../services/pessoaService.php';
 require_once __DIR__ . '/../model/validacao.php';
+require_once __DIR__ . '/imovelController.php';
 
 class PessoaController
 {
@@ -21,6 +22,7 @@ class PessoaController
             return (["status" => "erro", "mensagem" => "Nenhum usuário encontrado"]);
         }
         $lista = [];
+
         if ($listaUsuarios) {
             foreach ($listaUsuarios as $usuario) {
                 if (!$usuario) {
@@ -51,28 +53,9 @@ class PessoaController
                     "data_cadastro" => $usuario->getDataCadastro() ? $usuario->getDataCadastro() : null,
                     "data_modificacao" => $usuario->getDataModificacao() ? $usuario->getDataModificacao() : null,
                     "imoveis" => array_map(function ($imovel) {
+                        $controllerImovel = new ImovelController();
                         return [
-                            "id" => $imovel->getId(),
-                            "valor_venda" => $imovel->getValorVenda(),
-                            "valor_aluguel" => $imovel->getValorAluguel(),
-                            "categoria" => $imovel->getCategoria() ? $imovel->getCategoria() : null,
-                            "status" => $imovel->getStatus() ? $imovel->getStatus() : null,
-                            "data_cadastro" => $imovel->getDataCadastro(),
-                            "data_modificacao" => $imovel->getDataModificacao(),
-                            "anuncio" => [
-                                "id" => $imovel->getAnuncio()->getId(),
-                                "descricao" => $imovel->getAnuncio()->getDescricao(),
-                                "titulo" => $imovel->getAnuncio()->getTitulo(),
-                                "imagens" => $imovel->getAnuncio()->getImagens() ? array_map(function ($imagem) {
-                                    return rtrim(dirname($_SERVER['SCRIPT_NAME'], 3), '/') . "/assets/" . $imagem->getCaminho();
-                                }, $imovel->getAnuncio()->getImagens()) : [],
-                                "documentos" => $imovel->getAnuncio()->getAnexos() ? array_map(function ($documento) {
-                                    return rtrim(dirname($_SERVER['SCRIPT_NAME'], 3), '/') . "/assets/" . $documento->getCaminho();
-                                }, $imovel->getAnuncio()->getAnexos()) : [],
-                                "videos" => $imovel->getAnuncio()->getVideos() ? array_map(function ($video) {
-                                    return rtrim(dirname($_SERVER['SCRIPT_NAME'], 3), '/') . "/assets/" . $video->getCaminho();
-                                }, $imovel->getAnuncio()->getVideos()) : [],
-                            ]
+                            $imovel ? $controllerImovel->montarJson([$imovel])[0] : null,
                         ];
                     }, $usuario instanceof Proprietario ? $usuario->getImoveis() ?? [] : []),
                 ];
@@ -115,7 +98,7 @@ class PessoaController
             $uf = array_key_exists('uf', $dados) ? $dados['uf'] : "";
             $cep = array_key_exists('cep', $dados) && Validacao::validarCEP($dados['cep']) ? str_replace('-', '', $dados['cep']) : "";
             $complemento = array_key_exists('complemento', $dados) ? $dados['complemento'] : "";
-            
+
             if ($id > 0) {
                 $pessoaDAO = new PessoaDAO();
                 $pessoa = $pessoaDAO->buscarPorId($id);
@@ -154,7 +137,7 @@ class PessoaController
                         $pessoa->setSalario($salario);
                         break;
                     default:
-                    error_log("Tipo de pessoa inválido: " . $tipo);
+                        error_log("Tipo de pessoa inválido: " . $tipo);
                         return (["status" => "erro", "mensagem" => "Tipo de usuário inválido"]);
                 }
             }

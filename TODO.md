@@ -2,6 +2,7 @@
 
 - Botar um botao X na imagem no cadastro do imóvel para remover a imagem especifica
 - Adicionar icons no cadastro
+- Mudar fonte 
 
 # Implementar:
 

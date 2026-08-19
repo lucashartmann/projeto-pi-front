@@ -1,4 +1,4 @@
-import { getCaminhoRelativo } from "./modules/utils.js";
+import { getCaminhoRelativo, formatarValor } from "./modules/utils.js";
 import { usuarioLogado, carregarUser } from "./modules/usuario.js";
 import { getUsuario } from "./modules/usuarios.js";
 import { listarHistoricoPorIdCliente } from "./modules/historico.js";
@@ -8,11 +8,50 @@ Inputmask("999.999.999-99").mask("#inpt-cpf");
 Inputmask("99999-999").mask("#ta-cep");
 
 let usuario = null;
+let usuario2 = null;
 
 window.abrirCadastro = abrirCadastro;
 window.salvar = salvar;
 window.apagar = apagar;
 window.abrirImovel = abrirImovel;
+window.preencherEndereco = preencherEndereco;
+window.formatarValor = formatarValor;
+
+async function preencherEndereco(event) {
+    const cep = event.target.value.replace(/\D/g, "");
+
+    if (cep.length !== 8) {
+        return;
+    }
+
+    try {
+        const inputRua = document.getElementById("ta-rua");
+        const inputBairro = document.getElementById("ta-bairro");
+        const inputCidade = document.getElementById("ta-cidade");
+        const inputEstado = document.getElementById("ta-estado");
+
+        const response = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
+
+        if (!response.ok) {
+            console.log("CEP inválido ou não encontrado");
+            return;
+        }
+
+        const data = await response.json();
+
+        if (data.erro) {
+            alert("CEP não encontrado!");
+            return;
+        }
+
+        inputRua.value = data.logradouro || "";
+        inputBairro.value = data.bairro || "";
+        inputCidade.value = data.localidade || "";
+        inputEstado.value = data.uf || "";
+    } catch (error) {
+        console.error("Erro ao buscar endereço:", error);
+    }
+}
 
 async function salvar() {
     var form = document.querySelector("form");
@@ -36,6 +75,9 @@ async function salvar() {
     formData.forEach((value, key) => {
         data[key] = value;
     });
+
+    data['id'] = usuario2 ? usuario2.id : null;
+
     if (JSON.stringify(formData).length > 0) {
         try {
             let caminho = getCaminhoRelativo("/php/api/usuarios.php?acao=cadastro");
@@ -181,17 +223,22 @@ async function abrirCadastro(usuario) {
             let html = "";
 
             usuario.imoveis.forEach(imovel => {
+                imovel = imovel[0]; 
                 html += `
-                <div class="resultado" onclick="abrirImovel(imovel)">
-                    <img src="${imovel.anuncio?.imagens?.[0] || null}" alt="">
+                <a class="resultado" href="cadastro-imovel.html?id=${imovel.id}">
+                    <img src="${imovel.anuncio?.imagens?.[0]}" alt="">
                     <div class="dados">
-                        <label for="">REF: ${imovel.id}</label>
-                        <label>${imovel.anuncio?.titulo || ""}</label>
-                        <label for="">${imovel.endereco || ""}</label>
-                        <label for="">${imovel.categoria || ""}</label>
-                        <label for="">${imovel.status || ""}</label>
+                        <label>Ref: ${imovel.id}</label>
+                        <label for="">Rua: ${imovel.endereco?.rua}, ${imovel.endereco?.numero}, ${imovel.endereco?.bairro}, ${imovel.endereco?.cep}</label>
+                        <label for="">Categoria: ${imovel.categoria}</label>
+                        <label for="">Status: ${imovel.status}</label>
+                        <label for="">Aluguel: ${formatarValor(imovel.valor_aluguel)}</label>
+                        <label for="">Venda: ${formatarValor(imovel.valor_venda)}</label>
+                        <label for="">Data de Cadastro: ${new Date(imovel.data_cadastro?.date).toLocaleString()}</label>
+                        <label for="">Data de Modificação: ${imovel.data_modificacao ? new Date(imovel.data_modificacao?.date).toLocaleString() : ''}</label>
                     </div>
-                </div>
+                              
+                </a>
             `;
             });
             if (html) {
@@ -214,6 +261,7 @@ async function abrirCadastro(usuario) {
 
 async function carregarHistorico(idCliente) {
     const lista = await listarHistoricoPorIdCliente(idCliente);
+    console.log(lista);
     if (lista != null && lista.length > 0) {
         const tabela = document.getElementById("historico");
         tabela.style.display = "flex";
@@ -236,13 +284,15 @@ async function carregarHistorico(idCliente) {
 
 window.addEventListener('DOMContentLoaded', async function (event) {
     usuario = usuarioLogado || await carregarUser();
+    const id = new URLSearchParams(window.location.search).get("id");
+    usuario2 = id ? await getUsuario(id) : null;
 
     const select = document.querySelector("#select-tipo");
 
     select.innerHTML = '<option value="" selected>Selecione uma opção...</option>'
 
     if (usuario && usuario.tipo) {
-        carregarHistorico(usuario.id);
+        carregarHistorico(usuario2 ? usuario2.id : null);
         switch (usuario.tipo) {
             case 'ADMIN':
                 select.innerHTML += `<option value="PROPRIETARIO">Proprietário</option>
@@ -280,8 +330,7 @@ window.addEventListener('DOMContentLoaded', async function (event) {
         }
     }
 
-    const id = new URLSearchParams(window.location.search).get("id");
-    let usuario2 = id ? await getUsuario(id) : null;
+
     if (usuario2) {
         await abrirCadastro(usuario2);
     }

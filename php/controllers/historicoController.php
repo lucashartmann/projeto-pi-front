@@ -13,13 +13,20 @@ class HistoricoController
         $json = [];
         $pessoaController = new PessoaController();
         $imovelController = new ImovelController();
+        if ($historicos && count($historicos) > 0) {
+            usort($historicos, function ($a, $b) {
+                return $b->getDataAlteracao() <=> $a->getDataAlteracao();
+            });
+        } else {
+            return [];
+        }
         foreach ($historicos as $historico) {
             $json[] = [
                 "id" => $historico->getId(),
                 "imovel" => $historico->getImovel() ? $imovelController->montarJson([$historico->getImovel()])[0] : null,
                 "cliente" => $historico->getCliente()  ? $pessoaController->montarJson([$historico->getCliente()])[0] : null,
                 "funcionario" => $historico->getFuncionario() ? $pessoaController->montarJson([$historico->getFuncionario()])[0] : null,
-                "data" => $historico->getDataAlteracao() ? $historico->getDataAlteracao()->format("Y-m-d H:i:s"): null,
+                "data" => $historico->getDataAlteracao() ? $historico->getDataAlteracao()->format("Y-m-d H:i:s") : null,
                 "alteracao" => $historico->getAlteracao()
             ];
         }

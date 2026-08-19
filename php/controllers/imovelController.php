@@ -342,6 +342,8 @@ class ImovelController
                 $condominioObj->setFiltros($filtrosCondominio);
             }
 
+            
+
 
             $enderecoObj->setRua($rua);
             $enderecoObj->setBairro($bairro);
@@ -350,6 +352,7 @@ class ImovelController
             $enderecoObj->setUf($uf);
             $enderecoObj->setNumero($numero);
             $enderecoObj->setComplemento($complemento);
+            $imovelObj->setEndereco($enderecoObj);
             $imovelObj->setProprietarios($proprietarios);
             $imovelObj->setFiltros($filtrosApartamento);
             $anuncioObj->setTitulo($titulo);
@@ -412,7 +415,7 @@ class ImovelController
                         try {
                             $historicoDAO = new HistoricoDAO();
                             $usuarioAtual = $_SESSION['usuario'] ?? null;
-                            $historico = new Historico(alteracao: "Cadastrou o imóvel", imovel: $imovelDAO->buscarPorId($id), funcionario: $usuarioAtual);
+                            $historico = new Historico(alteracao: "Cadastrou o imóvel", imovel: $imovelDAO->buscarPorId($cadastrado->getId()), funcionario: $usuarioAtual);
                             $historicoDAO->cadastrar($historico);
                         } catch (Exception $e) {
                             error_log("Erro ao registrar histórico de destaque de imóveis: " . $e->getMessage());
