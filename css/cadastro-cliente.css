@@ -290,7 +290,7 @@ label {
     }
 }
 
-.titulo { 
+.titulo {
     color: var(--cor-texto-alternativa);
     font-size: 1.2rem;
 }
@@ -317,6 +317,7 @@ label {
             width: 1.5rem;
             height: 1.5rem;
             align-self: center;
+
             &:checked {
                 accent-color: var(--cor-texto-alternativa) !important;
             }
@@ -371,7 +372,37 @@ label {
 }
 
 @media screen and (max-width: 380px) {
+    #h-buttons {
+        order: -1;
+        position: static !important;
+        margin: 0 auto !important;
+        width: 90% !important;
+        margin-top: 40px !important;
+
+        button {
+            margin: 0 auto !important;
+        }
+
+        #historico {
+            margin: 20px auto !important;
+        }
+    }
+
+    #avo {
+        display: flex !important;
+        flex-direction: column !important;
+    }
+
+    #pai {
+        width: 90% !important;
+    }
+
     #campo-dados {
         grid-template-columns: repeat(auto-fit, minmax(32%, 1fr));
+        width: auto !important;
+
+        >div {
+            width: auto !important;
+        }
     }
 }

@@ -134,7 +134,7 @@ img:hover {
 
 html,
 body {
-    font-family: "Arsenal SC", sans-serif;
+    font-family: "Cormorant SC", sans-serif;
     margin: 0;
     padding: 0;
 }
@@ -307,9 +307,9 @@ nav {
         min-width: 220px;
         padding: 0.6rem;
         border-radius: 4px;
-        background: rgba(65, 65, 65, 1);
-        backdrop-filter: blur(14px);
-        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.35);
+        background: rgba(65, 65, 65, 0.7);
+        backdrop-filter: blur(100px) !important;
+        box-shadow: var(--shadow);
         border: 1px solid rgba(255, 255, 255, 0.05);
         opacity: 0;
         visibility: hidden;
@@ -689,13 +689,13 @@ div[vw-access-button] {
 
 @media screen and (max-width: 669px) {
     #top-nav {
-       
-       .so-texto {
+
+        .so-texto {
             display: none;
         }
-       
+
     }
-  
+
     #acessibilidade {
         right: 0px;
         top: 150px;

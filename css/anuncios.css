@@ -334,3 +334,15 @@ section {
         }
     }
 }
+
+@media screen and (max-width: 669px) {
+    #sidebar-anuncios {
+        display: none !important;
+    }
+
+    #anuncios {
+        grid-template-columns: repeat(auto-fit, minmax(60%, 100fr));
+        row-gap: 30px;
+        column-gap: 40px;
+    }
+}

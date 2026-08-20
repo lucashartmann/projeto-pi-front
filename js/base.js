@@ -322,6 +322,8 @@ function carregarTabs(usuario) {
 
     if (navMobile) {
         let mobileHtml = "";
+        mobileHtml += `<a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+        `;
         mobileHtml += tabs.map(tab => `
             <a href="${getCaminhoRelativo(tab.href)}">
                 ${tab.text}
@@ -365,12 +367,18 @@ function carregarTabs(usuario) {
         }
 
         mobileHtml += `
-            <a href="#" class="mobile-notificacoes"><i class="fas fa-bell"></i>Notificações</a>`;
+            <a href="#" class="mobile-notificacoes"><i class="fas fa-bell" style="margin-right:10px;"></i>Notificações</a>`;
+
+         mobileHtml += `<a href="${getCaminhoRelativo('html/sobre-nos.html')}">Sobre Nós</a>
+        `;
 
         mobileHtml += `
             <a href="#" onclick="deslogar()" id="mobile-logout">Sair</a>`;
+            
 
         navMobile.innerHTML = mobileHtml;
+
+       
 
         navMobile
             .querySelectorAll(".mobile-menu-title")

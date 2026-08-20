@@ -336,15 +336,18 @@ main {
 
         .resultado {
             width: 100% !important;
-            height: 6rem;
+            height: auto;
             white-space: nowrap;
             overflow: hidden hidden;
             text-overflow: clip;
+            display: flex;
+            flex-direction: column;
+            margin: 20px auto !important;
         }
 
         img {
-            height: 5rem;
-            width: 10rem;
+            height: 11rem;
+            width: 15rem;
             align-self: center;
         }
     }
