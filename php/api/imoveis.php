@@ -23,6 +23,10 @@ switch ($acao) {
 
     case "cadastrar":
         $data = $_POST;
+        if (!$_POST) {
+            $body = file_get_contents("php://input");
+            $data = json_decode($body, true);
+        }
         $resultado = $controller->cadastrar($data);
         break;
 
