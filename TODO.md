@@ -22,6 +22,7 @@
 - [ ] !!! Mudar fonte
 - [ ] !!! Responsividade
 - [ ] Contratos
+- [ ] Botão para limpar os inputs, ou as imagens, documentos e etc
 
 ### Login:
 
