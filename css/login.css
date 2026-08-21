@@ -10,6 +10,7 @@ body {
     justify-content: center;
     align-content: center;
     justify-items: center;
+    height: auto !important;
 }
 
 #login-container {
