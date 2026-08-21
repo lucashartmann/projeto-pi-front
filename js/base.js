@@ -13,7 +13,6 @@ window.deslogar = deslogar;
 let notificacoes = [];
 
 
-
 function aumentarFonte() {
     const root = document.documentElement;
     const style = getComputedStyle(root);
@@ -63,13 +62,23 @@ function alterarSrc(event, caminho) {
 }
 
 function openNav() {
+    const overlay = document.createElement("div");
+    overlay.className = "overlay";
+    overlay.style.cssText = `
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.7);
+        z-index: 999;
+    `;
+
+    document.body.appendChild(overlay);
+
     document.getElementById("mySidenav").style.width = "250px";
-    document.querySelector("main").style.opacity = "0.7";
 }
 
 function closeNav() {
+    document.querySelector('.overlay')?.remove();
     document.getElementById("mySidenav").style.width = "0";
-    document.querySelector("main").style.opacity = "1";
 }
 
 function carregarTabs(usuario) {
@@ -369,16 +378,16 @@ function carregarTabs(usuario) {
         mobileHtml += `
             <a href="#" class="mobile-notificacoes"><i class="fas fa-bell" style="margin-right:10px;"></i>Notificações</a>`;
 
-         mobileHtml += `<a href="${getCaminhoRelativo('html/sobre-nos.html')}">Sobre Nós</a>
+        mobileHtml += `<a href="${getCaminhoRelativo('html/sobre-nos.html')}">Sobre Nós</a>
         `;
 
         mobileHtml += `
             <a href="#" onclick="deslogar()" id="mobile-logout">Sair</a>`;
-            
+
 
         navMobile.innerHTML = mobileHtml;
 
-       
+
 
         navMobile
             .querySelectorAll(".mobile-menu-title")

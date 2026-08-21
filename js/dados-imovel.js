@@ -265,6 +265,22 @@ window.addEventListener("DOMContentLoaded", async () => {
 
 function abrirImagem(src) {
     // document.querySelector(".swiper-destaque").swiper.slideTo(imovel.anuncio.imagens.indexOf(src));
+    const overlay = document.createElement("div");
+    overlay.className = "overlay";
+    overlay.style.cssText = `
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.7);
+        z-index: 999;
+    `;
+
+
+
+    if (!document.querySelector(".swiper-destaque").classList.contains("modal-imagem")) {
+        document.body.appendChild(overlay);
+    } else {
+        document.querySelector('.overlay')?.remove();
+    }
 
     document.querySelector(".swiper-destaque").classList.toggle("modal-imagem");
 

@@ -827,6 +827,17 @@ function abrirImagem(src) {
     if (event.target.tagName === "INPUT" && event.target.type === "checkbox") {
         return;
     }
+     const overlay = document.createElement("div");
+    overlay.className = "overlay";
+    overlay.style.cssText = `
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.7);
+        z-index: 999;
+    `;
+
+    document.body.appendChild(overlay);
+
     var modal = document.createElement("div");
     modal.id = "modal-imagem";
 
@@ -840,6 +851,7 @@ function abrirImagem(src) {
     });
     img.addEventListener("click", function (event) {
         event.stopPropagation();
+        document.querySelector('.overlay')?.remove();
         document.body.removeChild(modal);
     });
 }
