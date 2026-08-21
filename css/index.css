@@ -913,9 +913,41 @@ section#anuncios {
 }
 
 @media screen and (max-width: 669px) {
+    #pesquisa {
+        margin: 0px auto;
+        /* height: auto; */
+        gap: 0px;
+
+        #input-pesquisa {
+            width: 20rem !important;
+            height: 2.4rem;
+            font-size: 1rem;
+            margin: 0px auto;
+        }
+    }
+
+    #pesquisa-container {
+        height: auto !important;
+        margin: 30px !important;
+    }
+
     #container-filtragem {
         display: flex;
         flex-direction: column;
+        margin: 0px auto;
+        height: auto;
+
+        select {
+            width: 20rem !important;
+            height: auto;
+        }
+
+        input {
+            width: 20rem !important;
+            height: 2.4rem;
+            font-size: 1rem;
+            margin: 0px auto;
+        }
     }
 
     #gallery {
@@ -983,13 +1015,14 @@ section#anuncios {
 
         .swiper-slide {
             div {
-                height: 10rem;
+                height: 6rem;
                 width: 15rem;
                 overflow: hidden;
                 gap: 10px !important;
                 padding: 0px !important;
                 display: flex !important;
                 flex-direction: column !important;
+                padding: 2px !important;
             }
 
             p,
@@ -998,10 +1031,19 @@ section#anuncios {
                 font-size: 1rem !important;
                 width: auto !important;
                 height: auto !important;
-                white-space: nowrap;
+                /* white-space: nowrap; */
                 overflow: hidden;
                 text-overflow: clip;
                 margin: 0px !important;
+                overflow-wrap: break-word !important;
+            }
+
+            p {
+                display: none;
+            }
+
+            .preco {
+                margin-left: 5px !important;
             }
         }
     }
@@ -1022,10 +1064,11 @@ section#anuncios {
 
             h2,
             p {
-                white-space: nowrap;
+                /* white-space: nowrap; */
                 overflow: hidden;
                 text-overflow: clip;
                 width: 100%;
+                overflow-wrap: break-word !important;
             }
 
             p {
@@ -1039,14 +1082,16 @@ section#anuncios {
 
             p,
             h2 {
-                white-space: nowrap;
+                /* white-space: nowrap; */
                 overflow: hidden;
                 text-overflow: clip;
                 width: 100%;
+                overflow-wrap: break-word !important;
             }
 
             a {
                 text-overflow: clip !important;
+                overflow-wrap: break-word !important;
             }
 
 
