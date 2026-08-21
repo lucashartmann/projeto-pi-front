@@ -19,8 +19,10 @@
 - [ ] `JS` <font color=red>[ALTO]</font> Botão para limpar os inputs, ou as imagens, documentos e etc
 - [ ] `CSS` `JS` <font color=red>[ALTO]</font> Ver como fazer o menu de filtros responsivo
 - [ ] `PHP` `HTML` `CSS` `JS` `SQL` <font color=red>[ALTO]</font> Contratos
-- [ ] `PHP` `JS` <font color=green>[BAIXO]</font> As notificaçoes botar q se um cliente for cadastrado mandar uma notificação para todos os corretores cadastrando por id do corretor na tabela notificacao e botar o tipo ser "atendimento', "cadastro", etc
+- [ ] `PHP` <font color=green>[BAIXO]</font> Fazer _toString() em todas as classes
 - [ ] `PHP` <font color=green>[BAIXO]</font> Refazer a proprietarioImovelDAO
+- [ ] `PHP` `JS` <font color=green>[BAIXO]</font> As notificaçoes botar q se um cliente for cadastrado mandar uma notificação para todos os corretores cadastrando por id do corretor na tabela notificacao e botar o tipo ser "atendimento', "cadastro", etc
+
 
 ### Login:
 

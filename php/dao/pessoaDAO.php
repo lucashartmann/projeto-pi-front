@@ -73,26 +73,28 @@ class PessoaDAO
     {
         try {
             $sql = "
-                INSERT IGNORE INTO pessoa (email, nome, cpf_cnpj, rg, id_endereco, data_nascimento)
+                INSERT INTO pessoa (email, nome, cpf_cnpj, rg, id_endereco, data_nascimento)
                 VALUES (:email, :nome, :cpf_cnpj, :rg, :id_endereco, :data_nascimento)
             ";
-            $stmt = Banco::getInstance()->prepare($sql);
+            $stmt = $this->bancoDados->prepare($sql);
             $stmt->execute([
-                ':email' => $pessoa->getEmail(),
+                ':email' => $pessoa->getEmail() == "" ? null : $pessoa->getEmail(),
                 ':nome' => $pessoa->getNome(),
                 ':cpf_cnpj' => $pessoa->getCpfCnpj(),
                 ':rg' => $pessoa->getRg(),
                 ':id_endereco' => $pessoa->getEndereco() ? $pessoa->getEndereco()->getId() : null,
                 ':data_nascimento' => $pessoa->getDataNascimento() ? $pessoa->getDataNascimento()->format('Y-m-d') : null,
             ]);
-            return (int)Banco::getInstance()->lastInsertId();
+            $id = (int)$this->bancoDados->lastInsertId();
+            error_log("pessoaDAO->cadastrar: Pessoa cadastrada com sucesso. ID: $id");
+            return $this->bancoDados->lastInsertId();
         } catch (Exception $e) {
             error_log("ERRO! pessoaDAO->cadastrar: " . $e->getMessage());
             throw new Exception("Erro ao cadastrar pessoa: " . $e->getMessage());
         }
     }
 
-    public  function atualizar(Pessoa $pessoa): void
+    public  function atualizar(Pessoa $pessoa): ?bool
     {
         try {
             $sql = "
@@ -106,7 +108,7 @@ class PessoaDAO
                     data_modificacao = CURRENT_TIMESTAMP
                 WHERE id = :id
             ";
-            $stmt = Banco::getInstance()->prepare($sql);
+            $stmt = $this->bancoDados->prepare($sql);
             $stmt->execute([
                 ':id' => $pessoa->getId(),
                 ':email' => $pessoa->getEmail(),
@@ -116,6 +118,7 @@ class PessoaDAO
                 ':id_endereco' => $pessoa->getEndereco() ? $pessoa->getEndereco()->getId() : null,
                 ':data_nascimento' => $pessoa->getDataNascimento() ? $pessoa->getDataNascimento()->format('Y-m-d') : null
             ]);
+            return true;
         } catch (Exception $e) {
             error_log("ERRO! pessoaDAO->atualizar: " . $e->getMessage());
             throw new Exception("Erro ao atualizar pessoa: " . $e->getMessage());
@@ -199,7 +202,7 @@ class PessoaDAO
         try {
             $sql = $this->sqlConsulta . "WHERE pessoa.id = ?";
 
-            $stmt = Banco::getInstance()->prepare($sql);
+            $stmt = $this->bancoDados->prepare($sql);
             $stmt->execute([$id]);
 
             $registro = $stmt->fetch(PDO::FETCH_ASSOC);

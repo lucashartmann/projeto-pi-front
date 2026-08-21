@@ -114,7 +114,7 @@ class ImovelController
 
     function apagar(int $id)
     {
-         session_start();
+        session_start();
         $imovelDAO = new ImovelDAO();
         if (is_array($id)) {
             $listaIDS = $id;
@@ -194,7 +194,7 @@ class ImovelController
     public function cadastrar($data)
     {
         try {
-             session_start();
+            session_start();
             $id = array_key_exists("ref", $data) ? $data["ref"] : 0;
             $nomeCondominio = array_key_exists("nome_condominio", $data) ? $data["nome_condominio"] : "";
             $valorVenda = array_key_exists("valor_venda", $data) ? $data["valor_venda"] : 0.0;
@@ -341,9 +341,6 @@ class ImovelController
                 $condominioObj->setNome($nomeCondominio);
                 $condominioObj->setFiltros($filtrosCondominio);
             }
-
-            
-
 
             $enderecoObj->setRua($rua);
             $enderecoObj->setBairro($bairro);

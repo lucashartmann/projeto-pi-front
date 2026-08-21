@@ -165,4 +165,9 @@ class Pessoa
     {
         $this->dataModificacao = $value;
     }
+
+    public function __toString(): string
+    {
+        return "Pessoa [id={$this->id}, nome={$this->nome}, cpfCnpj={$this->cpfCnpj}, rg={$this->rg}, email={$this->email}]";
+    }
 }

@@ -83,7 +83,7 @@ class PessoaController
             $email = array_key_exists('email', $dados) ? $dados['email'] : "";
             $senha = array_key_exists('senha', $dados) ? $dados['senha'] : "";
             $dataNascimento = array_key_exists('data_nascimento', $dados) && Validacao::validarDataNascimento($dados['data_nascimento']) ? DateTime::createFromFormat('d/m/Y', $dados['data_nascimento']) : null;
-            $cpfCnpj = array_key_exists('cpf_cnpj', $dados) && Validacao::validarCPF($dados['cpf_cnpj']) ? str_replace(['.', '-', ' '], '', $dados['cpf_cnpj']) : "";
+            $cpfCnpj = array_key_exists('cpf_cnpj', $dados) ? str_replace(['.', '-', ' '], '', $dados['cpf_cnpj']) : "";
             $rg = array_key_exists('rg', $dados) && Validacao::validarRG($dados['rg']) ? $dados['rg'] : "";
             $telefones = array_key_exists('telefones', $dados) && Validacao::validarTelefone($dados['telefones']) ? str_replace(['-', '(', ')'], '', $dados['telefones']) : [];
             $tipo = array_key_exists('tipo', $dados) ? $dados['tipo'] : null;
@@ -98,6 +98,16 @@ class PessoaController
             $uf = array_key_exists('uf', $dados) ? $dados['uf'] : "";
             $cep = array_key_exists('cep', $dados) && Validacao::validarCEP($dados['cep']) ? str_replace('-', '', $dados['cep']) : "";
             $complemento = array_key_exists('complemento', $dados) ? $dados['complemento'] : "";
+
+            if ($cpfCnpj && Validacao::validarCPF($cpfCnpj) == false) {
+                error_log("CPF/CNPJ inválido: " . $cpfCnpj);
+                return (["status" => "erro", "mensagem" => "CPF/CNPJ inválido"]);
+            }
+
+            if ($cpfCnpj == "") {
+                error_log("CPF/CNPJ é obrigatório");
+                return (["status" => "erro", "mensagem" => "CPF/CNPJ é obrigatório"]);
+            }
 
             if ($id > 0) {
                 $pessoaDAO = new PessoaDAO();
@@ -186,6 +196,7 @@ class PessoaController
                 return (["status" => "sucesso", "mensagem" => "Usuário atualizado com sucesso"]);
             } else {
                 $pessoa->setDataCadastro(DateTime::createFromFormat('Y-m-d H:i:s', date('Y-m-d H:i:s')));
+                error_log("Cadastrando nova pessoa: $pessoa");
                 $pessoaService->cadastrar($pessoa);
                 if (isset($_SESSION['usuario']) || !empty($_SESSION['usuario'])) {
                     try {

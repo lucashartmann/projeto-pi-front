@@ -19,7 +19,7 @@ class Validacao
         return preg_match('/^[A-Z]{2}-\d{5}$/', $creci);
     }
 
-    public static function validarCPF(string $cpf)
+    public static function validarCPF(string $cpf): bool
     {
         $cpf = preg_replace('/[^0-9]/', '', $cpf);
         if (strlen($cpf) != 11 || preg_match('/(\d)\1{10}/', $cpf)) {
