@@ -7,6 +7,7 @@ window.listarImoveis = listarImoveis;
 let imoveisCache = [];
 let proprietariosCache = [];
 let usuariosCache = [];
+let dataSelecionada = null;
 
 async function calendar() {
   await $('#calendar').fullCalendar({
@@ -46,9 +47,8 @@ async function calendar() {
     handleWindowResize: true,
     width: $('#pai-calendario').width(),
     dayClick: function (date) {
-      const dataSelecionada = date.format('YYYY-MM-DD');
-
-      abrirFormulario(dataSelecionada);
+      dataSelecionada = date.format('YYYY-MM-DD');
+      document.querySelector('#container-dados h2').textContent = `Agendar visita para ${dataSelecionada}`;
     }
   });
 };
@@ -127,6 +127,10 @@ function adicionarEventoAoCalendario(evento) {
 
 document.addEventListener("submit", function (e) {
   if (!e.target.matches(".form-container form")) return;
+  if (!dataSelecionada) {
+    alert("Selecione uma data no calendário antes de agendar a visita.");
+    return;
+  }
 
   e.preventDefault();
 
@@ -141,57 +145,8 @@ document.addEventListener("submit", function (e) {
   adicionarEventoAoCalendario(data);
   // salvarEvento(data); // quando quiser salvar no backend
   e.target.closest(".form-container")?.remove();
+  document.querySelector('.overlay')?.remove();
 });
-
-function abrirFormulario(dataSelecionada) {
-
-  document.querySelector('.form-container')?.remove();
-
-  const div = document.createElement('div');
-  div.className = 'form-container';
-
-  div.innerHTML = `
-        <div class="form-header">
-            <h2>Agendar visita para ${dataSelecionada}</h2>
-            <button id="close-btn" onclick="this.parentElement.parentElement.remove()">X</button>
-        </div>
-
-        <form>
-            <input type="hidden" name="data" value="${dataSelecionada}">
-
-            <label>Nome do evento:</label>
-            <input type="text" name="nome" required>
-
-            <label>Hora do evento:</label>
-            <input type="time" name="hora" required>
-
-            <label>Cliente:</label>
-            <select name="cliente" required>
-                <option value="">Selecione uma opção...</option>
-                ${usuariosCache.map(usuario =>
-    `<option value="${usuario.id}">${usuario.nome}</option>`
-  ).join('')}
-            </select>
-
-            <label>Imóvel:</label>
-            <select name="imovel" required>
-                <option value="">Selecione uma opção...</option>
-                ${imoveisCache.map(imovel =>
-    `<option value="${imovel.id}">${imovel.endereco}</option>`
-  ).join('')}
-            </select>
-
-            <div class="checkbox-container">
-                <input type="checkbox" id="confirmar" name="confirmar">
-                <label for="confirmar">Mandar email para cliente?</label>
-            </div>
-
-            <button type="submit">Agendar</button>
-        </form>
-    `;
-
-  document.body.appendChild(div);
-}
 
 document.addEventListener('DOMContentLoaded', async function () {
   calendar();
@@ -224,4 +179,18 @@ document.addEventListener('DOMContentLoaded', async function () {
   }
   dados.sort((a, b) => new Date(b.data_cadastro?.date) - new Date(a.data_cadastro?.date));
   imoveisCache.push(...dados);
+
+  document.querySelector('select[name="cliente"]').innerHTML = `
+   <option value="">Selecione uma opção...</option>
+            ${usuariosCache.map(usuario =>
+    `<option value="${usuario.id}">${usuario.id} - ${usuario.nome}</option>`
+  ).join('')}
+  `;
+
+  document.querySelector('select[name="imovel"]').innerHTML = `
+       <option value="">Selecione uma opção...</option>
+            ${imoveisCache.map(imovel =>
+    `<option value="${imovel.id}">${imovel.id} - ${imovel.endereco?.rua}, ${imovel.endereco?.numero}/${imovel.endereco?.complemento}</option>`
+  ).join('')}
+  `;
 });

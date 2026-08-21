@@ -32,6 +32,46 @@
     <button onclick="modoNoturno()"><i class="fas fa-moon"></i></button>
   </div>
   <div id="pai-calendario">
+    <div id="container-dados">
+      <h2>Agendar visita para ...</h2>
+
+      <form class="form-container">
+        <input type="hidden" name="data" value="${dataSelecionada}">
+
+        <div class="linha">
+          <div class="vertical-separator">
+            <label>Nome do evento:</label>
+            <input type="text" name="nome" required>
+          </div>
+
+          <div class="vertical-separator">
+            <label>Hora do evento:</label>
+            <input type="time" name="hora" required>
+          </div>
+        </div>
+
+        <div class="linha">
+          <div class="vertical-separator">
+            <label>Cliente:</label>
+            <select name="cliente" required>
+            </select>
+          </div>
+
+          <div class="vertical-separator">
+            <label>Imóvel:</label>
+            <select name="imovel" required>
+            </select>
+          </div>
+        </div>
+
+        <div class="checkbox-container">
+          <input type="checkbox" id="confirmar" name="confirmar">
+          <label for="confirmar">Mandar email para cliente?</label>
+        </div>
+
+        <button type="submit">Agendar</button>
+      </form>
+    </div>
     <div class="ui container">
       <div class="ui grid">
         <div class="ui sixteen column">
