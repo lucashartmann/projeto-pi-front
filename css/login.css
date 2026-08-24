@@ -54,9 +54,10 @@ form {
         width: auto;
         height: 3.5vh;
         color: white;
-        background: var(--background);
+        /* background: var(--background); */
         font-size: 100%;
         border-radius: 2% / 30%;
+        color: black;
     }
 
     button[type="submit"] {
@@ -120,7 +121,7 @@ form {
     display: flex;
     min-width: 60%;
     width: auto;
-    background: var(--background);
+    background: white;
     outline: solid 2px red;
     border-radius: 2% / 30%;
 
@@ -146,7 +147,8 @@ form {
         width: 100%;
         margin-right: 10px;
         border: none;
-        background: transparent;
+        color: black;
+        /* background: transparent; */
 
         &:required {
             outline: none;
@@ -164,7 +166,7 @@ form {
     i {
         border: none !important;
         background: transparent !important;
-        color: rgb(255, 255, 255);
+        color: black;
         width: 2vw;
         text-align: center;
         align-items: center;

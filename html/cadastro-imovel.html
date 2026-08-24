@@ -142,7 +142,8 @@
                                 </div>
                                 <div class="vertical-separator">
                                     <label for="" id="stt-numero">Número</label>
-                                    <input type="number" placeholder="" id="ta-numero" name="numero" required min="0">
+                                    <input type="number" placeholder="" id="ta-numero" name="numero" required min="0"
+                                        oninput="atualizarEndereco()">
                                 </div>
                                 <div class="vertical-separator">
                                     <label for="" id="stt-complemento">Complemento</label>
@@ -406,6 +407,27 @@
             </div>
             <div id="container-mapa" class="container">
                 <div id="mapa"></div>
+            </div>
+
+            <div id="edicao-logo">
+                <div id="logo-editada">
+                    <header>
+                        <Button onclick="adicionarLogo(event)">Adicionar</Button>
+                        <button>Editar</button>
+                        <Button
+                            onclick="event.target.closest('#logo-editada').querySelector('img').remove()">Remover</Button>
+                    </header>
+                    <div class="imagem"><img src="../assets/logo.webp" alt=""></div>
+
+                </div>
+                <div id="preview-logo">
+                    <h2>Preview</h2>
+                    <div class="imagem">
+                        <div id="sobrepor"><img src="../assets/logo.webp" alt=""></div>
+
+                        <img src="../assets/imoveis/imovel_0.webp" alt="">
+                    </div>
+                </div>
             </div>
 
         </div>

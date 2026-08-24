@@ -115,6 +115,40 @@ function listarArquivos($id)
     return [];
 }
 
+function salvarLogo($nomeTemporario)
+{
+    $blob = null;
+    $novoNomeArquivo = "";
+    $blob = imagemParaWebpBlob($nomeTemporario);
+    $novoNomeArquivo = 'logo.webp';
+
+    if (!$blob || !$novoNomeArquivo) {
+        return false;
+    }
+
+    $caminhoCompleto = str_replace("\\php\\utils", "\\assets\\", __DIR__) .  "/" . $novoNomeArquivo;
+
+    $diretorio = str_replace("\\php\\utils", "\\assets\\", __DIR__);
+    if (!is_dir($diretorio)) {
+        mkdir($diretorio, 0755, true);
+    }
+
+    if (file_exists($caminhoCompleto)) {
+        unlink($caminhoCompleto);
+    }
+
+    $is_save = file_put_contents($caminhoCompleto, $blob);
+
+    if ($is_save === false) {
+        error_log("Erro ao salvar a imagem: " . $caminhoCompleto);
+        return false;
+    }
+
+    $caminhoParaSalvar = "assets/" . $novoNomeArquivo;
+
+    return $caminhoParaSalvar;
+}
+
 function salvarArquivo($nomeTemporario, $nomeArquivo, $id, $tipo)
 {
     $blob = null;

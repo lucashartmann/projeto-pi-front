@@ -21,6 +21,8 @@ window.abrirAnuncio = abrirAnuncio;
 window.abrirImagem = abrirImagem;
 window.abrirMultiplos = abrirMultiplos;
 window.listarHistoricoPorIdImovel = listarHistoricoPorIdImovel;
+window.atualizarEndereco = atualizarEndereco;
+window.adicionarLogo = adicionarLogo;
 
 function calcularMediaAluguel(imovelAlvo) {
     const listaImoveis = listarImoveis() || [];
@@ -187,8 +189,55 @@ async function preencherEndereco(event) {
         inputBairro.value = data.bairro || "";
         inputCidade.value = data.localidade || "";
         inputEstado.value = data.uf || "";
+
+
+        const endereco =
+            `${data.logradouro},
+                ${data.bairro},
+                ${data.localidade},
+                ${data.uf},
+                Brasil`;
+
+        const coordenadas = await buscarCoordenadas(endereco);
+
+        if (coordenadas) {
+
+            carregarMapa(
+                coordenadas.lat,
+                coordenadas.lng
+            );
+
+        }
+
+
     } catch (error) {
         console.error("Erro ao buscar endereço:", error);
+    }
+}
+
+async function atualizarEndereco() {
+    const inputRua = document.getElementById("ta-rua");
+    const inputBairro = document.getElementById("ta-bairro");
+    const inputCidade = document.getElementById("ta-cidade");
+    const inputEstado = document.getElementById("ta-estado");
+    const inputNumero = document.getElementById("ta-numero");
+    const endereco =
+        `${inputRua.value},
+                ${inputBairro.value},
+                ${inputCidade.value},
+                ${inputEstado.value},
+                ${inputNumero.value},
+                Brasil`;
+
+    const coordenadas = await buscarCoordenadas(endereco);
+
+    if (coordenadas) {
+
+        carregarMapa(
+            coordenadas.lat,
+            coordenadas.lng
+        );
+
     }
 }
 
@@ -827,7 +876,7 @@ function abrirImagem(src) {
     if (event.target.tagName === "INPUT" && event.target.type === "checkbox") {
         return;
     }
-     const overlay = document.createElement("div");
+    const overlay = document.createElement("div");
     overlay.className = "overlay";
     overlay.style.cssText = `
         position: fixed;
@@ -847,6 +896,7 @@ function abrirImagem(src) {
     modal.appendChild(img);
     document.body.appendChild(modal);
     modal.addEventListener("click", function () {
+        document.querySelector('.overlay')?.remove();
         document.body.removeChild(modal);
     });
     img.addEventListener("click", function (event) {
@@ -1008,6 +1058,93 @@ function selecionarTodos(event) {
     checkboxes.forEach(checkbox => checkbox.checked = !todosSelecionados);
 }
 
+function estilizarDiv(card) {
+    if (!card) return;
+
+    let dragging = false;
+    let startX, startY;
+    let x = -200;
+    let y = -80;
+
+    card.addEventListener("click", e => {
+        e.stopPropagation();
+    });
+
+    card.addEventListener("pointerdown", e => {
+        e.stopPropagation();
+        e.preventDefault();
+        dragging = true;
+        card.setPointerCapture(e.pointerId);
+        startX = e.clientX;
+        startY = e.clientY;
+        card.style.cursor = "grabbing";
+    });
+
+    card.addEventListener("pointermove", e => {
+        if (!dragging) return;
+
+        x -= startX - e.clientX;
+        y -= startY - e.clientY;
+
+        startX = e.clientX;
+        startY = e.clientY;
+
+        card.style.right = `${20 - x}px`;
+        card.style.bottom = `${20 - y}px`;
+    });
+
+    card.addEventListener("pointerup", () => {
+        if (dragging) {
+            card.addEventListener("click", e => {
+                e.stopPropagation();
+                e.preventDefault();
+            }, { once: true });
+        }
+
+        dragging = false;
+        card.style.cursor = "grab";
+
+    });
+}
+
+function adicionarLogo(event) {
+    var input = document.createElement("input");
+    input.type = "file";
+    input.accept = "image/*";
+    input.multiple = false;
+
+    input.onchange = function () {
+        var file = input.files[0];
+        var container = event.target.closest("#logo-editada");
+        container = container.querySelector(".imagem");
+        if (container.querySelector("img")) {
+            container.querySelector("img").remove();
+        }
+        var fileURL = URL.createObjectURL(file);
+        var fileElement;
+        if (file.type.startsWith("image/")) {
+            fileElement = document.createElement("img");
+            fileElement.src = `${fileURL}`;
+            fileElement.onclick = (function (url) {
+                return function () {
+                    abrirImagem(url);
+                };
+            })(fileURL);
+            container.appendChild(fileElement);
+            const novaDiv = document.createElement("div");
+            novaDiv.id = "sobrepor";
+            novaDiv.appendChild(fileElement.cloneNode(true));
+            const previewLogo = document.querySelector("#preview-logo .imagem");
+            if (previewLogo.querySelector("#sobrepor")) {
+                previewLogo.querySelector("#sobrepor").remove();
+            }
+            previewLogo.appendChild(novaDiv);
+            estilizarDiv(novaDiv);
+        }
+    }
+    input.click();
+}
+
 function adicionarAnexo(event) {
     var input = document.createElement("input");
     input.type = "file";
@@ -1121,6 +1258,9 @@ window.addEventListener("DOMContentLoaded", async function () {
         botao.textContent = "Alterar Logo";
         document.querySelector(".selecionar-todos").after(botao);
     }
+
+    const sobrepor = document.getElementById("sobrepor");
+    estilizarDiv(sobrepor);
 
     Inputmask("99999-999").mask("#ta-cep");
 

@@ -61,7 +61,13 @@ function bannerImoveis(dados) {
         }
         wrapper.innerHTML += `
         <a class="swiper-slide" href="html/dados-imovel.html?id=${imovel.id}"> 
-        <img src="${b64}" alt="${imovel.anuncio.titulo}"><div><h2>${imovel.anuncio.titulo}</h2>${precoVenda}${precoAluguel}<p>${imovel.anuncio.descricao}</p></div></a>
+            <img src="${b64}" alt="${imovel.anuncio.titulo}">
+            <div>
+                <h2>${imovel.anuncio.titulo}</h2>
+                ${precoVenda}${precoAluguel}
+                <p>${imovel.anuncio.descricao}</p>
+            </div>
+        </a>
         `
     }
 }
@@ -98,9 +104,9 @@ function inicializarSwiper() {
         spaceBetween: 30,
         centeredSlides: false,
         breakpoints: {
-            0: { slidesPerView:1 },
-            640: { slidesPerView:2 },
-            768: { slidesPerView:3 },
+            0: { slidesPerView: 1 },
+            640: { slidesPerView: 2 },
+            768: { slidesPerView: 3 },
             1024: { slidesPerView: 4 },
         },
     });
@@ -287,20 +293,21 @@ function filtrar() {
 
 function estilizarDiv() {
     document.querySelectorAll(".swiper-slide > div").forEach(card => {
+
+        if (!card) return;
+
         let dragging = false;
         let startX, startY;
         let x = 20;
         let y = 20;
-
-        card.addEventListener("pointerdown", e => {
-            e.stopPropagation();
-        });
 
         card.addEventListener("click", e => {
             e.stopPropagation();
         });
 
         card.addEventListener("pointerdown", e => {
+            e.stopPropagation();
+            e.preventDefault();
             dragging = true;
             card.setPointerCapture(e.pointerId);
             startX = e.clientX;
@@ -322,8 +329,16 @@ function estilizarDiv() {
         });
 
         card.addEventListener("pointerup", () => {
+            if (dragging) {
+                card.addEventListener("click", e => {
+                    e.stopPropagation();
+                    e.preventDefault();
+                }, { once: true });
+            }
+
             dragging = false;
             card.style.cursor = "grab";
+
         });
     });
 }

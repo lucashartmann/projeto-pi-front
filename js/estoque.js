@@ -859,9 +859,8 @@ window.addEventListener("DOMContentLoaded", async () => {
     }
 
     let dados = [];
-    let dadosUsuarios = await listarUsuarios();
-    dados = [...dadosUsuarios];
-    if (dados.length === 0 || !dados) {
+    dados = await listarUsuarios();
+    if (!dados || dados.length === 0) {
         const section = document.getElementById("container-pai");
         const divVazio = document.createElement("div");
         divVazio.id = "vazio";

@@ -21,7 +21,7 @@ class Cliente extends Pessoa
     private ?float $valorMinimo;
     private ?float $valorMaximo;
 
-    public function __construct(string $email, string $nome, string $cpfCnpj)
+    public function __construct(?string $email, string $nome, string $cpfCnpj)
     {
         parent::__construct($email, $nome, $cpfCnpj);
         $this->tipoImoveisDesejado = [];

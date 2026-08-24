@@ -8,7 +8,7 @@ class Corretor extends Funcionario
 {
     private string $creci;
 
-    public function __construct(string $email, string $nome, string $cpfCnpj, string $creci)
+    public function __construct(?string $email, string $nome, string $cpfCnpj, string $creci)
     {
         parent::__construct($email, $nome, $cpfCnpj, Cargo::CORRETOR);
         $this->creci = $creci;

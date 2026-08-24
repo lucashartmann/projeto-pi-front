@@ -8,7 +8,7 @@ class Proprietario extends Pessoa
 
     private ?array $imoveis;
 
-    public function __construct(string $email, string $nome, string $cpfCnpj)
+    public function __construct(?string $email, string $nome, string $cpfCnpj)
     {
         parent::__construct($email, $nome, $cpfCnpj);
         $this->imoveis = [];
