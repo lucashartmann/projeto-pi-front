@@ -20,7 +20,7 @@ class Funcionario extends Pessoa
     protected  ?DateTime $dataAdmissao;
     protected Cargo $cargo;
 
-    public function __construct(String $email, string $nome, string $cpfCnpj, Cargo $cargo)
+    public function __construct(?string $email, string $nome, string $cpfCnpj, Cargo $cargo)
     {
         parent::__construct($email, $nome, $cpfCnpj);
         $this->matricula = NULL;

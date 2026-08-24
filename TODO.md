@@ -32,6 +32,7 @@
 
 - [ ] `JS` <font color=red>[ALTO]</font> Implementar swiper ao abrir imagem como é no dados-imovel.js
 - [ ] `JS` <font color=yellow>[MÉDIO]</font> Abrir multiplas pessoas, apagar, midias e etc
+- [ ] `JS` <font color=yellow>[MÉDIO]</font> Atualizar o mapa depois de ter cep e numero
 - Administrador
   - [ ] `JS` `PHP` `SQL` <font color=green>[BAIXO]</font> Administrador poder cadastrar uma logo, que vai aparecer sobre as imagens. E também .
 - Admin, Corretor, Captador

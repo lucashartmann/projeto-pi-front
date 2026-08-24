@@ -19,7 +19,7 @@ class Pessoa
     protected  ?string $email;
     protected ?DateTime $ultimoLogin;
 
-    public function __construct(string $email, string $nome, string $cpfCnpj)
+    public function __construct(?string $email, string $nome, string $cpfCnpj)
     {
         $this->id = NULL;
         $this->email = $email;
