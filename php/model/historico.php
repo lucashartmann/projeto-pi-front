@@ -84,4 +84,9 @@ class Historico
     {
         $this->imovel = $imovel;
     }
+
+    public function __toString()
+    {
+        return "Historico: { id: " . $this->id . ", alteracao: " . $this->alteracao . ", dataAlteracao: " . ($this->dataAlteracao ? $this->dataAlteracao->format('Y-m-d H:i:s') : 'null') . ", funcionario: " . ($this->funcionario ? $this->funcionario->getId() : 'null') . ", cliente: " . ($this->cliente ? $this->cliente->getId() : 'null') . ", imovel: " . ($this->imovel ? $this->imovel->getId() : 'null') . " }";
+    }
 }

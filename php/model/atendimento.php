@@ -78,4 +78,9 @@ class Atendimento
     {
         $this->status = $value;
     }
+
+    public function __toString()
+    {
+        return "Atendimento: { id: " . $this->id . ", corretor: " . ($this->corretor ? $this->corretor->getId() : 'null') . ", cliente: " . ($this->cliente ? $this->cliente->getId() : 'null') . ", imovel: " . ($this->imovel ? $this->imovel->getId() : 'null') . ", status: " . ($this->status ? $this->status->value : 'null') . " }";
+    }
 }

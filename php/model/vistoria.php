@@ -86,4 +86,9 @@ class Vistoria
 
         return $this;
     }
+
+    public function __toString()
+    {
+        return "Vistoria: { id: " . $this->id . ", vistoriador: " . ($this->vistoriador ? $this->vistoriador->getId() : 'null') . ", imovel: " . ($this->imovel ? $this->imovel->getId() : 'null') . ", data: " . ($this->data ? $this->data->format('Y-m-d H:i:s') : 'null') . ", relatorio: " . $this->relatorio . " }";
+    }
 }

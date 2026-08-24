@@ -91,4 +91,9 @@ class Cliente extends Pessoa
     {
         return $this->imoveisFavoritos;
     }
+
+    public function __toString()
+    {
+        return "Cliente: { id: " . $this->id . ", nome: " . $this->nome . ", cpfCnpj: " . $this->cpfCnpj . ", email: " . $this->email . ", tipoInteresse: " . ($this->tipoInteresse ? $this->tipoInteresse->value : 'null') . ", valorMinimo: " . ($this->valorMinimo ?? 'null') . ", valorMaximo: " . ($this->valorMaximo ?? 'null') . " }";
+    }
 }

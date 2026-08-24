@@ -483,4 +483,25 @@ class Imovel
     {
         return $this->quantQuartos;
     }
+
+    public function __toString()
+    {
+        return "Imovel: { id: " . $this->id . ", valorVenda: " . $this->valorVenda . ", valorAluguel: " . $this->valorAluguel . ", quantQuartos: " . $this->quantQuartos . ", quantSalas: " . $this->quantSalas . ", quantVagas: " . $this->quantVagas . ", quantBanheiros: " . $this->quantBanheiros . ", quantVarandas: " . $this->quantVarandas . ", quantSuites: " . $this->quantSuites . ", categoria: " . ($this->categoria ? $this->categoria->value : 'null') . ", endereco: " . ($this->endereco ? $this->endereco->__toString() : 'null') . ", status: " . ($this->status ? $this->status->value : 'null') . ", iptu: " . $this->iptu . ", valorCondominio: " . $this->valorCondominio . ", andar: " . $this->andar . ", estado: " . ($this->estado ? $this->estado->value : 'null') . ", bloco: " . $this->bloco . ", anoConstrucao: " . $this->anoConstrucao . ", areaTotal: " . $this->areaTotal . ", areaPrivativa: " . $this->areaPrivativa . ", situacao: " . ($this->situacao ? $this->situacao->value : 'null') . ", ocupacao: " . ($this->ocupacao ? $this->ocupacao->value : 'null')  .
+            ", proprietarios: [" .
+            implode(", ", array_map(function ($proprietario) {
+                return ($proprietario instanceof Funcionario) ? $proprietario->__toString() : 'null';
+            }, $this->proprietarios)) .
+            "]" .
+            ", corretor: " . ($this->corretor ? $this->corretor->__toString() : 'null') .
+            ", captador: " . ($this->captador ? $this->captador->__toString() : 'null') .
+            ", dataCadastro: " . ($this->dataCadastro ? $this->dataCadastro->format('Y-m-d H:i:s') : 'null') .
+            ", dataModificacao: " . ($this->dataModificacao ? $this->dataModificacao->format('Y-m-d H:i:s') : 'null') .
+            ", anuncio: " . ($this->anuncio ? $this->anuncio->__toString() : 'null') .
+            ", condominio: " . ($this->condominio ? $this->condominio->__toString() : 'null') .
+            ", filtros: [" .
+            implode(", ", array_map(function ($filtro) {
+                return ($filtro instanceof Filtro) ? $filtro->__toString() : 'null';
+            }, $this->filtros)) .
+            "]";
+    }
 }

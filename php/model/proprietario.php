@@ -23,4 +23,11 @@ class Proprietario extends Pessoa
     {
         $this->imoveis = $value;
     }
+
+    public function __toString()
+    {
+        return "Proprietario: { id: " . $this->id . ", nome: " . $this->nome . ", cpfCnpj: " . $this->cpfCnpj . ", email: " . $this->email . ", imoveis: [" . implode(", ", array_map(function ($imovel) {
+            return $imovel->__toString();
+        }, $this->imoveis ?? [])) . "] }";
+    }
 }

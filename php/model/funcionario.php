@@ -68,4 +68,9 @@ class Funcionario extends Pessoa
     {
         $this->dataAdmissao = $value;
     }
+
+    public function __toString()
+    {
+        return "Funcionario: { id: " . $this->id . ", nome: " . $this->nome . ", cpfCnpj: " . $this->cpfCnpj . ", email: " . $this->email . ", matricula: " . ($this->matricula ?? 'null') . ", salario: " . ($this->salario ?? 'null') . ", dataAdmissao: " . ($this->dataAdmissao ? $this->dataAdmissao->format('Y-m-d H:i:s') : 'null') . ", cargo: " . $this->cargo->value . " }";
+    }
 }

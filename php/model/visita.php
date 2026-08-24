@@ -68,4 +68,9 @@ class Visita
 
         return $this;
     }
+
+    public function __toString()
+    {
+        return "Visita: { id: " . $this->id . ", cliente: " . ($this->cliente ? $this->cliente->getId() : 'null') . ", imovel: " . ($this->imovel ? $this->imovel->getId() : 'null') . ", corretor: " . ($this->corretor ? $this->corretor->getId() : 'null') . " }";
+    }
 }

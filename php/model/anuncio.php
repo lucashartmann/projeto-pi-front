@@ -89,4 +89,9 @@ class Anuncio
     {
         return $this->anexos;
     }
+
+    public function __toString()
+    {
+        return "Anuncio: { id: " . $this->id . ", titulo: " . $this->titulo . ", descricao: " . $this->descricao . ", idImovel: " . $this->idImovel . " }";
+    }
 }

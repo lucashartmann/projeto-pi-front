@@ -24,6 +24,7 @@ window.duplicarImovel = duplicarImovel;
 window.destacarImovel = destacarImovel;
 window.montarOpcoes = montarOpcoes;
 window.abrirAnuncio = abrirAnuncio;
+window.apagarPessoa = apagarPessoa;
 
 function abrirCadastro(id) {
     if (id) {
@@ -477,6 +478,7 @@ function trocarCadastro() {
     const navbarImoveis = document.getElementById("sidebar-imoveis");
     nav.style.display = "flex";
     navbarImoveis.style.display = "none";
+    sessionStorage.setItem("estoque-cadastroSelecionado", valor);
     switch (valor) {
         case "vistoriador":
             filtrar();
@@ -524,6 +526,57 @@ function trocarCadastro() {
             break;
     }
 }
+
+async function apagarPessoa(usuarioID) {
+    confirmar = confirm("Tem certeza que deseja excluir este usuário?");
+    if (usuarioID && confirmar) {
+        try {
+            let caminho = getCaminhoRelativo("/php/api/usuarios.php?acao=apagar&id=" + usuarioID);
+            const response = await fetch(caminho, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+
+            })
+                .then(async (response) => {
+                    if (response.erro) {
+                        alert("Erro ao remover usuário: " + response.erro);
+                        return null;
+                    }
+                    const contentType = response.headers.get("content-type");
+                    if (contentType && contentType.includes("application/json")) {
+                        return await response.json();
+                    } else {
+                        const texto = await response.text();
+                        alert("Resposta inesperada do servidor");
+                        console.error("Resposta não é JSON:", texto);
+                        return null;
+                    }
+                })
+                .then(async (data) => {
+                    if (data.status == "erro") {
+                        alert("Erro ao excluir usuário: " + data.mensagem);
+                    } else {
+                        console.log("Usuário excluído com sucesso:", data);
+                        window.location.href = "estoque.html";
+                    }
+                })
+                .catch(error => {
+                    console.error("Erro ao excluir usuário:", error);
+                });
+        } catch (error) {
+            console.error("Erro ao enviar dados para exclusão do usuário:", error);
+        }
+    }
+    else {
+        // alert("Nenhum imóvel selecionado para exclusão!");
+        window.location.href = "estoque.html";
+    }
+
+
+}
+
 
 async function carregarUsuarios(tipo) {
     let dados = usuariosFiltrados;
@@ -594,7 +647,8 @@ async function carregarUsuarios(tipo) {
                             <td class="telefones"><a href="cadastro-cliente.html?id=${usuario.id}">${telefonesFormatados.join('<br>')}</a></td>
                             <td><a href="cadastro-cliente.html?id=${usuario.id}">${usuario.data_cadastro ? new Date(usuario.data_cadastro?.date).toLocaleString() : ''}</a></td>
                             <td><a href="cadastro-cliente.html?id=${usuario.id}">${usuario.data_modificacao ? new Date(usuario.data_modificacao?.date).toLocaleString() : ''}</a></td>
-                            <td><button>Deletar</button></td>
+                             <td onclick="window.location.href='cadastro-cliente.html?id=${usuario.id}'" style="cursor: pointer;"><button>Editar</button></td>
+                            <td onclick="apagarPessoa(${usuario.id})" style="cursor: pointer;"><button>Deletar</button></td>
                         </tr>
                     
         `;
@@ -780,6 +834,15 @@ window.addEventListener("DOMContentLoaded", async () => {
 
     const filtroSelecionado = sessionStorage.getItem("estoque-filtroSelecionado");
     const seta = sessionStorage.getItem("estoque-seta");
+
+    const cadastroSelecionado = sessionStorage.getItem("estoque-cadastroSelecionado");
+    if (cadastroSelecionado) {
+        const selectCadastro = document.getElementById("select-cadastro");
+        if (selectCadastro) {
+            selectCadastro.value = cadastroSelecionado;
+            trocarCadastro();
+        }
+    }
 
     if (filtroSelecionado) {
         const selectFiltro = document.getElementById("select-filtro");

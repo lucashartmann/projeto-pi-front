@@ -17,4 +17,5 @@ class Seguranca
             return;
         }
     }
+
 }

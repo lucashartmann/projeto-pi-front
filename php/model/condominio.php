@@ -58,4 +58,9 @@ class Condominio
     {
         $this->nome = $nome;
     }
+
+    public function __toString()
+    {
+        return "Condominio: { id: " . $this->id . ", nome: " . $this->nome . ", endereco: " . ($this->endereco ? $this->endereco->__toString() : 'null') . " }";
+    }
 }

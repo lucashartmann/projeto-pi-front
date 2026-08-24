@@ -23,4 +23,9 @@ class Corretor extends Funcionario
     {
         $this->creci = $value;
     }
+
+    public function __toString()
+    {
+        return "Corretor: { id: " . $this->id . ", nome: " . $this->nome . ", cpfCnpj: " . $this->cpfCnpj . ", email: " . $this->email . ", creci: " . $this->creci . " }";
+    }
 }

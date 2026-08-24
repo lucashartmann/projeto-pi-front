@@ -54,4 +54,9 @@ class Anexo
     {
         return $this->tipoAnexo;
     }
+
+    public function __toString()
+    {
+        return "Anexo: { idAnuncio: " . $this->idAnuncio . ", caminho: " . $this->caminho . ", tipoAnexo: " . $this->tipoAnexo->value . " }";
+    }
 }

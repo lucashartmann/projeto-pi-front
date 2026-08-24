@@ -103,4 +103,9 @@ class Endereco
     {
         $this->cidade = $value;
     }
+
+    public function __toString()
+    {
+        return "Endereco: { id: " . $this->id . ", rua: " . $this->rua . ", numero: " . $this->numero . ", bairro: " . $this->bairro . ", cep: " . $this->cep . ", complemento: " . $this->complemento . ", cidade: " . $this->cidade . ", uf: " . $this->uf . " }";
+    }
 }

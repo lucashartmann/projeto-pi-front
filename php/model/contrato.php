@@ -140,4 +140,9 @@ class VendaAluguel
     {
         $this->comissaoCorretor = $value;
     }
+
+    public function __toString()
+    {
+        return "VendaAluguel: { id: " . $this->id . ", cliente: " . ($this->cliente ? $this->cliente->getId() : 'null') . ", captador: " . ($this->captador ? $this->captador->getId() : 'null') . ", corretor: " . ($this->corretor ? $this->corretor->getId() : 'null') . ", imovel: " . ($this->imovel ? $this->imovel->getId() : 'null') . ", data: " . ($this->data ? $this->data->format('Y-m-d H:i:s') : 'null') . ", comissaoCaptador: " . $this->comissaoCaptador . ", comissaoCorretor: " . $this->comissaoCorretor . ", dataCadastro: " . ($this->dataCadastro ? $this->dataCadastro->format('Y-m-d H:i:s') : 'null') . ", dataModificacao: " . ($this->dataModificacao ? $this->dataModificacao->format('Y-m-d H:i:s') : 'null') . " }";
+    }
 }
