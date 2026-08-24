@@ -9,7 +9,7 @@ class Condominio
     private ?Endereco $endereco;
     private array $filtros;
 
-    public function __construct(string $nome = null, ?Endereco $endereco = null)
+    public function __construct(?string $nome = null, ?Endereco $endereco = null)
     {
         $this->id = 0;
         $this->nome = $nome;

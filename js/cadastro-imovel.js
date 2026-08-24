@@ -1058,6 +1058,55 @@ function selecionarTodos(event) {
     checkboxes.forEach(checkbox => checkbox.checked = !todosSelecionados);
 }
 
+function estilizarDiv(card) {
+    if (!card) return;
+
+    let dragging = false;
+    let startX, startY;
+    let x = -200;
+    let y = -80;
+
+    card.addEventListener("click", e => {
+        e.stopPropagation();
+    });
+
+    card.addEventListener("pointerdown", e => {
+        e.stopPropagation();
+        e.preventDefault();
+        dragging = true;
+        card.setPointerCapture(e.pointerId);
+        startX = e.clientX;
+        startY = e.clientY;
+        card.style.cursor = "grabbing";
+    });
+
+    card.addEventListener("pointermove", e => {
+        if (!dragging) return;
+
+        x -= startX - e.clientX;
+        y -= startY - e.clientY;
+
+        startX = e.clientX;
+        startY = e.clientY;
+
+        card.style.right = `${20 - x}px`;
+        card.style.bottom = `${20 - y}px`;
+    });
+
+    card.addEventListener("pointerup", () => {
+        if (dragging) {
+            card.addEventListener("click", e => {
+                e.stopPropagation();
+                e.preventDefault();
+            }, { once: true });
+        }
+
+        dragging = false;
+        card.style.cursor = "grab";
+
+    });
+}
+
 function adicionarLogo(event) {
     var input = document.createElement("input");
     input.type = "file";
@@ -1082,6 +1131,15 @@ function adicionarLogo(event) {
                 };
             })(fileURL);
             container.appendChild(fileElement);
+            const novaDiv = document.createElement("div");
+            novaDiv.id = "sobrepor";
+            novaDiv.appendChild(fileElement.cloneNode(true));
+            const previewLogo = document.querySelector("#preview-logo .imagem");
+            if (previewLogo.querySelector("#sobrepor")) {
+                previewLogo.querySelector("#sobrepor").remove();
+            }
+            previewLogo.appendChild(novaDiv);
+            estilizarDiv(novaDiv);
         }
     }
     input.click();
@@ -1200,6 +1258,9 @@ window.addEventListener("DOMContentLoaded", async function () {
         botao.textContent = "Alterar Logo";
         document.querySelector(".selecionar-todos").after(botao);
     }
+
+    const sobrepor = document.getElementById("sobrepor");
+    estilizarDiv(sobrepor);
 
     Inputmask("99999-999").mask("#ta-cep");
 

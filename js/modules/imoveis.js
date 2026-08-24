@@ -95,7 +95,7 @@ export async function listarImoveis() {
             .then(async (res) => {
                 const contentType = res.headers.get("content-type");
                 if (res.erro) {
-                    console.error("Erro ao listar atendimentos: " + res.erro);
+                    console.error("Erro ao listar imóveis: " + res.erro);
                     return null;
                 }
                 if (contentType && contentType.includes("application/json")) {
@@ -131,7 +131,7 @@ export async function listarImoveisDisponiveis() {
         const resposta = await fetch(caminho)
             .then(async (res) => {
                 if (res.erro) {
-                    console.error("Erro ao listar atendimentos: " + res.erro);
+                    console.error("Erro ao listar imóveis disponíveis: " + res.erro);
                     return null;
                 }
                 const contentType = res.headers.get("content-type");
@@ -252,7 +252,7 @@ export async function getDadosImovel(id) {
         const resposta = await fetch(caminho)
             .then(async (res) => {
                 if (res.erro) {
-                    console.error("Erro ao listar atendimentos: " + res.erro);
+                    console.error("Erro ao buscar imóvel: " + res.erro);
                     return null;
                 }
                 const contentType = res.headers.get("content-type");

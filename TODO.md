@@ -2,6 +2,7 @@
 
 - <font color=yellow>[TALVEZ]</font> Adicionar icons em outros lugares
 - <font color=yellow>[TALVEZ]</font> Dar sugestao no input ao digitar
+- <font color=yellow>[TALVEZ]</font> Editar a logo em cada foto individual do imóvel
 - <font color=yellow>[TALVEZ]</font> Dar destaque maior para os valores e mudar a ordem, se baseando nos comércios como Mercado Livre, OLX.
 - <font color=green>[IMPROVÁVEL]</font> Adicionar icons no cadastro
 
@@ -34,7 +35,8 @@
 - [ ] `JS` <font color=yellow>[MÉDIO]</font> Abrir multiplas pessoas, apagar, midias e etc
 - [ ] `JS` <font color=yellow>[MÉDIO]</font> Atualizar o mapa depois de ter cep e numero
 - Administrador
-  - [ ] `JS` `PHP` `SQL` <font color=green>[BAIXO]</font> Administrador poder cadastrar uma logo, que vai aparecer sobre as imagens. E também .
+  - [ ] `JS` `PHP` `SQL` <font color=green>[BAIXO]</font> 
+  Poder Aumentar e diminuir a logo, salvar a posição e tamanho dela em relação á imagem, quanto carregar o JS, carregar a posiçao e a logo salva do banco de dados
 - Admin, Corretor, Captador
   - [ ] `JS` `PHP` `SQL` <font color=green>[BAIXO]</font> Poder editar a posição e tamanho da logo, e poder girar a imagem ou até redimensionar/cortar talvez
 

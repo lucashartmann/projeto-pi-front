@@ -17,7 +17,7 @@ class Anexo
     private string $caminho;
     private TipoAnexo $tipoAnexo;
 
-    public function __construct(int $idAnuncio = null, string $caminho, TipoAnexo $tipoAnexo)
+    public function __construct(?int $idAnuncio = null, string $caminho, TipoAnexo $tipoAnexo)
     {
         $this->idAnuncio = $idAnuncio;
         $this->caminho = $caminho;
