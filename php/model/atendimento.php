@@ -19,6 +19,8 @@ class Atendimento
     private ?Cliente $cliente;
     private ?Imovel $imovel;
     private ?StatusAtendimento $status;
+    private ?DateTime $dataCadastro;
+    private ?DateTime $dataAtualizacao;
 
     public function __construct()
     {
@@ -27,6 +29,28 @@ class Atendimento
         $this->cliente = NULL;
         $this->imovel = NULL;
         $this->status = NULL;
+        $this->dataCadastro = NULL;
+        $this->dataAtualizacao = NULL;
+    }
+
+    public function getDataCadastro(): ?DateTime
+    {
+        return $this->dataCadastro;
+    }
+
+    public function setDataCadastro(?DateTime $dataCadastro): void
+    {
+        $this->dataCadastro = $dataCadastro;
+    }
+
+    public function getDataAtualizacao(): ?DateTime
+    {
+        return $this->dataAtualizacao;
+    }
+
+    public function setDataAtualizacao(?DateTime $dataAtualizacao): void
+    {
+        $this->dataAtualizacao = $dataAtualizacao;
     }
 
     public function setId(int $id)

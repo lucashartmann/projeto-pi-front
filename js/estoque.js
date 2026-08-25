@@ -81,6 +81,11 @@ async function filtroOrdenado() {
         seta = event.target;
     }
 
+    if (!seta) {
+        console.warn("Elemento de seta não encontrado.");
+        return;
+    }
+
     if (seta.classList.contains("fa-angle-up")) {
         document.querySelectorAll(".fa-angle-down").length === 1 ? document.querySelectorAll(".fa-angle-down").forEach((elemento) => {
             elemento.classList.remove("fa-angle-down");
@@ -477,7 +482,9 @@ function trocarCadastro() {
     const nav = document.getElementById("sidebar-pessoas");
     const navbarImoveis = document.getElementById("sidebar-imoveis");
     nav.style.display = "flex";
+    nav.classList.add("active");
     navbarImoveis.style.display = "none";
+    navbarImoveis.classList.remove("active");
     sessionStorage.setItem("estoque-cadastroSelecionado", valor);
     switch (valor) {
         case "vistoriador":
@@ -503,7 +510,9 @@ function trocarCadastro() {
         case "imovel":
             filtrar();
             nav.style.display = "none";
+            nav.classList.remove("active");
             navbarImoveis.style.display = "flex";
+            navbarImoveis.classList.add("active");
             navbarImoveis.querySelector("#select-cadastro").value = "imovel";
             break;
         case "cliente":
@@ -580,7 +589,7 @@ async function apagarPessoa(usuarioID) {
 
 async function carregarUsuarios(tipo) {
     let dados = usuariosFiltrados;
-    const section = document.getElementById("container-pai");
+    const section = document.getElementById("container-resultado");
     if (!section || !dados) {
         console.log("Erro: Elementos não encontrados");
         return;
@@ -609,13 +618,18 @@ async function carregarUsuarios(tipo) {
     let classDataCadastro = document.querySelectorAll(".seta")[4]?.className || "fa fa-angle-down seta active";
     let classDataModificacao = document.querySelectorAll(".seta")[5]?.className || "fa fa-angle-up seta";
 
+    document.getElementById("filtro-seta").innerHTML = ``;
+
+    document.getElementById("contador").innerHTML = `${dados.length} pessoas(s) encontrado(s)`;
+
     section.innerHTML = "";
 
 
     let html = `
-    <table class="resultado">                
+    <table >                
                 <thead>
                     <tr>
+                    <th><input type="checkbox" id="checkbox-selecionar-todos" onclick="selecionarTodos(event)"></th>
                         <th onclick="filtroOrdenado(event)" style="cursor: pointer;" name="id">ID <i class="${classID}"></i></th>
                         <th onclick="filtroOrdenado(event)" style="cursor: pointer;" name="nome">Nome <i class="${classNome}"></i></th>
                         <th onclick="filtroOrdenado(event)" style="cursor: pointer;" name="email">Email <i class="${classEmail}"></i></th>
@@ -641,14 +655,15 @@ async function carregarUsuarios(tipo) {
         html += `
                     
                         <tr onclick="window.location.href='cadastro-cliente.html?id=${usuario.id}'" style="cursor: pointer;">
+                        <td><input type="checkbox" class="checkbox-selecionar" onclick="event.preventDefault(); event.stopPropagation(); montarOpcoes()"></td>
                             <td><a href="cadastro-cliente.html?id=${usuario.id}">${usuario.id}</a></td>
                             <td><a href="cadastro-cliente.html?id=${usuario.id}">${usuario.nome}</a></td>
                             <td><a href="cadastro-cliente.html?id=${usuario.id}">${usuario.email}</a></td>
                             <td class="telefones"><a href="cadastro-cliente.html?id=${usuario.id}">${telefonesFormatados.join('<br>')}</a></td>
                             <td><a href="cadastro-cliente.html?id=${usuario.id}">${usuario.data_cadastro ? new Date(usuario.data_cadastro?.date).toLocaleString() : ''}</a></td>
                             <td><a href="cadastro-cliente.html?id=${usuario.id}">${usuario.data_modificacao ? new Date(usuario.data_modificacao?.date).toLocaleString() : ''}</a></td>
-                             <td onclick="window.location.href='cadastro-cliente.html?id=${usuario.id}'" style="cursor: pointer;"><button>Editar</button></td>
-                            <td onclick="apagarPessoa(${usuario.id})" style="cursor: pointer;"><button>Deletar</button></td>
+                             <td onclick="window.location.href='cadastro-cliente.html?id=${usuario.id}'" style="cursor: pointer;"><button id="botao-editar">Editar</button></td>
+                            <td onclick="apagarPessoa(${usuario.id})" style="cursor: pointer;"><button class='bt-delete'>Deletar</button></td>
                         </tr>
                     
         `;
@@ -660,7 +675,7 @@ async function carregarUsuarios(tipo) {
 
 function carregarAnuncios() {
     let dados = imoveisFiltrados;
-    const section = document.getElementById("container-pai");
+    const section = document.getElementById("container-resultado");
     const seta = document.getElementById("seta");
     if (!section || !dados) {
         console.log("Erro: Elementos não encontrados");
@@ -671,19 +686,8 @@ function carregarAnuncios() {
 
     section.innerHTML = "";
 
-    if (dados.length === 0 || !dados) {
-        const divVazio = document.createElement("div");
-        divVazio.id = "vazio";
-        divVazio.textContent = "Nenhum imóvel encontrado.";
-        section.innerHTML = "";
-        section.appendChild(divVazio);
-        return;
-    }
-
-    let html = `
-    <div id="h-filtro">
-                <div id="filtro-seta">
-                    <select id="select-filtro" onchange="filtrar()">
+    document.getElementById("filtro-seta").innerHTML = `
+         <select id="select-filtro" onchange="filtrar()">
                         <option value="referencia" ${sessionStorage.getItem("estoque-filtroSelecionado") == "referencia" ? "selected" : ""}>Referência</option>
                         <option value="categoria" ${sessionStorage.getItem("estoque-filtroSelecionado") == "categoria" ? "selected" : ""}>Categoria</option>
                         <option value="status" ${sessionStorage.getItem("estoque-filtroSelecionado") == "status" ? "selected" : ""}>Status</option>
@@ -695,15 +699,22 @@ function carregarAnuncios() {
                         <option value="data_modificacao" ${sessionStorage.getItem("estoque-filtroSelecionado") == "data_modificacao" ? "selected" : ""}>Data de Modificação</option>
                     </select>
                     <i class="${classSeta}" id="seta" flat=True onclick="filtroOrdenado()"></i>
-                </div>
-                <button id="selecionar-todos" onclick="selecionarTodos()">Selecionar Todos</button>
-                <button id="abrir-multiplos" style="display: none;" onclick="abrirMultiplos()">Abrir</button>
-                <button id="apagar-multiplos" style="display: none;" onclick="apagarMultiplos()">Apagar</button>
-                <button id="destaque-multiplos" style="display: none;" onclick="tornarDestaqueMultiplos()">Tornar Destaque</button>
-                <p id="contador-imoveis">${dados.length} imóveis</p>
-            </div>
-            <section id="container-resultado">
-    `
+    `;
+
+  
+
+    document.getElementById("contador").innerHTML = `${dados.length} imóveis`;
+
+    if (dados.length === 0 || !dados) {
+        const divVazio = document.createElement("div");
+        divVazio.id = "vazio";
+        divVazio.textContent = "Nenhum imóvel encontrado.";
+        section.innerHTML = "";
+        section.appendChild(divVazio);
+        return;
+    }
+
+    let html = ``
     document.getElementById("contador-imoveis") && (document.getElementById("contador-imoveis").textContent = `${dados.length} ${dados.length === 1 ? 'imóvel' : 'imóveis'}`);
     for (let imovel of dados) {
         const b64 = imovel.anuncio?.imagens?.[0] || null;
@@ -804,6 +815,20 @@ async function apagarImovel(imovelId) {
     }
 }
 
+window.mudarLarguraSidebar = mudarLarguraSidebar;
+
+function mudarLarguraSidebar() {
+    const sidebar = document.querySelector(".active");
+    if (sidebar) {
+        if (getComputedStyle(sidebar).display == "flex") {
+            sidebar.style.display = "none";
+        } else {
+            sidebar.style.display = "flex";
+        }
+    }
+
+}
+
 function montarOpcoes() {
     const checkboxes = document.querySelectorAll(".checkbox-selecionar:checked");
     const botaoApagar = document.querySelector("#apagar-multiplos");
@@ -888,7 +913,11 @@ window.addEventListener("DOMContentLoaded", async () => {
     imoveisCache.push(...dados);
     imoveisFiltrados = imoveisCache;
 
-    carregarAnuncios();
+    if (cadastroSelecionado === "imovel" || !cadastroSelecionado) {
+        carregarAnuncios();
+    } else if (cadastroSelecionado) {
+        carregarUsuarios(cadastroSelecionado.toUpperCase());
+    }
 
     document.querySelectorAll(".sidebar-anuncios").forEach((element) => {
         element.querySelectorAll("input").forEach((input) => {

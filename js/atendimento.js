@@ -104,10 +104,12 @@ async function carregarAtendimentos() {
             divCard.className = "card";
             divCard.onclick = () => abrirAtendimento(atendimento.id);
             divCard.innerHTML = `
-                <h2>Nome: ${atendimento.cliente.nome ?? 'Não informado'}</h2>
-                <p>Idade: ${atendimento.cliente.idade ?? 'Não informada'}</p>
-                <p>Telefone: ${atendimento.cliente.telefone ?? 'Não informado'}</p>
-                <p>Email: ${atendimento.cliente.email ?? 'Não informado'}</p>
+                <h2>Nome: ${atendimento.cliente.nome ?? ''}</h2>
+                <p>Idade: ${atendimento.cliente.idade ?? ''}</p>
+                <p>Telefone: ${atendimento.cliente.telefone ?? ''}</p>
+                <p>Email: ${atendimento.cliente.email ?? ''}</p>
+                <p>Data de cadastro: ${atendimento.data_cadastro ?? ''}</p>
+                <p>Imovel: ${atendimento.imovel ? '${atendimento.imovel.id} - ${atendimento.imovel.endereco?.rua}, ${atendimento.imovel.endereco?.numero}/${atendimento.imovel.endereco?.complemento}' : ''}</p>
             `;
             divEmAndamento.appendChild(divCard);
         } else if (atendimento.status === "Pendente") {
@@ -122,6 +124,9 @@ async function carregarAtendimentos() {
                 <p>Idade: ${atendimento.cliente.idade ?? 'Não informada'}</p>
                 <p>Telefone: ${atendimento.cliente.telefone ?? 'Não informado'}</p>
                 <p>Email: ${atendimento.cliente.email ?? 'Não informado'}</p>
+                <p>Status: ${atendimento.status ?? 'Não informado'}</p>
+                <p>Data de cadastro: ${atendimento.data_cadastro ?? 'Não informada'}</p>
+                <p>Imovel: ${atendimento.imovel ? atendimento.imovel.endereco : 'Não informado'}</p>
             `;
             divPendente.appendChild(divCard);
         }

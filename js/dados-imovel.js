@@ -9,11 +9,11 @@ window.curtirImovel = curtirImovel;
 window.cadastrarAtendimento = cadastrarAtendimento;
 window.compartilharImovel = compartilharImovel;
 window.ativarImagem = ativarImagem;
+window.nextSlide = nextSlide;
+window.prevSlide = prevSlide;
 
 let imovel = null;
 let usuario = null;
-let logoRequisicao;
-let logo;
 
 async function compartilharImovel() {
     if (!navigator.share) {
@@ -82,29 +82,70 @@ function ativarImagem(index) {
     document.querySelector('.swiper-galeria').swiper.slideTo(index);
 }
 
+function aplicarLogoNoElemento(container, logo, anexo) {
+    const antigo = container.querySelector(":scope > .sobrepor");
+    if (antigo) antigo.remove();
+
+    const divSobrepor = document.createElement("div");
+    divSobrepor.classList.add("sobrepor");
+    divSobrepor.style.position = "absolute";
+    divSobrepor.style.right = "auto";
+    divSobrepor.style.bottom = "auto";
+
+    if (anexo?.largura != null) {
+        divSobrepor.style.width = `${anexo.largura}%`;
+    }
+
+    if (anexo?.altura != null) {
+        divSobrepor.style.height = `${anexo.altura}%`;
+    }
+
+    const img = document.createElement("img");
+    img.src = "../assets/" + logo;
+    divSobrepor.appendChild(img);
+
+    container.appendChild(divSobrepor);
+
+    const maxX = Math.max(0, container.clientWidth - divSobrepor.offsetWidth);
+    const maxY = Math.max(0, container.clientHeight - divSobrepor.offsetHeight);
+
+    const posX = anexo?.posicao_x;
+    const posY = anexo?.posicao_y;
+
+    if (posX != null) {
+        divSobrepor.style.left = `${maxX * posX / 100}px`;
+    }
+
+    if (posY != null) {
+        divSobrepor.style.top = `${maxY * posY / 100}px`;
+    }
+}
+
+
 async function setupDados(imovel) {
     // let imovel = JSON.parse(dados);
     var div = document.getElementById("dados-imovel");
     let imagensHtml = "";
     let swiperhtml = "";
+    let logoRequisicao = await buscarAnexoPorCaminho("logo.webp");
+    let logo = logoRequisicao?.anexo?.caminho || null;
+
     if (imovel.anuncio.imagens && imovel.anuncio.imagens.length > 0) {
         swiperhtml = "";
         for (let i = 0; i < imovel.anuncio.imagens.length; i++) {
             const imagem = imovel.anuncio.imagens[i];
-            swiperhtml += `<div class="swiper-slide" style="background-image: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), url(${imagem})" onclick="abrirImagem('${imagem}')"> ${logo ? '<div class="sobrepor"><img src="../assets/' + logo + '"></div>' : ''}</div>`;
+            swiperhtml += `<div class="swiper-slide" style="background-image: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), url(${imagem})" onclick="abrirImagem('${imagem}')"></div>`;
             imagensHtml += `<div class="swiper-slide" style="background-image: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), url(${imagem})" onclick="ativarImagem('${i}')"></div>`;
         }
     }
 
     if (logo && logoRequisicao) {
-        for (const slide of document.querySelectorAll('.swiper-destaque .swiper-slide')) {
-            const divSobrepor = slide.querySelector('.sobrepor');
-            if (!divSobrepor) {
-                continue;
+        requestAnimationFrame(() => {
+            const slides = document.querySelectorAll('.swiper-destaque .swiper-slide');
+            for (const slide of slides) {
+                aplicarLogoNoElemento(slide, logo, logoRequisicao.anexo);
             }
-            logoRequisicao.anexo?.posicao_x ? divSobrepor.style.left = `${logoRequisicao.anexo.posicao_x}%` : null;
-            logoRequisicao.anexo?.posicao_y ? divSobrepor.style.top = `${logoRequisicao.anexo.posicao_y}%` : null;
-        }
+        });
     }
 
     const divPai = document.getElementById("div-pai");
@@ -272,10 +313,6 @@ window.addEventListener("DOMContentLoaded", async () => {
     }
 
     sessionStorage.removeItem("dados_imovel");
-    logoRequisicao = await buscarAnexoPorCaminho("logo.webp");
-    logo = logoRequisicao?.anexo?.caminho || null;
-
-
 
     await setupDados(imovel);
     await inicializarSwiper();

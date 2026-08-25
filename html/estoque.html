@@ -7,8 +7,7 @@
     <title>Estoque</title>
     <link rel="stylesheet" href="../css/base.css">
     <link rel="stylesheet" href="../css/estoque.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://cdn.jsdelivr.net/npm/inputmask/dist/inputmask.min.js"></script>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -62,7 +61,7 @@
             <label for="input-salario">Salário</label>
             <input type="number" id="input-salario" step="0.01">
         </nav>
-        <nav class="sidebar-anuncios" id="sidebar-imoveis">
+        <nav class="sidebar-anuncios active" id="sidebar-imoveis">
             <label>Cadastro</label>
             <select name="cadastro" id="select-cadastro" onchange="trocarCadastro(event)">
                 <option value="">Selecione uma opção...</option>
@@ -342,7 +341,19 @@
             </div>
         </nav>
         <div id="container-pai">
-
+             <div id="h-filtro">
+                <i class="fa fa-arrows-left-right" onclick="mudarLarguraSidebar()"></i>
+                <div id="filtro-seta">
+                   
+                </div>
+                <button id="selecionar-todos" onclick="selecionarTodos()">Selecionar Todos</button>
+                <button id="abrir-multiplos" onclick="abrirMultiplos()">Abrir</button>
+                <button id="apagar-multiplos"  onclick="apagarMultiplos()">Apagar</button>
+                <button id="destaque-multiplos" onclick="tornarDestaqueMultiplos()">Tornar Destaque</button>
+                <p id="contador"></p>
+            </div>
+            <section id="container-resultado">
+            </section>
         </div>
     </main>
 

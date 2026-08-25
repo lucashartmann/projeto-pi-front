@@ -5,6 +5,8 @@ import { usuarioLogado } from "./modules/usuario.js";
 
 window.curtirImovel = curtirImovel;
 window.filtrar = filtrar;
+window.nextSlide = nextSlide;
+window.prevSlide = prevSlide;
 
 let dadosImoveis = [];
 let imoveisFiltrados = [];

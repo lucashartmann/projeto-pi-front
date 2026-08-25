@@ -110,6 +110,8 @@ class AtendimentoController
                 "cliente" => $atendimento->getCliente() ? $pessoaController->montarJson([$atendimento->getCliente()])[0] : NULL,
                 "imovel" => $atendimento->getImovel() ? $imovelController->montarJson([$atendimento->getImovel()])[0] : NULL,
                 "status" => $atendimento->getStatus() ? $atendimento->getStatus() : NULL,
+                "data_cadastro" => $atendimento->getDataCadastro() ? $atendimento->getDataCadastro()->format('Y-m-d H:i:s') : NULL,
+                "data_atualizacao" => $atendimento->getDataAtualizacao() ? $atendimento->getDataAtualizacao()->format('Y-m-d H:i:s') : NULL
             ];
         }
         return $lista;

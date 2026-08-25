@@ -78,9 +78,6 @@ export async function cadastrarAnexo(formData) {
                 }
                 else if (data.mensagem) {
                     alert("Anexo cadastrado com sucesso: " + data.mensagem);
-                    if (!imovel) {
-                        forms.forEach(form => form.reset());
-                    }
                 }
 
             })

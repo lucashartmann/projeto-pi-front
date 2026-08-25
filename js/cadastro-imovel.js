@@ -32,21 +32,64 @@ window.abrirMultiplosCadastros = abrirMultiplosCadastros;
 let posicoes = { posicao_x: 0, posicao_y: 0 };
 let tamanhos = { largura: 0, altura: 0 };
 
+const LARGURA_MIN = 20;
+const LARGURA_MAX_PERCENT = 100;
 
-function diminuirLogo() {
-    const logo = document.getElementById("preview-logo").querySelector(".imagem img");
-    if (logo) {
-        logo.style.width = (logo.offsetWidth - 10) + "px";
-        logo.style.height = (logo.offsetHeight - 10) + "px";
-    }
+function ajustarTamanhoLogo(delta) {
+    const container = document.getElementById("preview-logo").querySelector(".imagem");
+    const logo = container.querySelector("img");
+    if (!logo || !container) return;
+
+    const larguraAtual = logo.offsetWidth;
+    const alturaAtual = logo.offsetHeight;
+
+    let novaLargura = larguraAtual + delta;
+    let novaAltura = alturaAtual + delta;
+
+    if (novaLargura < LARGURA_MIN || novaAltura < LARGURA_MIN) return;
+
+    const maxLargura = container.clientWidth;
+    const maxAltura = container.clientHeight;
+
+    novaLargura = Math.min(novaLargura, maxLargura);
+    novaAltura = Math.min(novaAltura, maxAltura);
+
+    logo.style.width = `${novaLargura}px`;
+    logo.style.height = `${novaAltura}px`;
+
+    atualizarTamanhosEPosicoes();
 }
 
 function aumentarLogo() {
-    const logo = document.getElementById("preview-logo").querySelector(".imagem img");
-    if (logo) {
-        logo.style.width = (logo.offsetWidth + 10) + "px";
-        logo.style.height = (logo.offsetHeight + 10) + "px";
-    }
+    ajustarTamanhoLogo(10);
+}
+
+function diminuirLogo() {
+    ajustarTamanhoLogo(-10);
+}
+
+function atualizarTamanhosEPosicoes() {
+    const sobrepor = document.getElementById("sobrepor");
+    const pai = sobrepor.closest(".imagem");
+    if (!sobrepor || !pai) return;
+
+    tamanhos = {
+        largura: (sobrepor.offsetWidth / pai.clientWidth) * 100,
+        altura: (sobrepor.offsetHeight / pai.clientHeight) * 100
+    };
+
+    const maxX = pai.clientWidth - sobrepor.offsetWidth;
+    const maxY = pai.clientHeight - sobrepor.offsetHeight;
+
+    const rectSobrepor = sobrepor.getBoundingClientRect();
+    const rectPai = pai.getBoundingClientRect();
+    const x = rectSobrepor.left - rectPai.left;
+    const y = rectSobrepor.top - rectPai.top;
+
+    posicoes = {
+        posicao_x: maxX > 0 ? (x / maxX) * 100 : 0,
+        posicao_y: maxY > 0 ? (y / maxY) * 100 : 0
+    };
 }
 
 function calcularMediaAluguel(imovelAlvo) {
@@ -498,21 +541,20 @@ function salvarMultiplosForms() {
 }
 
 async function cadastrarLogo() {
-
     let formData = new FormData();
     const imagem = document.getElementById("logo-editada").querySelector(".imagem img");
-    const responde = await fetch(imagem.src)
+    const responde = await fetch(imagem.src);
     if (!responde.ok) {
         console.error("Falha ao buscar o blob da imagem");
         return;
     }
     const blob = await responde.blob();
-    const sobrepor = document.getElementById("sobrepor");
 
+    atualizarTamanhosEPosicoes();
 
     formData.append("imagem", blob, "logo.webp");
-    formData.append("posicoes", JSON.stringify({ posicao_x: sobrepor.offsetWidth, posicao_y: sobrepor.offsetHeight }));
-    formData.append("tamanhos", JSON.stringify({ largura: sobrepor.offsetWidth, altura: sobrepor.offsetHeight }));
+    formData.append("posicoes", JSON.stringify(posicoes));
+    formData.append("tamanhos", JSON.stringify(tamanhos));
 
     await cadastrarAnexo(formData);
 }
@@ -1097,7 +1139,7 @@ function mudarPosicaoNoContainer(event) {
 
 
 function abrirMultiplosAnexos(event) {
-      const container = event.target.closest(".container");
+    const container = event.target.closest(".container");
     const checkboxes = container.querySelectorAll("input[type='checkbox']:checked");
     if (checkboxes.length === 0) {
         alert("Nenhum item selecionado para abertura!");
@@ -1147,7 +1189,7 @@ function apagarMultiplos(event) {
     // if (confirm(`Tem certeza que deseja excluir os ${checkboxes.length} itens selecionados?`)) {}
     console.log("Itens selecionados para exclusão:", checkboxes.length);
     checkboxes.forEach(checkbox => {
-        const item = checkbox.closest(".imagem-anuncio, a, .resultado-pessoa"); 
+        const item = checkbox.closest(".imagem-anuncio, a, .resultado-pessoa");
         if (item) {
             item.parentNode.removeChild(item);
         }
@@ -1183,7 +1225,6 @@ function estilizarDiv(card) {
         e.preventDefault();
 
         dragging = true;
-
         card.setPointerCapture(e.pointerId);
 
         startX = e.clientX;
@@ -1218,7 +1259,6 @@ function estilizarDiv(card) {
 
         card.style.left = `${x}px`;
         card.style.top = `${y}px`;
-
         card.style.right = 'auto';
         card.style.bottom = 'auto';
 
@@ -1228,10 +1268,14 @@ function estilizarDiv(card) {
 
     card.addEventListener("pointerup", () => {
         if (dragging) {
+            const maxX = pai.clientWidth - card.offsetWidth;
+            const maxY = pai.clientHeight - card.offsetHeight;
+
             posicoes = {
-                posicao_x: (x / pai.clientWidth) * 100,
-                posicao_y: (y / pai.clientHeight) * 100
+                posicao_x: maxX > 0 ? (x / maxX) * 100 : 0,
+                posicao_y: maxY > 0 ? (y / maxY) * 100 : 0
             };
+
             tamanhos = {
                 largura: (card.offsetWidth / pai.clientWidth) * 100,
                 altura: (card.offsetHeight / pai.clientHeight) * 100
@@ -1246,6 +1290,7 @@ function estilizarDiv(card) {
         card.style.cursor = "grab";
     });
 }
+
 function adicionarLogo(event) {
     var input = document.createElement("input");
     input.type = "file";
@@ -1381,18 +1426,50 @@ window.addEventListener("DOMContentLoaded", async function () {
     let logo = logoRequisicao?.anexo?.caminho || null;
 
     if (logo) {
+        const imagem = document.getElementById("logo-editada").querySelector(".imagem");
+        imagem.innerHTML = "";
+
         const img = document.createElement("img");
-        const divSobrepor = document.getElementById("preview-logo").querySelector(".imagem").querySelector("#sobrepor");
         img.src = "../assets/" + logo;
-        document.getElementById("logo-editada").querySelector(".imagem").innerHTML = "";
-        document.getElementById("logo-editada").querySelector(".imagem").appendChild(img);
+        imagem.appendChild(img);
+
+        const divSobrepor = document
+            .getElementById("preview-logo")
+            .querySelector(".imagem")
+            .querySelector("#sobrepor");
+
         divSobrepor.innerHTML = "";
-        let segundaImagem = img.cloneNode(true);
-        logoRequisicao.anexo?.posicao_x ? divSobrepor.style.left = `${logoRequisicao.anexo.posicao_x}%` : null;
-        logoRequisicao.anexo?.posicao_y ? divSobrepor.style.top = `${logoRequisicao.anexo.posicao_y}%` : null;
-        logoRequisicao.anexo?.largura ? divSobrepor.style.width = `${logoRequisicao.anexo.largura}%` : null;
-        logoRequisicao.anexo?.altura ? divSobrepor.style.height = `${logoRequisicao.anexo.altura}%` : null;
+        divSobrepor.style.position = "absolute";
+        divSobrepor.style.right = "auto";
+        divSobrepor.style.bottom = "auto";
+
+        if (logoRequisicao.anexo?.largura != null) {
+            divSobrepor.style.width = `${logoRequisicao.anexo.largura}%`;
+        }
+
+        if (logoRequisicao.anexo?.altura != null) {
+            divSobrepor.style.height = `${logoRequisicao.anexo.altura}%`;
+        }
+
+        const segundaImagem = img.cloneNode(true);
         divSobrepor.appendChild(segundaImagem);
+
+        const pai = divSobrepor.closest(".imagem");
+        const maxX = pai.clientWidth - divSobrepor.offsetWidth;
+        const maxY = pai.clientHeight - divSobrepor.offsetHeight;
+
+        const posX = logoRequisicao.anexo?.posicao_x;
+        const posY = logoRequisicao.anexo?.posicao_y;
+
+        if (posX != null) {
+            divSobrepor.style.left = `${maxX * posX / 100}px`;
+        }
+
+        if (posY != null) {
+            divSobrepor.style.top = `${maxY * posY / 100}px`;
+        }
+
+        estilizarDiv(divSobrepor);
     }
 
     sessionStorage.getItem("cadastro-imovel: abaAtiva") ? abrirTab(parseInt(sessionStorage.getItem("cadastro-imovel: abaAtiva"))) : abrirTab(0);

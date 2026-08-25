@@ -224,6 +224,8 @@ class Banco extends PDO
                 id_imovel INTEGER  NULL,
                 comissao_captador REAL NULL,
                 comissao_corretor REAL NULL,
+                 data_cadastro TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                data_modificacao DATETIME NULL,
                 FOREIGN KEY (id_imovel) 
                     REFERENCES imovel(id),
                 FOREIGN KEY (id_cliente) 
@@ -241,6 +243,8 @@ class Banco extends PDO
                 id_imovel INTEGER  NULL,
                 id_corretor INT  NULL,
                 id_cliente INT NULL,
+                 data_cadastro TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                data_modificacao DATETIME NULL,
                 status ENUM('Em Andamento', 'Pendente') NULL,
                 FOREIGN KEY (id_imovel) 
                     REFERENCES imovel(id),
