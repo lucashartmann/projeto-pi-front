@@ -21,6 +21,7 @@ class Anexo
     private ?int $posicaoX;
     private ?int $posicaoY;
 
+
     public function __construct(?int $idAnuncio, string $caminho, TipoAnexo $tipoAnexo)
     {
         $this->idAnuncio = $idAnuncio;

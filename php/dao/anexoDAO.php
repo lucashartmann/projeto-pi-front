@@ -38,10 +38,14 @@ class AnexoDAO
             $id = (int) $registro['id'];
             $posicao_x = $registro['posicao_x'];
             $posicao_y = $registro['posicao_y'];
+            $largura = $registro['largura'];
+            $altura = $registro['altura'];
 
             $anexoObj = new Anexo($idAnuncio, $caminho, TipoAnexo::tryFrom($tipo));
             $anexoObj->setPosicaoX($posicao_x);
             $anexoObj->setPosicaoY($posicao_y);
+            $anexoObj->setLargura($largura);
+            $anexoObj->setAltura($altura);
 
             return $anexoObj;
         } catch (Exception $e) {
@@ -72,20 +76,28 @@ class AnexoDAO
                 $caminho = $registro['nome_arquivo'];
                 $posicao_x = $registro['posicao_x'];
                 $posicao_y = $registro['posicao_y'];
+                $altura = $registro['altura'];
+                $largura = $registro['largura'];
                 if ($tipo == "imagem") {
                     $anexo = new Anexo($idAnuncio, $caminho, TipoAnexo::IMAGEM);
                     $anexo->setPosicaoX($posicao_x);
                     $anexo->setPosicaoY($posicao_y);
+                    $anexo->setAltura($altura);
+                    $anexo->setLargura($largura);
                     $imagens[] = $anexo;
                 } else if ($tipo == "anexo") {
                     $anexo = new Anexo($idAnuncio, $caminho, TipoAnexo::DOCUMENTO);
                     $anexo->setPosicaoX($posicao_x);
                     $anexo->setPosicaoY($posicao_y);
+                    $anexo->setAltura($altura);
+                    $anexo->setLargura($largura);
                     $documentos[] = $anexo;
                 } else if ($tipo == "video") {
                     $anexo = new Anexo($idAnuncio, $caminho, TipoAnexo::VIDEO);
                     $anexo->setPosicaoX($posicao_x);
                     $anexo->setPosicaoY($posicao_y);
+                    $anexo->setAltura($altura);
+                    $anexo->setLargura($largura);
                     $videos[] = $anexo;
                 }
             }
@@ -116,8 +128,8 @@ class AnexoDAO
     {
         try {
             $sqlQuery = " 
-                    INSERT IGNORE INTO midia_anuncio (id_anuncio, nome_arquivo, tipo, posicao_x, posicao_y) 
-                    VALUES(:id_anuncio, :nome_arquivo, :tipo, :posicao_x, :posicao_y)
+                    INSERT IGNORE INTO midia_anuncio (id_anuncio, nome_arquivo, tipo, posicao_x, posicao_y, largura, altura) 
+                    VALUES(:id_anuncio, :nome_arquivo, :tipo, :posicao_x, :posicao_y, :largura, :altura)
                     ";
             $stmt = $this->bancoDados->prepare($sqlQuery);
 
@@ -126,7 +138,9 @@ class AnexoDAO
                 ':nome_arquivo' => $anexo->getCaminho(),
                 ':tipo' => $anexo->getTipo() ? $anexo->getTipo()->value : null,
                 ':posicao_x' => $anexo->getPosicaoX(),
-                ':posicao_y' => $anexo->getPosicaoY()
+                ':posicao_y' => $anexo->getPosicaoY(),
+                ':largura' => $anexo->getLargura(),
+                ':altura' => $anexo->getAltura()
             ]);
         } catch (Exception $e) {
             error_log("anexoDAO::cadastrar - Error: " . $e->getMessage());
@@ -139,7 +153,7 @@ class AnexoDAO
         try {
             $sqlQuery = " 
                     UPDATE midia_anuncio 
-                    SET id_anuncio = :id_anuncio, nome_arquivo = :nome_arquivo, tipo = :tipo, posicao_x = :posicao_x, posicao_y = :posicao_y
+                    SET id_anuncio = :id_anuncio, nome_arquivo = :nome_arquivo, tipo = :tipo, posicao_x = :posicao_x, posicao_y = :posicao_y, largura = :largura, altura = :altura
                     WHERE id = :id
                     ";
             $stmt = $this->bancoDados->prepare($sqlQuery);
@@ -150,7 +164,9 @@ class AnexoDAO
                 ':nome_arquivo' => $anexo->getCaminho(),
                 ':tipo' => $anexo->getTipo() ? $anexo->getTipo()->value : null,
                 ':posicao_x' => $anexo->getPosicaoX(),
-                ':posicao_y' => $anexo->getPosicaoY()
+                ':posicao_y' => $anexo->getPosicaoY(),
+                ':largura' => $anexo->getLargura(),
+                ':altura' => $anexo->getAltura()
             ]);
         } catch (Exception $e) {
             error_log("anexoDAO::atualizar - Error: " . $e->getMessage());
@@ -167,19 +183,25 @@ class AnexoDAO
                         nome_arquivo,
                         tipo,
                         posicao_x,
-                        posicao_y
+                        posicao_y,
+                        largura,
+                        altura
                     )
                     VALUES (
                         :id_anuncio,
                         :nome_arquivo,
                         :tipo,
                         :posicao_x,
-                        :posicao_y
+                        :posicao_y,
+                        :largura,
+                        :altura
                     )
                     ON DUPLICATE KEY UPDATE
                         tipo = VALUES(tipo),
                         posicao_x = VALUES(posicao_x),
-                        posicao_y = VALUES(posicao_y);
+                        posicao_y = VALUES(posicao_y),
+                        largura = VALUES(largura),
+                        altura = VALUES(altura);
                     ";
             $stmt = $this->bancoDados->prepare($sqlQuery);
 
@@ -188,7 +210,9 @@ class AnexoDAO
                 ':nome_arquivo' => $anexo->getCaminho(),
                 ':tipo' => $anexo->getTipo() ? $anexo->getTipo()->value : null,
                 ':posicao_x' => $anexo->getPosicaoX(),
-                ':posicao_y' => $anexo->getPosicaoY()
+                ':posicao_y' => $anexo->getPosicaoY(),
+                ':largura' => $anexo->getLargura(),
+                ':altura' => $anexo->getAltura()
             ]);
         } catch (Exception $e) {
             error_log("anexoDAO::cadastrarOuAtualizar - Error: " . $e->getMessage());

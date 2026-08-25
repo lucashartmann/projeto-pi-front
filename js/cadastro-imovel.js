@@ -20,12 +20,34 @@ window.selecionarTodos = selecionarTodos;
 window.compartilhar = compartilhar;
 window.abrirAnuncio = abrirAnuncio;
 window.abrirImagem = abrirImagem;
-window.abrirMultiplos = abrirMultiplos;
 window.listarHistoricoPorIdImovel = listarHistoricoPorIdImovel;
 window.atualizarEndereco = atualizarEndereco;
 window.adicionarLogo = adicionarLogo;
+window.diminuirLogo = diminuirLogo;
+window.aumentarLogo = aumentarLogo;
+window.abrirMultiplosAnexos = abrirMultiplosAnexos;
+window.abrirMultiplosCadastros = abrirMultiplosCadastros;
+
 
 let posicoes = { posicao_x: 0, posicao_y: 0 };
+let tamanhos = { largura: 0, altura: 0 };
+
+
+function diminuirLogo() {
+    const logo = document.getElementById("preview-logo").querySelector(".imagem img");
+    if (logo) {
+        logo.style.width = (logo.offsetWidth - 10) + "px";
+        logo.style.height = (logo.offsetHeight - 10) + "px";
+    }
+}
+
+function aumentarLogo() {
+    const logo = document.getElementById("preview-logo").querySelector(".imagem img");
+    if (logo) {
+        logo.style.width = (logo.offsetWidth + 10) + "px";
+        logo.style.height = (logo.offsetHeight + 10) + "px";
+    }
+}
 
 function calcularMediaAluguel(imovelAlvo) {
     const listaImoveis = listarImoveis() || [];
@@ -267,6 +289,25 @@ async function editarPessoa(tipo) {
             const selecionados = Array.from(checkboxes).filter(checkbox => checkbox.checked);
 
 
+            switch (tipo) {
+                case "PROPRIETARIO":
+                    document
+                        .getElementById("container-proprietario").querySelectorAll(".resultado-pessoa").forEach(div => div.remove());
+                    break;
+
+                case "CORRETOR":
+                    document
+                        .getElementById("container-corretor").querySelectorAll(".resultado-pessoa").forEach(div => div.remove());
+                    break;
+
+                case "CAPTADOR":
+                    document
+                        .getElementById("container-captador").querySelectorAll(".resultado-pessoa").forEach(div => div.remove());
+
+                    break;
+            }
+
+
             if (selecionados.length > 0) {
                 for (let checkbox of selecionados) {
                     let containerPessoa = checkbox.closest(".resultado-pessoa");
@@ -290,6 +331,7 @@ async function editarPessoa(tipo) {
 
                             if (!encontrou) {
                                 containerPessoa.classList.add("pessoa-selecionada");
+                                containerPessoa.querySelector("input[type='checkbox']").checked = false;
                                 document
                                     .getElementById("container-proprietario")
                                     .appendChild(containerPessoa.cloneNode(true));
@@ -312,6 +354,7 @@ async function editarPessoa(tipo) {
 
                             if (!encontrou) {
                                 containerPessoa.classList.add("pessoa-selecionada");
+                                containerPessoa.querySelector("input[type='checkbox']").checked = false;
                                 document
                                     .getElementById("container-corretor")
                                     .appendChild(containerPessoa.cloneNode(true));
@@ -334,6 +377,7 @@ async function editarPessoa(tipo) {
 
                             if (!encontrou) {
                                 containerPessoa.classList.add("pessoa-selecionada");
+                                containerPessoa.querySelector("input[type='checkbox']").checked = false;
                                 document
                                     .getElementById("container-captador")
                                     .appendChild(containerPessoa.cloneNode(true));
@@ -468,6 +512,7 @@ async function cadastrarLogo() {
 
     formData.append("imagem", blob, "logo.webp");
     formData.append("posicoes", JSON.stringify({ posicao_x: sobrepor.offsetWidth, posicao_y: sobrepor.offsetHeight }));
+    formData.append("tamanhos", JSON.stringify({ largura: sobrepor.offsetWidth, altura: sobrepor.offsetHeight }));
 
     await cadastrarAnexo(formData);
 }
@@ -1050,8 +1095,46 @@ function mudarPosicaoNoContainer(event) {
     limparPlaceholderArraste();
 }
 
-function abrirMultiplos(event) {
 
+function abrirMultiplosAnexos(event) {
+      const container = event.target.closest(".container");
+    const checkboxes = container.querySelectorAll("input[type='checkbox']:checked");
+    if (checkboxes.length === 0) {
+        alert("Nenhum item selecionado para abertura!");
+        return;
+    }
+    checkboxes.forEach(checkbox => {
+        const item = checkbox.closest("img");
+        if (item) {
+            item.click();
+        }
+    });
+
+}
+
+function abrirCadastroPessoa(id) {
+    if (id) {
+        window.open(`cadastro-cliente.html?id=${id}`, '_blank');
+    }
+}
+
+
+function abrirMultiplosCadastros(event) {
+    const container = event.target.closest(".container");
+    const id = container.querySelector(".id-pessoa").value;
+    const checkboxes = container.querySelectorAll("input[type='checkbox']:checked");
+    if (checkboxes.length === 0) {
+        alert("Nenhum item selecionado para abertura!");
+        return;
+    }
+
+    checkboxes.forEach(checkbox => {
+        const item = checkbox.closest(".resultado-pessoa");
+        if (item) {
+            const id = item.querySelector(".id-pessoa").value;
+            abrirCadastroPessoa(id);
+        }
+    });
 }
 
 function apagarMultiplos(event) {
@@ -1062,8 +1145,9 @@ function apagarMultiplos(event) {
         return;
     }
     // if (confirm(`Tem certeza que deseja excluir os ${checkboxes.length} itens selecionados?`)) {}
+    console.log("Itens selecionados para exclusão:", checkboxes.length);
     checkboxes.forEach(checkbox => {
-        const item = checkbox.closest(".imagem-anuncio, a");
+        const item = checkbox.closest(".imagem-anuncio, a, .resultado-pessoa"); 
         if (item) {
             item.parentNode.removeChild(item);
         }
@@ -1088,7 +1172,7 @@ function estilizarDiv(card) {
     let startX, startY;
     let x, y;
 
-    const pai = card.parentElement;
+    const pai = card.closest(".imagem");
 
     card.addEventListener("click", e => {
         e.stopPropagation();
@@ -1117,20 +1201,26 @@ function estilizarDiv(card) {
     card.addEventListener("pointermove", e => {
         if (!dragging) return;
 
-        x += e.clientX - startX;
-        y += e.clientY - startY;
-
-        startX = e.clientX;
-        startY = e.clientY;
+        let nextX = x + (e.clientX - startX);
+        let nextY = y + (e.clientY - startY);
 
         const maxX = pai.clientWidth - card.offsetWidth;
         const maxY = pai.clientHeight - card.offsetHeight;
 
-        x = Math.max(0, Math.min(x, maxX));
-        y = Math.max(0, Math.min(y, maxY));
+        nextX = Math.max(0, Math.min(nextX, maxX));
+        nextY = Math.max(0, Math.min(nextY, maxY));
 
-        card.style.right = `${pai.clientWidth - x - card.offsetWidth}px`;
-        card.style.bottom = `${pai.clientHeight - y - card.offsetHeight}px`;
+        startX = startX + (nextX - x);
+        startY = startY + (nextY - y);
+
+        x = nextX;
+        y = nextY;
+
+        card.style.left = `${x}px`;
+        card.style.top = `${y}px`;
+
+        card.style.right = 'auto';
+        card.style.bottom = 'auto';
 
         card.dataset.x = x;
         card.dataset.y = y;
@@ -1141,6 +1231,10 @@ function estilizarDiv(card) {
             posicoes = {
                 posicao_x: (x / pai.clientWidth) * 100,
                 posicao_y: (y / pai.clientHeight) * 100
+            };
+            tamanhos = {
+                largura: (card.offsetWidth / pai.clientWidth) * 100,
+                altura: (card.offsetHeight / pai.clientHeight) * 100
             };
         }
         dragging = false;
@@ -1259,7 +1353,16 @@ async function carregarHistorico(idImovel) {
         for (let item of lista) {
             let tr = document.createElement("tr");
             let tdData = document.createElement("td");
-            tdData.textContent = item.data;
+            let spanData = document.createElement("span");
+            spanData.innerHTML = new Date(item.data).toLocaleString('pt-BR', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            });
+            tdData.appendChild(spanData);
             tr.appendChild(tdData);
             let tdUsuario = document.createElement("td");
             tdUsuario.textContent = item.funcionario.nome;
@@ -1287,6 +1390,8 @@ window.addEventListener("DOMContentLoaded", async function () {
         let segundaImagem = img.cloneNode(true);
         logoRequisicao.anexo?.posicao_x ? divSobrepor.style.left = `${logoRequisicao.anexo.posicao_x}%` : null;
         logoRequisicao.anexo?.posicao_y ? divSobrepor.style.top = `${logoRequisicao.anexo.posicao_y}%` : null;
+        logoRequisicao.anexo?.largura ? divSobrepor.style.width = `${logoRequisicao.anexo.largura}%` : null;
+        logoRequisicao.anexo?.altura ? divSobrepor.style.height = `${logoRequisicao.anexo.altura}%` : null;
         divSobrepor.appendChild(segundaImagem);
     }
 
@@ -1313,12 +1418,6 @@ window.addEventListener("DOMContentLoaded", async function () {
 
 
     const usuario = usuarioLogado || await carregarUser();
-
-    if (usuario && usuario.tipo && usuario.tipo === "ADMIN") {
-        const botao = document.createElement("button");
-        botao.textContent = "Alterar Logo";
-        document.querySelector(".selecionar-todos").after(botao);
-    }
 
     const sobrepor = document.getElementById("sobrepor");
     estilizarDiv(sobrepor);

@@ -207,6 +207,8 @@ class Banco extends PDO
                 tipo ENUM('imagem', 'video', 'documento') NULL,
                 posicao_x INT NULL,
                 posicao_y INT NULL,
+                altura INT NULL,
+                largura INT NULL,
                 UNIQUE(id_anuncio, nome_arquivo, tipo),
                 FOREIGN KEY (id_anuncio) 
                     REFERENCES anuncio(id_imovel) ON DELETE CASCADE

@@ -86,7 +86,6 @@ class PessoaDAO
                 ':data_nascimento' => $pessoa->getDataNascimento() ? $pessoa->getDataNascimento()->format('Y-m-d') : null,
             ]);
             $id = (int)$this->bancoDados->lastInsertId();
-            error_log("pessoaDAO->cadastrar: Pessoa cadastrada com sucesso. ID: $id");
             return $this->bancoDados->lastInsertId();
         } catch (Exception $e) {
             error_log("ERRO! pessoaDAO->cadastrar: " . $e->getMessage());

@@ -14,6 +14,7 @@ class AnexoController
         try {
             $imagem = $_FILES['imagem'] ?? null;
             $dimensoes = isset($dados['posicoes']) ? json_decode($dados['posicoes'], true) : null;
+            $tamanhos = isset($dados['tamanhos']) ? json_decode($dados['tamanhos'], true) : null;
             error_log("AnexoController::cadastrar - Dados recebidos: " . json_encode($dados));
 
             if (!$imagem) {
@@ -54,6 +55,8 @@ class AnexoController
                 );
                 $imagemObj->setPosicaoX($dimensoes['posicao_x'] ?? null);
                 $imagemObj->setPosicaoY($dimensoes['posicao_y'] ?? null);
+                $imagemObj->setLargura($tamanhos['largura'] ?? null);
+                $imagemObj->setAltura($tamanhos['altura'] ?? null);
             } catch (Exception $e) {
                 error_log(
                     "Exceção ao processar a imagem: " .
@@ -105,7 +108,7 @@ class AnexoController
                 "largura" => $anexo->getLargura(),
                 "altura" => $anexo->getAltura(),
                 "posicao_x" => $anexo->getPosicaoX(),
-                "posicao_y" => $anexo->getPosicaoY()
+                "posicao_y" => $anexo->getPosicaoY(),
             ]];
         } catch (Exception $e) {
             return ["status" => "erro", "mensagem" => "Erro ao buscar anexo: " . $e->getMessage()];

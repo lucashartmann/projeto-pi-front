@@ -29,7 +29,7 @@
 - [ ] `JS` `PHP` <font color=red>[ALTO]</font> Esqueceu senha: mandar o email
 
 ### Cadastro de imóvel:
-
+Arrumar abrir multiplosAnexos
 - [ ] `JS` <font color=red>[ALTO]</font> Implementar swiper ao abrir imagem como é no dados-imovel.js
 - [ ] `JS` <font color=yellow>[MÉDIO]</font> Abrir multiplas pessoas, apagar, midias e etc
 - [ ] `JS` <font color=yellow>[MÉDIO]</font> Atualizar o mapa depois de ter cep e numero

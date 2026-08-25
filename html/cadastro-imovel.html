@@ -5,8 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cadastro de Imóvel</title>
-    <link rel="stylesheet" href="../css/base.css">
-    <link rel="stylesheet" href="../css/cadastro-imovel.css">
+    <link rel="stylesheet" type="text/css" href="../css/base.css">
+    <link rel="stylesheet" type="text/css" href="../css/cadastro-imovel.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.minlength.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
@@ -357,7 +357,7 @@
                 <header><label for="">Imagens:</label>
                     <button id="bt-adicionar-imagens" onclick="adicionarAnexo(event)">Adicionar</button>
                     <button class="selecionar-todos" onclick="selecionarTodos(event)">Selecionar Todos</button>
-                    <button class="abrir-multiplos" onclick="abrirMultiplos(event)">Abrir</button>
+                    <button class="abrir-multiplos" onclick="abrirMultiplosAnexos(event)">Abrir</button>
                     <button class="apagar-multiplos" onclick="apagarMultiplos(event)">Apagar</button>
                     <p id="contador-imagens">0 imagens</p>
                 </header>
@@ -367,7 +367,7 @@
                 <header><label for="">Anexos:</label>
                     <button class="bt-adicionar-anexos" onclick="adicionarAnexo(event)">Adicionar</button>
                     <button class="selecionar-todos" onclick="selecionarTodos(event)">Selecionar Todos</button>
-                    <button class="abrir-multiplos" onclick="abrirMultiplos(event)">Abrir</button>
+                    <button class="abrir-multiplos" onclick="abrirMultiplosAnexos(event)">Abrir</button>
                     <button class="apagar-multiplos" onclick="apagarMultiplos(event)">Apagar</button>
                     <p id="contador-documentos">0 anexos</p>
                 </header>
@@ -378,7 +378,7 @@
                         onclick="editarPessoa('PROPRIETARIO')">Editar</button>
 
                     <button class="selecionar-todos" onclick="selecionarTodos(event)">Selecionar Todos</button>
-                    <button class="abrir-multiplos" onclick="abrirMultiplos(event)">Abrir</button>
+                    <button class="abrir-multiplos" onclick="abrirMultiplosCadastros(event)">Abrir</button>
                     <button class="apagar-multiplos" onclick="apagarMultiplos(event)">Apagar</button>
                 </header>
             </div>
@@ -387,7 +387,7 @@
                     <button id="br-editar-corretor" classes="bt-editar-pessoa"
                         onclick="editarPessoa('CORRETOR')">Editar</button>
                     <button class="selecionar-todos" onclick="selecionarTodos(event)">Selecionar Todos</button>
-                    <button class="abrir-multiplos" onclick="abrirMultiplos(event)">Abrir</button>
+                    <button class="abrir-multiplos" onclick="abrirMultiplosCadastros(event)">Abrir</button>
                     <button class="apagar-multiplos" onclick="apagarMultiplos(event)">Apagar</button>
                 </header>
             </div>
@@ -396,7 +396,7 @@
                     <button classes="bt-editar-pessoa" id="br-editar-captador"
                         onclick="editarPessoa('CAPTADOR')">Editar</button>
                     <button class="selecionar-todos" onclick="selecionarTodos(event)">Selecionar Todos</button>
-                    <button class="abrir-multiplos" onclick="abrirMultiplos(event)">Abrir</button>
+                    <button class="abrir-multiplos" onclick="abrirMultiplosCadastros(event)">Abrir</button>
                     <button class="apagar-multiplos" onclick="apagarMultiplos(event)">Apagar</button>
                 </header>
             </div>
@@ -422,9 +422,15 @@
                 </div>
                 <div id="preview-logo">
                     <h2>Preview</h2>
-                    <div class="imagem">
-                        <div id="sobrepor"><img src="../assets/logo.webp" alt=""></div>
-                        <img src="../assets/imoveis/imovel_0.webp" alt="">
+                    <div id="inline">
+                        <div class="imagem">
+                            <div id="sobrepor"><img src="../assets/logo.webp" alt=""></div>
+                            <img src="../assets/imoveis/imovel_0.webp" alt="">
+                        </div>
+                        <div id="inline-buttons">
+                            <button onclick="aumentarLogo()"><i class="fa fa-plus"></i></button>
+                            <button onclick="diminuirLogo()"><i class="fa fa-minus"></i></button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -460,6 +466,7 @@
                         </tr>
                     </tbody>
                 </table>
+
             </div>
 
             <div id="media-valores">

@@ -263,12 +263,13 @@ img {
         justify-items: center;
         align-items: center;
         align-content: center;
+        position: relative;
 
         .sobrepor {
             display: flex;
             position: absolute;
-            width: 30%;
-            height: 30%;
+            width: auto;
+            height: auto;
             background-color: transparent;
             justify-self: center;
             align-self: center;

@@ -613,23 +613,39 @@ button {
     .mobile-submenu {
         display: none;
         width: 100%;
+        padding: 20px;
     }
 
     .mobile-submenu.aberto {
-        display: block;
+        display: flex;
+        flex-direction: column;
     }
 
     .mobile-submenu a {
-        padding: 12px 25px 12px 45px;
+        text-decoration: none;
+        color: var(--cor-texto);
+        position: relative;
+        color: var(--cor-texto);
+        text-decoration: none;
         font-size: 0.95rem;
+        letter-spacing: 0.5px;
+        padding: 0.5rem 0;
+        transition: all var(--transition);
+        width: 100%;
+        padding: 0.9rem 1rem;
+        height: auto;
+        border-radius: 10px;
+        font-size: 0.92rem;
+        /* margin-bottom: 20px; */
+
 
         &::after {
             display: none;
         }
 
         &:hover {
-            color: var(--hover);
             background: var(--hover-soft);
+            color: var(--hover);
         }
     }
 }
