@@ -2,6 +2,7 @@ import { getCaminhoRelativo, formatarValor } from "./modules/utils.js";
 import { usuarioLogado, salvarImoveisCurtidos, curtirImovel, imoveisCurtidos, carregarUser } from "./modules/usuario.js";
 import { getDadosImovel } from "./modules/imoveis.js";
 import { buscarCoordenadas, carregarMapa } from "./modules/mapa.js";
+import { buscarAnexoPorCaminho } from "./modules/anexos.js";
 
 window.abrirImagem = abrirImagem;
 window.curtirImovel = curtirImovel;
@@ -11,6 +12,8 @@ window.ativarImagem = ativarImagem;
 
 let imovel = null;
 let usuario = null;
+let logoRequisicao;
+let logo;
 
 async function compartilharImovel() {
     if (!navigator.share) {
@@ -88,8 +91,19 @@ async function setupDados(imovel) {
         swiperhtml = "";
         for (let i = 0; i < imovel.anuncio.imagens.length; i++) {
             const imagem = imovel.anuncio.imagens[i];
-            swiperhtml += `<div class="swiper-slide" style="background-image: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), url(${imagem})" onclick="abrirImagem('${imagem}')"></div>`;
+            swiperhtml += `<div class="swiper-slide" style="background-image: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), url(${imagem})" onclick="abrirImagem('${imagem}')"> ${logo ? '<div class="sobrepor"><img src="../assets/' + logo + '"></div>' : ''}</div>`;
             imagensHtml += `<div class="swiper-slide" style="background-image: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), url(${imagem})" onclick="ativarImagem('${i}')"></div>`;
+        }
+    }
+
+    if (logo && logoRequisicao) {
+        for (const slide of document.querySelectorAll('.swiper-destaque .swiper-slide')) {
+            const divSobrepor = slide.querySelector('.sobrepor');
+            if (!divSobrepor) {
+                continue;
+            }
+            logoRequisicao.anexo?.posicao_x ? divSobrepor.style.left = `${logoRequisicao.anexo.posicao_x}%` : null;
+            logoRequisicao.anexo?.posicao_y ? divSobrepor.style.top = `${logoRequisicao.anexo.posicao_y}%` : null;
         }
     }
 
@@ -258,6 +272,11 @@ window.addEventListener("DOMContentLoaded", async () => {
     }
 
     sessionStorage.removeItem("dados_imovel");
+    logoRequisicao = await buscarAnexoPorCaminho("logo.webp");
+    logo = logoRequisicao?.anexo?.caminho || null;
+
+
+
     await setupDados(imovel);
     await inicializarSwiper();
 

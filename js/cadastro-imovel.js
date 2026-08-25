@@ -4,6 +4,7 @@ import { listarPessoas } from "./modules/usuarios.js";
 import { getCaminhoRelativo } from "./modules/utils.js";
 import { buscarCoordenadas, carregarMapa } from "./modules/mapa.js";
 import { usuarioLogado, carregarUser } from "./modules/usuario.js";
+import { buscarAnexoPorCaminho, cadastrarAnexo } from "./modules/anexos.js";
 
 let imovel = null;
 
@@ -23,6 +24,8 @@ window.abrirMultiplos = abrirMultiplos;
 window.listarHistoricoPorIdImovel = listarHistoricoPorIdImovel;
 window.atualizarEndereco = atualizarEndereco;
 window.adicionarLogo = adicionarLogo;
+
+let posicoes = { posicao_x: 0, posicao_y: 0 };
 
 function calcularMediaAluguel(imovelAlvo) {
     const listaImoveis = listarImoveis() || [];
@@ -450,6 +453,25 @@ function salvarMultiplosForms() {
     salvar();
 }
 
+async function cadastrarLogo() {
+
+    let formData = new FormData();
+    const imagem = document.getElementById("logo-editada").querySelector(".imagem img");
+    const responde = await fetch(imagem.src)
+    if (!responde.ok) {
+        console.error("Falha ao buscar o blob da imagem");
+        return;
+    }
+    const blob = await responde.blob();
+    const sobrepor = document.getElementById("sobrepor");
+
+
+    formData.append("imagem", blob, "logo.webp");
+    formData.append("posicoes", JSON.stringify({ posicao_x: sobrepor.offsetWidth, posicao_y: sobrepor.offsetHeight }));
+
+    await cadastrarAnexo(formData);
+}
+
 async function getOutrosDados(formData) {
     const containerImagens = document.getElementById("container-imagens");
     const containerDocumentos = document.getElementById("container-anexos");
@@ -544,6 +566,7 @@ async function getOutrosDados(formData) {
 
 async function salvar() {
     var forms = document.querySelectorAll("form");
+    await cadastrarLogo();
 
     let formData = new FormData();
 
@@ -1063,8 +1086,9 @@ function estilizarDiv(card) {
 
     let dragging = false;
     let startX, startY;
-    let x = -200;
-    let y = -80;
+    let x, y;
+
+    const pai = card.parentElement;
 
     card.addEventListener("click", e => {
         e.stopPropagation();
@@ -1073,40 +1097,61 @@ function estilizarDiv(card) {
     card.addEventListener("pointerdown", e => {
         e.stopPropagation();
         e.preventDefault();
+
         dragging = true;
+
         card.setPointerCapture(e.pointerId);
+
         startX = e.clientX;
         startY = e.clientY;
+
+        const cardRect = card.getBoundingClientRect();
+        const paiRect = pai.getBoundingClientRect();
+
+        x = cardRect.left - paiRect.left;
+        y = cardRect.top - paiRect.top;
+
         card.style.cursor = "grabbing";
     });
 
     card.addEventListener("pointermove", e => {
         if (!dragging) return;
 
-        x -= startX - e.clientX;
-        y -= startY - e.clientY;
+        x += e.clientX - startX;
+        y += e.clientY - startY;
 
         startX = e.clientX;
         startY = e.clientY;
 
-        card.style.right = `${20 - x}px`;
-        card.style.bottom = `${20 - y}px`;
+        const maxX = pai.clientWidth - card.offsetWidth;
+        const maxY = pai.clientHeight - card.offsetHeight;
+
+        x = Math.max(0, Math.min(x, maxX));
+        y = Math.max(0, Math.min(y, maxY));
+
+        card.style.right = `${pai.clientWidth - x - card.offsetWidth}px`;
+        card.style.bottom = `${pai.clientHeight - y - card.offsetHeight}px`;
+
+        card.dataset.x = x;
+        card.dataset.y = y;
     });
 
     card.addEventListener("pointerup", () => {
         if (dragging) {
-            card.addEventListener("click", e => {
-                e.stopPropagation();
-                e.preventDefault();
-            }, { once: true });
+            posicoes = {
+                posicao_x: (x / pai.clientWidth) * 100,
+                posicao_y: (y / pai.clientHeight) * 100
+            };
         }
-
         dragging = false;
         card.style.cursor = "grab";
+    });
 
+    card.addEventListener("pointercancel", () => {
+        dragging = false;
+        card.style.cursor = "grab";
     });
 }
-
 function adicionarLogo(event) {
     var input = document.createElement("input");
     input.type = "file";
@@ -1228,6 +1273,22 @@ async function carregarHistorico(idImovel) {
 }
 
 window.addEventListener("DOMContentLoaded", async function () {
+
+    let logoRequisicao = await buscarAnexoPorCaminho("logo.webp");
+    let logo = logoRequisicao?.anexo?.caminho || null;
+
+    if (logo) {
+        const img = document.createElement("img");
+        const divSobrepor = document.getElementById("preview-logo").querySelector(".imagem").querySelector("#sobrepor");
+        img.src = "../assets/" + logo;
+        document.getElementById("logo-editada").querySelector(".imagem").innerHTML = "";
+        document.getElementById("logo-editada").querySelector(".imagem").appendChild(img);
+        divSobrepor.innerHTML = "";
+        let segundaImagem = img.cloneNode(true);
+        logoRequisicao.anexo?.posicao_x ? divSobrepor.style.left = `${logoRequisicao.anexo.posicao_x}%` : null;
+        logoRequisicao.anexo?.posicao_y ? divSobrepor.style.top = `${logoRequisicao.anexo.posicao_y}%` : null;
+        divSobrepor.appendChild(segundaImagem);
+    }
 
     sessionStorage.getItem("cadastro-imovel: abaAtiva") ? abrirTab(parseInt(sessionStorage.getItem("cadastro-imovel: abaAtiva"))) : abrirTab(0);
 

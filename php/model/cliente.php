@@ -34,6 +34,21 @@ class Cliente extends Pessoa
         $this->valorMaximo = NULL;
     }
 
+    public function getQuantQuartosDesejado(): int
+    {
+        return $this->quantQuartosDesejado;
+    }
+
+    public function getQuantBanheirosDesejado(): int
+    {
+        return $this->quantBanheirosDesejado;
+    }
+
+    public function getEnderecoDesejado(): ?Endereco
+    {
+        return $this->enderecoDesejado;
+    }
+
     public function getTipoInteresse(): ?TipoInteresse
     {
         return $this->tipoInteresse;

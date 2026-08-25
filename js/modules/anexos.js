@@ -1,9 +1,9 @@
 import { getCaminhoRelativo } from "./utils.js";
 
 
-export async function buscarAnexoPorCaminho(caminho) {
+export async function buscarAnexoPorCaminho(caminhoRecebido) {
     try {
-        let caminho = getCaminhoRelativo("/php/api/anexos.php?acao=buscar_por_caminho&caminho=" + caminho);
+        let caminho = getCaminhoRelativo("/php/api/anexos.php?acao=buscar_por_caminho&caminho=" + caminhoRecebido);
         const resposta = await fetch(caminho)
             .then(async (res) => {
                 if (res.erro) {
@@ -43,46 +43,52 @@ export async function buscarAnexoPorCaminho(caminho) {
     }
 }
 
-export async function cadastrarAnexo(data) {
-    if (!data || JSON.stringify(formData).length < 1) {
-        console.error("Dados inválidos para cadastrar anexo:", data);
+export async function cadastrarAnexo(formData) {
+    if (!formData || !(formData instanceof FormData)) {
+        console.error("Arquivo inválido:", formData);
         return null;
     }
+
     try {
-        let caminho = getCaminhoRelativo("/php/api/anexos.php?acao=cadastrar");
-        const resposta = await fetch(caminho, {
+        const caminho = getCaminhoRelativo("/php/api/anexos.php?acao=cadastrar");
+        console.log("Enviando dados do anexo para:", caminho);
+        await fetch(caminho, {
             method: "POST",
-            body: JSON.stringify(data)
+            body: formData
         })
-            .then(async (res) => {
-                if (res.erro) {
-                    console.error("Erro ao cadastrar anexo: " + res.erro);
+            .then(async (response) => {
+                if (response.erro) {
+                    alert("Erro ao cadastrar anexo: " + response.erro);
                     return null;
                 }
-                const contentType = res.headers.get("content-type");
+                const contentType = response.headers.get("content-type");
                 if (contentType && contentType.includes("application/json")) {
-                    return await res.json();
+                    return await response.json();
                 } else {
-                    const texto = await res.text();
+                    const texto = await response.text();
+                    alert("Resposta inesperada do servidor");
                     console.error("Resposta não é JSON:", texto);
                     return null;
                 }
             })
             .then(async (data) => {
                 if (data.status == "erro") {
-                    console.error(data.mensagem);
-                    return null;
+                    alert("Erro ao cadastrar anexo: " + data.mensagem);
+                    return;
                 }
-                return await data;
+                else if (data.mensagem) {
+                    alert("Anexo cadastrado com sucesso: " + data.mensagem);
+                    if (!imovel) {
+                        forms.forEach(form => form.reset());
+                    }
+                }
+
             })
-            .catch(erro => {
-                console.error("Falha ao conectar com o backend:", erro);
-                return null;
+            .catch(error => {
+                alert("Erro ao cadastrar anexo:", error);
             });
+
     } catch (error) {
-        console.error("Erro ao enviar dados do usuário:", error);
+        console.error("Erro ao enviar dados do anexo:", error);
     }
-
-
-
 }

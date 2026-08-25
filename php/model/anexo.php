@@ -16,12 +16,60 @@ class Anexo
     private ?Anuncio $anuncio;
     private string $caminho;
     private TipoAnexo $tipoAnexo;
+    private ?int $largura;
+    private ?int $altura;
+    private ?int $posicaoX;
+    private ?int $posicaoY;
 
-    public function __construct(?int $idAnuncio = null, string $caminho, TipoAnexo $tipoAnexo)
+    public function __construct(?int $idAnuncio, string $caminho, TipoAnexo $tipoAnexo)
     {
         $this->idAnuncio = $idAnuncio;
         $this->caminho = $caminho;
         $this->tipoAnexo = $tipoAnexo;
+        $this->largura = null;
+        $this->altura = null;
+        $this->posicaoX = null;
+        $this->posicaoY = null;
+    }
+
+    public function setPosicaoX(?int $posicaoX): void
+    {
+        $this->posicaoX = $posicaoX;
+    }
+
+    public function getPosicaoX(): ?int
+    {
+        return $this->posicaoX;
+    }
+
+    public function setPosicaoY(?int $posicaoY): void
+    {
+        $this->posicaoY = $posicaoY;
+    }
+
+    public function getPosicaoY(): ?int
+    {
+        return $this->posicaoY;
+    }
+
+    public function setLargura(?int $largura): void
+    {
+        $this->largura = $largura;
+    }
+
+    public function getLargura(): ?int
+    {
+        return $this->largura;
+    }
+
+    public function setAltura(?int $altura): void
+    {
+        $this->altura = $altura;
+    }
+
+    public function getAltura(): ?int
+    {
+        return $this->altura;
     }
 
     public function setAnuncio(?Anuncio $anuncio): void

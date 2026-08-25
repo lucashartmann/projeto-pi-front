@@ -144,7 +144,7 @@ function salvarLogo($nomeTemporario)
         return false;
     }
 
-    $caminhoParaSalvar = "assets/" . $novoNomeArquivo;
+    $caminhoParaSalvar = $novoNomeArquivo;
 
     return $caminhoParaSalvar;
 }

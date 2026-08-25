@@ -27,6 +27,12 @@ switch ($acao) {
         $caminho = $_GET['caminho'] ?? null;
         $resultado = $controller->buscarPorCaminho($caminho);
         break;
+
+    default:
+        $resultado = [
+            "status" => "erro",
+            "mensagem" => "Ação inválida"
+        ];
 }
 
 if (!headers_sent()) {

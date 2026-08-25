@@ -1,53 +1,53 @@
 <?php
 
-require_once __DIR__ . '/../php/model/usuario.php';
 require_once __DIR__ . '/../php/model/cliente.php';
 require_once __DIR__ . '/../php/model/proprietario.php';
 require_once __DIR__ . '/../php/model/endereco.php';
 require_once __DIR__ . '/../php/model/imovel.php';
 require_once __DIR__ . '/../php/model/anuncio.php';
+require_once __DIR__ . '/../php/model/funcionario.php';
+require_once __DIR__ . '/../php/model/corretor.php';
+require_once __DIR__ . '/../php/model/condominio.php';
 
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\CoversNothing;
 
-/**
- * @coversNothing
- */
+#[CoversNothing]
 class ModelTest extends TestCase
 {
-    public function testUsuarioGettersSetters()
+    public function testPessoaGettersSetters()
     {
-        $usuario = new Usuario('usr', 'pass', 'u@example.com', 'Nome', '123456789', Tipo::ADMINISTRADOR);
-        $this->assertEquals('usr', $usuario->getUsername());
-        $this->assertEquals('pass', $usuario->getSenha());
-        $this->assertEquals('u@example.com', $usuario->getEmail());
-        $this->assertEquals('Nome', $usuario->getNome());
-        $this->assertEquals('123456789', $usuario->getCpfCnpj());
-        $this->assertEquals(Tipo::ADMINISTRADOR, $usuario->getTipo());
+        $pessoa = new Pessoa('u@example.com', 'Nome', '123456789');
+        $pessoa->setSenha('pass');
+        $this->assertEquals('pass', $pessoa->getSenha());
+        $this->assertEquals('u@example.com', $pessoa->getEmail());
+        $this->assertEquals('Nome', $pessoa->getNome());
+        $this->assertEquals('123456789', $pessoa->getCpfCnpj());
 
-        $usuario->setId(42);
-        $this->assertEquals(42, $usuario->getId());
+        $pessoa->setId(42);
+        $this->assertEquals(42, $pessoa->getId());
 
-        $usuario->setRg('RG123');
-        $this->assertEquals('RG123', $usuario->getRg());
+        $pessoa->setRg('RG123');
+        $this->assertEquals('RG123', $pessoa->getRg());
 
-        $usuario->setTelefones(['11999999999']);
-        $this->assertEquals(['11999999999'], $usuario->getTelefones());
+        $pessoa->setTelefones(['11999999999']);
+        $this->assertEquals(['11999999999'], $pessoa->getTelefones());
 
         $data = new DateTime('1990-05-01');
-        $usuario->setDataNascimento($data);
-        $this->assertInstanceOf(DateTime::class, $usuario->getDataNascimento());
+        $pessoa->setDataNascimento($data);
+        $this->assertInstanceOf(DateTime::class, $pessoa->getDataNascimento());
     }
 
     public function testClienteInheritsUsuario()
     {
         $cliente = new Cliente('cli', 'pass', 'c@example.com', 'Cliente', '987654321');
-        $this->assertEquals(Tipo::CLIENTE, $cliente->getTipo());
+        $this->assertInstanceOf(Pessoa::class, $cliente);
 
         $cliente->setTiposImoveisDesejados(['Apartamento']);
-        $this->assertEquals(['Apartamento'], $cliente->tipoImoveisDesejado);
+        $this->assertEquals(['Apartamento'], $cliente->getTipoImoveisDesejados());
 
         $cliente->setQuantQuartosDesejado(2);
-        $this->assertEquals(2, $cliente->quantQuartosDesejado);
+        $this->assertEquals(2, $cliente->getQuantQuartosDesejado());
     }
 
     public function testEnderecoGettersSetters()
