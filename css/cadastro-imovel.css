@@ -32,6 +32,15 @@
     height: 18rem;
     top: 20% !important;
 
+    #botoes {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        gap: 15px;
+        justify-content: center !important;
+        justify-items: center !important;
+    }
+
     button {
         width: 70%;
         min-height: 3rem;
@@ -65,15 +74,20 @@
             margin-bottom: 10px;
         }
 
+        div#table {
+            width: 100%;
+            max-height: 400px; 
+            overflow-y: auto;  
+            overflow-x: auto;  
+        }
+
         table {
+            width: 100%;
             border-collapse: collapse;
             letter-spacing: 1px;
             margin: 0 !important;
             padding: 0 !important;
             background: rgba(65, 65, 65, 0.7);
-            display: block;
-            overflow-y: auto;
-            max-width: none;
 
             a {
                 text-decoration: none;
@@ -95,7 +109,6 @@
 
             thead {
                 background-color: var(--background-custom) !important;
-                width: auto !important;
             }
 
             tbody {
@@ -419,7 +432,7 @@ label {
 
     .vertical-separator:has(select) {
         flex: 1 1 190px;
-        min-width: none;
+        min-width: 0%;
     }
 
     .vertical-separator:has(#ta-bloco),
@@ -911,6 +924,145 @@ label {
 
 }
 
+
+@media screen and (max-width: 857px) {
+    #tataravo {
+        display: flex !important;
+        flex-direction: column !important;
+        height: auto !important;
+
+
+        #avo {
+            width: 90% !important;
+            height: auto !important;
+            margin: 0 auto !important;
+
+            #cadastro-pai {
+                width: auto !important;
+                height: auto !important;
+
+                #container-cadastro {
+                    width: auto !important;
+                    height: auto !important;
+
+                    #informacoes-gerais {
+                        width: auto !important;
+                    }
+                }
+
+            }
+
+        }
+
+        #h-buttons {
+            order: -1;
+            position: relative !important;
+            margin: 0 auto !important;
+            width: 90% !important;
+            height: auto !important;
+            margin: 40px auto !important;
+            display: flex !important;
+            flex-direction: row !important;
+
+            #botoes {
+                display: flex !important;
+                flex-direction: column !important;
+                width: 50% !important;
+                margin: 0px !important;
+                padding: 0px !important;
+                min-width: 0% !important;
+                max-width: 50% !important;
+                justify-content: center !important;
+                justify-items: center !important;
+                gap: 10px !important;
+                text-align: center !important;
+
+                button {
+                    margin: 0 auto !important;
+                }
+
+                #checkbox {
+                    margin: 0 auto !important;
+                }
+            }
+
+            div#table {
+                height: 100% !important;
+            }
+
+            #historico {
+                max-width: 50% !important;
+                width: 50% !important;
+                min-width: 0% !important;
+                max-width: none !important;
+                height: 100% !important;
+                min-width: 0% !important;
+                max-width: 100% !important;
+
+                h3 {
+                    width: auto !important;
+                    height: auto !important;
+                }
+
+                table {
+                    width: 100% !important;
+                    min-width: 0% !important;
+                    max-width:  100% !important;
+                    height: 100% !important;
+                    min-height: 0% !important;
+                    max-height: 100% !important;
+                }
+            }
+
+        }
+    }
+
+    .seaTabs_switch {
+        width: 100%;
+    }
+
+    .container {
+        width: 100% !important;
+        overflow: hidden auto !important;
+
+        header {
+            width: auto !important;
+            overflow: hidden hidden;
+        }
+    }
+
+    #edicao-logo {
+        width: 100% !important;
+
+        header {
+            max-width: 100% !important;
+        }
+
+        #logo-editada,
+        #preview-logo {
+            width: 50% !important;
+        }
+
+        #preview-logo #inline {
+            width: 100% !important;
+            display: flex !important;
+            flex-direction: column !important;
+
+            #inline-buttons {
+                width: 100% !important;
+                height: 10% !important;
+                margin: 0 auto !important;
+
+                button {
+                    height: 100% !important;
+                    margin-top: 0px !important;
+                }
+            }
+        }
+    }
+
+
+}
 
 
 @media screen and (max-width: 669px) {

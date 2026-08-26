@@ -57,6 +57,7 @@
     margin: 0px 20px 20px 20px;
     width: 98%;
     align-items: center;
+    flex-wrap: wrap;
 
     .fa-arrows-left-right {
         color: var(--cor-texto-alternativa) !important;
@@ -73,7 +74,8 @@
         width: auto;
         height: 30px;
         min-width: 60px;
-         &:hover {
+
+        &:hover {
             background-color: var(--hover);
             cursor: pointer;
         }
@@ -99,10 +101,10 @@
         min-width: 90px;
         width: auto;
         height: 30px;
-         background-color: var(--background-claro);
+        background-color: var(--background-claro);
         color: var(--cor-texto-alternativa);
         padding: 5px;
-        
+
         &:hover {
             background-color: var(--hover);
         }
@@ -111,7 +113,7 @@
     #selecionar-todos {
         width: 9rem;
         height: 2.1rem !important;
-         font-weight: 600;
+        font-weight: 600;
         font-size: 100%;
         min-width: 90px;
         width: auto;
@@ -192,12 +194,12 @@ table {
         background-color: rgba(186, 174, 174, 0.2);
     }
 
-   
+
 
     #botao-editar {
         background-color: var(--background-claro);
         color: var(--cor-texto-alternativa);
-         font-weight: 600;
+        font-weight: 600;
         font-size: 100%;
         width: 90px;
         height: 30px;
@@ -375,13 +377,19 @@ main {
     display: flex;
 }
 
+@media screen and (max-width: 857px) {
+    .sidebar-anuncios {
+        display: none;
+    }
+}
+
 
 @media screen and (max-width: 669px) {
 
     #container-filtragem,
     #sidebar-pessoas,
     .sidebar-anuncios {
-        display: none !important;
+        display: none;
     }
 
     #container-resultado {

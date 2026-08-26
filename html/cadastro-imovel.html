@@ -436,35 +436,40 @@
 
         </div>
         <div id="h-buttons">
-            <button class="bt-success" type="submit" onclick="salvarMultiplosForms()">Salvar</button>
-            <button class="bt-delete" onclick="excluir()">Apagar</button>
-            <button class="bt-open" onclick="abrirAnuncio()">Abrir anúncio</button>
-            <button onclick="compartilhar('anuncio')"><i class="fas fa-share-alt"></i> Compartilhar anúncio</button>
-            <button onclick="compartilhar('cadastro')"><i class="fas fa-share-alt"></i> Compartilhar cadastro</button>
-            <div id="checkbox">
-                <label for="destacar">Destacar imóvel:</label>
-                <input type="checkbox" name="destacar" id="destacar">
+            <div id="botoes">
+                <button class="bt-success" type="submit" onclick="salvarMultiplosForms()">Salvar</button>
+                <button class="bt-delete" onclick="excluir()">Apagar</button>
+                <button class="bt-open" onclick="abrirAnuncio()">Abrir anúncio</button>
+                <button onclick="compartilhar('anuncio')"><i class="fas fa-share-alt"></i> Compartilhar anúncio</button>
+                <button onclick="compartilhar('cadastro')"><i class="fas fa-share-alt"></i> Compartilhar
+                    cadastro</button>
+                <div id="checkbox">
+                    <label for="destacar">Destacar imóvel:</label>
+                    <input type="checkbox" name="destacar" id="destacar">
+                </div>
+                <label for="" id="quant-clicks">Quantidade de cliques: 0</label>
             </div>
-            <label for="" id="quant-clicks">Quantidade de cliques: 0</label>
 
 
             <div id="historico">
                 <h3>Historico de Alterações:</h3>
 
-                <table id="historico-table">
-                    <thead>
-                        <tr>
-                            <th>Data</th>
-                            <th>Usuário</th>
-                            <th>Alteração</th>
-                        </tr>
-                    </thead>
-                    <tbody id="historico-body">
-                        <tr>
+                <div id="table">
+                    <table id="historico-table">
+                        <thead>
+                            <tr>
+                                <th>Data</th>
+                                <th>Usuário</th>
+                                <th>Alteração</th>
+                            </tr>
+                        </thead>
+                        <tbody id="historico-body">
+                            <tr>
 
-                        </tr>
-                    </tbody>
-                </table>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
 
             </div>
 
