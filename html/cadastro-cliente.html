@@ -154,12 +154,14 @@
             </form>
         </div>
         <div id="h-buttons">
+            <div id="botoes">
             <button id="bt-salvar-alteracoes" class="bt-success" onclick="salvar()">Salvar</button>
             <button id="bt-apagar-cadastro" class="bt-delete" onclick="apagar()">Apagar</button>
-            <button onclick="compartilhar('cadastro')"><i class="fas fa-share-alt"></i> Compartilhar cadastro</button>
+            <button onclick="compartilhar('cadastro')"><i class="fas fa-share-alt"></i> Compartilhar cadastro</button></div>
 
             <div id="historico">
                 <h3>Historico de Alterações:</h3>
+                <div id="table">
                 <table id="historico-table">
                     <thead>
                         <tr>
@@ -173,7 +175,7 @@
 
                         </tr>
                     </tbody>
-                </table>
+                </table></div>
             </div>
         </div>
     </div>

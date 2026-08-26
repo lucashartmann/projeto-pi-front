@@ -184,33 +184,75 @@ class ImovelDAO
         }
     }
 
-    public function favoritar($idCliente, $idImovel)
+    public function favoritar(int $idCliente, array|int $idImoveis)
     {
         try {
-            $sql = "SELECT * FROM cliente_favorito WHERE id_cliente = :idCliente AND id_imovel = :idImovel";
-            $stmt = $this->bancoDados->prepare($sql);
-            $stmt->execute([
-                ':idCliente' => $idCliente,
-                ':idImovel' => $idImovel
-            ]);
-            $favoritoExistente = $stmt->fetch(PDO::FETCH_ASSOC);
-            if ($favoritoExistente) {
-                $sqlDelete = "DELETE FROM cliente_favorito WHERE id_cliente = :idCliente AND id_imovel = :idImovel";
-                $stmtDelete = $this->bancoDados->prepare($sqlDelete);
-                $stmtDelete->execute([
+            // if (empty($idImoveis)) {
+            //     throw new Exception("Nenhum ID de imóvel fornecido para favoritar.");
+            // }
+            // if (empty($idCliente)) {
+            //     throw new Exception("ID do cliente não fornecido para favoritar.");
+            // }
+            error_log("Favoritar: idCliente = $idCliente, idImoveis = " . json_encode($idImoveis));
+            if (!is_array($idImoveis)) {
+                $idImovel = (int) $idImoveis;
+                if (!is_int($idImovel)) {
+                    error_log("ID do imóvel inválido: " . json_encode($idImovel));
+                    throw new Exception("ID do imóvel inválido.");
+                }
+                $sql = "SELECT * FROM favoritos WHERE id_cliente = :idCliente AND id_imovel = :idImovel";
+                $stmt = $this->bancoDados->prepare($sql);
+                $stmt->execute([
                     ':idCliente' => $idCliente,
                     ':idImovel' => $idImovel
                 ]);
-                return true;
+                $favoritoExistente = $stmt->fetch(PDO::FETCH_ASSOC);
+                if ($favoritoExistente) {
+                    $sqlDelete = "DELETE FROM favoritos WHERE id_cliente = :idCliente AND id_imovel = :idImovel";
+                    $stmtDelete = $this->bancoDados->prepare($sqlDelete);
+                    $stmtDelete->execute([
+                        ':idCliente' => $idCliente,
+                        ':idImovel' => $idImovel
+                    ]);
+                } else {
+                    $sqlInsert = "INSERT INTO favoritos (id_cliente, id_imovel) VALUES (:idCliente, :idImovel)";
+                    $stmtInsert = $this->bancoDados->prepare($sqlInsert);
+                    $stmtInsert->execute([
+                        ':idCliente' => $idCliente,
+                        ':idImovel' => $idImovel
+                    ]);
+                }
             } else {
-                $sqlInsert = "INSERT INTO cliente_favorito (id_cliente, id_imovel) VALUES (:idCliente, :idImovel)";
-                $stmtInsert = $this->bancoDados->prepare($sqlInsert);
-                $stmtInsert->execute([
-                    ':idCliente' => $idCliente,
-                    ':idImovel' => $idImovel
-                ]);
-                return true;
+                foreach ($idImoveis as $idImovel) {
+                    if (!is_int($idImovel)) {
+                        error_log("ID do imóvel inválido: " . json_encode($idImovel));
+                        continue;
+                    }
+                    $sql = "SELECT * FROM favoritos WHERE id_cliente = :idCliente AND id_imovel = :idImovel";
+                    $stmt = $this->bancoDados->prepare($sql);
+                    $stmt->execute([
+                        ':idCliente' => $idCliente,
+                        ':idImovel' => $idImovel
+                    ]);
+                    $favoritoExistente = $stmt->fetch(PDO::FETCH_ASSOC);
+                    if ($favoritoExistente) {
+                        $sqlDelete = "DELETE FROM favoritos WHERE id_cliente = :idCliente AND id_imovel = :idImovel";
+                        $stmtDelete = $this->bancoDados->prepare($sqlDelete);
+                        $stmtDelete->execute([
+                            ':idCliente' => $idCliente,
+                            ':idImovel' => $idImovel
+                        ]);
+                    } else {
+                        $sqlInsert = "INSERT INTO favoritos (id_cliente, id_imovel) VALUES (:idCliente, :idImovel)";
+                        $stmtInsert = $this->bancoDados->prepare($sqlInsert);
+                        $stmtInsert->execute([
+                            ':idCliente' => $idCliente,
+                            ':idImovel' => $idImovel
+                        ]);
+                    }
+                }
             }
+            return true;
         } catch (Exception $e) {
             error_log("ERRO! imovelDAO->favoritar: " . $e->getMessage());
             throw $e;
@@ -558,14 +600,14 @@ class ImovelDAO
             $corretor = null;
             $captador = null;
             try {
-                if ($dadosCorretor['id'] !== null) {
+                if (isset($dadosCorretor['id']) && $dadosCorretor['id'] !== null) {
                     $corretor = $pessoaDAO->montar($dadosCorretor);
                 }
             } catch (Exception $e) {
                 error_log("ERRO! imovelDAO->listarDisponiveis: " . $e->getMessage());
             }
             try {
-                if ($dadosCaptador['id'] !== null) {
+                if (isset($dadosCaptador['id']) && $dadosCaptador['id'] !== null) {
                     $captador = $pessoaDAO->montar($dadosCaptador);
                 }
             } catch (Exception $e) {
@@ -591,13 +633,15 @@ class ImovelDAO
     public function listarFavoritos(int $idCliente): array
     {
         try {
-            $sql = $this->sql .  "WHERE id_cliente = :id";
+            $sql = str_replace("FROM imovel", "FROM favoritos LEFT JOIN imovel ON favoritos.id_imovel = imovel.id", $this->sql) .  "WHERE id_cliente = :id";
 
             $stmt = $this->bancoDados->prepare($sql);
             $stmt->execute([':id' => $idCliente]);
             $dados = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
             if (empty($dados)) {
-                throw new Exception("Não há imóveis favoritados para o cliente especificado");
+                error_log("Nenhum imóvel favorito encontrado para o cliente com ID: $idCliente");
+                return [];
             }
 
             $lista = [];
@@ -627,14 +671,14 @@ class ImovelDAO
                     $corretor = null;
                     $captador = null;
                     try {
-                        if ($dadosCorretor['id'] !== null) {
+                        if (isset($dadosCorretor['id']) && $dadosCorretor['id'] !== null) {
                             $corretor = $pessoaDAO->montar($dadosCorretor);
                         }
                     } catch (Exception $e) {
                         error_log("ERRO! imovelDAO->listarDisponiveis: " . $e->getMessage());
                     }
                     try {
-                        if ($dadosCaptador['id'] !== null) {
+                        if (isset($dadosCaptador['id']) && $dadosCaptador['id'] !== null) {
                             $captador = $pessoaDAO->montar($dadosCaptador);
                         }
                     } catch (Exception $e) {

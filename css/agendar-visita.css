@@ -233,6 +233,9 @@ footer {
     }
 }
 
+@media screen and (max-width: 857px) {
+}
+
 @media screen and (max-width: 669px) {
     body {
         height: auto !important;

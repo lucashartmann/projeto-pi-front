@@ -163,7 +163,7 @@ body>hr {
     #whatsapp {
         color: var(--cor-texto) !important;
         margin-left: 0 !important;
-
+        font-size: 0.8rem !important;
         i {
             color: var(--cor-texto) !important;
         }
@@ -380,6 +380,24 @@ img {
         max-width: 90%;
         max-height: 80%;
         justify-self: center;
+    }
+}
+
+@media screen and (max-width: 857px) {
+    #div-pai {
+        width: 70% !important;
+    }
+
+    #div-titulo {
+        width: 90% !important;
+    }
+
+    .swiper-destaque {
+        width: 90%;
+    }
+
+    #entrar-contato {
+        margin-right: 20px;
     }
 }
 

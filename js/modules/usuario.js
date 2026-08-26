@@ -44,6 +44,65 @@ export async function salvarImoveisCurtidos() {
 
 }
 
+export async function listarImoveisFavoritados() {
+    try {
+        let caminho = getCaminhoRelativo("/php/api/login.php?acao=get_favoritos");
+
+        const resposta = await fetch(caminho)
+            .then(async (res) => {
+                if (!res.ok) {
+                    throw new Error(`Erro na requisição: ${res.status}`);
+                    return null;
+                }
+
+                const contentType = res.headers.get("content-type");
+                if (contentType && contentType.includes("application/json")) {
+                    return await res.json();
+                } else {
+                    throw new Error("Resposta não é JSON");
+                    return null;
+                }
+
+            })
+            .then(async (data) => {
+                if (data.status == "erro") {
+                    console.log("Erro ao listar imóveis: " + data.mensagem);
+                    return null;
+                }
+                return await data;
+            })
+            .catch((error) => {
+                console.log("Erro ao listar imóveis favoritados:", error);
+                return null;
+            });
+
+        if (!resposta) {
+            console.log("Falha ao obter imóveis favoritados");
+            return null;
+        }
+
+        resposta?.forEach(imovel => {
+            switch (imovel.status) {
+                case "Venda":
+                    imovel.valor_aluguel = null;
+                    break;
+                case "Aluguel":
+                    imovel.valor_venda = null;
+                    break;
+                default:
+                    break;
+            }
+        });
+
+        // imoveisCurtidos = resposta?.map(f => f.id) || [];
+        return resposta;
+    } catch (erro) {
+        console.log("Falha ao conectar com o backend:", erro);
+        return null;
+    }
+
+}
+
 export async function curtirImovel(event, imovelId) {
     if (!logado) {
         if (!usuarioLogado) {
@@ -61,6 +120,7 @@ export async function curtirImovel(event, imovelId) {
         return;
     }
     imoveisCurtidos.push(imovelId);
+    console.log("Imóvel adicionado aos curtidos:", imoveisCurtidos);
     event.target.classList.toggle("curtido");
     event.stopPropagation();
 }
@@ -145,9 +205,9 @@ export async function carregarUser() {
             return null;
         }
         usuarioLogado = dados.usuario;
-        if (usuarioLogado && usuarioLogado.tipo && usuarioLogado.tipo === "CLIENTE") {
-            imoveisCurtidos = dados.imoveis || [];
-        }
+        // if (usuarioLogado && usuarioLogado.tipo && usuarioLogado.tipo === "CLIENTE") {
+        //     imoveisCurtidos = dados?.usuario?.favoritos?.map(f => f.id) || [];
+        // }
         return dados;
     } catch (erro) {
         console.error("Falha ao conectar com o backend:", erro);

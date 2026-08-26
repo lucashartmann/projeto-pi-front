@@ -58,6 +58,12 @@ class PessoaController
                             $imovel ? $controllerImovel->montarJson([$imovel])[0] : null,
                         ];
                     }, $usuario instanceof Proprietario ? $usuario->getImoveis() ?? [] : []),
+                    "favoritos" => array_map(function ($imovel) {
+                        $controllerImovel = new ImovelController();
+                        return [
+                            $imovel ? $controllerImovel->montarJson([$imovel])[0] : null,
+                        ];
+                    }, $usuario instanceof Cliente ? $usuario->getImoveisFavoritos() ?? [] : []),
                 ];
             }
         }

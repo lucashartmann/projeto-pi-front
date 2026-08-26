@@ -830,6 +830,28 @@ section#anuncios {
 
 
 @media screen and (max-width: 857px) {
+     #pesquisa-container {
+        height: auto !important;
+        margin: 30px !important;
+    }
+
+    #container-filtragem {
+        flex-wrap: wrap;
+        margin: 0px auto;
+        height: auto;
+
+        select {
+            width: 20rem !important;
+            height: auto;
+        }
+
+        input {
+            width: 20rem !important;
+            height: 2.4rem;
+            font-size: 1rem;
+            margin: 0px auto;
+        }
+    }
     section#anuncios {
 
         grid-template-columns: repeat(auto-fit, minmax(40%, 100fr));

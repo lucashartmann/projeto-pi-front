@@ -147,7 +147,7 @@ class loginController
             }
             session_start();
             $usuario = null;
-
+            error_log("Favoritar imóveis: Dados recebidos: " . json_encode($data));
             if (isset($_SESSION['usuario'])) {
                 $usuario = $_SESSION['usuario'];
             } else {
@@ -160,7 +160,7 @@ class loginController
 
             $idCliente = $usuario ? $usuario->getId() : null;
             $idImoveis = $data['id_imoveis'] ?? null;
-            if (!$idCliente || !is_array($idImoveis)) {
+            if (!$idCliente || !is_array($idImoveis) || empty($idImoveis)) {
                 return (["status" => "erro", "mensagem" => "ID do cliente ou lista de imóveis inválidos"]);
             }
 

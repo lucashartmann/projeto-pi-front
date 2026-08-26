@@ -8,6 +8,7 @@
 
 ## Bugs:
 
+- [ ] `PHP` `JS` <font color=red>[ALTO]</font> Favoritar imóvel está salvando ids nulos
 - [ ] `JS` <font color=yellow>[MÉDIO]</font> Quando eu clico em semana ou dia no calendario, deixa de ser possivel adicionar um evento a uma data, pois o JS aplica só ao carregar a pagina
 - [ ] `PHP` <font color=yellow>[verificar]</font> <font color=green>[BAIXO]</font> Quando eu cadastro uma imagem ao imovel, ele remove as imagens de todos os imóveis pré cadastrados pelo **init** na tabela midia_anuncio
 - [ ] `PHP` <font color=green>[BAIXO]</font>
@@ -23,19 +24,18 @@
 - [ ] `PHP` <font color=green>[BAIXO]</font> Refazer a proprietarioImovelDAO
 - [ ] `PHP` `JS` <font color=green>[BAIXO]</font> As notificaçoes botar q se um cliente for cadastrado mandar uma notificação para todos os corretores cadastrando por id do corretor na tabela notificacao e botar o tipo ser "atendimento', "cadastro", etc
 
-
 ### Login:
 
 - [ ] `JS` `PHP` <font color=red>[ALTO]</font> Esqueceu senha: mandar o email
 
 ### Cadastro de imóvel:
-Arrumar abrir multiplosAnexos
+
 - [ ] `JS` <font color=red>[ALTO]</font> Implementar swiper ao abrir imagem como é no dados-imovel.js
 - [ ] `JS` <font color=yellow>[MÉDIO]</font> Abrir multiplas pessoas, apagar, midias e etc
 - [ ] `JS` <font color=yellow>[MÉDIO]</font> Atualizar o mapa depois de ter cep e numero
 - Administrador
-  - [ ] `JS` `PHP` `SQL` <font color=green>[BAIXO]</font> 
-  Poder Aumentar e diminuir a logo, salvar a posição e tamanho dela em relação á imagem, quanto carregar o JS, carregar a posiçao e a logo salva do banco de dados
+  - [ ] `JS` `PHP` `SQL` <font color=green>[BAIXO]</font>
+        Impor que só o admin boter mudar logo, sua posição e tamanho, e poder girar a imagem ou até redimensionar/cortar;
 - Admin, Corretor, Captador
   - [ ] `JS` `PHP` `SQL` <font color=green>[BAIXO]</font> Poder editar a posição e tamanho da logo, e poder girar a imagem ou até redimensionar/cortar talvez
 
@@ -43,7 +43,6 @@ Arrumar abrir multiplosAnexos
 
 - [ ] `JS` <font color=green>[BAIXO]</font> Ordenar imoveis por data de cadastro
 - [ ] `JS` `HTML` `CSS` <font color=green>[BAIXO]</font> adicionar whats no anuncio
-
 
 ### Dados da imobiliaria:
 

@@ -76,9 +76,9 @@
 
         div#table {
             width: 100%;
-            max-height: 400px; 
-            overflow-y: auto;  
-            overflow-x: auto;  
+            max-height: 400px;
+            overflow-y: auto;
+            overflow-x: auto;
         }
 
         table {
@@ -1007,7 +1007,7 @@ label {
                 table {
                     width: 100% !important;
                     min-width: 0% !important;
-                    max-width:  100% !important;
+                    max-width: 100% !important;
                     height: 100% !important;
                     min-height: 0% !important;
                     max-height: 100% !important;
