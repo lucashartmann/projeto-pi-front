@@ -193,7 +193,7 @@ class ImovelDAO
             // if (empty($idCliente)) {
             //     throw new Exception("ID do cliente não fornecido para favoritar.");
             // }
-            error_log("Favoritar: idCliente = $idCliente, idImoveis = " . json_encode($idImoveis));
+        
             if (!is_array($idImoveis)) {
                 $idImovel = (int) $idImoveis;
                 if (!is_int($idImovel)) {

@@ -1,5 +1,5 @@
 import { listarImoveisDisponiveis, listarImoveisDestacados } from "./modules/imoveis.js";
-import { carregarUser, usuarioLogado, salvarImoveisCurtidos, curtirImovel, listarImoveisFavoritados } from "./modules/usuario.js";
+import { carregarUser, usuarioLogado, curtirImovel, listarImoveisFavoritados } from "./modules/usuario.js";
 import { getCaminhoRelativo, formatarValor } from "./modules/utils.js";
 
 window.curtirImovel = curtirImovel;
@@ -206,6 +206,7 @@ async function carregarAnuncios(dados) {
                     <div class="swiper-button-next" onclick=" event.preventDefault(); event.stopPropagation(); nextSlide()"></div>
                 </div>
                 <h2>${imovel.anuncio?.titulo}</h2>
+                <p class='categoria'>${imovel.categoria}</p>
                 <p>${imovel.endereco?.rua}, ${imovel.endereco?.numero}, ${imovel.endereco?.bairro}</p>
                 ${precoVenda}
                 ${precoAluguel}
@@ -412,7 +413,7 @@ function maisVistos(dados) {
         }
 
 
-         const classe = imoveisFavoritos?.flat()?.some((imovelBusca) => imovelBusca.id === imovel.id) ? "curtido" : "";
+        const classe = imoveisFavoritos?.flat()?.some((imovelBusca) => imovelBusca.id === imovel.id) ? "curtido" : "";
 
         let html = `
             <a href="html/dados-imovel.html?id=${imovel.id}" class="swiper-slide anuncio-link anuncio-imovel" >
@@ -428,6 +429,7 @@ function maisVistos(dados) {
                     <div class="swiper-button-next" onclick=" event.preventDefault(); event.stopPropagation(); nextSlide()"></div>
                 </div>
                 <h2>${imovel.anuncio?.titulo}</h2>
+                <p class='categoria'>${imovel.categoria}</p>
                 <p>${imovel.endereco?.rua}, ${imovel.endereco?.numero}, ${imovel.endereco?.bairro}</p>
                 ${precoVenda}
                 ${precoAluguel}
@@ -494,16 +496,6 @@ window.addEventListener("DOMContentLoaded", async () => {
     }
 
 });
-
-window.addEventListener('beforeunload', async function (event) {
-    // event.preventDefault();
-    // event.returnValue = '';
-    if (imoveisFavoritos.length > 0) {
-        await salvarImoveisCurtidos();
-    }
-
-});
-
 
 window.addEventListener("onclick", async () => {
     if (event.target.classList.contains("swiper-button-prev") || event.target.classList.contains("swiper-button-next") || event.target.classList.contains("fa-heart") || event.target.classList.contains("fa-whatsapp")) {

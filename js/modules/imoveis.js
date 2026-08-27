@@ -1,8 +1,19 @@
 import { getCaminhoRelativo } from "./utils.js";
 
 export async function destacarImovel(imovelId) {
+    let div = document.querySelector(".mensagem");
+    let mensagem = "";
+
+    if (!div) {
+        div = document.createElement("div");
+        div.classList.add("mensagem");
+        document.body.appendChild(div);
+    }
+
     if (!imovelId) {
-        alert("Nenhum imóvel selecionado para destaque!");
+        div.classList.add("erro");
+        div.classList.remove("sucesso");
+        mensagem = "Nenhum imóvel selecionado para destaque!";
         return;
     }
     try {
@@ -10,82 +21,126 @@ export async function destacarImovel(imovelId) {
         const resposta = await fetch(caminho)
             .then(async (res) => {
                 if (res.erro) {
-                    console.error("Erro ao tornar imóvel destaque: " + res.erro);
-                    return null;
+                    div.classList.add("erro");
+                    div.classList.remove("sucesso");
+                    mensagem = "Erro ao tornar imóvel destaque: " + res.erro;
                 }
                 const contentType = res.headers.get("content-type");
                 if (contentType && contentType.includes("application/json")) {
                     return await res.json();
                 } else {
                     const texto = await res.text();
+                    div.classList.add("erro");
+                    div.classList.remove("sucesso");
+                    mensagem = "Resposta inesperada do servidor";
                     console.error("Resposta não é JSON:", texto);
-                    return null;
                 }
             })
             .then(async (data) => {
                 if (data.status == "erro") {
-                    console.error(data.mensagem);
-                    return null;
+                    div.classList.add("erro");
+                    div.classList.remove("sucesso");
+                    mensagem = "Erro ao tornar imóvel destaque: " + data.mensagem;
                 }
-                return await data;
+                div.classList.add("sucesso");
+                div.classList.remove("erro");
+                mensagem = "Imóvel destacado com sucesso: " + data.mensagem;
             })
             .catch(erro => {
-                console.error("Falha ao conectar com o backend:", erro);
-                return null;
+                div.classList.add("erro");
+                div.classList.remove("sucesso");
+                mensagem = "Falha ao conectar com o backend:" + erro;
             });
 
 
     } catch (erro) {
-        console.error("Falha ao conectar com o backend:", erro);
-        return null;
+        div.classList.add("erro");
+        div.classList.remove("sucesso");
+        mensagem = "Falha ao conectar com o backend: " + erro;
     }
+
+    div.innerText = mensagem;
+    div.style.display = "flex";
+
+    setTimeout(() => {
+        div.style.display = "none";
+    }, 3000);
 }
 
 export async function excluirImovel(imovelId) {
-    if (!imovelId) {
-        alert("Nenhum imóvel selecionado para exclusão!");
-        return;
-    }
-    try {
-        let caminho = getCaminhoRelativo("/php/api/imoveis.php?acao=apagar&id=" + imovelId);
-        const response = await fetch(caminho, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
+    let div = document.querySelector(".mensagem");
+    let mensagem = "";
 
-        })
-            .then(async (response) => {
-                if (response.erro) {
-                    alert("Erro ao remover imóvel: " + response.erro);
-                    return null;
-                }
-                const contentType = response.headers.get("content-type");
-                if (contentType && contentType.includes("application/json")) {
-                    return await response.json();
-                } else {
-                    const texto = await response.text();
-                    alert("Resposta inesperada do servidor");
-                    console.error("Resposta não é JSON:", texto);
-                    return null;
-                }
-            })
-            .then(async (data) => {
-                if (data.status == "erro") {
-                    alert("Erro ao excluir imóvel: " + data.mensagem);
-                } else if (data.status == "sucesso") {
-                    console.log(data.mensagem);
-                    window.location.href = "estoque.html";
-                } else {
-                    alert("Erro ao excluir imóvel: " + data.mensagem);
-                }
-            })
-            .catch(error => {
-                console.error("Erro ao excluir imóvel:", error);
-            });
-    } catch (error) {
-        console.error("Erro ao enviar dados para exclusão do imóvel:", error);
+    if (!div) {
+        div = document.createElement("div");
+        div.classList.add("mensagem");
+        document.body.appendChild(div);
     }
+
+    if (!imovelId) {
+        div.classList.add("erro");
+        div.classList.remove("sucesso");
+        mensagem = "Nenhum imóvel selecionado para exclusão!";
+    } else {
+        try {
+            let caminho = getCaminhoRelativo("/php/api/imoveis.php?acao=apagar&id=" + imovelId);
+            const response = await fetch(caminho, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+
+            })
+                .then(async (response) => {
+                    if (response.erro) {
+                        div.classList.add("erro");
+                        div.classList.remove("sucesso");
+                        mensagem = "Erro ao remover imóvel: " + response.erro;
+                    }
+                    const contentType = response.headers.get("content-type");
+                    if (contentType && contentType.includes("application/json")) {
+                        return await response.json();
+                    } else {
+                        const texto = await response.text();
+                        div.classList.add("erro");
+                        div.classList.remove("sucesso");
+                        mensagem = "Resposta inesperada do servidor";
+                        console.error("Resposta não é JSON:", texto);
+                    }
+                })
+                .then(async (data) => {
+                    if (data.status == "erro") {
+                        div.classList.add("erro");
+                        div.classList.remove("sucesso");
+                        mensagem = "Erro ao excluir imóvel: " + data.mensagem;
+                    } else if (data.status == "sucesso") {
+                        div.classList.add("sucesso");
+                        div.classList.remove("erro");
+                        mensagem = "Imóvel excluído com sucesso: " + data.mensagem;
+                    } else {
+                        div.classList.add("erro");
+                        div.classList.remove("sucesso");
+                        mensagem = "Erro ao excluir imóvel: " + data.mensagem;
+                    }
+                })
+                .catch(error => {
+                    div.classList.add("erro");
+                    div.classList.remove("sucesso");
+                    mensagem = "Erro ao excluir imóvel:" + error;
+                });
+        } catch (error) {
+            div.classList.add("erro");
+            div.classList.remove("sucesso");
+            mensagem = "Erro ao enviar dados para exclusão do imóvel:" + error;
+        }
+    }
+
+    div.innerText = mensagem;
+    div.style.display = "flex";
+
+    setTimeout(() => {
+        div.style.display = "none";
+    }, 3000);
 }
 
 export async function listarImoveis() {
@@ -177,8 +232,6 @@ export async function listarImoveisDisponiveis() {
         imoveis = resposta.filter(imovel => imovel.anuncio && imovel.anuncio.imagens && imovel.anuncio.imagens.length > 0);
         imoveis = resposta.filter(imovel => imovel.valor_venda > 0 || imovel.valor_aluguel > 0);
 
-        console.log("Imóveis disponíveis:", imoveis);
-
         return imoveis;
     } catch (erro) {
         console.error("Falha ao conectar com o backend:", erro);
@@ -233,8 +286,6 @@ export async function listarImoveisDestacados() {
                     break;
             }
         });
-
-        console.log("Imóveis destacados:", resposta);
 
         let imoveis = [];
         imoveis = resposta.filter(imovel => imovel.anuncio && imovel.anuncio.imagens && imovel.anuncio.imagens.length > 0);

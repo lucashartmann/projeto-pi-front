@@ -65,7 +65,19 @@ async function tornarDestaqueMultiplos() {
     }).filter(id => id !== null);
 
     if (lista_ids.length === 0) {
-        alert("Nenhum imóvel selecionado.");
+        let div = document.querySelector(".mensagem");
+        if (!div) {
+            div = document.createElement("div");
+            div.classList.add("mensagem");
+            document.body.appendChild(div);
+        }
+        div.classList.add("erro");
+        div.classList.remove("sucesso");
+        div.innerText = "Nenhum imóvel selecionado.";
+        div.style.display = "flex";
+        setTimeout(() => {
+            div.style.display = "none";
+        }, 3000);
         return;
     }
 
@@ -537,6 +549,15 @@ function trocarCadastro() {
 }
 
 async function apagarPessoa(usuarioID) {
+    let div = document.querySelector(".mensagem");
+    let mensagem = "";
+
+    if (!div) {
+        div = document.createElement("div");
+        div.classList.add("mensagem");
+        document.body.appendChild(div);
+    }
+
     confirmar = confirm("Tem certeza que deseja excluir este usuário?");
     if (usuarioID && confirmar) {
         try {
@@ -550,7 +571,9 @@ async function apagarPessoa(usuarioID) {
             })
                 .then(async (response) => {
                     if (response.erro) {
-                        alert("Erro ao remover usuário: " + response.erro);
+                        div.classList.add("erro");
+                        div.classList.remove("sucesso");
+                        mensagem = "Erro ao remover usuário: " + response.erro;
                         return null;
                     }
                     const contentType = response.headers.get("content-type");
@@ -558,31 +581,49 @@ async function apagarPessoa(usuarioID) {
                         return await response.json();
                     } else {
                         const texto = await response.text();
-                        alert("Resposta inesperada do servidor");
+                        div.classList.add("erro");
+                        div.classList.remove("sucesso");
+                        mensagem = "Resposta inesperada do servidor";
                         console.error("Resposta não é JSON:", texto);
                         return null;
                     }
                 })
                 .then(async (data) => {
                     if (data.status == "erro") {
-                        alert("Erro ao excluir usuário: " + data.mensagem);
+                        div.classList.add("erro");
+                        div.classList.remove("sucesso");
+                        mensagem = "Erro ao excluir usuário: " + data.mensagem;
                     } else {
-                        console.log("Usuário excluído com sucesso:", data);
+                        div.classList.add("sucesso");
+                        div.classList.remove("erro");
+                        mensagem = "Usuário excluído com sucesso: " + data.mensagem;
                         window.location.href = "estoque.html";
                     }
                 })
                 .catch(error => {
-                    console.error("Erro ao excluir usuário:", error);
+                    div.classList.add("erro");
+                    div.classList.remove("sucesso");
+                    mensagem = "Erro ao excluir usuário: " + error.message;
                 });
         } catch (error) {
-            console.error("Erro ao enviar dados para exclusão do usuário:", error);
+            div.classList.add("erro");
+            div.classList.remove("sucesso");
+            mensagem = "Erro ao enviar dados para exclusão do usuário: " + error.message;
         }
     }
     else {
-        // alert("Nenhum imóvel selecionado para exclusão!");
+        div.classList.add("erro");
+        div.classList.remove("sucesso");
+        mensagem = "Exclusão de usuário cancelada.";
         window.location.href = "estoque.html";
     }
+    
+    div.innerText = mensagem;
+    div.style.display = "flex";
 
+    setTimeout(() => {
+        div.style.display = "none";
+    }, 3000);
 
 }
 
@@ -701,7 +742,7 @@ function carregarAnuncios() {
                     <i class="${classSeta}" id="seta" flat=True onclick="filtroOrdenado()"></i>
     `;
 
-  
+
 
     document.getElementById("contador").innerHTML = `${dados.length} imóveis`;
 

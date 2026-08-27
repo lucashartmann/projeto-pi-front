@@ -300,7 +300,7 @@ class Banco extends PDO
                 id_cliente INTEGER NULL,
                 id_imovel INTEGER NULL,
                 id_corretor INTEGER NULL,
-                data_visita DATETIME NULL,
+                data DATETIME NULL,
                 status VARCHAR(255) NULL,
                 FOREIGN KEY (id_cliente) 
                     REFERENCES cliente(id_pessoa) 
@@ -316,7 +316,7 @@ class Banco extends PDO
             "CREATE TABLE IF NOT EXISTS vistoria (
                 id INTEGER PRIMARY KEY AUTO_INCREMENT,
                 id_imovel INTEGER NULL,
-                data_vistoria DATETIME NULL,
+                data DATETIME NULL,
                 status VARCHAR(255) NULL,
                 FOREIGN KEY (id_imovel) 
                     REFERENCES imovel(id) 

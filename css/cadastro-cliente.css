@@ -90,7 +90,7 @@ body {
 #pai {
     display: flex;
     flex-direction: column;
-    width: 60%;
+    width: 70%;
     margin: 0 auto;
     border: 1px groove color-mix(in srgb, var(--background-claro) 60%, black);
     border-radius: 0px 12px 12px 12px;
@@ -105,17 +105,26 @@ body {
     margin: 10px auto;
     width: 17%;
     justify-self: center;
-    gap: 10px;
+    gap: 20px;
     position: sticky !important;
     height: 18rem;
     top: 40% !important;
+
+     #botoes {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        gap: 15px;
+        justify-content: center !important;
+        justify-items: center !important;
+    }
 
     button {
         width: 70%;
         min-height: 3rem;
         height: auto;
         border-radius: 6% / 30%;
-
+        
         i {
             margin-right: 10px;
         }

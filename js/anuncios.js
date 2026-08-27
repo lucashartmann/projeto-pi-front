@@ -1,4 +1,4 @@
-import { salvarImoveisCurtidos, curtirImovel, listarImoveisFavoritados } from "./modules/usuario.js";
+import { curtirImovel, listarImoveisFavoritados } from "./modules/usuario.js";
 import { formatarValor } from "./modules/utils.js";
 import { listarImoveisDisponiveis } from "./modules/imoveis.js";
 
@@ -280,6 +280,20 @@ async function filtrar() {
                     imoveisFiltrados.sort((a, b) => new Date(b.data_modificacao?.date) - new Date(a.data_modificacao?.date));
                 }
                 break;
+            case "venda":
+                    if (seta.classList.contains("fa-arrow-down")) {
+                        imoveisFiltrados.sort((a, b) => a.valor_venda - b.valor_venda);
+                    } else {
+                        imoveisFiltrados.sort((a, b) => b.valor_venda - a.valor_venda);
+                    }
+                    break;
+                case "aluguel":
+                    if (seta.classList.contains("fa-arrow-down")) {
+                        imoveisFiltrados.sort((a, b) => a.valor_aluguel - b.valor_aluguel);
+                    } else {
+                        imoveisFiltrados.sort((a, b) => b.valor_aluguel - a.valor_aluguel);
+                    }
+                    break;
             default:
                 break;
         }
@@ -490,15 +504,6 @@ window.addEventListener("DOMContentLoaded", async () => {
         allowMinus: false,
         placeholder: '0'
     }).mask('#area_minima_privativa, #area_maxima_privativa, #area_minima_total, #area_maxima_total');
-});
-
-window.addEventListener('beforeunload', async function (event) {
-    // event.preventDefault();
-    // event.returnValue = '';
-    if (favoritos) {
-        await salvarImoveisCurtidos();
-    }
-
 });
 
 window.addEventListener("onclick", async () => {

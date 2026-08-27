@@ -160,7 +160,7 @@ class PessoaDAO
             if (isset($registro["cliente_id"]) && $registro["cliente_id"] !== null) {
                 $pessoa = new Cliente($registro["email"], $registro["nome"], $registro["cpf_cnpj"]);
                 $imovelDAO = new ImovelDAO();
-                
+
                 try {
                     $pessoa->setImoveisFavoritos($imovelDAO->listarFavoritos($registro["cliente_id"]));
                 } catch (Exception $e) {

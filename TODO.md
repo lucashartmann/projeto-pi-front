@@ -8,8 +8,6 @@
 
 ## Bugs:
 
-- [ ] `PHP` `JS` <font color=red>[ALTO]</font> Favoritar imóvel está salvando ids nulos
-- [ ] `JS` <font color=yellow>[MÉDIO]</font> Quando eu clico em semana ou dia no calendario, deixa de ser possivel adicionar um evento a uma data, pois o JS aplica só ao carregar a pagina
 - [ ] `PHP` <font color=yellow>[verificar]</font> <font color=green>[BAIXO]</font> Quando eu cadastro uma imagem ao imovel, ele remove as imagens de todos os imóveis pré cadastrados pelo **init** na tabela midia_anuncio
 - [ ] `PHP` <font color=green>[BAIXO]</font>
       Tem algum problema no cadastro de filtros no **init**, ele está cadastrando varios filtos em uma só row, e filtros duplicados.

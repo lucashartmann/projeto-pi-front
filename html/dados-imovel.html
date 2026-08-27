@@ -1,196 +1,207 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-br">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Dados do Imóvel</title>
-    <link rel="stylesheet" href="../css/base.css">
-    <link rel="stylesheet" href="../css/dados-imovel.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <link rel="icon" type="image/x-icon" href="../assets/logo.webp">
+    <link rel="stylesheet" href="../css/base.css" />
+    <link rel="stylesheet" href="../css/dados-imovel.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    />
+    <link rel="icon" type="image/x-icon" href="../assets/logo.webp" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>
-        if (localStorage.getItem("tema") === "escuro") {
-            document.documentElement.classList.add("modo-noturno");
-        }
-        if (localStorage.getItem("contraste") === "alto") {
-            document.documentElement.classList.add("alto-contraste");
-        }
-        if (localStorage.getItem("fontSize")) {
-            document.documentElement.style.fontSize = localStorage.getItem("fontSize");
-        }
+      if (localStorage.getItem("tema") === "escuro") {
+        document.documentElement.classList.add("modo-noturno");
+      }
+      if (localStorage.getItem("contraste") === "alto") {
+        document.documentElement.classList.add("alto-contraste");
+      }
+      if (localStorage.getItem("fontSize")) {
+        document.documentElement.style.fontSize =
+          localStorage.getItem("fontSize");
+      }
     </script>
-</head>
+  </head>
 
-<body>
+  <body>
     <div id="acessibilidade">
-        <button onclick="aumentarFonte()">A+</button>
-        <button onclick="diminuirFonte()">A-</button>
-        <button onclick="altoContraste()"><i class="fas fa-adjust"></i></button>
-        <button onclick="modoNoturno()"><i class="fas fa-moon"></i></button>
+      <button onclick="aumentarFonte()">A+</button>
+      <button onclick="diminuirFonte()">A-</button>
+      <button onclick="altoContraste()"><i class="fas fa-adjust"></i></button>
+      <button onclick="modoNoturno()"><i class="fas fa-moon"></i></button>
     </div>
     <div id="div-titulo">
-        <div>
-            <h3></h3>
-            <span><i class="fas fa-map-marker-alt"></i>
-                <p></p>
-            </span>
-
+      <div>
+        <h3></h3>
+        <span
+          ><i class="fas fa-map-marker-alt"></i>
+          <p></p>
+        </span>
+      </div>
+      <div>
+        <h3>R$ 0</h3>
+        <div id="botoes">
+          <button onclick="compartilharImovel()">
+            <i class="fas fa-share-alt"></i> Compartilhar
+          </button>
+          <button onclick="curtirImovel()">
+            <i class="fas fa-heart"></i> Favoritar
+          </button>
         </div>
-        <div>
-            <h3>R$ 0</h3>
-            <div id="botoes">
-                <button onclick="compartilharImovel()"><i class="fas fa-share-alt"></i> Compartilhar</button>
-                <button onclick="curtirImovel()"><i class="fas fa-heart"></i> Favoritar</button>
-            </div>
-        </div>
+      </div>
     </div>
-    <hr>
+    <hr />
     <div id="dados-imovel">
+      <div id="div-pai">
+        <div class="swiper swiper-destaque">
+          <div class="swiper-wrapper">
+            <div class="swiper-slide"></div>
+            <div class="swiper-slide"></div>
+          </div>
+          <div class="swiper-pagination"></div>
 
-        <div id="div-pai">
-
-            <div class="swiper swiper-destaque">
-                <div class="swiper-wrapper">
-                    <div class="swiper-slide"></div>
-                    <div class="swiper-slide"></div>
-                </div>
-                <div class="swiper-pagination"></div>
-
-                <div class="swiper-button-prev" onclick="prevSlide()"></div>
-                <div class="swiper-button-next" onclick="nextSlide()"></div>
-
-            </div>
-            <div class="swiper swiper-galeria">
-                <div class="swiper-wrapper">
-                    <div class="swiper-slide"></div>
-                    <div class="swiper-slide"></div>
-                </div>
-
-                <div class="swiper-button-prev" onclick="prevSlide()"></div>
-                <div class="swiper-button-next" onclick="nextSlide()"></div>
-
-
-            </div>
-            <h3>Descrição</h3>
-            <p id="p-descricao">
-            </p>
-
-            <div id="mapa"></div>
+          <div class="swiper-button-prev" onclick="prevSlide()"></div>
+          <div class="swiper-button-next" onclick="nextSlide()"></div>
         </div>
-        <div id="entrar-contato">
-            <div><a href="https://wa.me/" style="text-decoration: none;" target="_blank"><button id="whatsapp"> <i
-                            class="fab fa-whatsapp"> Whatsapp</i></button></a>
-                <button id="bt-contato" onclick="cadastrarAtendimento()">Pedir para entrar em contato</button>
-            </div>
+        <div class="swiper swiper-galeria">
+          <div class="swiper-wrapper">
+            <div class="swiper-slide"></div>
+            <div class="swiper-slide"></div>
+          </div>
 
-            <label id="label-venda">Valor Venda:</label>
-            <p id="valor-venda">R$ 0</p>
-            <label id="label-aluguel">Valor Aluguel:</label>
-            <p id="valor-aluguel">R$ 0</p>
-            <div>
-                <label>Condominio:</label>
-                <p id="condominio">R$ 0</p>
-            </div>
-            <hr>
-            <div>
-                <label>IPTU: </label>
-                <p id="iptu">R$ 0</p>
-            </div>
-            <hr>
-
-            <div>
-                <label>Área Total: </label>
-                <span>
-                    <i class="fas fa-ruler-combined"></i>
-                    <p id="area-total">0 m²</p>
-                </span>
-            </div>
-            <hr>
-            <div>
-                <label>Área Privativa: </label>
-                <span>
-                    <i class="fas fa-ruler-combined"></i>
-                    <p id="area-privativa">0 m²</p>
-                </span>
-            </div>
-            <hr>
-            <div>
-                <label for="">Quartos: </label>
-                <span>
-                    <i class="fas fa-bed"></i>
-                    <p id="quartos">0</p>
-                </span>
-            </div>
-            <hr>
-            <div>
-                <label for="suite">Suite: </label>
-                <span>
-                    <i class="fas fa-bed"></i>
-                    <p style='color:green;' id="suites">0</p>
-                </span>
-            </div>
-            <hr>
-            <div>
-                <label for="banheiros">Banheiros: </label>
-                <span>
-                    <i class="fas fa-bath"></i>
-                    <p style='color:green;' id="banheiros">0</p>
-                </span>
-            </div>
-            <hr>
-            <div>
-                <label for="vagas">Vagas: </label>
-                <span>
-                    <i class="fas fa-car"></i>
-                    <p style='color:green;' id="vagas">0</p>
-                </span>
-            </div>
-
-
-
+          <div class="swiper-button-prev" onclick="prevSlide()"></div>
+          <div class="swiper-button-next" onclick="nextSlide()"></div>
         </div>
+        <h3>Descrição</h3>
+        <p id="p-descricao"></p>
+
+        <div id="mapa"></div>
+      </div>
+      <div id="entrar-contato">
+        <div>
+          <a href="https://wa.me/" style="text-decoration: none" target="_blank"
+            ><button id="whatsapp">
+              <i class="fab fa-whatsapp"> Whatsapp</i>
+            </button></a
+          >
+          <button id="bt-contato" onclick="cadastrarAtendimento()">
+            Pedir para entrar em contato
+          </button>
+        </div>
+
+        <label id="label-venda">Valor Venda:</label>
+        <p id="valor-venda">R$ 0</p>
+        <label id="label-aluguel">Valor Aluguel:</label>
+        <p id="valor-aluguel">R$ 0</p>
+
+        <label for="" id="categoria"></label>
+
+        <div>
+          <label>Condominio:</label>
+          <p id="condominio">R$ 0</p>
+        </div>
+        <hr />
+        <div>
+          <label>IPTU: </label>
+          <p id="iptu">R$ 0</p>
+        </div>
+        <hr />
+
+        <div>
+          <label>Área Total: </label>
+          <span>
+            <i class="fas fa-ruler-combined"></i>
+            <p id="area-total">0 m²</p>
+          </span>
+        </div>
+        <hr />
+        <div>
+          <label>Área Privativa: </label>
+          <span>
+            <i class="fas fa-ruler-combined"></i>
+            <p id="area-privativa">0 m²</p>
+          </span>
+        </div>
+        <hr />
+        <div>
+          <label for="">Quartos: </label>
+          <span>
+            <i class="fas fa-bed"></i>
+            <p id="quartos">0</p>
+          </span>
+        </div>
+        <hr />
+        <div>
+          <label for="suite">Suite: </label>
+          <span>
+            <i class="fas fa-bed"></i>
+            <p style="color: green" id="suites">0</p>
+          </span>
+        </div>
+        <hr />
+        <div>
+          <label for="banheiros">Banheiros: </label>
+          <span>
+            <i class="fas fa-bath"></i>
+            <p style="color: green" id="banheiros">0</p>
+          </span>
+        </div>
+        <hr />
+        <div>
+          <label for="vagas">Vagas: </label>
+          <span>
+            <i class="fas fa-car"></i>
+            <p style="color: green" id="vagas">0</p>
+          </span>
+        </div>
+      </div>
     </div>
-
 
     <footer>
-        <p>Copyright 2025 - By Lucas Hartmann</p>
-        <a href="https://github.com/lucashartmann" target="_blank"><i class="fab fa-github"></i></a>
+      <p>Copyright 2025 - By Lucas Hartmann</p>
+      <a href="https://github.com/lucashartmann" target="_blank"
+        ><i class="fab fa-github"></i
+      ></a>
     </footer>
 
     <div vw class="enabled">
-        <div vw-access-button class="active"></div>
-        <div vw-plugin-wrapper>
-            <div class="vw-plugin-top-wrapper"></div>
-        </div>
+      <div vw-access-button class="active"></div>
+      <div vw-plugin-wrapper>
+        <div class="vw-plugin-top-wrapper"></div>
+      </div>
     </div>
     <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
     <script>
-        new window.VLibras.Widget('https://vlibras.gov.br/app');
+      new window.VLibras.Widget("https://vlibras.gov.br/app");
     </script>
+  </body>
 
-</body>
-
-<script type="text/javascript">
+  <script type="text/javascript">
     fetch("nav.html")
-        .then(response => response.text())
-        .then(data => {
-            document.body.insertAdjacentHTML('afterbegin', data);
-        });
+      .then((response) => response.text())
+      .then((data) => {
+        document.body.insertAdjacentHTML("afterbegin", data);
+      });
+  </script>
 
-</script>
-
-<script src="../js/config.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
-<script type="module" src="../js/modules/utils.js"></script>
-<script type="module" src="../js/modules/usuario.js"></script>
-<script type="module" src="../js/modules/imoveis.js"></script>
-<script type="module" src="../js/modules/mapa.js"></script>
-<script type="module" src="../js/modules/notificacoes.js"></script>
-<script type="module" src="../js/base.js"></script>
-<script type="module" src="../js/dados-imovel.js"></script>
-
+  <script src="../js/config.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+  <script type="module" src="../js/modules/utils.js"></script>
+  <script type="module" src="../js/modules/usuario.js"></script>
+  <script type="module" src="../js/modules/imoveis.js"></script>
+  <script type="module" src="../js/modules/mapa.js"></script>
+  <script type="module" src="../js/modules/notificacoes.js"></script>
+  <script type="module" src="../js/base.js"></script>
+  <script type="module" src="../js/dados-imovel.js"></script>
 </html>

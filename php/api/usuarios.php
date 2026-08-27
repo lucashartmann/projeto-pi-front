@@ -2,6 +2,7 @@
 
 
 require_once __DIR__ . '/../controllers/pessoaController.php';
+require_once __DIR__ . '/../model/seguranca.php';
 
 // ob_start();
 header('Content-Type: application/json');
@@ -13,6 +14,7 @@ $controller = new PessoaController();
 switch ($acao) {
 
     case "cadastro":
+        Seguranca::verificarAcesso();
         $body = file_get_contents("php://input");
         $data = json_decode($body, true);
         if (json_last_error() !== JSON_ERROR_NONE) {
@@ -23,6 +25,7 @@ switch ($acao) {
         break;
 
     case "apagar":
+        Seguranca::verificarAcesso();
         $body = file_get_contents("php://input");
         $data = json_decode($body, true);
 
@@ -35,6 +38,7 @@ switch ($acao) {
         break;
 
     case "atualizar":
+        Seguranca::verificarAcesso();
         $body = file_get_contents("php://input");
         $data = json_decode($body, true);
 
@@ -47,6 +51,7 @@ switch ($acao) {
         break;
 
     case "buscar":
+        // Seguranca::verificarAcesso();
         $id = $_GET['id'] ?? '';
         if (empty($id)) {
             $resultado = (["status" => "erro", "mensagem" => "ID do usuário não fornecido"]);
@@ -57,6 +62,7 @@ switch ($acao) {
 
 
     case "listar":
+        Seguranca::verificarAcesso();
         $tipo = $_GET['tipo'] ?? null;
         $resultado = $controller->listar($tipo);
         break;

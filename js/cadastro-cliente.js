@@ -16,6 +16,12 @@ window.apagar = apagar;
 window.abrirImovel = abrirImovel;
 window.preencherEndereco = preencherEndereco;
 window.formatarValor = formatarValor;
+window.limpar = limpar;
+
+function limpar() {
+    let forms = document.querySelectorAll("form");
+    forms.forEach(form => form.reset());
+}
 
 async function preencherEndereco(event) {
     const cep = event.target.value.replace(/\D/g, "");
@@ -223,7 +229,7 @@ async function abrirCadastro(usuario) {
             let html = "";
 
             usuario.imoveis.forEach(imovel => {
-                imovel = imovel[0]; 
+                imovel = imovel[0];
                 html += `
                 <a class="resultado" href="cadastro-imovel.html?id=${imovel.id}">
                     <img src="${imovel.anuncio?.imagens?.[0]}" alt="">

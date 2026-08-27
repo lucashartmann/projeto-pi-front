@@ -13,6 +13,11 @@ require_once __DIR__ . '/../model/anuncio.php';
 require_once __DIR__ . '/../model/endereco.php';
 require_once __DIR__ . '/../model/condominio.php';
 require_once __DIR__ . '/../services/imovelService.php';
+require_once __DIR__ . '/../model/pessoa.php';
+require_once __DIR__ . '/../model/cliente.php';
+require_once __DIR__ . '/../model/corretor.php';
+require_once __DIR__ . '/../model/proprietario.php';
+require_once __DIR__ . '/../model/funcionario.php';
 
 class ImovelController
 {
@@ -40,7 +45,9 @@ class ImovelController
 
     function destacar($id)
     {
-        session_start();
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
         if (str_contains(",", $id)) {
             $id = (array) $id;
         } else {
@@ -114,7 +121,9 @@ class ImovelController
 
     function apagar(int $id)
     {
-        session_start();
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
         $imovelDAO = new ImovelDAO();
         if (is_array($id)) {
             $listaIDS = $id;
@@ -194,7 +203,9 @@ class ImovelController
     public function cadastrar($data)
     {
         try {
-            session_start();
+            if (session_status() === PHP_SESSION_NONE) {
+                session_start();
+            }
             $id = array_key_exists("ref", $data) ? $data["ref"] : 0;
             $nomeCondominio = array_key_exists("nome_condominio", $data) ? $data["nome_condominio"] : "";
             $valorVenda = array_key_exists("valor_venda", $data) ? $data["valor_venda"] : 0.0;

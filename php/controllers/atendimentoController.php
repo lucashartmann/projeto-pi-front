@@ -7,6 +7,12 @@ require_once __DIR__ . '/../dao/notificacaoDAO.php';
 require_once __DIR__ . '/../dao/atendimentoDAO.php';
 require_once __DIR__ . '/pessoaController.php';
 require_once __DIR__ . '/imovelController.php';
+require_once __DIR__ . '/../model/pessoa.php';
+require_once __DIR__ . '/../model/cliente.php';
+require_once __DIR__ . '/../model/corretor.php';
+require_once __DIR__ . '/../model/proprietario.php';
+require_once __DIR__ . '/../model/funcionario.php';
+
 
 class AtendimentoController
 {
@@ -51,7 +57,9 @@ class AtendimentoController
 
     function cadastrar(int $idImovel)
     {
-        session_start();
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
         $usuario = $_GET['usuario'] ?? null;
         $pessoaDAO = new PessoaDAO();
 

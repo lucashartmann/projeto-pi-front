@@ -476,7 +476,7 @@ label {
     justify-items: stretch;
     color: var(--cor-texto);
     padding: 20px;
-    display: flex !important;
+    display: none;
     gap: 5px;
 
     .imagem {

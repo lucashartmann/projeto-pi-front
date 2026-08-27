@@ -1,239 +1,343 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-br">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Cadastro de Pessoa</title>
-    <link rel="stylesheet" href="../css/base.css">
-    <link rel="stylesheet" href="../css/cadastro-cliente.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
-    <link rel="icon" type="image/x-icon" href="../assets/logo.webp">
+    <link rel="stylesheet" href="../css/base.css" />
+    <link rel="stylesheet" href="../css/cadastro-cliente.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+    />
+    <link rel="icon" type="image/x-icon" href="../assets/logo.webp" />
     <script src="https://cdn.jsdelivr.net/npm/inputmask/dist/inputmask.min.js"></script>
     <script>
-        if (localStorage.getItem("tema") === "escuro") {
-            document.documentElement.classList.add("modo-noturno");
-        }
-        if (localStorage.getItem("contraste") === "alto") {
-            document.documentElement.classList.add("alto-contraste");
-        }
-        if (localStorage.getItem("fontSize")) {
-            document.documentElement.style.fontSize = localStorage.getItem("fontSize");
-        }
+      if (localStorage.getItem("tema") === "escuro") {
+        document.documentElement.classList.add("modo-noturno");
+      }
+      if (localStorage.getItem("contraste") === "alto") {
+        document.documentElement.classList.add("alto-contraste");
+      }
+      if (localStorage.getItem("fontSize")) {
+        document.documentElement.style.fontSize =
+          localStorage.getItem("fontSize");
+      }
     </script>
-</head>
+  </head>
 
-<body>
+  <body>
     <div id="acessibilidade">
-        <button onclick="aumentarFonte()">A+</button>
-        <button onclick="diminuirFonte()">A-</button>
-        <button onclick="altoContraste()"><i class="fas fa-adjust"></i></button>
-        <button onclick="modoNoturno()"><i class="fas fa-moon"></i></button>
+      <button onclick="aumentarFonte()">A+</button>
+      <button onclick="diminuirFonte()">A-</button>
+      <button onclick="altoContraste()"><i class="fas fa-adjust"></i></button>
+      <button onclick="modoNoturno()"><i class="fas fa-moon"></i></button>
     </div>
 
     <div id="avo">
-        <div id="pai">
-            <form id="campo-dados">
-                <div>
-                    <div class="linha">
-                        <div class="vertical-separator">
-                            <label id="stt-tipo">Tipo</label>
-                            <select name="tipo" id="select-tipo" required>
-                                <option value="" selected>Selecione uma opção...</option>
-                                <option value="PROPRIETARIO">Proprietário</option>
-                                <option value="FINANCEIRO">Financeiro</option>
-                                <option value="CAPTADOR">Captador</option>
-                                <option value="CORRETOR">Corretor</option>
-                                <option value="CLIENTE">Cliente</option>
-                                <option value="VISTORIADOR">Vistoriador</option>
-                                <option value="GERENTE">Gerente</option>
-                                <option value="ADMINISTRADOR">Administrador</option>
-                            </select>
-                        </div>
-                        <div class="vertical-separator">
-                            <label id="stt-telefone">Telefone</label>
-                            <input id="inpt-telefone" name="telefone" type="text" placeholder="">
-                        </div>
-                        <div class="vertical-separator">
-                            <label id="stt-telefone">Telefone 2</label>
-                            <input id="inpt-telefone2" name="telefone" type="text" placeholder="">
-                        </div>
-                    </div>
-                    <div class="linha">
-                        <div class="vertical-separator">
-                            <label id="stt-nome">Nome</label>
-                            <input id="inpt-nome" name="nome" type="text" required placeholder="">
-                        </div>
-                    </div>
-                    <div class="linha">
-                        <div class="vertical-separator">
-                            <label id="stt-email">Email</label>
-                            <input type="email" id="inpt-email" name="email" placeholder="">
-                        </div>
-                    </div>
-
-                </div>
-                <div id="endereco">
-                    <div class="linha">
-                        <div class="vertical-separator">
-                            <label for="" id="stt-rua">Rua</label>
-                            <textarea id="ta-rua" placeholder="" readonly=True name="rua"></textarea>
-                        </div>
-                        <div class="vertical-separator">
-                            <label for="" id="stt-numero">Número</label>
-                            <input type="number" placeholder="" id="ta-numero" name="numero">
-                        </div>
-                        <div class="vertical-separator">
-                            <label for="" id="stt-complemento">Complemento</label>
-                            <textarea name="complemento" placeholder="" id="ta-complemento"></textarea>
-                        </div>
-                        <div class="vertical-separator">
-                            <label for="" id="stt-bloco">Bloco</label>
-                            <textarea name="bloco" placeholder="" id="ta-bloco"></textarea>
-                        </div>
-                    </div>
-                    <div class="linha">
-                        <div class="vertical-separator">
-                            <label for="" id="stt-bairro">Bairro</label>
-                            <textarea id="ta-bairro" placeholder="" readonly=True name="bairro"></textarea>
-                        </div>
-                        <div class="vertical-separator">
-                            <label for="" id="stt-cidade">Cidade</label>
-                            <textarea id="ta-cidade" placeholder="" readonly=True name="cidade"></textarea>
-                        </div>
-                        <div class="vertical-separator">
-                            <label for="" id="stt-estado">Estado</label>
-                            <input type="text" readonly=True id="ta-estado" minlength="2" maxlength="2" name="uf"
-                                placeholder="">
-                        </div>
-                        <div class="vertical-separator">
-                            <label for="" id="stt-cep">CEP</label>
-                            <input type="text" id="ta-cep" name="cep" oninput="preencherEndereco(event)"
-                                minlength="14" maxlength="14" placeholder="">
-                        </div>
-                    </div>
-                </div>
-                <div>
-                    <div class="linha">
-                        <div class="vertical-separator">
-                            <label id="stt-data-nascimento">Data de nascimento</label>
-                            <input type="date" id="inpt-data-nascimento" name="data_nascimento" maxlength="10"
-                                minlength="10" placeholder="">
-                        </div>
-                        <div class="vertical-separator">
-                            <label id="stt-cpf">CPF/CNPJ</label>
-                            <input type="text" id="inpt-cpf" name="cpf_cnpj" maxlength="14" minlength="14" required
-                                placeholder="">
-                        </div>
-                        <div class="vertical-separator">
-                            <label id="stt-rg">RG</label>
-                            <input id="inpt-rg" name="rg" max="9" min="7" type="number" placeholder="">
-                        </div>
-                        <!-- <label>Senha</label>
-        <input type="password" name="senha" id="inpt-senha"> -->
-                        <div class="vertical-separator">
-                            <label id="stt-salario">Salário</label>
-                            <input id="inpt-salario" name="salario" type="number" placeholder="">
-                        </div>
-                        <div class="vertical-separator">
-                            <label id="stt-creci">Creci</label>
-                            <input id="inpt-creci" name="creci" max="6" min="6" type="number" placeholder="">
-                        </div>
-                        <div class="vertical-separator">
-                            <label id="stt-status">Interessado em</label>
-                            <select name="status" id="select-status">
-                                <option value="" selected>Selecione uma opção...</option>
-                                <option value="Venda">Comprar</option>
-                                <option value="Aluguel">Alugar</option>
-                                <option value="Venda e Aluguel">Comprar e Alugar</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-
-            </form>
-        </div>
-        <div id="h-buttons">
-            <div id="botoes">
-            <button id="bt-salvar-alteracoes" class="bt-success" onclick="salvar()">Salvar</button>
-            <button id="bt-apagar-cadastro" class="bt-delete" onclick="apagar()">Apagar</button>
-            <button onclick="compartilhar('cadastro')"><i class="fas fa-share-alt"></i> Compartilhar cadastro</button></div>
-
-            <div id="historico">
-                <h3>Historico de Alterações:</h3>
-                <div id="table">
-                <table id="historico-table">
-                    <thead>
-                        <tr>
-                            <th>Data</th>
-                            <th>Usuário</th>
-                            <th>Alteração</th>
-                        </tr>
-                    </thead>
-                    <tbody id="historico-body">
-                        <tr>
-
-                        </tr>
-                    </tbody>
-                </table></div>
+      <div id="pai">
+        <form id="campo-dados">
+          <div>
+            <div class="linha">
+              <div class="vertical-separator">
+                <label id="stt-tipo">Tipo</label>
+                <select name="tipo" id="select-tipo" required>
+                  <option value="" selected>Selecione uma opção...</option>
+                  <option value="PROPRIETARIO">Proprietário</option>
+                  <option value="FINANCEIRO">Financeiro</option>
+                  <option value="CAPTADOR">Captador</option>
+                  <option value="CORRETOR">Corretor</option>
+                  <option value="CLIENTE">Cliente</option>
+                  <option value="VISTORIADOR">Vistoriador</option>
+                  <option value="GERENTE">Gerente</option>
+                  <option value="ADMINISTRADOR">Administrador</option>
+                </select>
+              </div>
+              <div class="vertical-separator">
+                <label id="stt-telefone">Telefone</label>
+                <input
+                  id="inpt-telefone"
+                  name="telefone"
+                  type="text"
+                  placeholder=""
+                />
+              </div>
+              <div class="vertical-separator">
+                <label id="stt-telefone">Telefone 2</label>
+                <input
+                  id="inpt-telefone2"
+                  name="telefone"
+                  type="text"
+                  placeholder=""
+                />
+              </div>
             </div>
+            <div class="linha">
+              <div class="vertical-separator">
+                <label id="stt-nome">Nome</label>
+                <input
+                  id="inpt-nome"
+                  name="nome"
+                  type="text"
+                  required
+                  placeholder=""
+                />
+              </div>
+            </div>
+            <div class="linha">
+              <div class="vertical-separator">
+                <label id="stt-email">Email</label>
+                <input
+                  type="email"
+                  id="inpt-email"
+                  name="email"
+                  placeholder=""
+                />
+              </div>
+            </div>
+          </div>
+          <div id="endereco">
+            <div class="linha">
+              <div class="vertical-separator">
+                <label for="" id="stt-rua">Rua</label>
+                <textarea
+                  id="ta-rua"
+                  placeholder=""
+                  readonly="True"
+                  name="rua"
+                ></textarea>
+              </div>
+              <div class="vertical-separator">
+                <label for="" id="stt-numero">Número</label>
+                <input
+                  type="number"
+                  placeholder=""
+                  id="ta-numero"
+                  name="numero"
+                />
+              </div>
+              <div class="vertical-separator">
+                <label for="" id="stt-complemento">Complemento</label>
+                <textarea
+                  name="complemento"
+                  placeholder=""
+                  id="ta-complemento"
+                ></textarea>
+              </div>
+              <div class="vertical-separator">
+                <label for="" id="stt-bloco">Bloco</label>
+                <textarea name="bloco" placeholder="" id="ta-bloco"></textarea>
+              </div>
+            </div>
+            <div class="linha">
+              <div class="vertical-separator">
+                <label for="" id="stt-bairro">Bairro</label>
+                <textarea
+                  id="ta-bairro"
+                  placeholder=""
+                  readonly="True"
+                  name="bairro"
+                ></textarea>
+              </div>
+              <div class="vertical-separator">
+                <label for="" id="stt-cidade">Cidade</label>
+                <textarea
+                  id="ta-cidade"
+                  placeholder=""
+                  readonly="True"
+                  name="cidade"
+                ></textarea>
+              </div>
+              <div class="vertical-separator">
+                <label for="" id="stt-estado">Estado</label>
+                <input
+                  type="text"
+                  readonly="True"
+                  id="ta-estado"
+                  minlength="2"
+                  maxlength="2"
+                  name="uf"
+                  placeholder=""
+                />
+              </div>
+              <div class="vertical-separator">
+                <label for="" id="stt-cep">CEP</label>
+                <input
+                  type="text"
+                  id="ta-cep"
+                  name="cep"
+                  oninput="preencherEndereco(event)"
+                  minlength="14"
+                  maxlength="14"
+                  placeholder=""
+                />
+              </div>
+            </div>
+          </div>
+          <div>
+            <div class="linha">
+              <div class="vertical-separator">
+                <label id="stt-data-nascimento">Data de nascimento</label>
+                <input
+                  type="date"
+                  id="inpt-data-nascimento"
+                  name="data_nascimento"
+                  maxlength="10"
+                  minlength="10"
+                  placeholder=""
+                />
+              </div>
+              <div class="vertical-separator">
+                <label id="stt-cpf">CPF/CNPJ</label>
+                <input
+                  type="text"
+                  id="inpt-cpf"
+                  name="cpf_cnpj"
+                  maxlength="14"
+                  minlength="14"
+                  required
+                  placeholder=""
+                />
+              </div>
+              <div class="vertical-separator">
+                <label id="stt-rg">RG</label>
+                <input
+                  id="inpt-rg"
+                  name="rg"
+                  max="9"
+                  min="7"
+                  type="number"
+                  placeholder=""
+                />
+              </div>
+              <!-- <label>Senha</label>
+        <input type="password" name="senha" id="inpt-senha"> -->
+              <div class="vertical-separator">
+                <label id="stt-salario">Salário</label>
+                <input
+                  id="inpt-salario"
+                  name="salario"
+                  type="number"
+                  placeholder=""
+                />
+              </div>
+              <div class="vertical-separator">
+                <label id="stt-creci">Creci</label>
+                <input
+                  id="inpt-creci"
+                  name="creci"
+                  max="6"
+                  min="6"
+                  type="number"
+                  placeholder=""
+                />
+              </div>
+              <div class="vertical-separator">
+                <label id="stt-status">Interessado em</label>
+                <select name="status" id="select-status">
+                  <option value="" selected>Selecione uma opção...</option>
+                  <option value="Venda">Comprar</option>
+                  <option value="Aluguel">Alugar</option>
+                  <option value="Venda e Aluguel">Comprar e Alugar</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div id="h-buttons">
+        <div id="botoes">
+          <button
+            id="bt-salvar-alteracoes"
+            class="bt-success"
+            onclick="salvar()"
+          >
+            Salvar
+          </button>
+          <button id="bt-apagar-cadastro" class="bt-delete" onclick="apagar()">
+            Apagar
+          </button>
+          <button onclick="limpar()">Limpar</button>
+          <button onclick="compartilhar('cadastro')">
+            <i class="fas fa-share-alt"></i> Compartilhar cadastro
+          </button>
         </div>
+
+        <div id="historico">
+          <h3>Historico de Alterações:</h3>
+          <div id="table">
+            <table id="historico-table">
+              <thead>
+                <tr>
+                  <th>Data</th>
+                  <th>Usuário</th>
+                  <th>Alteração</th>
+                </tr>
+              </thead>
+              <tbody id="historico-body">
+                <tr></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
     </div>
 
-
-    <h3 class="titulo">Imóveis do cliente</h3> <!-- Caso seja do tipo proprietário -->
+    <h3 class="titulo">Imóveis do cliente</h3>
+    <!-- Caso seja do tipo proprietário -->
     <section id="container-resultado">
-        <div class="resultado" onclick="abrirCadastro(0)">
-            <img src="../assets/apartament.jpg" alt="">
-            <div class="dados">
-                <label for="">REF: 001</label>
-                <label>Apartamento 2 dormitórios</label>
-                <label for="">Avenida Bento Gonçalves</label>
-                <label for="">Apartamento</label>
-                <label for="">Venda</label>
-            </div>
+      <div class="resultado" onclick="abrirCadastro(0)">
+        <img src="../assets/apartament.jpg" alt="" />
+        <div class="dados">
+          <label for="">REF: 001</label>
+          <label>Apartamento 2 dormitórios</label>
+          <label for="">Avenida Bento Gonçalves</label>
+          <label for="">Apartamento</label>
+          <label for="">Venda</label>
         </div>
-        <div class="resultado" onclick="abrirCadastro(1)">
-            <img src="../assets/campo.jpg" alt="">
-            <div class="dados">
-                <label for="">REF: 002</label>
-                <label>Casa no Campo com Jardim</label>
-                <label for="">Rua Joaquim Nabuco</label>
-                <label for="">Casa</label>
-                <label for="">Venda e Aluguel</label>
-            </div>
+      </div>
+      <div class="resultado" onclick="abrirCadastro(1)">
+        <img src="../assets/campo.jpg" alt="" />
+        <div class="dados">
+          <label for="">REF: 002</label>
+          <label>Casa no Campo com Jardim</label>
+          <label for="">Rua Joaquim Nabuco</label>
+          <label for="">Casa</label>
+          <label for="">Venda e Aluguel</label>
         </div>
+      </div>
     </section>
     <footer>
-        <p>Copyright 2025 - By Lucas Hartmann</p>
-        <a href="https://github.com/lucashartmann" target="_blank"><i class="fab fa-github"></i></a>
+      <p>Copyright 2025 - By Lucas Hartmann</p>
+      <a href="https://github.com/lucashartmann" target="_blank"
+        ><i class="fab fa-github"></i
+      ></a>
     </footer>
 
     <div vw class="enabled">
-        <div vw-access-button class="active"></div>
-        <div vw-plugin-wrapper>
-            <div class="vw-plugin-top-wrapper"></div>
-        </div>
+      <div vw-access-button class="active"></div>
+      <div vw-plugin-wrapper>
+        <div class="vw-plugin-top-wrapper"></div>
+      </div>
     </div>
     <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
     <script>
-        new window.VLibras.Widget('https://vlibras.gov.br/app');
+      new window.VLibras.Widget("https://vlibras.gov.br/app");
     </script>
-</body>
+  </body>
 
-<script type="text/javascript">
+  <script type="text/javascript">
     fetch("nav.html")
-        .then(response => response.text())
-        .then(data => {
-            document.body.insertAdjacentHTML('afterbegin', data);
-        });
-</script>
-<script type="module" src="../js/modules/utils.js"></script>
-<script type="module" src="../js/modules/historico.js"></script>
-<script type="module" src="../js/modules/usuario.js"></script>
-<script type="module" src="../js/modules/usuarios.js"></script>
-<script type="module" src="js/modules/notificacoes.js"></script>
-<script type="module" src="../js/base.js"></script>
-<script type="module" src="../js/cadastro-cliente.js"></script>
-
+      .then((response) => response.text())
+      .then((data) => {
+        document.body.insertAdjacentHTML("afterbegin", data);
+      });
+  </script>
+  <script type="module" src="../js/modules/utils.js"></script>
+  <script type="module" src="../js/modules/historico.js"></script>
+  <script type="module" src="../js/modules/usuario.js"></script>
+  <script type="module" src="../js/modules/usuarios.js"></script>
+  <script type="module" src="js/modules/notificacoes.js"></script>
+  <script type="module" src="../js/base.js"></script>
+  <script type="module" src="../js/cadastro-cliente.js"></script>
 </html>

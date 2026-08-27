@@ -1,5 +1,5 @@
 import { getCaminhoRelativo, formatarValor } from "./modules/utils.js";
-import { usuarioLogado, salvarImoveisCurtidos, curtirImovel, imoveisCurtidos, carregarUser } from "./modules/usuario.js";
+import { usuarioLogado, curtirImovel, imoveisCurtidos, carregarUser } from "./modules/usuario.js";
 import { getDadosImovel } from "./modules/imoveis.js";
 import { buscarCoordenadas, carregarMapa } from "./modules/mapa.js";
 import { buscarAnexoPorCaminho } from "./modules/anexos.js";
@@ -169,7 +169,7 @@ async function setupDados(imovel) {
 
         document.querySelector("#entrar-contato #label-venda").style.marginTop = "40px";
         document.querySelector("#entrar-contato #label-aluguel").style.marginTop = "10px";
-        document.querySelector("#entrar-contato #valor-aluguel").style.marginBottom = "50px";
+        document.querySelector("#entrar-contato #valor-aluguel").style.marginBottom = "30px";
 
     } else if (imovel.valor_venda) {
         document.querySelectorAll("#div-titulo h3")[1].innerText = formatarValor(imovel.valor_venda);
@@ -177,14 +177,14 @@ async function setupDados(imovel) {
         document.querySelector("#entrar-contato #valor-aluguel").style.display = "none";
         document.querySelector("#entrar-contato #label-aluguel").style.display = "none";
         document.querySelector("#entrar-contato #label-venda").style.marginTop = "20px";
-        document.querySelector("#entrar-contato #valor-venda").style.marginBottom = "50px";
+        document.querySelector("#entrar-contato #valor-venda").style.marginBottom = "30px";
     } else if (imovel.valor_aluguel) {
         document.querySelectorAll("#div-titulo h3")[1].innerText = formatarValor(imovel.valor_aluguel);
         document.querySelector("#entrar-contato #valor-aluguel").innerText = formatarValor(imovel.valor_aluguel);
         document.querySelector("#entrar-contato #valor-venda").style.display = "none";
         document.querySelector("#entrar-contato #label-venda").style.display = "none";
         document.querySelector("#entrar-contato #label-aluguel").style.marginTop = "20px";
-        document.querySelector("#entrar-contato #valor-aluguel").style.marginBottom = "50px";
+        document.querySelector("#entrar-contato #valor-aluguel").style.marginBottom = "30px";
     }
 
     document.querySelector("#entrar-contato #condominio").innerText = formatarValor(imovel.valor_condominio != null ? imovel.valor_condominio : "n/a");
@@ -195,6 +195,8 @@ async function setupDados(imovel) {
     document.querySelector("#entrar-contato #suites").innerText = imovel.quantidade_suites != null ? imovel.quantidade_suites : 'n/a';
     document.querySelector("#entrar-contato #banheiros").innerText = imovel.quantidade_banheiros != null ? imovel.quantidade_banheiros : 'n/a';
     document.querySelector("#entrar-contato #vagas").innerText = imovel.quantidade_vagas != null ? imovel.quantidade_vagas : "n/a";
+
+    document.querySelector('#categoria').innerText = imovel.categoria ?? "n/a";
 
     if (imovel.filtros && imovel.filtros.length > 0) {
         const divFiltros = document.createElement("div");

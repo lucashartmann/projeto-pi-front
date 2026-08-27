@@ -2,6 +2,7 @@
 
 
 require_once __DIR__ . '/../controllers/atendimentoController.php';
+require_once __DIR__ . '/../model/seguranca.php';
 
 
 // ob_start();
@@ -14,11 +15,13 @@ $controller = new AtendimentoController();
 switch ($acao) {
 
     case "cadastrar":
+        Seguranca::verificarAcesso();
         $idImovel = $_GET['idImovel'] ?? null;
         $resultado = $controller->cadastrar($idImovel);
         break;
 
     case "listar":
+        Seguranca::verificarAcesso();
         $resultado = $controller->listar();
         break;
 

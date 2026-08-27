@@ -4,6 +4,8 @@
 require_once __DIR__ . '/../controllers/loginController.php';
 require_once __DIR__ . '/../controllers/pessoaController.php';
 require_once __DIR__ . '/../controllers/atendimentoController.php';
+require_once __DIR__ . '/../model/seguranca.php';
+
 // ob_start();
 header('Content-Type: application/json');
 // Init::initialize();
@@ -43,6 +45,7 @@ switch ($acao) {
         break;
 
     case "deslogar":
+        Seguranca::verificarAcesso();
         $resultado = $controller->deslogar();
         break;
 
@@ -51,6 +54,7 @@ switch ($acao) {
         break;
 
     case "favoritar_imoveis":
+        Seguranca::verificarAcesso();
         $body = file_get_contents("php://input");
         $data = json_decode($body, true);
 
@@ -62,14 +66,17 @@ switch ($acao) {
         break;
 
     case "get_favoritos":
+        Seguranca::verificarAcesso();
         $resultado = $controller->carregarFavoritos();
         break;
 
     case "get_atendimentos":
+        Seguranca::verificarAcesso();
         $resultado = $controller->carregarAtendimentos();
         break;
 
     case "marcar_como_lido":
+        Seguranca::verificarAcesso();
         $body = file_get_contents("php://input");
         $data = json_decode($body, true);
 
@@ -81,6 +88,7 @@ switch ($acao) {
         break;
 
     case "get_notificacoes":
+        Seguranca::verificarAcesso();
         $resultado = $controller->carregarNotificacoes();
         break;
 

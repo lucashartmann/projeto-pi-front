@@ -500,7 +500,7 @@ class Imovel
             ", condominio: " . ($this->condominio ? $this->condominio->__toString() : 'null') .
             ", filtros: [" .
             implode(", ", array_map(function ($filtro) {
-                return ($filtro instanceof Filtro) ? $filtro->__toString() : 'null';
+                return $filtro;
             }, $this->filtros)) .
             "]";
     }

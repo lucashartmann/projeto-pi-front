@@ -6,6 +6,38 @@
     box-sizing: border-box;
 }
 
+.mensagem {
+    display: none;
+    position: fixed;
+    top: 75px;
+    right: 15px;
+    width: min(400px, calc(100vw - 40px));
+    min-height: 60px;
+    max-height: 180px;
+    box-sizing: border-box;
+    padding: 16px 20px;
+    flex-direction: column;
+    justify-content: center;
+    color: black;
+    border: 1px solid var(--hover);
+    border-radius: 10px;
+    box-shadow: var(--shadow);
+    z-index: 9999;
+    overflow-y: auto;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+}
+
+.mensagem.sucesso {
+    border-left: 5px solid green;
+    background-color: rgb(32, 151, 24);
+}
+
+.mensagem.erro {
+    border-left: 5px solid red;
+    background-color: rgb(151, 24, 24);
+}
+
 :root {
     --cor-texto: #ffffff;
     --preco: rgb(11, 85, 7);

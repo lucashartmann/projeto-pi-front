@@ -1,3 +1,9 @@
+.categoria {
+    border: 1px dashed rgba(212, 175, 55, 0.4);
+    box-shadow: 0 0 5px rgba(212, 175, 55, 0.2);
+    padding: 5px 20px;
+}
+
 #mais-vistos {
     display: flex;
     flex-direction: column;
@@ -197,11 +203,14 @@
             overflow: hidden;
         }
 
-        p:nth-child(4) {
+        p:nth-child(4),
+        p:nth-child(5) {
             text-align: center;
             align-self: center;
             font-size: 1.1rem;
         }
+
+
 
         .emojis {
             margin-top: auto;
@@ -421,7 +430,9 @@ section#anuncios {
         overflow: hidden;
     }
 
-    p:nth-child(4) {
+
+    p:nth-child(4),
+    p:nth-child(5) {
         text-align: center;
         align-self: center;
         font-size: 1.1rem;
@@ -830,7 +841,7 @@ section#anuncios {
 
 
 @media screen and (max-width: 857px) {
-     #pesquisa-container {
+    #pesquisa-container {
         height: auto !important;
         margin: 30px !important;
     }
@@ -852,6 +863,7 @@ section#anuncios {
             margin: 0px auto;
         }
     }
+
     section#anuncios {
 
         grid-template-columns: repeat(auto-fit, minmax(40%, 100fr));
@@ -919,7 +931,7 @@ section#anuncios {
             }
         }
     }
-   
+
 }
 
 @media screen and (max-width: 669px) {
