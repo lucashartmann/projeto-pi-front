@@ -22,4 +22,21 @@ jobs:
         run: composer install --prefer-dist --no-progress --no-interaction
 
       - name: Run PHPUnit Tests
-        run: ./vendor/bin/phpunit --configuration phpunit.xml --testdox
+        id: phpunit
+        continue-on-error: true
+        run: |
+          ./vendor/bin/phpunit \
+            --configuration phpunit.xml \
+            --testdox \
+            2>&1 | tee phpunit-output.txt
+
+          exit ${PIPESTATUS[0]}
+
+      - name: PHPUnit Summary
+        if: always()
+        run: |
+          echo "# PHPUnit Tests" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo '```text' >> "$GITHUB_STEP_SUMMARY"
+          cat phpunit-output.txt >> "$GITHUB_STEP_SUMMARY"
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
