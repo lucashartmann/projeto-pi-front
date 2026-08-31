@@ -29,9 +29,9 @@ jobs:
         run: ./vendor/bin/phpunit tests/ --log-junit phpunit-report.xml 
 
       - name: Test Report
-        uses: dorny/test-reporter@v1
+        uses: vitorcanova/phpunit-report-action@v1.5.1
         if: always() 
         with:
-          name: PHPUnit Tests Report
+          title: "Relatório Detalhado dos Testes"
+          # name: PHPUnit Tests Report
           path: phpunit-report.xml
-          reporter: java-junit
