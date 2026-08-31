@@ -21,36 +21,5 @@ jobs:
       - name: Install Composer Dependencies
         run: composer install --prefer-dist --no-progress --no-interaction
 
-      - name: Check PHPUnit Version
-        run: ./vendor/bin/phpunit --version
-
-      - name: List Tests
-        run: ./vendor/bin/phpunit --list-tests
-
-      - name: Start PHP Server
-        run: |
-          php -S 127.0.0.1:8000 > /tmp/php-server.log 2>&1 &
-          sleep 2
-
       - name: Run PHPUnit Tests
-        run: |
-          ./vendor/bin/phpunit \
-            --configuration phpunit.xml \
-            --log-junit phpunit-report.xml
-
-      - name: Show PHPUnit Report
-        if: always()
-        run: |
-          if [ -f phpunit-report.xml ]; then
-            cat phpunit-report.xml
-          else
-            echo "phpunit-report.xml was not generated"
-          fi
-
-      - name: Test Report
-        if: always()
-        uses: dorny/test-reporter@v1
-        with:
-          name: PHPUnit Tests Report
-          path: phpunit-report.xml
-          reporter: java-junit
+        run: ./vendor/bin/phpunit --configuration phpunit.xml --testdox
