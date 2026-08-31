@@ -25,5 +25,13 @@ jobs:
           php -S 127.0.0.1:8000 &
           sleep 2
 
-      - name: Run PHPUnit Tests
-        run: ./vendor/bin/phpunit tests/
+      - name: Run PHPUnit Tests 
+        run: ./vendor/bin/phpunit tests/ --log-junit phpunit-report.xml 
+
+      - name: Test Report
+        uses: dorny/test-reporter@v1
+        if: always() 
+        with:
+          name: PHPUnit Tests Report
+          path: phpunit-report.xml
+          reporter: java-junit
