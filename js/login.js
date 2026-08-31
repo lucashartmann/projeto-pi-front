@@ -165,9 +165,9 @@ document.getElementById("h3-login").addEventListener("click", function () {
     document.getElementById("form-cadastro").style.display = "none";
     document.getElementById("form-nova-senha").style.display = "none";
     document.getElementById("h3-login").style.color = "var(--hover)";
-    document.getElementById("h3-login").style.opacity = "0.6";
+    document.getElementById("h3-login").style.opacity = "1";
     document.getElementById("h3-cadastro").style.color = "white";
-    document.getElementById("h3-cadastro").style.opacity = "1";
+    document.getElementById("h3-cadastro").style.opacity = "0.6";
     document.getElementById("login-header").style.top = "26%";
 });
 
@@ -176,16 +176,16 @@ document.getElementById("h3-cadastro").addEventListener("click", function () {
     document.getElementById("form-cadastro").style.display = "flex";
     document.getElementById("form-nova-senha").style.display = "none";
     document.getElementById("h3-cadastro").style.color = "var(--hover)";
-    document.getElementById("h3-cadastro").style.opacity = "0.6";
+    document.getElementById("h3-cadastro").style.opacity = "1";
     document.getElementById("h3-login").style.color = "white";
-    document.getElementById("h3-login").style.opacity = "1";
+    document.getElementById("h3-login").style.opacity = "0.6";
     document.getElementById("login-header").style.top = "28%";
 });
 
 document.addEventListener("DOMContentLoaded", function () {
     document.getElementById("form-cadastro").style.display = "none";
     document.getElementById("h3-login").style.color = "var(--hover)";
-    document.getElementById("h3-login").style.opacity = "0.6";
+    document.getElementById("h3-login").style.opacity = "1";
     document.getElementById("h3-cadastro").style.color = "white";
 });
 
