@@ -18,6 +18,24 @@ class ImovelService
         $this->bancoDados = Banco::getInstance();
     }
 
+    public function remover(int $idImovel): void
+    {
+        $this->bancoDados->beginTransaction();
+
+        try {
+            $imovelDAO = new ImovelDAO();
+            $imovelDAO->remover($idImovel);
+
+            $this->bancoDados->commit();
+        } catch (Exception $e) {
+            error_log("ERRO ImovelService->remover: " . $e->getMessage());
+            if ($this->bancoDados->inTransaction()) {
+                $this->bancoDados->rollBack();
+            }
+            throw $e;
+        }
+    }
+
     public function cadastrar(Imovel $imovel): Imovel
     {
         $this->bancoDados->beginTransaction();

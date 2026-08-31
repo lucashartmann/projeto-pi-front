@@ -193,7 +193,7 @@ class ImovelDAO
             // if (empty($idCliente)) {
             //     throw new Exception("ID do cliente não fornecido para favoritar.");
             // }
-        
+
             if (!is_array($idImoveis)) {
                 $idImovel = (int) $idImoveis;
                 if (!is_int($idImovel)) {
@@ -255,6 +255,19 @@ class ImovelDAO
             return true;
         } catch (Exception $e) {
             error_log("ERRO! imovelDAO->favoritar: " . $e->getMessage());
+            throw $e;
+        }
+    }
+
+    public function remover(int $id)
+    {
+        try {
+            $sql = "DELETE FROM imovel WHERE id = :id";
+            $stmt = $this->bancoDados->prepare($sql);
+            $stmt->execute([':id' => $id]);
+            return true;
+        } catch (Exception $e) {
+            error_log("ERRO! imovelDAO->remover: " . $e->getMessage());
             throw $e;
         }
     }
