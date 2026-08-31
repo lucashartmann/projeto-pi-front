@@ -8,30 +8,49 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.2'
-          extensions: dom, curl, libxml, mbstring, zip 
+          php-version: "8.2"
+          extensions: dom, curl, libxml, mbstring, zip
           coverage: none
 
       - name: Install Composer Dependencies
-        run: composer install --prefer-dist --no-progress --no-suggest
+        run: composer install --prefer-dist --no-progress --no-interaction
+
+      - name: Check PHPUnit Version
+        run: ./vendor/bin/phpunit --version
+
+      - name: List Tests
+        run: ./vendor/bin/phpunit --list-tests
 
       - name: Start PHP Server
         run: |
-          php -S 127.0.0.1:8000 &
+          php -S 127.0.0.1:8000 > /tmp/php-server.log 2>&1 &
           sleep 2
 
-      - name: Run PHPUnit Tests 
-        run: ./vendor/bin/phpunit tests/ --log-junit phpunit-report.xml 
+      - name: Run PHPUnit Tests
+        run: |
+          ./vendor/bin/phpunit \
+            --configuration phpunit.xml \
+            --log-junit phpunit-report.xml
+
+      - name: Show PHPUnit Report
+        if: always()
+        run: |
+          if [ -f phpunit-report.xml ]; then
+            cat phpunit-report.xml
+          else
+            echo "phpunit-report.xml was not generated"
+          fi
 
       - name: Test Report
-        uses: vitorcanova/phpunit-report-action@v1.5.1
-        if: always() 
+        if: always()
+        uses: dorny/test-reporter@v1
         with:
-          title: "Relatório Detalhado dos Testes"
-          # name: PHPUnit Tests Report
+          name: PHPUnit Tests Report
           path: phpunit-report.xml
+          reporter: java-junit
