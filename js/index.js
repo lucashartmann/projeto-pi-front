@@ -168,7 +168,14 @@ function prevSlide() {
 async function carregarAnuncios(dados) {
     const section = document.getElementById("anuncios");
     if (!section || !dados) return;
-    if (dados.length === 0) return;
+    if (dados.length === 0 || !dados) {
+        const divVazio = document.createElement("div");
+        divVazio.id = "vazio";
+        divVazio.textContent = "Nenhum imóvel encontrado.";
+        section.innerHTML = "";
+        section.appendChild(divVazio);
+        return;
+    }
     if (dados.filter(imovel => imovel?.anuncio?.imagens?.[0]).length === 0) return;
     section.innerHTML = "";
     let html = "";
@@ -284,6 +291,8 @@ function filtrar() {
     const gallery2 = document.getElementById("gallery2");
     const gallery3 = document.getElementById("gallery3");
     const swiper = document.querySelector(".swiper");
+    const maisVistos = document.getElementById("mais-vistos");
+
     swiper.style.display = "flex";
     gallery.style.display = "flex";
     gallery2.style.display = "grid";
@@ -300,6 +309,7 @@ function filtrar() {
         gallery3.style.display = "none";
         gallery2.style.display = "none";
         gallery.style.display = "none";
+        maisVistos.style.display = "none";
 
         switch (input.id) {
             case "input-cep":
@@ -316,10 +326,10 @@ function filtrar() {
                 });
                 break;
             case "select-categoria":
-                imoveisFiltrados = imoveisFiltrados.filter(imovel => imovel.categoria === termo);
+                imoveisFiltrados = imoveisFiltrados.filter(imovel => imovel.categoria == termo);
                 break;
             case "select-status":
-                imoveisFiltrados = imoveisFiltrados.filter(imovel => imovel.status === termo);
+                imoveisFiltrados = imoveisFiltrados.filter(imovel => imovel.status == termo);
                 break;
             default:
                 break;

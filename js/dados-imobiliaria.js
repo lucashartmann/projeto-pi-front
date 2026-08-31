@@ -24,6 +24,33 @@ let faturamentoAnual = 0;
 let lucroMensal = 0;
 let lucroAnual = 0;
 
+const observer = new MutationObserver(() => {
+
+    const corTexto = getComputedStyle(document.documentElement)
+        .getPropertyValue('--cor-texto-alternativa')
+        .trim();
+
+    Object.values(Chart.instances).forEach(chart => {
+        chart.options.plugins.legend.labels.color = `color-mix(in srgb, ${corTexto} 60%, transparent)`;
+        chart.options.plugins.title.color = corTexto;
+        chart.options.scales.x.ticks.color = corTexto;
+        chart.options.scales.y.ticks.color = corTexto;
+        chart.options.scales.x.ticks.color = `color-mix(in srgb, ${corTexto} 80%, transparent)`;
+        chart.options.scales.y.ticks.color = `color-mix(in srgb, ${corTexto} 60%, transparent)`;
+        chart.options.scales.x.grid.color = `color-mix(in srgb, ${corTexto} 20%, transparent)`;
+        chart.options.scales.y.grid.color = `color-mix(in srgb, ${corTexto} 20%, transparent)`;
+        chart.options.scales.x.border.color = `color-mix(in srgb, ${corTexto} 20%, transparent)`;
+        chart.options.scales.y.border.color = `color-mix(in srgb, ${corTexto} 20%, transparent)`;
+        chart.update();
+    });
+});
+
+
+observer.observe(document.documentElement, {
+    attributes: true,
+    attributeFilter: ['class', 'modo-noturno']
+});
+
 
 document.addEventListener("DOMContentLoaded", async () => {
     const pessoas = await listarPessoas();
@@ -201,6 +228,24 @@ document.addEventListener("DOMContentLoaded", async () => {
     document.body.insertBefore(divPai, document.body.querySelector('footer'));
 
     faturamentoTotal = imoveis.filter(imovel => imovel.status === "vendido" || imovel.status === "alugado").reduce((total, imovel) => total + imovel.status === 'vendido' ? imovel.valor_venda : imovel.valor_aluguel, 0);
+
+    const corTexto = getComputedStyle(document.documentElement)
+        .getPropertyValue('--cor-texto-alternativa')
+        .trim();
+
+    Object.values(Chart.instances).forEach(chart => {
+        chart.options.plugins.legend.labels.color = `color-mix(in srgb, ${corTexto} 60%, transparent)`;
+        chart.options.plugins.title.color = corTexto;
+        chart.options.scales.x.ticks.color = corTexto;
+        chart.options.scales.y.ticks.color = corTexto;
+        chart.options.scales.x.ticks.color = `color-mix(in srgb, ${corTexto} 80%, transparent)`;
+        chart.options.scales.y.ticks.color = `color-mix(in srgb, ${corTexto} 60%, transparent)`;
+        chart.options.scales.x.grid.color = `color-mix(in srgb, ${corTexto} 20%, transparent)`;
+        chart.options.scales.y.grid.color = `color-mix(in srgb, ${corTexto} 20%, transparent)`;
+        chart.options.scales.x.border.color = `color-mix(in srgb, ${corTexto} 20%, transparent)`;
+        chart.options.scales.y.border.color = `color-mix(in srgb, ${corTexto} 20%, transparent)`;
+        chart.update();
+    });
 
     // TDOO: Calcular faturamento mensal
 });

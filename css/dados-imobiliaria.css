@@ -10,14 +10,17 @@ body {
 
 
 #container-pai-graficos {
+    background-color: var(--background-custom);
+    margin: 0 auto;
+    width: 98%;
     display: flex;
     gap: 30px;
     justify-content: center;
     align-items: center;
     flex-wrap: wrap;
     padding: 20px;
-    width: 100%;
-    max-width: 1400px;
+    margin-top: auto;
+    height: 750px;
 
     #div-grafico-pessoas,
     #div-grafico-imoveis {
@@ -51,7 +54,6 @@ body {
         #grafico-pessoas {
             width: 100%;
             height: 100%;
-            color: var(--cor-texto-alternativa) !important;
             border-radius: 8px;
         }
     }

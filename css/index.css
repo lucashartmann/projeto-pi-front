@@ -1,3 +1,15 @@
+#vazio {
+    width: 98%;
+    justify-self: center;
+    color: var(--cor-texto);
+    text-align: center;
+    background: rgba(36, 30, 30, 0.92);
+    height: 4rem;
+    align-items: center;
+    align-content: center;
+}
+
+
 .categoria {
     border: 1px dashed rgba(212, 175, 55, 0.4);
     box-shadow: 0 0 5px rgba(212, 175, 55, 0.2);
@@ -625,6 +637,7 @@ section#anuncios {
 
     select {
         width: auto;
+        height: auto;
         padding: 10px;
         border: solid rgba(47, 45, 45, 0.2) 2px;
         box-shadow: 0.1px 0.1px 3px black;
