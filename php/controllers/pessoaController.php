@@ -11,6 +11,11 @@ require_once __DIR__ . '/../dao/enderecoDAO.php';
 require_once __DIR__ . '/../services/pessoaService.php';
 require_once __DIR__ . '/../model/validacao.php';
 require_once __DIR__ . '/imovelController.php';
+require_once __DIR__ . '/../model/pessoa.php';
+require_once __DIR__ . '/../model/cliente.php';
+require_once __DIR__ . '/../model/corretor.php';
+require_once __DIR__ . '/../model/proprietario.php';
+require_once __DIR__ . '/../model/funcionario.php';
 
 class PessoaController
 {
@@ -58,6 +63,12 @@ class PessoaController
                             $imovel ? $controllerImovel->montarJson([$imovel])[0] : null,
                         ];
                     }, $usuario instanceof Proprietario ? $usuario->getImoveis() ?? [] : []),
+                    "favoritos" => array_map(function ($imovel) {
+                        $controllerImovel = new ImovelController();
+                        return [
+                            $imovel ? $controllerImovel->montarJson([$imovel])[0] : null,
+                        ];
+                    }, $usuario instanceof Cliente ? $usuario->getImoveisFavoritos() ?? [] : []),
                 ];
             }
         }
@@ -78,7 +89,9 @@ class PessoaController
     function atualizar($dados)
     {
         try {
-            session_start();
+            if (session_status() === PHP_SESSION_NONE) {
+                session_start();
+            }
             $nome = array_key_exists('nome', $dados) ? $dados['nome'] : "";
             $email = array_key_exists('email', $dados) ? $dados['email'] : "";
             $senha = array_key_exists('senha', $dados) ? $dados['senha'] : "";
@@ -233,7 +246,9 @@ class PessoaController
     function apagar(int $id)
     {
         try {
-            session_start();
+            if (session_status() === PHP_SESSION_NONE) {
+                session_start();
+            }
             $pessoaDAO = new PessoaDAO();
             $usuario = $pessoaDAO->buscarPorId($id);
             if ($usuario) {

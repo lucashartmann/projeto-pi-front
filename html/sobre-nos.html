@@ -1,78 +1,101 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-br">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Sobre Nós</title>
-    <link rel="stylesheet" href="../css/base.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
-    <link rel="stylesheet" href="../css/sobre-nos.css">
-    <link rel="icon" type="image/x-icon" href="../assets/logo.webp">
+    <link rel="stylesheet" href="../css/base.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+    />
+    <link rel="stylesheet" href="../css/sobre-nos.css" />
+    <link rel="icon" type="image/x-icon" href="../assets/logo.webp" />
     <script>
-        if (localStorage.getItem("tema") === "escuro") {
-            document.documentElement.classList.add("modo-noturno");
-        }
-        if (localStorage.getItem("contraste") === "alto") {
-            document.documentElement.classList.add("alto-contraste");
-        }
-        if (localStorage.getItem("fontSize")) {
-            document.documentElement.style.fontSize = localStorage.getItem("fontSize");
-        }
+      if (localStorage.getItem("tema") === "escuro") {
+        document.documentElement.classList.add("modo-noturno");
+      }
+      if (localStorage.getItem("contraste") === "alto") {
+        document.documentElement.classList.add("alto-contraste");
+      }
+      if (localStorage.getItem("fontSize")) {
+        document.documentElement.style.fontSize =
+          localStorage.getItem("fontSize");
+      }
     </script>
-</head>
+  </head>
 
-<body>
+  <body>
     <main>
-        <div id="acessibilidade">
-            <button onclick="aumentarFonte()">A+</button>
-            <button onclick="diminuirFonte()">A-</button>
-            <button onclick="altoContraste()"><i class="fas fa-adjust"></i></button>
-            <button onclick="modoNoturno()"><i class="fas fa-moon"></i></button>
-        </div>
-        <h1>Sobre Nós</h1>
-        <p>A Summit Imóveis é uma empresa dedicada a oferecer soluções imobiliárias de qualidade, com foco no
-            atendimento personalizado e na satisfação dos nossos clientes.</p>
-        <p>Fundada em 2024, a Summit Imóveis tem como missão facilitar o processo de compra, venda e aluguel de imóveis,
-            conectando pessoas a seus sonhos e necessidades habitacionais.</p>
-        <p>Nosso compromisso é proporcionar uma experiência transparente, eficiente e confiável, contando com uma equipe
-            de profissionais experientes e apaixonados pelo mercado imobiliário.</p>
-        <p>Na Summit Imóveis, acreditamos que cada cliente é único, e por isso, oferecemos um atendimento personalizado,
-            buscando entender as necessidades e desejos de cada pessoa para encontrar a melhor solução imobiliária.</p>
-        <p>Estamos sempre em busca de inovação e melhorias, utilizando tecnologia de ponta para facilitar o processo de
-            busca e negociação de imóveis, garantindo que nossos clientes tenham acesso às melhores oportunidades do
-            mercado.</p>
-        <p>Na Summit Imóveis, nosso compromisso é transformar sonhos em realidade, ajudando nossos clientes a encontrar
-            o imóvel perfeito para suas vidas, seja para morar, investir ou empreender.</p>
+      <div id="acessibilidade">
+        <button onclick="aumentarFonte()">A+</button>
+        <button onclick="diminuirFonte()">A-</button>
+        <button onclick="altoContraste()"><i class="fas fa-adjust"></i></button>
+        <button onclick="modoNoturno()"><i class="fas fa-moon"></i></button>
+      </div>
+      <h1>Sobre Nós</h1>
+      <p>
+        A Summit Imóveis é uma empresa dedicada a oferecer soluções imobiliárias
+        de qualidade, com foco no atendimento personalizado e na satisfação dos
+        nossos clientes.
+      </p>
+      <p>
+        Fundada em 2024, a Summit Imóveis tem como missão facilitar o processo
+        de compra, venda e aluguel de imóveis, conectando pessoas a seus sonhos
+        e necessidades habitacionais.
+      </p>
+      <p>
+        Nosso compromisso é proporcionar uma experiência transparente, eficiente
+        e confiável, contando com uma equipe de profissionais experientes e
+        apaixonados pelo mercado imobiliário.
+      </p>
+      <p>
+        Na Summit Imóveis, acreditamos que cada cliente é único, e por isso,
+        oferecemos um atendimento personalizado, buscando entender as
+        necessidades e desejos de cada pessoa para encontrar a melhor solução
+        imobiliária.
+      </p>
+      <p>
+        Estamos sempre em busca de inovação e melhorias, utilizando tecnologia
+        de ponta para facilitar o processo de busca e negociação de imóveis,
+        garantindo que nossos clientes tenham acesso às melhores oportunidades
+        do mercado.
+      </p>
+      <p>
+        Na Summit Imóveis, nosso compromisso é transformar sonhos em realidade,
+        ajudando nossos clientes a encontrar o imóvel perfeito para suas vidas,
+        seja para morar, investir ou empreender.
+      </p>
     </main>
     <footer>
-        <p>Copyright 2025 - By Lucas Hartmann</p>
-        <a href="https://github.com/lucashartmann" target="_blank"><i class="fab fa-github"></i></a>
+      <p>Copyright 2025 - By Lucas Hartmann</p>
+      <a href="https://github.com/lucashartmann" target="_blank"
+        ><i class="fab fa-github"></i
+      ></a>
     </footer>
 
     <div vw class="enabled">
-        <div vw-access-button class="active"></div>
-        <div vw-plugin-wrapper>
-            <div class="vw-plugin-top-wrapper"></div>
-        </div>
+      <div vw-access-button class="active"></div>
+      <div vw-plugin-wrapper>
+        <div class="vw-plugin-top-wrapper"></div>
+      </div>
     </div>
     <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
     <script>
-        new window.VLibras.Widget('https://vlibras.gov.br/app');
+      new window.VLibras.Widget("https://vlibras.gov.br/app");
     </script>
-</body>
-<script type="text/javascript">
+  </body>
+  <script type="text/javascript">
     fetch("nav.html")
-        .then(response => response.text())
-        .then(data => {
-            const main = document.querySelector("main");
-            main.insertAdjacentHTML("afterbegin", data);
-        });
-</script>
+      .then((response) => response.text())
+      .then((data) => {
+        const main = document.querySelector("main");
+        main.insertAdjacentHTML("afterbegin", data);
+      });
+  </script>
 
-<script type="module" src="../js/modules/utils.js"></script>
-<script type="module" src="../js/modules/usuario.js"></script>
-<script type="module" src="js/modules/notificacoes.js"></script>
-<script type="module" src="../js/base.js"></script>
-
+  <script type="module" src="../js/modules/utils.js"></script>
+  <script type="module" src="../js/modules/usuario.js"></script>
+  <script type="module" src="js/modules/notificacoes.js"></script>
+  <script type="module" src="../js/base.js"></script>
 </html>

@@ -7,6 +7,15 @@
     /* margin-left: 30px; */
 }
 
+#categoria {
+    border: 1px dashed rgba(212, 175, 55, 0.4);
+    box-shadow: 0 0 5px rgba(212, 175, 55, 0.2);
+    padding: 5px 20px;
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+
 #dados-imovel {
     display: flex;
     justify-content: center;
@@ -163,6 +172,7 @@ body>hr {
     #whatsapp {
         color: var(--cor-texto) !important;
         margin-left: 0 !important;
+        font-size: 0.8rem !important;
 
         i {
             color: var(--cor-texto) !important;
@@ -380,6 +390,24 @@ img {
         max-width: 90%;
         max-height: 80%;
         justify-self: center;
+    }
+}
+
+@media screen and (max-width: 857px) {
+    #div-pai {
+        width: 70% !important;
+    }
+
+    #div-titulo {
+        width: 90% !important;
+    }
+
+    .swiper-destaque {
+        width: 90%;
+    }
+
+    #entrar-contato {
+        margin-right: 20px;
     }
 }
 

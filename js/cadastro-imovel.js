@@ -27,13 +27,18 @@ window.diminuirLogo = diminuirLogo;
 window.aumentarLogo = aumentarLogo;
 window.abrirMultiplosAnexos = abrirMultiplosAnexos;
 window.abrirMultiplosCadastros = abrirMultiplosCadastros;
-
+window.limpar = limpar;
 
 let posicoes = { posicao_x: 0, posicao_y: 0 };
 let tamanhos = { largura: 0, altura: 0 };
 
 const LARGURA_MIN = 20;
 const LARGURA_MAX_PERCENT = 100;
+
+function limpar() {
+    let forms = document.querySelectorAll("form");
+    forms.forEach(form => form.reset());
+}
 
 function ajustarTamanhoLogo(delta) {
     const container = document.getElementById("preview-logo").querySelector(".imagem");
@@ -1422,55 +1427,62 @@ async function carregarHistorico(idImovel) {
 
 window.addEventListener("DOMContentLoaded", async function () {
 
-    let logoRequisicao = await buscarAnexoPorCaminho("logo.webp");
-    let logo = logoRequisicao?.anexo?.caminho || null;
+    const usuario = usuarioLogado || await carregarUser();
 
-    if (logo) {
-        const imagem = document.getElementById("logo-editada").querySelector(".imagem");
-        imagem.innerHTML = "";
+    if (usuario && usuario.tipo == "ADMIN") {
+        document.getElementById("edicao-logo").style.display = "flex";
+        let logoRequisicao = await buscarAnexoPorCaminho("logo.webp");
+        let logo = logoRequisicao?.anexo?.caminho || null;
 
-        const img = document.createElement("img");
-        img.src = "../assets/" + logo;
-        imagem.appendChild(img);
+        if (logo) {
+            const imagem = document.getElementById("logo-editada").querySelector(".imagem");
+            imagem.innerHTML = "";
 
-        const divSobrepor = document
-            .getElementById("preview-logo")
-            .querySelector(".imagem")
-            .querySelector("#sobrepor");
+            const img = document.createElement("img");
+            img.src = "../assets/" + logo;
+            imagem.appendChild(img);
 
-        divSobrepor.innerHTML = "";
-        divSobrepor.style.position = "absolute";
-        divSobrepor.style.right = "auto";
-        divSobrepor.style.bottom = "auto";
+            const divSobrepor = document
+                .getElementById("preview-logo")
+                .querySelector(".imagem")
+                .querySelector("#sobrepor");
 
-        if (logoRequisicao.anexo?.largura != null) {
-            divSobrepor.style.width = `${logoRequisicao.anexo.largura}%`;
+            divSobrepor.innerHTML = "";
+            divSobrepor.style.position = "absolute";
+            divSobrepor.style.right = "auto";
+            divSobrepor.style.bottom = "auto";
+
+            if (logoRequisicao.anexo?.largura != null) {
+                divSobrepor.style.width = `${logoRequisicao.anexo.largura}%`;
+            }
+
+            if (logoRequisicao.anexo?.altura != null) {
+                divSobrepor.style.height = `${logoRequisicao.anexo.altura}%`;
+            }
+
+            const segundaImagem = img.cloneNode(true);
+            divSobrepor.appendChild(segundaImagem);
+
+            const pai = divSobrepor.closest(".imagem");
+            const maxX = pai.clientWidth - divSobrepor.offsetWidth;
+            const maxY = pai.clientHeight - divSobrepor.offsetHeight;
+
+            const posX = logoRequisicao.anexo?.posicao_x;
+            const posY = logoRequisicao.anexo?.posicao_y;
+
+            if (posX != null) {
+                divSobrepor.style.left = `${maxX * posX / 100}px`;
+            }
+
+            if (posY != null) {
+                divSobrepor.style.top = `${maxY * posY / 100}px`;
+            }
+
+            estilizarDiv(divSobrepor);
         }
-
-        if (logoRequisicao.anexo?.altura != null) {
-            divSobrepor.style.height = `${logoRequisicao.anexo.altura}%`;
-        }
-
-        const segundaImagem = img.cloneNode(true);
-        divSobrepor.appendChild(segundaImagem);
-
-        const pai = divSobrepor.closest(".imagem");
-        const maxX = pai.clientWidth - divSobrepor.offsetWidth;
-        const maxY = pai.clientHeight - divSobrepor.offsetHeight;
-
-        const posX = logoRequisicao.anexo?.posicao_x;
-        const posY = logoRequisicao.anexo?.posicao_y;
-
-        if (posX != null) {
-            divSobrepor.style.left = `${maxX * posX / 100}px`;
-        }
-
-        if (posY != null) {
-            divSobrepor.style.top = `${maxY * posY / 100}px`;
-        }
-
-        estilizarDiv(divSobrepor);
     }
+
+
 
     sessionStorage.getItem("cadastro-imovel: abaAtiva") ? abrirTab(parseInt(sessionStorage.getItem("cadastro-imovel: abaAtiva"))) : abrirTab(0);
 
@@ -1494,7 +1506,7 @@ window.addEventListener("DOMContentLoaded", async function () {
     });
 
 
-    const usuario = usuarioLogado || await carregarUser();
+
 
     const sobrepor = document.getElementById("sobrepor");
     estilizarDiv(sobrepor);

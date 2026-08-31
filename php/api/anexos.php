@@ -3,6 +3,7 @@
 
 
 require_once __DIR__ . '/../controllers/anexoController.php';
+require_once __DIR__ . '/../model/seguranca.php';
 
 
 // ob_start();
@@ -15,6 +16,7 @@ $controller = new AnexoController();
 switch ($acao) {
 
     case "cadastrar":
+        Seguranca::verificarAcesso();
         $data = $_POST;
         if (!$_POST) {
             $body = file_get_contents("php://input");
@@ -24,6 +26,7 @@ switch ($acao) {
         break;
 
     case "buscar_por_caminho":
+        Seguranca::verificarAcesso();
         $caminho = $_GET['caminho'] ?? null;
         $resultado = $controller->buscarPorCaminho($caminho);
         break;

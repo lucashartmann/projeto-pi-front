@@ -5,6 +5,7 @@ class Visita
     private ?Cliente $cliente;
     private ?Imovel $imovel;
     private ?Corretor $corretor;
+    private ?DateTime $data;
 
     public function __construct()
     {
@@ -13,6 +14,18 @@ class Visita
         $this->corretor = NULL;
     }
 
+
+    public function getData(): ?DateTime
+    {
+        return $this->data;
+    }
+
+    public function setData(?DateTime $data): self
+    {
+        $this->data = $data;
+
+        return $this;
+    }
 
     public function getImovel()
     {

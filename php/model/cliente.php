@@ -16,7 +16,7 @@ class Cliente extends Pessoa
     private int $quantQuartosDesejado;
     private int $quantBanheirosDesejado;
     private ?Endereco $enderecoDesejado;
-    private array $imoveisFavoritos;
+    private ?array $imoveisFavoritos;
     private ?TipoInteresse $tipoInteresse;
     private ?float $valorMinimo;
     private ?float $valorMaximo;
@@ -32,6 +32,11 @@ class Cliente extends Pessoa
         $this->tipoInteresse = NULL;
         $this->valorMinimo = NULL;
         $this->valorMaximo = NULL;
+    }
+
+    public function setImoveisFavoritos(?array $imoveis)
+    {
+        $this->imoveisFavoritos = $imoveis;
     }
 
     public function getQuantQuartosDesejado(): int
@@ -102,7 +107,7 @@ class Cliente extends Pessoa
         $this->enderecoDesejado = $endereco;
     }
 
-    public function listarFavoritos()
+    public function getImoveisFavoritos()
     {
         return $this->imoveisFavoritos;
     }

@@ -11,10 +11,18 @@ require_once __DIR__ . '/atendimentoController.php';
 require_once __DIR__ . '/../utils/env.php';
 require_once __DIR__ . '/../utils/email.php';
 require_once __DIR__ . '/../../vendor/autoload.php';
+require_once __DIR__ . '/../model/pessoa.php';
+require_once __DIR__ . '/../model/cliente.php';
+require_once __DIR__ . '/../model/corretor.php';
+require_once __DIR__ . '/../model/proprietario.php';
+require_once __DIR__ . '/../model/funcionario.php';
 
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 use PHPMailer\PHPMailer\SMTP;
+
+use function PHPUnit\Framework\isArray;
+
 // use function PHPUnit\Framework\isInstanceOf;
 
 class loginController
@@ -23,7 +31,9 @@ class loginController
     function marcarComoLido($dados)
     {
         try {
-            session_start();
+            if (session_status() === PHP_SESSION_NONE) {
+                session_start();
+            }
             if (!isset($_SESSION['usuario'])) {
                 return (["status" => "erro", "mensagem" => "Usuário não logado"]);
             }
@@ -67,7 +77,9 @@ class loginController
     function carregarNotificacoes()
     {
         try {
-            session_start();
+            if (session_status() === PHP_SESSION_NONE) {
+                session_start();
+            }
             if (!isset($_SESSION['usuario'])) {
                 return (["status" => "erro", "mensagem" => "Usuário não logado"]);
             }
@@ -94,7 +106,9 @@ class loginController
     {
 
         try {
-            session_start();
+            if (session_status() === PHP_SESSION_NONE) {
+                session_start();
+            }
             if (!isset($_SESSION['usuario'])) {
                 return (["status" => "erro", "mensagem" => "Usuário não logado"]);
             }
@@ -117,7 +131,9 @@ class loginController
     function carregarFavoritos()
     {
         try {
-            session_start();
+            if (session_status() === PHP_SESSION_NONE) {
+                session_start();
+            }
             if (!isset($_SESSION['usuario'])) {
                 return (["status" => "erro", "mensagem" => "Usuário não logado"]);
             }
@@ -145,9 +161,10 @@ class loginController
             if (json_last_error() !== JSON_ERROR_NONE) {
                 return (["status" => "erro", "mensagem" => "JSON inválido"]);
             }
-            session_start();
+            if (session_status() === PHP_SESSION_NONE) {
+                session_start();
+            }
             $usuario = null;
-
             if (isset($_SESSION['usuario'])) {
                 $usuario = $_SESSION['usuario'];
             } else {
@@ -160,13 +177,18 @@ class loginController
 
             $idCliente = $usuario ? $usuario->getId() : null;
             $idImoveis = $data['id_imoveis'] ?? null;
-            if (!$idCliente || !is_array($idImoveis)) {
+            if (!$idCliente) {
                 return (["status" => "erro", "mensagem" => "ID do cliente ou lista de imóveis inválidos"]);
             }
 
-            // if ($idImoveis == array_column($usuario->listarFavoritos(), 'id')) {
-            //     return (["status" => "sucesso", "mensagem" => "Imóveis já favoritados"]);
-            // }
+            if (isArray($idImoveis) && !is_numeric($idImoveis) && count($idImoveis) === 0) {
+                return (["status" => "erro", "mensagem" => "Lista de imóveis vazia"]);
+            }
+
+            if (!isArray($idImoveis) && !is_numeric($idImoveis)) {
+                return (["status" => "erro", "mensagem" => "ID do imóvel inválido"]);
+            }
+
             $imovelDAO = new ImovelDAO();
             $resultado = $imovelDAO->favoritar($idCliente, $idImoveis);
             if ($resultado) {
@@ -229,7 +251,9 @@ class loginController
     function deslogar()
     {
         try {
-            session_start();
+            if (session_status() === PHP_SESSION_NONE) {
+                session_start();
+            }
             $_SESSION = array();
             if (ini_get("session.use_cookies")) {
                 try {
@@ -249,7 +273,9 @@ class loginController
     function carregarUsuario()
     {
         try {
-            session_start();
+            if (session_status() === PHP_SESSION_NONE) {
+                session_start();
+            }
             if (isset($_SESSION['usuario'])) {
                 $usuario = $_SESSION['usuario'];
                 $pessoaController = new PessoaController();
@@ -275,7 +301,9 @@ class loginController
     {
 
         try {
-            session_start();
+            if (session_status() === PHP_SESSION_NONE) {
+                session_start();
+            }
 
             $usuario = $data['usuario'] ?? '';
             $senha = $data['senha'] ?? '';

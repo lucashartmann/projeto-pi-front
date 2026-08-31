@@ -54,10 +54,27 @@ async function calendar() {
 };
 
 async function salvarEvento(data) {
+  let div = document.querySelector(".mensagem");
+  let mensagem = "";
+
+  if (!div) {
+    div = document.createElement("div");
+    div.classList.add("mensagem");
+    document.body.appendChild(div);
+  }
+
   const usuario = usuarioLogado || await carregarUser();
 
   if (!usuario) {
-    alert("Usuário não encontrado. Faça login novamente.");
+    div.classList.add("erro");
+    div.classList.remove("sucesso");
+    mensagem = "Usuário não encontrado. Faça login novamente.";
+    div.innerText = mensagem;
+    div.style.display = "flex";
+
+    setTimeout(() => {
+      div.style.display = "none";
+    }, 3000);
     return;
   }
 
@@ -71,6 +88,14 @@ async function salvarEvento(data) {
       caminhoPhp = "/php/api/visitas.php?acao=cadastrar_vistoria";
       break;
     default:
+      div.classList.add("erro");
+      div.classList.remove("sucesso");
+      mensagem = "Usuário não autorizado para cadastrar eventos.";
+      div.innerText = mensagem;
+      div.style.display = "flex";
+      setTimeout(() => {
+        div.style.display = "none";
+      }, 3000);
       return;
   }
 
@@ -85,36 +110,52 @@ async function salvarEvento(data) {
     })
       .then(async response => {
         const contentType = response.headers.get("content-type");
-        if (res.erro) {
-          alert("Erro ao listar atendimentos: " + res.erro);
-          return null;
+        if (response.erro) {
+          div.classList.add("erro");
+          div.classList.remove("sucesso");
+          mensagem = "Erro ao cadastrar evento: " + response.erro;
         }
         if (contentType && contentType.includes("application/json")) {
           return await response.json();
         } else {
           const texto = await response.text();
-          alert("Resposta inesperada do servidor");
+          div.classList.add("erro");
+          div.classList.remove("sucesso");
+          mensagem = "Resposta inesperada do servidor";
           console.error("Resposta não é JSON:", texto);
-          return null;
         }
       })
       .then(async data => {
         if (data.status == "erro") {
-          alert("Erro ao cadastrar imóvel: " + data.mensagem);
-          return;
+          div.classList.add("erro");
+          div.classList.remove("sucesso");
+          mensagem = "Erro ao cadastrar evento: " + data.mensagem;
         }
         else if (data.mensagem) {
-          alert("Imóvel cadastrado com sucesso: " + data.mensagem);
+          div.classList.add("sucesso");
+          div.classList.remove("erro");
+          mensagem = "Evento cadastrado com sucesso: " + data.mensagem;
         }
 
       })
       .catch(error => {
-        alert("Erro ao cadastrar imóvel:", error);
+        div.classList.add("erro");
+        div.classList.remove("sucesso");
+        mensagem = "Erro ao cadastrar evento:", error;
       });
 
   } catch (error) {
-    console.error("Erro ao enviar dados do imóvel:", error);
+    div.classList.add("erro");
+    div.classList.remove("sucesso");
+    mensagem = "Erro ao enviar dados do imóvel:" + error;
   }
+
+  div.innerText = mensagem;
+  div.style.display = "flex";
+
+  setTimeout(() => {
+    div.style.display = "none";
+  }, 3000);
 }
 
 function adicionarEventoAoCalendario(evento) {

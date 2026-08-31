@@ -1,6 +1,7 @@
 <?php
 
 require_once __DIR__ . '/../controllers/imovelController.php';
+require_once __DIR__ . '/../model/seguranca.php';
 
 // ob_start();
 header('Content-Type: application/json');
@@ -12,6 +13,7 @@ $controller = new ImovelController();
 switch ($acao) {
 
     case "cadastrarClick":
+        Seguranca::verificarAcesso();
         $id = $_GET['id'] ?? null;
         if ($id) {
             $resultado = $controller->buscarPorId($id);
@@ -22,6 +24,7 @@ switch ($acao) {
         break;
 
     case "cadastrar":
+        Seguranca::verificarAcesso();
         $data = $_POST;
         if (!$_POST) {
             $body = file_get_contents("php://input");
@@ -31,6 +34,7 @@ switch ($acao) {
         break;
 
     case 'listar':
+        Seguranca::verificarAcesso();
         $resultado = $controller->listar();
         break;
 
@@ -39,6 +43,7 @@ switch ($acao) {
         break;
 
     case "get_imovel":
+        Seguranca::verificarAcesso();
         $id = $_GET['id'] ?? null;
         if ($id) {
             $resultado = $controller->buscarPorId($id);
@@ -48,6 +53,7 @@ switch ($acao) {
         break;
 
     case "apagar":
+        Seguranca::verificarAcesso();
         $id = $_GET['id'] ?? null;
         if ($id) {
             $resultado = $controller->apagar($id);
@@ -61,6 +67,7 @@ switch ($acao) {
         break;
 
     case "destacar":
+        Seguranca::verificarAcesso();
         $id = $_GET['id'] ?? null;
         if ($id) {
             $resultado = $controller->destacar($id);

@@ -1,3 +1,21 @@
+#vazio {
+    width: 98%;
+    justify-self: center;
+    color: var(--cor-texto);
+    text-align: center;
+    background: rgba(36, 30, 30, 0.92);
+    height: 4rem;
+    align-items: center;
+    align-content: center;
+}
+
+
+.categoria {
+    border: 1px dashed rgba(212, 175, 55, 0.4);
+    box-shadow: 0 0 5px rgba(212, 175, 55, 0.2);
+    padding: 5px 20px;
+}
+
 #mais-vistos {
     display: flex;
     flex-direction: column;
@@ -197,11 +215,14 @@
             overflow: hidden;
         }
 
-        p:nth-child(4) {
+        p:nth-child(4),
+        p:nth-child(5) {
             text-align: center;
             align-self: center;
             font-size: 1.1rem;
         }
+
+
 
         .emojis {
             margin-top: auto;
@@ -421,7 +442,9 @@ section#anuncios {
         overflow: hidden;
     }
 
-    p:nth-child(4) {
+
+    p:nth-child(4),
+    p:nth-child(5) {
         text-align: center;
         align-self: center;
         font-size: 1.1rem;
@@ -614,6 +637,7 @@ section#anuncios {
 
     select {
         width: auto;
+        height: auto;
         padding: 10px;
         border: solid rgba(47, 45, 45, 0.2) 2px;
         box-shadow: 0.1px 0.1px 3px black;
@@ -830,6 +854,29 @@ section#anuncios {
 
 
 @media screen and (max-width: 857px) {
+    #pesquisa-container {
+        height: auto !important;
+        margin: 30px !important;
+    }
+
+    #container-filtragem {
+        flex-wrap: wrap;
+        margin: 0px auto;
+        height: auto;
+
+        select {
+            width: 20rem !important;
+            height: auto;
+        }
+
+        input {
+            width: 20rem !important;
+            height: 2.4rem;
+            font-size: 1rem;
+            margin: 0px auto;
+        }
+    }
+
     section#anuncios {
 
         grid-template-columns: repeat(auto-fit, minmax(40%, 100fr));
@@ -897,7 +944,7 @@ section#anuncios {
             }
         }
     }
-   
+
 }
 
 @media screen and (max-width: 669px) {

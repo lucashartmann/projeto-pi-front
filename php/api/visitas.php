@@ -2,6 +2,7 @@
 
 
 require_once __DIR__ . '/../controllers/visitaController.php';
+require_once __DIR__ . '/../model/seguranca.php';
 
 
 // ob_start();
@@ -13,9 +14,11 @@ $acao = $_GET['acao'] ?? '';
 switch ($acao) {
 
     case "cadastrar_visita":
+        Seguranca::verificarAcesso();
         // cadastrar();
         break;
     case "cadastrar_vistoria":
+        Seguranca::verificarAcesso();
         // cadastrar();
         break;
 

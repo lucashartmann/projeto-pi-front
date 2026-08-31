@@ -1,120 +1,202 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-BR">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="google-signin-client_id"
-        content="158912931156-6opb8fsg8d9iscqfuqnm606128e5nceq.apps.googleusercontent.com">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="google-signin-client_id"
+      content="158912931156-6opb8fsg8d9iscqfuqnm606128e5nceq.apps.googleusercontent.com"
+    />
     <title>Login</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+    />
     <script src="https://cdn.jsdelivr.net/npm/inputmask/dist/inputmask.min.js"></script>
     <script src="https://accounts.google.com/gsi/client" async defer></script>
-    <link rel="stylesheet" href="../css/base.css">
-    <link rel="stylesheet" href="../css/login.css">
-    <link rel="icon" type="image/x-icon" href="../assets/logo.webp">
+    <link rel="stylesheet" href="../css/base.css" />
+    <link rel="stylesheet" href="../css/login.css" />
+    <link rel="icon" type="image/x-icon" href="../assets/logo.webp" />
     <script>
-        if (localStorage.getItem("tema") === "escuro") {
-            document.documentElement.classList.add("modo-noturno");
-        }
-        if (localStorage.getItem("contraste") === "alto") {
-            document.documentElement.classList.add("alto-contraste");
-        }
-        if (localStorage.getItem("fontSize")) {
-            document.documentElement.style.fontSize = localStorage.getItem("fontSize");
-        }
+      if (localStorage.getItem("tema") === "escuro") {
+        document.documentElement.classList.add("modo-noturno");
+      }
+      if (localStorage.getItem("contraste") === "alto") {
+        document.documentElement.classList.add("alto-contraste");
+      }
+      if (localStorage.getItem("fontSize")) {
+        document.documentElement.style.fontSize =
+          localStorage.getItem("fontSize");
+      }
     </script>
-</head>
+  </head>
 
-<body>
+  <body>
     <div id="acessibilidade">
-        <button onclick="aumentarFonte()">A+</button>
-        <button onclick="diminuirFonte()">A-</button>
-        <button onclick="altoContraste()"><i class="fas fa-adjust"></i></button>
-        <button onclick="modoNoturno()"><i class="fas fa-moon"></i></button>
+      <button onclick="aumentarFonte()">A+</button>
+      <button onclick="diminuirFonte()">A-</button>
+      <button onclick="altoContraste()"><i class="fas fa-adjust"></i></button>
+      <button onclick="modoNoturno()"><i class="fas fa-moon"></i></button>
     </div>
     <div id="login-container">
-        <div id="login-header">
-            <h1 id="h3-login">Login</h1>
-            <h1 id="barra">|</h1>
-            <h1 id="h3-cadastro">Cadastro</h1>
+      <div id="login-header">
+        <h1 id="h3-login">Login</h1>
+        <h1 id="barra">|</h1>
+        <h1 id="h3-cadastro">Cadastro</h1>
+      </div>
+      <form id="form-nova-senha" style="display: none">
+        <h2>Recuperar Senha</h2>
+        <input
+          type="text"
+          id="email"
+          name="email"
+          placeholder="Digite seu email"
+          required
+        />
+        <button type="submit">Enviar</button>
+        <a href="" id="voltar-login" onclick="voltarLogin()"
+          >Voltar para Login</a
+        >
+      </form>
+      <form id="form-cadastro" style="display: none">
+        <h3>Nome Completo</h3>
+        <input
+          type="text"
+          name="nome"
+          id="nome"
+          autocomplete="name"
+          required
+          placeholder=""
+        />
+        <h3>Data de Nascimento</h3>
+        <input
+          type="date"
+          name="data_nascimento"
+          id="data-nascimento"
+          required
+          oninput="verificaDataNascimento()"
+          placeholder=""
+        />
+        <h3>CPF/CNPJ</h3>
+        <input
+          type="text"
+          name="cpf_cnpj"
+          id="cpf_cnpj"
+          autocomplete="off"
+          minlength="14"
+          maxlength="14"
+          required
+          placeholder=""
+        />
+        <h3>Email</h3>
+        <input
+          type="email"
+          name="email"
+          id="email-cadastro"
+          autocomplete="email"
+          required
+          placeholder=""
+        />
+        <h3>Senha</h3>
+        <div class="senha-container">
+          <input
+            type="password"
+            name="senha"
+            class="senha"
+            id="senha-cadastro"
+            autocomplete="current-password"
+            minlength="8"
+            required
+            placeholder=""
+          />
+          <i
+            class="fas fa-eye-slash"
+            onclick="togglePasswordVisibility(event)"
+          ></i>
         </div>
-        <form id="form-nova-senha" style="display: none;">
-            <h2>Recuperar Senha</h2>
-            <input type="text" id="email" name="email" placeholder="Digite seu email" required>
-            <button type="submit">Enviar</button>
-            <a href="" id="voltar-login" onclick="voltarLogin()">Voltar para Login</a>
-        </form>
-        <form id="form-cadastro" style="display: none;">
-            <h3>Nome Completo</h3>
-            <input type="text" name="nome" id="nome" autocomplete="name" required placeholder="">
-            <h3>Data de Nascimento</h3>
-            <input type="date" name="data_nascimento" id="data-nascimento" required oninput="verificaDataNascimento()"
-                placeholder="">
-            <h3>CPF/CNPJ</h3>
-            <input type="text" name="cpf_cnpj" id="cpf_cnpj" autocomplete="off" minlength="14" maxlength="14" required
-                placeholder="">
-            <h3>Email</h3>
-            <input type="email" name="email" id="email-cadastro" autocomplete="email" required placeholder="">
-            <h3>Senha</h3>
-            <div class="senha-container">
-                <input type="password" name="senha" class="senha" id="senha-cadastro" autocomplete="current-password"
-                    minlength="8" required placeholder="">
-                <i class="fas fa-eye-slash" onclick="togglePasswordVisibility(event)"></i>
-            </div>
-            <button type="submit">Cadastrar</button>
-        </form>
-        <form id="form-login">
-            <h3>Email</h3>
-            <input type="email" name="email" id="usuario" required autocomplete="email" placeholder="" minlength="9"
-                value="administrador1@gmail.com">
-            <h3>Senha</h3>
-            <div class="senha-container">
-                <input type="password" name="senha" id="senha" class="senha" autocomplete="current-password" required
-                    minlength="8" placeholder="" value="Administrador1#">
-                <i class="fas fa-eye-slash" onclick="togglePasswordVisibility(event)"></i>
-            </div>
-            <a href="" id="esqueceu-senha" onclick="novaSenha()">Esqueceu a senha?</a>
+        <button type="submit">Cadastrar</button>
+      </form>
+      <form id="form-login">
+        <h3>Email</h3>
+        <input
+          type="email"
+          name="email"
+          id="usuario"
+          required
+          autocomplete="email"
+          placeholder=""
+          minlength="9"
+          value="administrador1@gmail.com"
+        />
+        <h3>Senha</h3>
+        <div class="senha-container">
+          <input
+            type="password"
+            name="senha"
+            id="senha"
+            class="senha"
+            autocomplete="current-password"
+            required
+            minlength="8"
+            placeholder=""
+            value="Administrador1#"
+          />
+          <i
+            class="fas fa-eye-slash"
+            onclick="togglePasswordVisibility(event)"
+          ></i>
+        </div>
+        <a href="" id="esqueceu-senha" onclick="novaSenha()"
+          >Esqueceu a senha?</a
+        >
 
-            <button type="submit">Login</button>
-            <div id="g_id_onload" data-auto_prompt="false" data-callback="handleCredentialResponse"
-                data-client_id="158912931156-6opb8fsg8d9iscqfuqnm606128e5nceq.apps.googleusercontent.com"></div>
-            <div class="g_id_signin" data-width="310" data-type="standard" data-size="large"></div>
-        </form>
+        <button type="submit">Login</button>
+        <div
+          id="g_id_onload"
+          data-auto_prompt="false"
+          data-callback="handleCredentialResponse"
+          data-client_id="158912931156-6opb8fsg8d9iscqfuqnm606128e5nceq.apps.googleusercontent.com"
+        ></div>
+        <div
+          class="g_id_signin"
+          data-width="310"
+          data-type="standard"
+          data-size="large"
+        ></div>
+      </form>
     </div>
     <footer>
-        <p>Copyright 2025 - By Lucas Hartmann</p>
-        <a href="https://github.com/lucashartmann" target="_blank"><i class="fab fa-github"></i></a>
+      <p>Copyright 2025 - By Lucas Hartmann</p>
+      <a href="https://github.com/lucashartmann" target="_blank"
+        ><i class="fab fa-github"></i
+      ></a>
     </footer>
 
     <div vw class="enabled">
-        <div vw-access-button class="active"></div>
-        <div vw-plugin-wrapper>
-            <div class="vw-plugin-top-wrapper"></div>
-        </div>
+      <div vw-access-button class="active"></div>
+      <div vw-plugin-wrapper>
+        <div class="vw-plugin-top-wrapper"></div>
+      </div>
     </div>
     <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
     <script>
-        new window.VLibras.Widget('https://vlibras.gov.br/app');
+      new window.VLibras.Widget("https://vlibras.gov.br/app");
     </script>
+  </body>
 
-</body>
-
-<script type="text/javascript">
+  <script type="text/javascript">
     fetch("nav.html")
-        .then(response => response.text())
-        .then(data => {
-            const inicio = data.lastIndexOf("<div class=");
-            const fim = data.lastIndexOf("</div>");
-            const substring = data.substring(inicio + 20, fim);
-            data = data.replace(substring, "");
-            document.body.insertAdjacentHTML('afterbegin', data);
-        });
-
-</script>
-<script type="module" src="../js/modules/utils.js"></script>
-<script type="module" src="../js/modules/usuario.js"></script>
-<script type="module" src="../js/base.js"></script>
-<script type="module" src="../js/login.js"></script>
-
+      .then((response) => response.text())
+      .then((data) => {
+        const inicio = data.lastIndexOf("<div class=");
+        const fim = data.lastIndexOf("</div>");
+        const substring = data.substring(inicio + 20, fim);
+        data = data.replace(substring, "");
+        document.body.insertAdjacentHTML("afterbegin", data);
+      });
+  </script>
+  <script type="module" src="../js/modules/utils.js"></script>
+  <script type="module" src="../js/modules/usuario.js"></script>
+  <script type="module" src="../js/base.js"></script>
+  <script type="module" src="../js/login.js"></script>
 </html>

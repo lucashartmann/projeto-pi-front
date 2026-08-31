@@ -233,6 +233,8 @@ footer {
     }
 }
 
+@media screen and (max-width: 857px) {}
+
 @media screen and (max-width: 669px) {
     body {
         height: auto !important;
@@ -261,13 +263,13 @@ footer {
         .grid,
         #calendar {
             height: auto !important;
-            width: auto!important;
+            width: auto !important;
         }
 
-       tbody tr td {
-        min-height: 0px !important;
-        height: 1rem !important;
-       }
+        tbody tr td {
+            min-height: 0px !important;
+            height: 1rem !important;
+        }
 
 
     }

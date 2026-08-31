@@ -1,15 +1,51 @@
 import { listarImoveisDisponiveis, listarImoveisDestacados } from "./modules/imoveis.js";
-import { carregarUser, salvarImoveisCurtidos, curtirImovel, imoveisCurtidos } from "./modules/usuario.js";
+import { carregarUser, usuarioLogado, curtirImovel, listarImoveisFavoritados } from "./modules/usuario.js";
 import { getCaminhoRelativo, formatarValor } from "./modules/utils.js";
-import { usuarioLogado } from "./modules/usuario.js";
 
 window.curtirImovel = curtirImovel;
 window.filtrar = filtrar;
 window.nextSlide = nextSlide;
 window.prevSlide = prevSlide;
+window.atualizarImoveisCurtidos = atualizarImoveisCurtidos;
 
 let dadosImoveis = [];
 let imoveisFiltrados = [];
+let usuario = null;
+let imoveisFavoritos = [];
+
+function atualizarImoveisCurtidos(event, id) {
+    const sectionAnuncios = document.getElementById("anuncios");
+    const sectionVistos = document.getElementById('mais-vistos');
+
+    if (sectionAnuncios && sectionAnuncios.contains(event.target)) {
+        if (sectionVistos) {
+            sectionVistos.querySelectorAll('.swiper-mais-vistos .anuncio-link').forEach(anuncio => {
+                const anuncioId = parseInt(anuncio.getAttribute('href').split('=')[1]);
+                if (anuncioId === id) {
+                    const heartIcon = anuncio.querySelector('.fa-heart');
+                    if (heartIcon) {
+                        heartIcon.classList.toggle('curtido');
+                    }
+                }
+            });
+        }
+    } else if (sectionVistos && sectionVistos.contains(event.target)) {
+        if (sectionAnuncios) {
+            sectionAnuncios.querySelectorAll('.anuncio-link').forEach(anuncio => {
+                const anuncioId = parseInt(anuncio.getAttribute('href').split('=')[1]);
+                if (anuncioId === id) {
+                    const heartIcon = anuncio.querySelector('.fa-heart');
+                    if (heartIcon) {
+                        heartIcon.classList.toggle('curtido');
+                    }
+                }
+            });
+        }
+    }
+    curtirImovel(event, id);
+}
+
+
 
 function imovelPrincipal(dados) {
     if (!Array.isArray(dados) || dados.length === 0) return;
@@ -131,9 +167,15 @@ function prevSlide() {
 
 async function carregarAnuncios(dados) {
     const section = document.getElementById("anuncios");
-    let usuario = usuarioLogado;
     if (!section || !dados) return;
-    if (dados.length === 0) return;
+    if (dados.length === 0 || !dados) {
+        const divVazio = document.createElement("div");
+        divVazio.id = "vazio";
+        divVazio.textContent = "Nenhum imóvel encontrado.";
+        section.innerHTML = "";
+        section.appendChild(divVazio);
+        return;
+    }
     if (dados.filter(imovel => imovel?.anuncio?.imagens?.[0]).length === 0) return;
     section.innerHTML = "";
     let html = "";
@@ -152,13 +194,14 @@ async function carregarAnuncios(dados) {
             precoAluguel = `<span>Aluguel: <span class="preco">${formatarValor(imovel.valor_aluguel)}</span></span>`;
         }
 
-        const classe = usuario && usuario.favoritos && usuario.favoritos.includes(imovel.id) ? "curtido" : "";
+        const classe = imoveisFavoritos?.flat()?.some((imovelBusca) => imovelBusca.id === imovel.id) ? "curtido" : "";
+
 
         // TODO: Botar os ids dos imóveis favoritados na lista imoveisCurtidos
 
         html += `
             <a href="html/dados-imovel.html?id=${imovel.id}" class="anuncio-link anuncio-imovel" >
-                <i class="fas fa-heart ${classe}" onclick="curtirImovel(event, ${imovel.id})"></i>
+                <i class="fas fa-heart ${classe}" onclick=" event.preventDefault(); event.stopPropagation(); atualizarImoveisCurtidos(event, ${imovel.id})"></i>
                 <div class="swiper swiper-anuncio">
                     <div class="swiper-wrapper">
                         ${imovel.anuncio.imagens.map(img => `
@@ -166,10 +209,11 @@ async function carregarAnuncios(dados) {
                             </div>
                         `).join('')}
                         </div>
-                    <div class="swiper-button-prev" onclick="prevSlide()"></div>
-                    <div class="swiper-button-next" onclick="nextSlide()"></div>
+                    <div class="swiper-button-prev" onclick=" event.preventDefault(); event.stopPropagation(); prevSlide()"></div>
+                    <div class="swiper-button-next" onclick=" event.preventDefault(); event.stopPropagation(); nextSlide()"></div>
                 </div>
                 <h2>${imovel.anuncio?.titulo}</h2>
+                <p class='categoria'>${imovel.categoria}</p>
                 <p>${imovel.endereco?.rua}, ${imovel.endereco?.numero}, ${imovel.endereco?.bairro}</p>
                 ${precoVenda}
                 ${precoAluguel}
@@ -247,6 +291,8 @@ function filtrar() {
     const gallery2 = document.getElementById("gallery2");
     const gallery3 = document.getElementById("gallery3");
     const swiper = document.querySelector(".swiper");
+    const maisVistos = document.getElementById("mais-vistos");
+
     swiper.style.display = "flex";
     gallery.style.display = "flex";
     gallery2.style.display = "grid";
@@ -263,6 +309,7 @@ function filtrar() {
         gallery3.style.display = "none";
         gallery2.style.display = "none";
         gallery.style.display = "none";
+        maisVistos.style.display = "none";
 
         switch (input.id) {
             case "input-cep":
@@ -279,10 +326,10 @@ function filtrar() {
                 });
                 break;
             case "select-categoria":
-                imoveisFiltrados = imoveisFiltrados.filter(imovel => imovel.categoria === termo);
+                imoveisFiltrados = imoveisFiltrados.filter(imovel => imovel.categoria == termo);
                 break;
             case "select-status":
-                imoveisFiltrados = imoveisFiltrados.filter(imovel => imovel.status === termo);
+                imoveisFiltrados = imoveisFiltrados.filter(imovel => imovel.status == termo);
                 break;
             default:
                 break;
@@ -359,7 +406,7 @@ function maisVistos(dados) {
     dados = dados.filter(imovel => imovel?.quant_clicks > 0);
     section.style.display = "flex";
     section.style.flexDirection = "column";
-    let usuario = usuarioLogado;
+
     for (var i = 0; i < tamanho; i++) {
         var imovel = dados[i];
         const b64 = imovel.anuncio?.imagens?.[0] || null;
@@ -375,11 +422,12 @@ function maisVistos(dados) {
             precoAluguel = `<span>Aluguel: <span class="preco">${formatarValor(imovel.valor_aluguel)}</span></span>`;
         }
 
-        const classe = usuario && usuario.favoritos && usuario.favoritos.includes(imovel.id) ? "curtido" : "";
+
+        const classe = imoveisFavoritos?.flat()?.some((imovelBusca) => imovelBusca.id === imovel.id) ? "curtido" : "";
 
         let html = `
             <a href="html/dados-imovel.html?id=${imovel.id}" class="swiper-slide anuncio-link anuncio-imovel" >
-                <i class="fas fa-heart ${classe}" onclick="curtirImovel(event, ${imovel.id})"></i>
+                <i class="fas fa-heart ${classe}" onclick=" event.preventDefault(); event.stopPropagation(); atualizarImoveisCurtidos(event, ${imovel.id})"></i>
                 <div class="swiper swiper-anuncio">
                     <div class="swiper-wrapper">
                         ${imovel.anuncio.imagens.map(img => `
@@ -387,10 +435,11 @@ function maisVistos(dados) {
                             </div>
                         `).join('')}
                         </div>
-                    <div class="swiper-button-prev" onclick="prevSlide()"></div>
-                    <div class="swiper-button-next" onclick="nextSlide()"></div>
+                    <div class="swiper-button-prev" onclick=" event.preventDefault(); event.stopPropagation(); prevSlide()"></div>
+                    <div class="swiper-button-next" onclick=" event.preventDefault(); event.stopPropagation(); nextSlide()"></div>
                 </div>
                 <h2>${imovel.anuncio?.titulo}</h2>
+                <p class='categoria'>${imovel.categoria}</p>
                 <p>${imovel.endereco?.rua}, ${imovel.endereco?.numero}, ${imovel.endereco?.bairro}</p>
                 ${precoVenda}
                 ${precoAluguel}
@@ -410,6 +459,10 @@ function maisVistos(dados) {
 
 window.addEventListener("DOMContentLoaded", async () => {
     const dados = await listarImoveisDisponiveis() || null;
+    usuario = usuarioLogado || await carregarUser();
+    if (usuarioLogado && usuarioLogado.tipo && usuarioLogado.tipo === "CLIENTE") {
+        imoveisFavoritos = await listarImoveisFavoritados() || null;
+    }
     let destacados = null;
     if (dados && dados.length > 0 && dados.filter(imovel => imovel?.anuncio?.imagens?.[0]).length > 0) {
         destacados = await listarImoveisDestacados() || null;
@@ -453,16 +506,6 @@ window.addEventListener("DOMContentLoaded", async () => {
     }
 
 });
-
-window.addEventListener('beforeunload', async function (event) {
-    // event.preventDefault();
-    // event.returnValue = '';
-    if (imoveisCurtidos.length > 0) {
-        await salvarImoveisCurtidos();
-    }
-
-});
-
 
 window.addEventListener("onclick", async () => {
     if (event.target.classList.contains("swiper-button-prev") || event.target.classList.contains("swiper-button-next") || event.target.classList.contains("fa-heart") || event.target.classList.contains("fa-whatsapp")) {

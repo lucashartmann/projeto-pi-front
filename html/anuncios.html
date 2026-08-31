@@ -1,366 +1,684 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-br">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Anuncios</title>
-    <link rel="stylesheet" href="../css/base.css">
-    <link rel="stylesheet" href="../css/anuncios.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="../css/base.css" />
+    <link rel="stylesheet" href="../css/anuncios.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    />
     <script src="https://cdn.jsdelivr.net/npm/inputmask/dist/inputmask.min.js"></script>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <link rel="icon" type="image/x-icon" href="../assets/logo.webp">
+    <link rel="icon" type="image/x-icon" href="../assets/logo.webp" />
     <script>
-        if (localStorage.getItem("tema") === "escuro") {
-            document.documentElement.classList.add("modo-noturno");
-        }
-        if (localStorage.getItem("contraste") === "alto") {
-            document.documentElement.classList.add("alto-contraste");
-        }
-        if (localStorage.getItem("fontSize")) {
-            document.documentElement.style.fontSize = localStorage.getItem("fontSize");
-        }
+      if (localStorage.getItem("tema") === "escuro") {
+        document.documentElement.classList.add("modo-noturno");
+      }
+      if (localStorage.getItem("contraste") === "alto") {
+        document.documentElement.classList.add("alto-contraste");
+      }
+      if (localStorage.getItem("fontSize")) {
+        document.documentElement.style.fontSize =
+          localStorage.getItem("fontSize");
+      }
     </script>
-</head>
+  </head>
 
-<body>
+  <body>
     <main>
-        <div id="acessibilidade">
-            <button onclick="aumentarFonte()">A+</button>
-            <button onclick="diminuirFonte()">A-</button>
-            <button onclick="altoContraste()"><i class="fas fa-adjust"></i></button>
-            <button onclick="modoNoturno()"><i class="fas fa-moon"></i></button>
-        </div>
-        <section>
-            <nav id="sidebar-anuncios">
-                <label>Categoria</label>
-                <select name="categoria" id="select-categoria">
-                    <option value="" selected>Selecione uma opção...</option>
-                    <option value="Sala Comercial">Sala Comercial</option>
-                    <option value="Apartamento">Apartamento</option>
-                    <option value="Casa">Casa</option>
-                    <option value="Chácara">Chácara</option>
-                    <option value="Fazenda">Fazenda</option>
-                    <option value="Casa em Condomínio">Casa em Condomínio</option>
-                    <option value="Empreendimento">Empreendimento</option>
-                    <option value="Ponto Comercial">Ponto Comercial</option>
-                    <option value="Prédio Comercial">Prédio Comercial</option>
-                    <option value="Galpão">Galpão</option>
-                    <option value="Depósito">Depósito</option>
-                    <option value="Apartamento">Apartamento</option>
-                    <option value="Loja">Loja</option>
-                    <option value="Cobertura">Cobertura</option>
-                    <option value="Loft">Loft</option>
-                    <option value="Terreno">Terreno</option>
-                    <option value="Kitnet">Kitnet</option>
-                    <option value="Sobrado">Sobrado</option>
-                    <option value="Pavilhão">Pavilhão</option>
-                    <option value="Depósito">Depósito</option>
-                    <option value="Studio">Studio</option>
-                </select>
-                <label>Status</label>
-                <select name="status" id="select-status">
-                    <option value="" selected>Selecione uma opção...</option>
-                    <option value="Venda">Venda</option>
-                    <option value="Aluguel">Aluguel</option>
-                    <option value="Venda e Aluguel">Venda e Aluguel</option>
-                    <option value="Alugado">Alugado</option>
-                    <option value="Vendido">Vendido</option>
-                    <option value="Pendente">Pendente</option>
-                </select>
-                <label for="" id="stt-situacao">Situação</label>
-                <select name="situacao" id="select-situacao">
-                    <option value="" selected>Selecione uma opção...</option>
-                    <option value="Em Construção">Em Construção</option>
-                    <option value="Novo">Novo</option>
-                    <option value="Usado">Usado</option>
-                </select>
-                <label for="" id="stt-estado-select">Estado:</label>
-                <select name="estado_imovel" id="select-estado">
-                    <option value="" selected>Selecione uma opção...</option>
-                    <option value="Bom">Bom</option>
-                    <option value="Ótimo">Ótimo</option>
-                    <option value="Regular">Regular</option>
-                </select>
-                <label for="" id="stt-ocupacao">Ocupação:</label>
-                <select name="ocupacao" id="select-ocupacao">
-                    <option value="" selected>Selecione uma opção...</option>
-                    <option value="Desocupado">Desocupado</option>
-                    <option value="Inquilino">Inquilino</option>
-                    <option value="Proprietário">Proprietário</option>
-                </select>
-                <label for="">Quartos: </label>
-                <div id="preco">
-                    <input type="number" name="quantidade_minima_quartos" id="quartos-minimo" min="0" max="20"
-                        placeholder="Mínimo">
-                    <label>-</label>
-                    <input type="number" name="quantidade_maxima_quartos" id="quartos-maximo" min="0" max="20"
-                        placeholder="Máximo">
-                </div>
-                <label for="">Suítes: </label>
-                <div id="preco">
-                    <input type="number" name="quantidade_minima_suites" id="suítes-minimo" min="0" max="20"
-                        placeholder="Mínimo">
-                    <label>-</label>
-                    <input type="number" name="quantidade_maxima_suites" id="suítes-maximo" min="0" max="20"
-                        placeholder="Máximo">
-                </div>
-                <label for="">Banheiros: </label>
-                <div id="preco">
-                    <input type="number" name="quantidade_minima_banheiros" id="banheiros-minimo" min="0" max="20"
-                        placeholder="Mínimo">
-                    <label>-</label>
-                    <input type="number" name="quantidade_maxima_banheiros" id="banheiros-maximo" min="0" max="20"
-                        placeholder="Máximo">
-                </div>
-                <label for="">Vagas: </label>
-                <div id="preco">
-                    <input type="number" name="quantidade_minima_vagas" id="vagas-minimo" min="0" max="20"
-                        placeholder="Mínimo">
-                    <label>-</label>
-                    <input type="number" name="quantidade_maxima_vagas" id="vagas-maximo" min="0" max="20"
-                        placeholder="Máximo">
-                </div>
-                <label for="">Salas: </label>
-                <div id="preco">
-                    <input type="number" name="quantidade_minima_sala" id="salas-minimo" min="0" max="20"
-                        placeholder="Mínimo">
-                    <label>-</label>
-                    <input type="number" name="quantidade_maxima_sala" id="salas-maximo" min="0" max="20"
-                        placeholder="Máximo">
-                </div>
-                <label for="">Varandas: </label>
-                <div id="preco">
-                    <input type="number" name="quantidade_minima_varandas" id="varandas-minimo" min="0" max="20"
-                        placeholder="Mínimo">
-                    <label>-</label>
-                    <input type="number" name="quantidade_maxima_varandas" id="varandas-maximo" min="0" max="20"
-                        placeholder="Máximo">
-                </div>
-                <label for="">Andar: </label>
-                <div id="preco">
-                    <input type="number" name="minimo_andar" id="minimo_andar" min="0" max="20" placeholder="Mínimo">
-                    <label>-</label>
-                    <input type="number" name="maximo_andar" id="maximo_andar" min="0" max="20" placeholder="Máximo">
-                </div>
-                <label for="">Valor Venda:</label>
-                <div id="preco">
-                    <input type="text" name="valor_minimo_venda" id="valor_minimo_venda" min="0" max="20"
-                        placeholder="Mínimo">
-                    <label>-</label>
-                    <input type="text" name="valor_maximo_venda" id="valor_maximo_venda" min="0" max="20"
-                        placeholder="Máximo">
-                </div>
-                <label for="">Valor Aluguel:</label>
-                <div id="preco">
-                    <input type="text" name="valor_minimo_aluguel" id="valor_minimo_aluguel" min="0" max="20"
-                        placeholder="Mínimo">
-                    <label>-</label>
-                    <input type="text" name="valor_maximo_aluguel" id="valor_maximo_aluguel" min="0" max="20"
-                        placeholder="Máximo">
-                </div>
-                <label for="" id="stt-area-total">Área Total</label>
-                <div id="preco">
-                    <input type="text" name="area_minima_total" id="area_minima_total" min="0" max="20"
-                        placeholder="Mínimo">
-                    <label>-</label>
-                    <input type="text" name="area_maxima_total" id="area_maxima_total" min="0" max="20"
-                        placeholder="Máximo">
-                </div>
-                <label for="" id="stt-area-privativa">Área Privativa</label>
-                <div id="preco">
-                    <input type="text" name="area_minima_privativa" id="area_minima_privativa" min="0" max="20"
-                        placeholder="Mínimo">
-                    <label>-</label>
-                    <input type="text" name="area_maxima_privativa" id="area_maxima_privativa" min="0" max="20"
-                        placeholder="Máximo">
-                </div>
-                <label for="" id="stt-condominio">Valor Condomínio:</label>
-                <div id="preco">
-                    <input type="text" name="valor_minimo_condominio" id="valor_minimo_condominio" min="0" max="20"
-                        placeholder="Mínimo">
-                    <label>-</label>
-                    <input type="text" name="valor_maximo_condominio" id="valor_maximo_condominio" min="0" max="20"
-                        placeholder="Máximo">
-                </div>
-                <label for="" id="stt-iptu">Valor IPTU:</label>
-                <div id="preco">
-                    <input type="text" name="valor_minimo_iptu" id="valor_minimo_iptu" min="0" max="20"
-                        placeholder="Mínimo">
-                    <label>-</label>
-                    <input type="text" name="valor_maximo_iptu" id="valor_maximo_iptu" min="0" max="20"
-                        placeholder="Máximo">
-                </div>
-                <label>CEP</label>
-                <input type="text" name="cep" id="input-cep">
-                <label for="" id="stt-rua">Rua</label>
-                <textarea id="ta-rua" readonly=True name="rua"></textarea>
-                <label for="" id="stt-numero">Número</label>
-                <input type="number" id="ta-numero" name="numero">
-                <label for="" id="stt-complemento">Complemento</label>
-                <textarea name="complemento" id="ta-complemento"></textarea>
-                <label for="" id="stt-bloco">Bloco</label>
-                <textarea name="bloco" id="ta-bloco"></textarea>
-                <label for="" id="stt-andar">Andar</label>
-                <input type="number" placeholder="00" id="ta-andar" min="0" max="99" name="andar">
-                <label for="" id="stt-bairro">Bairro</label>
-                <textarea id="ta-bairro" readonly=True name="bairro"></textarea>
-                <label for="" id="stt-cidade">Cidade</label>
-                <textarea id="ta-cidade" readonly=True name="cidade"></textarea>
-                <label for="" id="stt-estado">Estado</label>
-                <input type="text" readonly=True, placeholder="XX" id="ta-estado" minlength="2" maxlength="2" name="uf">
-                <label>Apartamento</label>
-                <div id="container-info-imovel">
-                    <input type="checkbox" id="filtro-aceita-pet" value="Aceita Pet">
-                    <label for="filtro-aceita-pet">Aceita Pet</label>
-                    <input type="checkbox" id="filtro-churrasqueira" value="Churrasqueira">
-                    <label for="filtro-churrasqueira">Churrasqueira</label>
-                    <input type="checkbox" id="filtro-armarios-embutidos" value="Armarios Embutidos">
-                    <label for="filtro-armarios-embutidos">Armarios Embutidos</label>
-                    <input type="checkbox" id="filtro-cozinha-americana" value="Cozinha Americana">
-                    <label for="filtro-cozinha-americana">Cozinha Americana</label>
-                    <input type="checkbox" id="filtro-area-de-servico" value="Área de Serviço">
-                    <label for="filtro-area-de-servico">Área de Serviço</label>
-                    <input type="checkbox" id="filtro-suíte-master" value="Suíte Master">
-                    <label for="filtro-suíte-master">Suíte Master</label>
-                    <input type="checkbox" id="filtro-banheiro-com-janela" value="Banheiro com Janela">
-                    <label for="filtro-banheiro-com-janela">Banheiro com Janela</label>
-                    <input type="checkbox" id="filtro-piscina" value="Piscina">
-                    <label for="filtro-piscina">Piscina</label>
-                    <input type="checkbox" id="filtro-lareira" value="Lareira">
-                    <label for="filtro-lareira">Lareira</label>
-                    <input type="checkbox" id="filtro-ar-condicionado" value="Ar Condicionado">
-                    <label for="filtro-ar-condicionado">Ar Condicionado</label>
-                    <input type="checkbox" id="filtro-semi-mobiliado" value="Semi Mobiliado">
-                    <label for="filtro-semi-mobiliado">Semi Mobiliado</label>
-                    <input type="checkbox" id="filtro-mobiliado" value="Mobiliado">
-                    <label for="filtro-mobiliado">Mobiliado</label>
-                    <input type="checkbox" id="filtro-dependencia-de-empregada" value="Dependência de Empregada">
-                    <label for="filtro-dependencia-de-empregada">Dependência de Empregada</label>
-                    <input type="checkbox" id="filtro-despensa" value="Despensa">
-                    <label for="filtro-despensa">Despensa</label>
-                    <input type="checkbox" id="filtro-deposito" value="Depósito">
-                    <label for="filtro-deposito">Depósito</label>
-                </div>
+      <div id="acessibilidade">
+        <button onclick="aumentarFonte()">A+</button>
+        <button onclick="diminuirFonte()">A-</button>
+        <button onclick="altoContraste()"><i class="fas fa-adjust"></i></button>
+        <button onclick="modoNoturno()"><i class="fas fa-moon"></i></button>
+      </div>
+      <section>
+        <nav id="sidebar-anuncios">
+          <label>Categoria</label>
+          <select name="categoria" id="select-categoria">
+            <option value="" selected>Selecione uma opção...</option>
+            <option value="Sala Comercial">Sala Comercial</option>
+            <option value="Apartamento">Apartamento</option>
+            <option value="Casa">Casa</option>
+            <option value="Chácara">Chácara</option>
+            <option value="Fazenda">Fazenda</option>
+            <option value="Casa em Condomínio">Casa em Condomínio</option>
+            <option value="Empreendimento">Empreendimento</option>
+            <option value="Ponto Comercial">Ponto Comercial</option>
+            <option value="Prédio Comercial">Prédio Comercial</option>
+            <option value="Galpão">Galpão</option>
+            <option value="Depósito">Depósito</option>
+            <option value="Apartamento">Apartamento</option>
+            <option value="Loja">Loja</option>
+            <option value="Cobertura">Cobertura</option>
+            <option value="Loft">Loft</option>
+            <option value="Terreno">Terreno</option>
+            <option value="Kitnet">Kitnet</option>
+            <option value="Sobrado">Sobrado</option>
+            <option value="Pavilhão">Pavilhão</option>
+            <option value="Depósito">Depósito</option>
+            <option value="Studio">Studio</option>
+          </select>
+          <label>Status</label>
+          <select name="status" id="select-status">
+            <option value="" selected>Selecione uma opção...</option>
+            <option value="Venda">Venda</option>
+            <option value="Aluguel">Aluguel</option>
+            <option value="Venda e Aluguel">Venda e Aluguel</option>
+          </select>
+          <label for="" id="stt-situacao">Situação</label>
+          <select name="situacao" id="select-situacao">
+            <option value="" selected>Selecione uma opção...</option>
+            <option value="Em Construção">Em Construção</option>
+            <option value="Novo">Novo</option>
+            <option value="Usado">Usado</option>
+          </select>
+          <label for="" id="stt-estado-select">Estado:</label>
+          <select name="estado_imovel" id="select-estado">
+            <option value="" selected>Selecione uma opção...</option>
+            <option value="Bom">Bom</option>
+            <option value="Ótimo">Ótimo</option>
+            <option value="Regular">Regular</option>
+          </select>
+          <label for="" id="stt-ocupacao">Ocupação:</label>
+          <select name="ocupacao" id="select-ocupacao">
+            <option value="" selected>Selecione uma opção...</option>
+            <option value="Desocupado">Desocupado</option>
+            <option value="Inquilino">Inquilino</option>
+            <option value="Proprietário">Proprietário</option>
+          </select>
+          <label for="">Quartos: </label>
+          <div id="preco">
+            <input
+              type="number"
+              name="quantidade_minima_quartos"
+              id="quartos-minimo"
+              min="0"
+              max="20"
+              placeholder="Mínimo"
+            />
+            <label>-</label>
+            <input
+              type="number"
+              name="quantidade_maxima_quartos"
+              id="quartos-maximo"
+              min="0"
+              max="20"
+              placeholder="Máximo"
+            />
+          </div>
+          <label for="">Suítes: </label>
+          <div id="preco">
+            <input
+              type="number"
+              name="quantidade_minima_suites"
+              id="suítes-minimo"
+              min="0"
+              max="20"
+              placeholder="Mínimo"
+            />
+            <label>-</label>
+            <input
+              type="number"
+              name="quantidade_maxima_suites"
+              id="suítes-maximo"
+              min="0"
+              max="20"
+              placeholder="Máximo"
+            />
+          </div>
+          <label for="">Banheiros: </label>
+          <div id="preco">
+            <input
+              type="number"
+              name="quantidade_minima_banheiros"
+              id="banheiros-minimo"
+              min="0"
+              max="20"
+              placeholder="Mínimo"
+            />
+            <label>-</label>
+            <input
+              type="number"
+              name="quantidade_maxima_banheiros"
+              id="banheiros-maximo"
+              min="0"
+              max="20"
+              placeholder="Máximo"
+            />
+          </div>
+          <label for="">Vagas: </label>
+          <div id="preco">
+            <input
+              type="number"
+              name="quantidade_minima_vagas"
+              id="vagas-minimo"
+              min="0"
+              max="20"
+              placeholder="Mínimo"
+            />
+            <label>-</label>
+            <input
+              type="number"
+              name="quantidade_maxima_vagas"
+              id="vagas-maximo"
+              min="0"
+              max="20"
+              placeholder="Máximo"
+            />
+          </div>
+          <label for="">Salas: </label>
+          <div id="preco">
+            <input
+              type="number"
+              name="quantidade_minima_sala"
+              id="salas-minimo"
+              min="0"
+              max="20"
+              placeholder="Mínimo"
+            />
+            <label>-</label>
+            <input
+              type="number"
+              name="quantidade_maxima_sala"
+              id="salas-maximo"
+              min="0"
+              max="20"
+              placeholder="Máximo"
+            />
+          </div>
+          <label for="">Varandas: </label>
+          <div id="preco">
+            <input
+              type="number"
+              name="quantidade_minima_varandas"
+              id="varandas-minimo"
+              min="0"
+              max="20"
+              placeholder="Mínimo"
+            />
+            <label>-</label>
+            <input
+              type="number"
+              name="quantidade_maxima_varandas"
+              id="varandas-maximo"
+              min="0"
+              max="20"
+              placeholder="Máximo"
+            />
+          </div>
+          <label for="">Andar: </label>
+          <div id="preco">
+            <input
+              type="number"
+              name="minimo_andar"
+              id="minimo_andar"
+              min="0"
+              max="20"
+              placeholder="Mínimo"
+            />
+            <label>-</label>
+            <input
+              type="number"
+              name="maximo_andar"
+              id="maximo_andar"
+              min="0"
+              max="20"
+              placeholder="Máximo"
+            />
+          </div>
+          <label for="">Valor Venda:</label>
+          <div id="preco">
+            <input
+              type="text"
+              name="valor_minimo_venda"
+              id="valor_minimo_venda"
+              min="0"
+              max="20"
+              placeholder="Mínimo"
+            />
+            <label>-</label>
+            <input
+              type="text"
+              name="valor_maximo_venda"
+              id="valor_maximo_venda"
+              min="0"
+              max="20"
+              placeholder="Máximo"
+            />
+          </div>
+          <label for="">Valor Aluguel:</label>
+          <div id="preco">
+            <input
+              type="text"
+              name="valor_minimo_aluguel"
+              id="valor_minimo_aluguel"
+              min="0"
+              max="20"
+              placeholder="Mínimo"
+            />
+            <label>-</label>
+            <input
+              type="text"
+              name="valor_maximo_aluguel"
+              id="valor_maximo_aluguel"
+              min="0"
+              max="20"
+              placeholder="Máximo"
+            />
+          </div>
+          <label for="" id="stt-area-total">Área Total</label>
+          <div id="preco">
+            <input
+              type="text"
+              name="area_minima_total"
+              id="area_minima_total"
+              min="0"
+              max="20"
+              placeholder="Mínimo"
+            />
+            <label>-</label>
+            <input
+              type="text"
+              name="area_maxima_total"
+              id="area_maxima_total"
+              min="0"
+              max="20"
+              placeholder="Máximo"
+            />
+          </div>
+          <label for="" id="stt-area-privativa">Área Privativa</label>
+          <div id="preco">
+            <input
+              type="text"
+              name="area_minima_privativa"
+              id="area_minima_privativa"
+              min="0"
+              max="20"
+              placeholder="Mínimo"
+            />
+            <label>-</label>
+            <input
+              type="text"
+              name="area_maxima_privativa"
+              id="area_maxima_privativa"
+              min="0"
+              max="20"
+              placeholder="Máximo"
+            />
+          </div>
+          <label for="" id="stt-condominio">Valor Condomínio:</label>
+          <div id="preco">
+            <input
+              type="text"
+              name="valor_minimo_condominio"
+              id="valor_minimo_condominio"
+              min="0"
+              max="20"
+              placeholder="Mínimo"
+            />
+            <label>-</label>
+            <input
+              type="text"
+              name="valor_maximo_condominio"
+              id="valor_maximo_condominio"
+              min="0"
+              max="20"
+              placeholder="Máximo"
+            />
+          </div>
+          <label for="" id="stt-iptu">Valor IPTU:</label>
+          <div id="preco">
+            <input
+              type="text"
+              name="valor_minimo_iptu"
+              id="valor_minimo_iptu"
+              min="0"
+              max="20"
+              placeholder="Mínimo"
+            />
+            <label>-</label>
+            <input
+              type="text"
+              name="valor_maximo_iptu"
+              id="valor_maximo_iptu"
+              min="0"
+              max="20"
+              placeholder="Máximo"
+            />
+          </div>
+          <label>CEP</label>
+          <input type="text" name="cep" id="input-cep" />
+          <label for="" id="stt-rua">Rua</label>
+          <textarea id="ta-rua" readonly="True" name="rua"></textarea>
+          <label for="" id="stt-numero">Número</label>
+          <input type="number" id="ta-numero" name="numero" />
+          <label for="" id="stt-complemento">Complemento</label>
+          <textarea name="complemento" id="ta-complemento"></textarea>
+          <label for="" id="stt-bloco">Bloco</label>
+          <textarea name="bloco" id="ta-bloco"></textarea>
+          <label for="" id="stt-andar">Andar</label>
+          <input
+            type="number"
+            placeholder="00"
+            id="ta-andar"
+            min="0"
+            max="99"
+            name="andar"
+          />
+          <label for="" id="stt-bairro">Bairro</label>
+          <textarea id="ta-bairro" readonly="True" name="bairro"></textarea>
+          <label for="" id="stt-cidade">Cidade</label>
+          <textarea id="ta-cidade" readonly="True" name="cidade"></textarea>
+          <label for="" id="stt-estado">Estado</label>
+          <input
+            type="text"
+            readonly="True,"
+            placeholder="XX"
+            id="ta-estado"
+            minlength="2"
+            maxlength="2"
+            name="uf"
+          />
+          <label>Apartamento</label>
+          <div id="container-info-imovel">
+            <input type="checkbox" id="filtro-aceita-pet" value="Aceita Pet" />
+            <label for="filtro-aceita-pet">Aceita Pet</label>
+            <input
+              type="checkbox"
+              id="filtro-churrasqueira"
+              value="Churrasqueira"
+            />
+            <label for="filtro-churrasqueira">Churrasqueira</label>
+            <input
+              type="checkbox"
+              id="filtro-armarios-embutidos"
+              value="Armarios Embutidos"
+            />
+            <label for="filtro-armarios-embutidos">Armarios Embutidos</label>
+            <input
+              type="checkbox"
+              id="filtro-cozinha-americana"
+              value="Cozinha Americana"
+            />
+            <label for="filtro-cozinha-americana">Cozinha Americana</label>
+            <input
+              type="checkbox"
+              id="filtro-area-de-servico"
+              value="Área de Serviço"
+            />
+            <label for="filtro-area-de-servico">Área de Serviço</label>
+            <input
+              type="checkbox"
+              id="filtro-suíte-master"
+              value="Suíte Master"
+            />
+            <label for="filtro-suíte-master">Suíte Master</label>
+            <input
+              type="checkbox"
+              id="filtro-banheiro-com-janela"
+              value="Banheiro com Janela"
+            />
+            <label for="filtro-banheiro-com-janela">Banheiro com Janela</label>
+            <input type="checkbox" id="filtro-piscina" value="Piscina" />
+            <label for="filtro-piscina">Piscina</label>
+            <input type="checkbox" id="filtro-lareira" value="Lareira" />
+            <label for="filtro-lareira">Lareira</label>
+            <input
+              type="checkbox"
+              id="filtro-ar-condicionado"
+              value="Ar Condicionado"
+            />
+            <label for="filtro-ar-condicionado">Ar Condicionado</label>
+            <input
+              type="checkbox"
+              id="filtro-semi-mobiliado"
+              value="Semi Mobiliado"
+            />
+            <label for="filtro-semi-mobiliado">Semi Mobiliado</label>
+            <input type="checkbox" id="filtro-mobiliado" value="Mobiliado" />
+            <label for="filtro-mobiliado">Mobiliado</label>
+            <input
+              type="checkbox"
+              id="filtro-dependencia-de-empregada"
+              value="Dependência de Empregada"
+            />
+            <label for="filtro-dependencia-de-empregada"
+              >Dependência de Empregada</label
+            >
+            <input type="checkbox" id="filtro-despensa" value="Despensa" />
+            <label for="filtro-despensa">Despensa</label>
+            <input type="checkbox" id="filtro-deposito" value="Depósito" />
+            <label for="filtro-deposito">Depósito</label>
+          </div>
 
-                <label for="">Condomínio</label>
-                <div id="container-info-condominio">
-                    <input type="checkbox" id="filtro-churrasqueira-coletiva" value="Churrasqueira Coletiva">
-                    <label for="filtro-churrasqueira-coletiva">Churrasqueira Coletiva</label>
-                    <input type="checkbox" id="filtro-piscina" value="Piscina">
-                    <label for="filtro-piscina">Piscina</label>
-                    <input type="checkbox" id="filtro-piscina-infantil" value="Piscina Infantil">
-                    <label for="filtro-piscina-infantil">Piscina Infantil</label>
-                    <input type="checkbox" id="filtro-piscina-aquecida" value="Piscina Aquecida">
-                    <label for="filtro-piscina-aquecida">Piscina Aquecida</label>
-                    <input type="checkbox" id="filtro-quiostique" value="Quiosque">
-                    <label for="filtro-quiostique">Quiosque</label>
-                    <input type="checkbox" id="filtro-sauna" value="Sauna">
-                    <label for="filtro-sauna">Sauna</label>
-                    <input type="checkbox" id="filtro-quadra-de-esportes" value="Quadra de Esportes">
-                    <label for="filtro-quadra-de-esportes">Quadra de Esportes</label>
-                    <input type="checkbox" id="filtro-jardim" value="Jardim">
-                    <label for="filtro-jardim">Jardim</label>
-                    <input type="checkbox" id="filtro-salao-de-festas" value="Salão de Festas">
-                    <label for="filtro-salao-de-festas">Salão de Festas</label>
-                    <input type="checkbox" id="filtro-academia" value="Academia">
-                    <label for="filtro-academia">Academia</label>
-                    <input type="checkbox" id="filtro-sala-de-jogos" value="Sala de Jogos">
-                    <label for="filtro-sala-de-jogos">Sala de Jogos</label>
-                    <input type="checkbox" id="filtro-playground" value="Playground">
-                    <label for="filtro-playground">Playground</label>
-                    <input type="checkbox" id="filtro-brinquedoteca" value="Brinquedoteca">
-                    <label for="filtro-brinquedoteca">Brinquedoteca</label>
-                    <input type="checkbox" id="filtro-vaga-coberta" value="Vaga Coberta">
-                    <label for="filtro-vaga-coberta">Vaga Coberta</label>
-                    <input type="checkbox" id="filtro-estacionamento" value="Estacionamento">
-                    <label for="filtro-estacionamento">Estacionamento</label>
-                    <input type="checkbox" id="filtro-vaga-para-visitantes" value="Vaga para Visitantes">
-                    <label for="filtro-vaga-para-visitantes">Vaga para Visitantes</label>
-                    <input type="checkbox" id="filtro-mercado" value="Mercado">
-                    <label for="filtro-mercado">Mercado</label>
-                    <input type="checkbox" id="filtro-mesa-de-sinuca" value="Mesa de Sinuca">
-                    <label for="filtro-mesa-de-sinuca">Mesa de Sinuca</label>
-                    <input type="checkbox" id="filtro-mesa-de-ping-pong" value="Mesa de Ping Pong">
-                    <label for="filtro-mesa-de-ping-pong">Mesa de Ping Pong</label>
-                    <input type="checkbox" id="filtro-mesa-de-pebolim" value="Mesa de Pebolim">
-                    <label for="filtro-mesa-de-pebolim">Mesa de Pebolim</label>
-                    <input type="checkbox" id="filtro-quadra-de-tenis" value="Quadra de Tenis">
-                    <label for="filtro-quadra-de-tenis">Quadra de Tenis</label>
-                    <input type="checkbox" id="filtro-quadra-de-futebol" value="Quadra de Futebol">
-                    <label for="filtro-quadra-de-futebol">Quadra de Futebol</label>
-                    <input type="checkbox" id="filtro-quadra-de-basquete" value="Quadra de Basquete">
-                    <label for="filtro-quadra-de-basquete">Quadra de Basquete</label>
-                    <input type="checkbox" id="filtro-quadra-de-volei" value="Quadra de Volei">
-                    <label for="filtro-quadra-de-volei">Quadra de Volei</label>
-                    <input type="checkbox" id="filtro-quadra-de-areia" value="Quadra de Areia">
-                    <label for="filtro-quadra-de-areia">Quadra de Areia</label>
-                    <input type="checkbox" id="filtro-bicicletario" value="Bicicletario">
-                    <label for="filtro-bicicletario">Bicicletario</label>
-                    <input type="checkbox" id="filtro-heliponto" value="Heliponto">
-                    <label for="filtro-heliponto">Heliponto</label>
-                    <input type="checkbox" id="filtro-elevador-de-servico" value="Elevador de Serviço">
-                    <label for="filtro-elevador-de-servico">Elevador de Serviço</label>
-                </div>
-            </nav>
-            <div id="container-pai">
-                <div id="h-filtro">
-                    <div id="filtro-seta">
-                        <select id="select-filtro" onchange="filtrar()">
-                            <option value="categoria">Categoria</option>
-                            <option value="status">Status</option>
-                            <option value="cep">CEP</option>
-                            <option value="numero">Número</option>
-                            <option value="aluguel">Aluguel</option>
-                            <option value="venda">Venda</option>
-                        </select>
-                        <i class="fas fa-arrow-up" id="seta" flat=True onclick="filtroOrdenado()"></i>
-                    </div>
-                    <button id="selecionar-todos" onclick="selecionarTodos()">Selecionar Todos</button>
-                    <button id="abrir-multiplos" style="display: none;" onclick="abrirMultiplos()">Abrir</button>
-                    <button id="apagar-multiplos" style="display: none;" onclick="apagarMultiplos()">Apagar</button>
-                    <p id="contador-imoveis">0 imóveis</p>
-                </div>
-                <div id="anuncios">
-
-                </div>
+          <label for="">Condomínio</label>
+          <div id="container-info-condominio">
+            <input
+              type="checkbox"
+              id="filtro-churrasqueira-coletiva"
+              value="Churrasqueira Coletiva"
+            />
+            <label for="filtro-churrasqueira-coletiva"
+              >Churrasqueira Coletiva</label
+            >
+            <input type="checkbox" id="filtro-piscina" value="Piscina" />
+            <label for="filtro-piscina">Piscina</label>
+            <input
+              type="checkbox"
+              id="filtro-piscina-infantil"
+              value="Piscina Infantil"
+            />
+            <label for="filtro-piscina-infantil">Piscina Infantil</label>
+            <input
+              type="checkbox"
+              id="filtro-piscina-aquecida"
+              value="Piscina Aquecida"
+            />
+            <label for="filtro-piscina-aquecida">Piscina Aquecida</label>
+            <input type="checkbox" id="filtro-quiostique" value="Quiosque" />
+            <label for="filtro-quiostique">Quiosque</label>
+            <input type="checkbox" id="filtro-sauna" value="Sauna" />
+            <label for="filtro-sauna">Sauna</label>
+            <input
+              type="checkbox"
+              id="filtro-quadra-de-esportes"
+              value="Quadra de Esportes"
+            />
+            <label for="filtro-quadra-de-esportes">Quadra de Esportes</label>
+            <input type="checkbox" id="filtro-jardim" value="Jardim" />
+            <label for="filtro-jardim">Jardim</label>
+            <input
+              type="checkbox"
+              id="filtro-salao-de-festas"
+              value="Salão de Festas"
+            />
+            <label for="filtro-salao-de-festas">Salão de Festas</label>
+            <input type="checkbox" id="filtro-academia" value="Academia" />
+            <label for="filtro-academia">Academia</label>
+            <input
+              type="checkbox"
+              id="filtro-sala-de-jogos"
+              value="Sala de Jogos"
+            />
+            <label for="filtro-sala-de-jogos">Sala de Jogos</label>
+            <input type="checkbox" id="filtro-playground" value="Playground" />
+            <label for="filtro-playground">Playground</label>
+            <input
+              type="checkbox"
+              id="filtro-brinquedoteca"
+              value="Brinquedoteca"
+            />
+            <label for="filtro-brinquedoteca">Brinquedoteca</label>
+            <input
+              type="checkbox"
+              id="filtro-vaga-coberta"
+              value="Vaga Coberta"
+            />
+            <label for="filtro-vaga-coberta">Vaga Coberta</label>
+            <input
+              type="checkbox"
+              id="filtro-estacionamento"
+              value="Estacionamento"
+            />
+            <label for="filtro-estacionamento">Estacionamento</label>
+            <input
+              type="checkbox"
+              id="filtro-vaga-para-visitantes"
+              value="Vaga para Visitantes"
+            />
+            <label for="filtro-vaga-para-visitantes"
+              >Vaga para Visitantes</label
+            >
+            <input type="checkbox" id="filtro-mercado" value="Mercado" />
+            <label for="filtro-mercado">Mercado</label>
+            <input
+              type="checkbox"
+              id="filtro-mesa-de-sinuca"
+              value="Mesa de Sinuca"
+            />
+            <label for="filtro-mesa-de-sinuca">Mesa de Sinuca</label>
+            <input
+              type="checkbox"
+              id="filtro-mesa-de-ping-pong"
+              value="Mesa de Ping Pong"
+            />
+            <label for="filtro-mesa-de-ping-pong">Mesa de Ping Pong</label>
+            <input
+              type="checkbox"
+              id="filtro-mesa-de-pebolim"
+              value="Mesa de Pebolim"
+            />
+            <label for="filtro-mesa-de-pebolim">Mesa de Pebolim</label>
+            <input
+              type="checkbox"
+              id="filtro-quadra-de-tenis"
+              value="Quadra de Tenis"
+            />
+            <label for="filtro-quadra-de-tenis">Quadra de Tenis</label>
+            <input
+              type="checkbox"
+              id="filtro-quadra-de-futebol"
+              value="Quadra de Futebol"
+            />
+            <label for="filtro-quadra-de-futebol">Quadra de Futebol</label>
+            <input
+              type="checkbox"
+              id="filtro-quadra-de-basquete"
+              value="Quadra de Basquete"
+            />
+            <label for="filtro-quadra-de-basquete">Quadra de Basquete</label>
+            <input
+              type="checkbox"
+              id="filtro-quadra-de-volei"
+              value="Quadra de Volei"
+            />
+            <label for="filtro-quadra-de-volei">Quadra de Volei</label>
+            <input
+              type="checkbox"
+              id="filtro-quadra-de-areia"
+              value="Quadra de Areia"
+            />
+            <label for="filtro-quadra-de-areia">Quadra de Areia</label>
+            <input
+              type="checkbox"
+              id="filtro-bicicletario"
+              value="Bicicletario"
+            />
+            <label for="filtro-bicicletario">Bicicletario</label>
+            <input type="checkbox" id="filtro-heliponto" value="Heliponto" />
+            <label for="filtro-heliponto">Heliponto</label>
+            <input
+              type="checkbox"
+              id="filtro-elevador-de-servico"
+              value="Elevador de Serviço"
+            />
+            <label for="filtro-elevador-de-servico">Elevador de Serviço</label>
+          </div>
+        </nav>
+        <div id="container-pai">
+          <div id="h-filtro">
+            <div id="filtro-seta">
+              <select id="select-filtro" onchange="filtrar()">
+                <option value="categoria">Categoria</option>
+                <option value="status">Status</option>
+                <option value="cep">CEP</option>
+                <option value="numero">Número</option>
+                <option value="aluguel">Aluguel</option>
+                <option value="venda">Venda</option>
+              </select>
+              <i
+                class="fas fa-arrow-up"
+                id="seta"
+                flat="True"
+                onclick="filtroOrdenado()"
+              ></i>
             </div>
-        </section>
+            <button id="selecionar-todos" onclick="selecionarTodos()">
+              Selecionar Todos
+            </button>
+            <button
+              id="abrir-multiplos"
+              style="display: none"
+              onclick="abrirMultiplos()"
+            >
+              Abrir
+            </button>
+            <button
+              id="apagar-multiplos"
+              style="display: none"
+              onclick="apagarMultiplos()"
+            >
+              Apagar
+            </button>
+            <p id="contador-imoveis">0 imóveis</p>
+          </div>
+          <div id="anuncios"></div>
+        </div>
+      </section>
     </main>
     <footer>
-        <p>Copyright 2025 - By Lucas Hartmann</p>
-        <a href="https://github.com/lucashartmann" target="_blank"><i class="fab fa-github"></i></a>
+      <p>Copyright 2025 - By Lucas Hartmann</p>
+      <a href="https://github.com/lucashartmann" target="_blank"
+        ><i class="fab fa-github"></i
+      ></a>
     </footer>
 
     <div vw class="enabled">
-        <div vw-access-button class="active"></div>
-        <div vw-plugin-wrapper>
-            <div class="vw-plugin-top-wrapper"></div>
-        </div>
+      <div vw-access-button class="active"></div>
+      <div vw-plugin-wrapper>
+        <div class="vw-plugin-top-wrapper"></div>
+      </div>
     </div>
     <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
     <script>
-        new window.VLibras.Widget('https://vlibras.gov.br/app');
+      new window.VLibras.Widget("https://vlibras.gov.br/app");
     </script>
+  </body>
 
-</body>
-
-<script type="text/javascript">
+  <script type="text/javascript">
     fetch("nav.html")
-        .then(response => response.text())
-        .then(data => {
-            const main = document.querySelector("main");
-            main.insertAdjacentHTML("afterbegin", data);
-        });
-</script>
-<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
-<script type="module" src="../js/modules/utils.js"></script>
-<script type="module" src="../js/modules/usuario.js"></script>
-<script type="module" src="js/modules/notificacoes.js"></script>
-<script type="module" src="../js/base.js"></script>
-<script type="module" src="../js/anuncios.js"></script>
-
+      .then((response) => response.text())
+      .then((data) => {
+        const main = document.querySelector("main");
+        main.insertAdjacentHTML("afterbegin", data);
+      });
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+  <script type="module" src="../js/modules/utils.js"></script>
+  <script type="module" src="../js/modules/usuario.js"></script>
+  <script type="module" src="js/modules/notificacoes.js"></script>
+  <script type="module" src="../js/base.js"></script>
+  <script type="module" src="../js/anuncios.js"></script>
 </html>

@@ -50,8 +50,7 @@ class VisitaDAO
                 " . ($visita->getCliente() ? $visita->getCliente()->getId() : "NULL") . ",
                 " . ($visita->getImovel() ? $visita->getImovel()->getId() : "NULL") . ",
                 " . ($visita->getCorretor() ? $visita->getCorretor()->getId() : "NULL") . ",
-                '" . ($visita->getDataVisita() ? $visita->getDataVisita()->format("Y-m-d H:i:s") : "NULL") . "',
-                '" . ($visita->getStatus() ? $visita->getStatus()->value : "NULL") . "'
+                '" . ($visita->getData() ? $visita->getData()->format("Y-m-d H:i:s") : "NULL") . "',
             )
         ");
         } catch (Exception $e) {

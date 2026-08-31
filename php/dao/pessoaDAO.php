@@ -156,14 +156,28 @@ class PessoaDAO
                 $pessoa->setDataAdmissao($registro["data_admissao"] ? new DateTime($registro["data_admissao"]) : null);
             }
 
+
             if (isset($registro["cliente_id"]) && $registro["cliente_id"] !== null) {
                 $pessoa = new Cliente($registro["email"], $registro["nome"], $registro["cpf_cnpj"]);
+                $imovelDAO = new ImovelDAO();
+
+                try {
+                    $pessoa->setImoveisFavoritos($imovelDAO->listarFavoritos($registro["cliente_id"]));
+                } catch (Exception $e) {
+                    error_log("ERRO! pessoaDAO->montar: " . $e->getMessage());
+                    $pessoa->setImoveisFavoritos([]);
+                }
             }
 
             if (isset($registro["proprietario_id"]) && $registro["proprietario_id"] !== null && $registro["corretor_id"] === null) {
                 $pessoa = new Proprietario($registro["email"], $registro["nome"], $registro["cpf_cnpj"]);
                 $proprietarioImovelDAO = new ProprietarioImovelDAO();
-                $pessoa->setImoveis($proprietarioImovelDAO->listarPorProprietario($registro["proprietario_id"]));
+                try {
+                    $pessoa->setImoveis($proprietarioImovelDAO->listarPorProprietario($registro["proprietario_id"]));
+                } catch (Exception $e) {
+                    error_log("ERRO! pessoaDAO->montar: " . $e->getMessage());
+                    $pessoa->setImoveis([]);
+                }
             }
 
             if (isset($registro["corretor_id"]) && $registro["corretor_id"] !== null) {
