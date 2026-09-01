@@ -27,7 +27,7 @@ body {
     margin-top: auto;
     margin-bottom: 0;
     box-shadow: 0px 1px 6px 0px black;
-    background: rgba(65, 65, 65, 0.7);
+    background: rgba(46, 46, 46, 0.7);
     backdrop-filter: blur(40px) !important;
     padding: 40px 0px;
 }
@@ -94,7 +94,7 @@ form {
     width: 100%;
     /* border-bottom: 10px solid white; */
     padding: 10px;
-    background-color: var(--background-custom);
+    background-color: color-mix(in srgb, var(--background-custom) 20%, black);
      margin-top: -40px;
   
    

@@ -1,5 +1,7 @@
 <?php
 
+require_once __DIR__ . '/../utils/env.php';
+
 error_reporting(E_ALL);
 
 class Banco extends PDO
@@ -17,9 +19,10 @@ class Banco extends PDO
     {
         if (!self::$db) {
             try {
-                $servername = "127.0.0.1";
-                $username = "root";
-                $password = "";
+                loadEnv(__DIR__ . '/../../.env');
+                $servername = $_SERVER['MYSQL_HOSTNAME'] ?? '127.0.0.1';
+                $username = $_SERVER['MYSQL_USERNAME'] ?? 'root';
+                $password = $_SERVER['MYSQL_PASSWORD'] ?? '';
                 self::$db = new Banco("mysql:host=$servername", $username, $password);
                 self::$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
                 return self::$db;
@@ -34,12 +37,14 @@ class Banco extends PDO
     public function initTabelas()
     {
 
+        $nomeBanco = $_SERVER['MYSQL_DATABASE'] ?? 'imobiliaria';
+
         $queries = [
-            "CREATE DATABASE IF NOT EXISTS imobiliaria 
+            "CREATE DATABASE IF NOT EXISTS $nomeBanco 
             CHARACTER SET utf8mb4 
             COLLATE utf8mb4_unicode_ci;",
 
-            "USE imobiliaria;",
+            "USE $nomeBanco;",
 
             "CREATE TABLE IF NOT EXISTS telefone (
                 id INTEGER PRIMARY KEY AUTO_INCREMENT,

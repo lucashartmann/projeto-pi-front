@@ -1,3 +1,14 @@
+#card-dados {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    background-color: var(--background-custom);
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    column-gap: 0px;
+    margin: auto auto;
+}
+
 .vazio {
     width: 100%;
     justify-self: center;

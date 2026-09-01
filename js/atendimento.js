@@ -154,6 +154,22 @@ async function abrirAtendimento(atendimentoId) {
         console.warn("Atendimento não encontrado.");
         return;
     }
+    const overlay = document.createElement("div");
+    overlay.className = "overlay";
+    overlay.style.cssText = `
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.7);
+        z-index: 999;
+    `;
+
+    if (!document.contains("#card-dados")) {
+        document.body.appendChild(overlay);
+    } else {
+        document.querySelector('.overlay')?.remove();
+    }
+
+
     let html = `
     <div id="card-dados">
         <h2>Nome: ${atendimento.cliente.nome ?? 'Não informado'}</h2>
@@ -172,6 +188,15 @@ async function abrirAtendimento(atendimentoId) {
         <p>Valor: ${atendimento.imovel.valor ?? 'Não informado'}</p>
         `;
     }
+
+    html += `
+    <select id="status-select">
+        <option value="" disabled selected>Selecionar uma opção</option>
+        <option value="Pendente">Pendente</option>
+        <option value="Em andamento">Em andamento</option>
+        <option value="Concluído">Concluído</option>
+    </select>
+    <button>Atender</button></div>`;
 
     const div = document.createElement("div");
     div.innerHTML = html;
