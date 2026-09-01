@@ -21,10 +21,6 @@ use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 use PHPMailer\PHPMailer\SMTP;
 
-use function PHPUnit\Framework\isArray;
-
-// use function PHPUnit\Framework\isInstanceOf;
-
 class loginController
 {
 
@@ -181,11 +177,11 @@ class loginController
                 return (["status" => "erro", "mensagem" => "ID do cliente ou lista de imóveis inválidos"]);
             }
 
-            if (isArray($idImoveis) && !is_numeric($idImoveis) && count($idImoveis) === 0) {
+            if (is_array($idImoveis) && !is_numeric($idImoveis) && count($idImoveis) === 0) {
                 return (["status" => "erro", "mensagem" => "Lista de imóveis vazia"]);
             }
 
-            if (!isArray($idImoveis) && !is_numeric($idImoveis)) {
+            if (!is_array($idImoveis) && !is_numeric($idImoveis)) {
                 return (["status" => "erro", "mensagem" => "ID do imóvel inválido"]);
             }
 

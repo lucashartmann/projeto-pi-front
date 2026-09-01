@@ -30,15 +30,9 @@ jobs:
             **/.github/**
             **/.phpunit.cache/**
             **/tests/**
-            vendor/phpunit/**
-            vendor/sebastian/**
-            vendor/phar-io/**
-            vendor/theseer/**
-            vendor/myclabs/**
-            vendor/nikic/**
-            vendor/symfony/**
-            vendor/bin/**
+            # **/vendor/**
             .env
+            .gitignore
             comandos.md
             composer.json
             composer.lock
