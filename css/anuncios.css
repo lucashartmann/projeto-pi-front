@@ -288,26 +288,6 @@ section {
         text-align: center;
     }
 
-    .descricao {
-        width: 88%;
-        align-self: center;
-        margin: 0;
-        line-height: 1.6;
-        font-size: .97rem;
-        text-align: justify;
-        color: inherit;
-        opacity: .9;
-        display: -webkit-box;
-        -webkit-line-clamp: 3;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
-    }
-
-    &:hover {
-        box-shadow: 2px 1px 19px -13px rgb(43, 33, 33), 0px 0px 10px 2px rgb(51, 63, 70);
-        cursor: pointer;
-    }
-
     span {
         width: 70%;
         align-self: center;
@@ -329,6 +309,28 @@ section {
         color: var(--preco);
         width: auto;
         min-width: 2rem;
+    }
+
+    .descricao {
+        width: 88%;
+        align-self: center;
+        margin: 0;
+        line-height: 1.6;
+        font-size: .97rem;
+        text-align: justify;
+        color: inherit;
+        opacity: .9;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+     p:nth-child(4),
+    p:nth-child(5) {
+        text-align: center;
+        align-self: center;
+        font-size: 1.1rem;
     }
 
     .emojis {
