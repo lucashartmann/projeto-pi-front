@@ -5,7 +5,8 @@ require_once __DIR__ . '/../model/seguranca.php';
 
 // ob_start();
 header('Content-Type: application/json');
-ini_set('display_errors', 0);
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 $acao = $_GET['acao'] ?? '';
 $controller = new ImovelController();
