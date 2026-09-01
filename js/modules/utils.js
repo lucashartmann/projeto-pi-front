@@ -2,8 +2,8 @@ export function getCaminhoRelativo(destino) {
     let caminho = window.location.pathname;
     let substring = "";
     if (
-        hostname === "localhost" ||
-        hostname === "127.0.0.1"
+        caminho === "localhost" ||
+        caminho === "127.0.0.1"
     ) {
         if (caminho.includes("/html/")) {
             caminho = caminho.replace(caminho.substring(caminho.lastIndexOf("/html/")), "/");
@@ -19,8 +19,12 @@ export function getCaminhoRelativo(destino) {
         }
         const regex = new RegExp("/" + "$");
         caminho = caminho.replace(regex, destino);
+        return caminho;
     }
-    return caminho;
+    else {
+        return destino;
+    }
+
 }
 
 export function formatarValor(valor) {
