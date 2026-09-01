@@ -351,6 +351,7 @@ async function carregarAnuncios() {
                     <div class="swiper-button-next" onclick="event.preventDefault(); event.stopPropagation(); nextSlide()"></div>
                 </div>
                 <h2>${imovel.anuncio?.titulo}</h2>
+                <p class='categoria'>${imovel.categoria}</p>
                 <p>${imovel.endereco?.rua}, ${imovel.endereco?.numero}, ${imovel.endereco?.bairro}</p>
                 ${precoVenda}
                 ${precoAluguel}

@@ -735,23 +735,22 @@ div[vw-access-button] {
 
 @media screen and (max-width: 669px) {
     #top-nav {
-
         .so-texto {
             display: none;
         }
-
     }
 
     #acessibilidade {
         right: 0px;
-        top: 150px;
+        top: 110px;
     }
 
     div[vw-access-button] {
-        top: 100px;
+        top: 200px;
         right: 0px;
     }
 }
+
 
 
 @media screen and (max-height: 450px) {

@@ -9,6 +9,12 @@
     align-content: center;
 }
 
+.categoria {
+    border: 1px dashed rgba(212, 175, 55, 0.4);
+    box-shadow: 0 0 5px rgba(212, 175, 55, 0.2);
+    padding: 5px 20px;
+}
+
 #contador-imoveis {
     font-size: 1.2rem;
     margin-left: auto;
@@ -375,4 +381,12 @@ section {
         row-gap: 30px;
         column-gap: 40px;
     }
+
+    .anuncio-imovel {
+        width: 100%;
+    }
+
+    #h-filtro {
+        flex-wrap: wrap;
+     }
 }
