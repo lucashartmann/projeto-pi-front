@@ -26,7 +26,7 @@ jobs:
           dangerous-clean-slate: false
 
           exclude: |
-            **/.git*
+            **/.git/**
             **/.github/**
             **/.phpunit.cache/**
             **/tests/**
