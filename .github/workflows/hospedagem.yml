@@ -30,7 +30,7 @@ jobs:
             **/.github/**
             **/.phpunit.cache/**
             **/tests/**
-            # **/vendor/**
+            **/vendor/**
             .env
             .gitignore
             comandos.md

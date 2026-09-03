@@ -5,6 +5,11 @@ require_once __DIR__ . '/enderecoDAO.php';
 require_once __DIR__ . '/../model/condominio.php';
 require_once __DIR__ . '/../model/endereco.php';
 
+$isLocal = $_SERVER['SERVER_NAME'] === 'localhost';
+ini_set('display_errors', $isLocal ? '1' : '0');
+ini_set('display_startup_errors', $isLocal ? '1' : '0');
+error_reporting(E_ALL);
+
 class CondominioDAO
 {
     private Banco $bancoDados;

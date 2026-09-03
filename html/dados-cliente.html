@@ -1,116 +1,99 @@
 <!doctype html>
 <html lang="pt-br">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Dados do Cliente</title>
-    <link rel="stylesheet" href="../css/base.css" />
-    <link rel="stylesheet" href="../css/dados-cliente.css" />
-    <link
-      rel="icon"
-      type="image/x-icon"
-      href="/php/projeto-pi-front/assets/logo.webp"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
-    />
-    <link rel="icon" type="image/x-icon" href="../assets/logo.webp" />
-    <script src="https://cdn.jsdelivr.net/npm/inputmask/dist/inputmask.min.js"></script>
-    <script>
-      if (localStorage.getItem("tema") === "escuro") {
-        document.documentElement.classList.add("modo-noturno");
-      }
-      if (localStorage.getItem("contraste") === "alto") {
-        document.documentElement.classList.add("alto-contraste");
-      }
-      if (localStorage.getItem("fontSize")) {
-        document.documentElement.style.fontSize =
-          localStorage.getItem("fontSize");
-      }
-    </script>
-  </head>
 
-  <body>
-    <div id="acessibilidade">
-      <button onclick="aumentarFonte()">A+</button>
-      <button onclick="diminuirFonte()">A-</button>
-      <button onclick="altoContraste()"><i class="fas fa-adjust"></i></button>
-      <button onclick="modoNoturno()"><i class="fas fa-moon"></i></button>
-    </div>
-    <section class="grid-container">
-      <div id="header-cliente">
-        <img src="../assets/logo.webp" alt="" />
-        <div id="dados-basicos"></div>
-        <div id="email-telefone"></div>
-      </div>
-
-      <div id="lala">
-        <div id="menu">
-          <ul>
-            <li>
-              <a href="#" onclick="editarDados()">Editar Dados</a>
-            </li>
-            <li>
-              <a
-                href="#"
-                onclick="alterarSrc(event, 'html/anuncios.html?favoritos=true')"
-                >Ver Favoritos</a
-              >
-            </li>
-            <li>
-              <a
-                href="#"
-                onclick="alterarSrc(event, 'html/atendimento-cliente.html')"
-                >Ver Atendimentos</a
-              >
-            </li>
-            <li>
-              <a href="#" onclick="apagar()">Deletar Conta</a>
-            </li>
-            <li>
-              <a href="#" onclick="trocarRecuperarSenha()"
-                >Trocar/Recuperar Senha</a
-              >
-            </li>
-          </ul>
-        </div>
-
-        <form id="dados"></form>
-      </div>
-    </section>
-
-    <!-- <label id="stt-compras">Imoveis do usuário (links para os anuncios)</label>
-        <div id="imoveis"></div> -->
-    <footer class="">
-      <p>Copyright 2025 - By Lucas Hartmann</p>
-      <a href="https://github.com/lucashartmann" target="_blank"
-        ><i class="fab fa-github"></i
-      ></a>
-    </footer>
-
-    <div vw class="enabled">
-      <div vw-access-button class="active"></div>
-      <div vw-plugin-wrapper>
-        <div class="vw-plugin-top-wrapper"></div>
-      </div>
-    </div>
-    <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
-    <script>
-      new window.VLibras.Widget("https://vlibras.gov.br/app");
-    </script>
-  </body>
-  <!-- <script src="../js/login.js"></script> -->
-  <script type="text/javascript">
-    fetch("nav.html")
-      .then((response) => response.text())
-      .then((data) => {
-        document.body.insertAdjacentHTML("afterbegin", data);
-      });
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dados do Cliente</title>
+  <link rel="stylesheet" href="../css/base.css" />
+  <link rel="stylesheet" href="../css/dados-cliente.css" />
+  <link rel="icon" type="image/x-icon" href="/php/projeto-pi-front/assets/logo.webp" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" />
+  <link rel="icon" type="image/x-icon" href="../assets/logo.webp" />
+  <script src="https://cdn.jsdelivr.net/npm/inputmask/dist/inputmask.min.js"></script>
+  <script>
+    if (localStorage.getItem("tema") === "escuro") {
+      document.documentElement.classList.add("modo-noturno");
+    }
+    if (localStorage.getItem("contraste") === "alto") {
+      document.documentElement.classList.add("alto-contraste");
+    }
+    if (localStorage.getItem("fontSize")) {
+      document.documentElement.style.fontSize =
+        localStorage.getItem("fontSize");
+    }
   </script>
-  <script type="module" src="../js/modules/utils.js"></script>
-  <script type="module" src="../js/modules/usuario.js"></script>
-  <script type="module" src="../js/base.js"></script>
-  <script type="module" src="js/modules/notificacoes.js"></script>
-  <script type="module" src="../js/dados-cliente.js"></script>
+</head>
+
+<body>
+  <div id="acessibilidade">
+    <button onclick="aumentarFonte()">A+</button>
+    <button onclick="diminuirFonte()">A-</button>
+    <button onclick="altoContraste()"><i class="fas fa-adjust"></i></button>
+    <button onclick="modoNoturno()"><i class="fas fa-moon"></i></button>
+  </div>
+  <section class="grid-container">
+    <div id="header-cliente">
+      <img src="../assets/logo.webp" alt="" />
+      <div id="dados-basicos"></div>
+      <div id="email-telefone"></div>
+    </div>
+
+    <div id="lala">
+      <div id="menu">
+        <ul>
+          <li>
+            <a href="#" onclick="editarDados()">Editar Dados</a>
+          </li>
+          <li>
+            <a href="#" onclick="alterarSrc(event, 'html/anuncios.html?favoritos=true')">Ver Favoritos</a>
+          </li>
+          <li>
+            <a href="#" onclick="alterarSrc(event, 'html/atendimento-cliente.html')">Ver Atendimentos</a>
+          </li>
+          <li>
+            <a href="#" onclick="apagar()">Deletar Conta</a>
+          </li>
+          <li>
+            <a href="#" onclick="trocarRecuperarSenha()">Trocar/Recuperar Senha</a>
+          </li>
+        </ul>
+      </div>
+
+      <form id="dados"></form>
+    </div>
+  </section>
+
+  <!-- <label id="stt-compras">Imoveis do usuário (links para os anuncios)</label>
+        <div id="imoveis"></div> -->
+  <footer class="">
+    <p>Copyright 2025 - By Lucas Hartmann</p>
+    <a href="https://github.com/lucashartmann" target="_blank"><i class="fab fa-github"></i></a>
+  </footer>
+
+  <div vw class="enabled">
+    <div vw-access-button class="active"></div>
+    <div vw-plugin-wrapper>
+      <div class="vw-plugin-top-wrapper"></div>
+    </div>
+  </div>
+  <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
+  <script>
+    new window.VLibras.Widget("https://vlibras.gov.br/app");
+  </script>
+</body>
+<!-- <script src="../js/login.js"></script> -->
+<script type="text/javascript">
+  fetch("nav.html")
+    .then((response) => response.text())
+    .then((data) => {
+      document.body.insertAdjacentHTML("afterbegin", data);
+    });
+</script>
+<script type="module" src="../js/modules/utils.js"></script>
+<script type="module" src="../js/modules/usuario.js"></script>
+<script type="module" src="../js/base.js"></script>
+<script type="module" src="js/modules/notificacoes.js"></script>
+<script type="module" src="../js/dados-cliente.js"></script>
+
 </html>

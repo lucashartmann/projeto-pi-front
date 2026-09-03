@@ -14,6 +14,21 @@ window.listarImoveisFavoritados = listarImoveisFavoritados;
 window.nextSlide = nextSlide;
 window.prevSlide = prevSlide;
 
+window.mudarLarguraSidebar = mudarLarguraSidebar;
+
+function mudarLarguraSidebar() {
+    const sidebar = document.getElementById("sidebar-anuncios");
+    console.log("Sidebar:", sidebar);
+    if (sidebar) {
+        if (getComputedStyle(sidebar).display == "flex") {
+            sidebar.style.display = "none";
+        } else {
+            sidebar.style.display = "flex";
+        }
+    }
+
+}
+
 async function filtroOrdenado() {
     seta = event.target;
 
@@ -357,11 +372,11 @@ async function carregarAnuncios() {
                 ${precoAluguel}
                 <p class="descricao">${imovel.anuncio?.descricao}</p>
                 <div class="emojis">
-                    <i class="fas fa-ruler-combined"><p>${imovel.area_total != null ? imovel.area_total : 0.00} m²</p></i> 
-                    <i class="fas fa-bath"><p>${imovel.quantidade_banheiros != null ? imovel.quantidade_banheiros : 0}</p></i> 
-                    <i class="fas fa-couch"><p>${imovel.quantidade_salas != null ? imovel.quantidade_salas : 0}</p></i> 
-                    <i class="fas fa-bed"><p>${imovel.quantidade_quartos != null ? imovel.quantidade_quartos : 0}</p></i>
-                    <i class="fas fa-car"><p>${imovel.quantidade_vagas != null ? imovel.quantidade_vagas : 0}</p></i>
+                    <i class="fas fa-ruler-combined"></i><p>${imovel.area_total != null ? imovel.area_total : 0.00} m²</p> 
+                    <i class="fas fa-bath"></i><p>${imovel.quantidade_banheiros != null ? imovel.quantidade_banheiros : 0}</p></i> 
+                    <i class="fas fa-couch"></i><p>${imovel.quantidade_salas != null ? imovel.quantidade_salas : 0}</p></i> 
+                    <i class="fas fa-bed"></i><p>${imovel.quantidade_quartos != null ? imovel.quantidade_quartos : 0}</p></i>
+                    <i class="fas fa-car"></i><p>${imovel.quantidade_vagas != null ? imovel.quantidade_vagas : 0}</p></i>
                 
                 </div>
            

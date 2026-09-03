@@ -10,6 +10,11 @@ require_once __DIR__ . '/../model/funcionario.php';
 require_once __DIR__ . '/proprietarioImovelDAO.php';
 require_once __DIR__ . '/telefoneDAO.php';
 
+$isLocal = $_SERVER['SERVER_NAME'] === 'localhost';
+ini_set('display_errors', $isLocal ? '1' : '0');
+ini_set('display_startup_errors', $isLocal ? '1' : '0');
+error_reporting(E_ALL);
+
 class PessoaDAO
 {
     private Banco $bancoDados;

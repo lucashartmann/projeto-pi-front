@@ -1,79 +1,76 @@
 <!doctype html>
 <html lang="pt-br">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Relatório</title>
-    <link rel="stylesheet" href="../css/base.css" />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
-    />
-    <link rel="stylesheet" href="../css/relatorio.css" />
-    <link rel="icon" type="image/x-icon" href="../assets/logo.webp" />
-    <script>
-      if (localStorage.getItem("tema") === "escuro") {
-        document.documentElement.classList.add("modo-noturno");
-      }
-      if (localStorage.getItem("contraste") === "alto") {
-        document.documentElement.classList.add("alto-contraste");
-      }
-      if (localStorage.getItem("fontSize")) {
-        document.documentElement.style.fontSize =
-          localStorage.getItem("fontSize");
-      }
-    </script>
-  </head>
 
-  <body>
-    <div id="acessibilidade">
-      <button onclick="aumentarFonte()">A+</button>
-      <button onclick="diminuirFonte()">A-</button>
-      <button onclick="altoContraste()"><i class="fas fa-adjust"></i></button>
-      <button onclick="modoNoturno()"><i class="fas fa-moon"></i></button>
-    </div>
-    <form action="">
-      <label for="imovel">Imóvel:</label>
-      <select id="imovel">
-        <option value="">Selecione um imóvel</option>
-        <option value="1">Imóvel 1</option>
-        <option value="2">Imóvel 2</option>
-      </select>
-      <label for="observacoes">Observações:</label>
-      <textarea id="observacoes"></textarea>
-      <input type="submit" value="Gerar Relatório " />
-    </form>
-    <footer>
-      <p>Copyright 2025 - By Lucas Hartmann</p>
-      <a href="https://github.com/lucashartmann" target="_blank"
-        ><i class="fab fa-github"></i
-      ></a>
-    </footer>
-
-    <div vw class="enabled">
-      <div vw-access-button class="active"></div>
-      <div vw-plugin-wrapper>
-        <div class="vw-plugin-top-wrapper"></div>
-      </div>
-    </div>
-    <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
-    <script>
-      new window.VLibras.Widget("https://vlibras.gov.br/app");
-    </script>
-  </body>
-  <script type="text/javascript">
-    fetch("nav.html")
-      .then((response) => response.text())
-      .then((data) => {
-        const inicio = data.lastIndexOf("<div class=");
-        const fim = data.lastIndexOf("</div>");
-        const substring = data.substring(inicio + 20, fim);
-        data = data.replace(substring, "");
-        document.body.insertAdjacentHTML("afterbegin", data);
-      });
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Relatório</title>
+  <link rel="stylesheet" href="../css/base.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" />
+  <link rel="stylesheet" href="../css/relatorio.css" />
+  <link rel="icon" type="image/x-icon" href="../assets/logo.webp" />
+  <script>
+    if (localStorage.getItem("tema") === "escuro") {
+      document.documentElement.classList.add("modo-noturno");
+    }
+    if (localStorage.getItem("contraste") === "alto") {
+      document.documentElement.classList.add("alto-contraste");
+    }
+    if (localStorage.getItem("fontSize")) {
+      document.documentElement.style.fontSize =
+        localStorage.getItem("fontSize");
+    }
   </script>
-  <script type="module" src="../js/modules/utils.js"></script>
-  <script type="module" src="../js/modules/usuario.js"></script>
-  <script type="module" src="js/modules/notificacoes.js"></script>
-  <script type="module" src="../js/base.js"></script>
+</head>
+
+<body>
+  <div id="acessibilidade">
+    <button onclick="aumentarFonte()">A+</button>
+    <button onclick="diminuirFonte()">A-</button>
+    <button onclick="altoContraste()"><i class="fas fa-adjust"></i></button>
+    <button onclick="modoNoturno()"><i class="fas fa-moon"></i></button>
+  </div>
+  <form action="">
+    <label for="imovel">Imóvel:</label>
+    <select id="imovel">
+      <option value="">Selecione um imóvel</option>
+      <option value="1">Imóvel 1</option>
+      <option value="2">Imóvel 2</option>
+    </select>
+    <label for="observacoes">Observações:</label>
+    <textarea id="observacoes"></textarea>
+    <input type="submit" value="Gerar Relatório " />
+  </form>
+  <footer>
+    <p>Copyright 2025 - By Lucas Hartmann</p>
+    <a href="https://github.com/lucashartmann" target="_blank"><i class="fab fa-github"></i></a>
+  </footer>
+
+  <div vw class="enabled">
+    <div vw-access-button class="active"></div>
+    <div vw-plugin-wrapper>
+      <div class="vw-plugin-top-wrapper"></div>
+    </div>
+  </div>
+  <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
+  <script>
+    new window.VLibras.Widget("https://vlibras.gov.br/app");
+  </script>
+</body>
+<script type="text/javascript">
+  fetch("nav.html")
+    .then((response) => response.text())
+    .then((data) => {
+      const inicio = data.lastIndexOf("<div class=");
+      const fim = data.lastIndexOf("</div>");
+      const substring = data.substring(inicio + 20, fim);
+      data = data.replace(substring, "");
+      document.body.insertAdjacentHTML("afterbegin", data);
+    });
+</script>
+<script type="module" src="../js/modules/utils.js"></script>
+<script type="module" src="../js/modules/usuario.js"></script>
+<script type="module" src="js/modules/notificacoes.js"></script>
+<script type="module" src="../js/base.js"></script>
+
 </html>

@@ -733,13 +733,16 @@ div[vw-access-button] {
     background: none !important;
 }
 
-@media screen and (max-width: 669px) {
+@media screen and (max-width: 768px) {
     #top-nav {
         .so-texto {
             display: none;
         }
     }
+}
 
+@media screen and (max-width: 669px) {
+  
     #acessibilidade {
         right: 0px;
         top: 110px;

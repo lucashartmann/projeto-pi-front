@@ -144,7 +144,7 @@ function inicializarSwiper() {
         breakpoints: {
             0: { slidesPerView: 1 },
             640: { slidesPerView: 2 },
-            768: { slidesPerView: 3 },
+            768: { slidesPerView: 2 },
             1024: { slidesPerView: 4 },
         },
     });

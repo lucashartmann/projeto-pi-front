@@ -1,52 +1,50 @@
 <!doctype html>
 <html lang="pt-br">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Contratos</title>
-    <link rel="stylesheet" href="../css/base.css" />
-    <link rel="stylesheet" href="../css/contratos.css" />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
-    />
-    <link rel="icon" type="image/x-icon" href="../assets/logo.webp" />
-    <script>
-      if (localStorage.getItem("tema") === "escuro") {
-        document.documentElement.classList.add("modo-noturno");
-      }
-      if (localStorage.getItem("contraste") === "alto") {
-        document.documentElement.classList.add("alto-contraste");
-      }
-      if (localStorage.getItem("fontSize")) {
-        document.documentElement.style.fontSize =
-          localStorage.getItem("fontSize");
-      }
-    </script>
-  </head>
 
-  <body>
-    <div id="acessibilidade">
-      <button onclick="aumentarFonte()">A+</button>
-      <button onclick="diminuirFonte()">A-</button>
-      <button onclick="altoContraste()"><i class="fas fa-adjust"></i></button>
-      <button onclick="modoNoturno()"><i class="fas fa-moon"></i></button>
-    </div>
-    <div id="botoes">
-      <button>Alterar</button>
-      <button>Extratos</button>
-      <button>Aluguéis</button>
-      <button>Desc/Acr</button>
-      <button>Reajustes</button>
-      <button>Follow-Up</button>
-      <button>Anexos</button>
-      <button>Lançamento</button>
-      <button>Controles</button>
-      <button>Ocorrências</button>
-    </div>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Contratos</title>
+  <link rel="stylesheet" href="../css/base.css" />
+  <link rel="stylesheet" href="../css/contratos.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" />
+  <link rel="icon" type="image/x-icon" href="../assets/logo.webp" />
+  <script>
+    if (localStorage.getItem("tema") === "escuro") {
+      document.documentElement.classList.add("modo-noturno");
+    }
+    if (localStorage.getItem("contraste") === "alto") {
+      document.documentElement.classList.add("alto-contraste");
+    }
+    if (localStorage.getItem("fontSize")) {
+      document.documentElement.style.fontSize =
+        localStorage.getItem("fontSize");
+    }
+  </script>
+</head>
 
-    <div id="dados">
-      <!-- <div id="header">
+<body>
+  <div id="acessibilidade">
+    <button onclick="aumentarFonte()">A+</button>
+    <button onclick="diminuirFonte()">A-</button>
+    <button onclick="altoContraste()"><i class="fas fa-adjust"></i></button>
+    <button onclick="modoNoturno()"><i class="fas fa-moon"></i></button>
+  </div>
+  <div id="botoes">
+    <button>Alterar</button>
+    <button>Extratos</button>
+    <button>Aluguéis</button>
+    <button>Desc/Acr</button>
+    <button>Reajustes</button>
+    <button>Follow-Up</button>
+    <button>Anexos</button>
+    <button>Lançamento</button>
+    <button>Controles</button>
+    <button>Ocorrências</button>
+  </div>
+
+  <div id="dados">
+    <!-- <div id="header">
             <h3>Contrato</h3>
             <p>23</p>
 
@@ -56,124 +54,123 @@
             <p>Rua Conde de Porto Alegre, 545, 502 - Floresta, Porto Alegre/RS</p>
         </div> -->
 
-      <label for="">Empresa:</label>
-      <p>Summit Imóveis LTDA</p>
+    <label for="">Empresa:</label>
+    <p>Summit Imóveis LTDA</p>
 
-      <label for="">Situação:</label>
-      <p>Ativo - Regular</p>
+    <label for="">Situação:</label>
+    <p>Ativo - Regular</p>
 
-      <label for="">Locador:</label>
-      <p>João da Silva</p>
+    <label for="">Locador:</label>
+    <p>João da Silva</p>
 
-      <label for="">Locatário:</label>
-      <p>Maria Souza</p>
+    <label for="">Locatário:</label>
+    <p>Maria Souza</p>
 
-      <label for="">Data do contrato:</label>
-      <p>15/03/2023</p>
+    <label for="">Data do contrato:</label>
+    <p>15/03/2023</p>
 
-      <label for="">Valor do aluguel:</label>
-      <p>R$ 1.500,00</p>
+    <label for="">Valor do aluguel:</label>
+    <p>R$ 1.500,00</p>
 
-      <label for="">Dia do Vencimento:</label>
-      <p>5</p>
+    <label for="">Dia do Vencimento:</label>
+    <p>5</p>
 
-      <label for="">Tipos de Garantias:</label>
-      <p>Depósito em conta</p>
+    <label for="">Tipos de Garantias:</label>
+    <p>Depósito em conta</p>
 
-      <label for="">Categoria:</label>
-      <p>Sem Categoria</p>
+    <label for="">Categoria:</label>
+    <p>Sem Categoria</p>
 
-      <label for="">Tempo:</label>
-      <p>12 meses</p>
+    <label for="">Tempo:</label>
+    <p>12 meses</p>
 
-      <label for="">Reajuste:</label>
-      <p>31/03/2027</p>
+    <label for="">Reajuste:</label>
+    <p>31/03/2027</p>
 
-      <label for="">Dia fechamento:</label>
-      <p>30</p>
+    <label for="">Dia fechamento:</label>
+    <p>30</p>
 
-      <label for="">Tipos de Renovação:</label>
-      <p>Tempo Inderteminado</p>
+    <label for="">Tipos de Renovação:</label>
+    <p>Tempo Inderteminado</p>
 
-      <label for="">Taxa de Contrato:</label>
-      <p>0,00%</p>
+    <label for="">Taxa de Contrato:</label>
+    <p>0,00%</p>
 
-      <label for="">Término:</label>
-      <p>31/03/2027</p>
+    <label for="">Término:</label>
+    <p>31/03/2027</p>
 
-      <label for="">Cláusula de saída:</label>
-      <p>12 meses</p>
+    <label for="">Cláusula de saída:</label>
+    <p>12 meses</p>
 
-      <label for="">Forma de recebimento:</label>
-      <p>Repasse Automático</p>
+    <label for="">Forma de recebimento:</label>
+    <p>Repasse Automático</p>
 
-      <label for="">Taxa de Administração:</label>
-      <p>10,00%</p>
+    <label for="">Taxa de Administração:</label>
+    <p>10,00%</p>
 
-      <label for="">Indexador Reajuste:</label>
-      <p>IGPM</p>
+    <label for="">Indexador Reajuste:</label>
+    <p>IGPM</p>
+  </div>
+
+  <div id="proprietario">
+    <!-- <label for="" class="header">Dados da pessoa: João da Silva</label> -->
+
+    <label for="">CPF/CNPJ:</label>
+    <p>123.456.789-00</p>
+
+    <label for="">Telefone</label>
+    <p>(51) 99999-9999</p>
+
+    <label for=""><span class="obrigatorio">*</span> Nome Completo</label>
+    <p>João da Silva</p>
+
+    <label for="">Telefone adicional:</label>
+    <!-- <p>(51) 98888-8888</p> -->
+
+    <label for=""><span class="obrigatorio">*</span> E-mail:</label>
+    <p>joao.silva@email.com</p>
+
+    <label for="">Celular:</label>
+    <!-- <p>(51) 97777-7777</p> -->
+
+    <div id="endereco">
+      <label for="">Endereço:</label>
     </div>
 
-    <div id="proprietario">
-      <!-- <label for="" class="header">Dados da pessoa: João da Silva</label> -->
-
-      <label for="">CPF/CNPJ:</label>
-      <p>123.456.789-00</p>
-
-      <label for="">Telefone</label>
-      <p>(51) 99999-9999</p>
-
-      <label for=""><span class="obrigatorio">*</span> Nome Completo</label>
-      <p>João da Silva</p>
-
-      <label for="">Telefone adicional:</label>
-      <!-- <p>(51) 98888-8888</p> -->
-
-      <label for=""><span class="obrigatorio">*</span> E-mail:</label>
-      <p>joao.silva@email.com</p>
-
-      <label for="">Celular:</label>
-      <!-- <p>(51) 97777-7777</p> -->
-
-      <div id="endereco">
-        <label for="">Endereço:</label>
-      </div>
-
-      <div id="outras-informacoes">
-        <label for="">Outras Informações:</label>
-      </div>
+    <div id="outras-informacoes">
+      <label for="">Outras Informações:</label>
     </div>
-    <footer>
-      <p>Copyright 2025 - By Lucas Hartmann</p>
-      <a href="https://github.com/lucashartmann" target="_blank"
-        ><i class="fab fa-github"></i
-      ></a>
-    </footer>
+  </div>
+  <footer>
+    <p>Copyright 2025 - By Lucas Hartmann</p>
+    <a href="https://github.com/lucashartmann" target="_blank"><i class="fab fa-github"></i></a>
+  </footer>
 
-    <div vw class="enabled">
-      <div vw-access-button class="active"></div>
-      <div vw-plugin-wrapper>
-        <div class="vw-plugin-top-wrapper"></div>
-      </div>
+  <div vw class="enabled">
+    <div vw-access-button class="active"></div>
+    <div vw-plugin-wrapper>
+      <div class="vw-plugin-top-wrapper"></div>
     </div>
-    <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
-    <script>
-      new window.VLibras.Widget("https://vlibras.gov.br/app");
-    </script>
-  </body>
-  <script type="text/javascript">
-    fetch("nav.html")
-      .then((response) => response.text())
-      .then((data) => {
-        const inicio = data.lastIndexOf("<div class=");
-        const fim = data.lastIndexOf("</div>");
-        const substring = data.substring(inicio + 20, fim);
-        data = data.replace(substring, "");
-        document.body.insertAdjacentHTML("afterbegin", data);
-      });
+  </div>
+  <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
+  <script>
+    new window.VLibras.Widget("https://vlibras.gov.br/app");
   </script>
-  <script type="module" src="../js/modules/utils.js"></script>
-  <script type="module" src="../js/modules/usuario.js"></script>
-  <script type="module" src="js/modules/notificacoes.js"></script>
-  <script type="module" src="../js/base.js"></script>
+</body>
+<script type="text/javascript">
+  fetch("nav.html")
+    .then((response) => response.text())
+    .then((data) => {
+      const inicio = data.lastIndexOf("<div class=");
+      const fim = data.lastIndexOf("</div>");
+      const substring = data.substring(inicio + 20, fim);
+      data = data.replace(substring, "");
+      document.body.insertAdjacentHTML("afterbegin", data);
+    });
+</script>
+<script type="module" src="../js/modules/utils.js"></script>
+<script type="module" src="../js/modules/usuario.js"></script>
+<script type="module" src="js/modules/notificacoes.js"></script>
+<script type="module" src="../js/base.js"></script>
+
 </html>

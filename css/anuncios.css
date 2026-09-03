@@ -35,18 +35,25 @@
     margin: 0px 20px 20px 20px;
     width: 98%;
     align-items: center;
+    flex-wrap: wrap;
 
-    button:not(.bt-delete) {
+    .fa-arrows-left-right {
+        color: var(--cor-texto-alternativa);
+        font-size: 1.5rem !important;
+        justify-self: center;
+        justify-content: center;
+        justify-items: center;
+        text-align: center !important;
+        border: 2px solid #777;
         width: 9rem;
         height: 2.1rem !important;
         font-weight: 600;
         font-size: 100%;
-        min-width: 90px;
         width: auto;
         height: 30px;
+        min-width: 60px;
+        border-radius: 2% / 30%;
         background-color: var(--background-claro);
-        color: var(--cor-texto-alternativa);
-        padding: 5px;
 
         &:hover {
             background-color: var(--hover);
@@ -54,12 +61,7 @@
         }
     }
 
-    select {
-        width: 10rem;
-        height: 1.6rem;
-    }
-
-     #seta {
+    #seta {
         width: auto;
         height: 1.6rem;
         text-align: center;
@@ -96,17 +98,13 @@
         }
     }
 
-
-     #selecionar-todos {
-        width: 9rem;
-        height: 2.1rem !important;
-        font-weight: 600;
-        font-size: 100%;
-        min-width: 90px;
-        width: auto;
-        height: 30px;
+    select {
+        width: 10rem;
+        height: 1.6rem;
     }
+
 }
+
 
 section {
     display: flex;
@@ -371,9 +369,20 @@ section {
     }
 }
 
+@media screen and (max-width: 857px) {
+    #sidebar-anuncios  {
+        display: none;
+    }
+
+    #anuncios {
+       grid-template-columns: repeat(auto-fit, minmax(30%, 100fr));
+    }
+}
+
+
 @media screen and (max-width: 669px) {
     #sidebar-anuncios {
-        display: none !important;
+        display: none;
     }
 
     #anuncios {
@@ -389,4 +398,10 @@ section {
     #h-filtro {
         flex-wrap: wrap;
      }
+}
+
+@media screen and (max-width: 360px) {
+    #h-filtro select {
+        width: auto;
+    }
 }
