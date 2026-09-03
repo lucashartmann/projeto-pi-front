@@ -77,6 +77,7 @@
         color: var(--cor-texto-alternativa);
         border-radius: 2% / 30%;
         border: 2px solid #777;
+
         select {
             background: none;
             border: none;
@@ -330,7 +331,7 @@ section {
         overflow: hidden;
     }
 
-     p:nth-child(4),
+    p:nth-child(4),
     p:nth-child(5) {
         text-align: center;
         align-self: center;
@@ -370,12 +371,12 @@ section {
 }
 
 @media screen and (max-width: 857px) {
-    #sidebar-anuncios  {
+    #sidebar-anuncios {
         display: none;
     }
 
     #anuncios {
-       grid-template-columns: repeat(auto-fit, minmax(30%, 100fr));
+        grid-template-columns: repeat(auto-fit, minmax(30%, 100fr));
     }
 }
 
@@ -397,11 +398,52 @@ section {
 
     #h-filtro {
         flex-wrap: wrap;
-     }
-}
 
-@media screen and (max-width: 360px) {
-    #h-filtro select {
-        width: auto;
+        select {
+            width: auto;
+        }
+    }
+
+    .emojis {
+        max-width: 100%;
+        gap: 0px !important;
+        justify-content: space-between !important;
+    }
+
+    /* body:not(:has(#sidebar-anuncios.active)) {
+        
+    }  */
+
+
+
+    body:has(#sidebar-anuncios.active) {
+        .anuncio-imovel {
+            flex-wrap: nowrap;
+
+            h2 {
+                font-size: 1.2rem;
+            }
+
+            span {
+                font-size: 1.2rem;
+                width: auto;
+                max-width: 100%;
+                min-width: 0;
+                flex-wrap: wrap;
+                gap: 5px;
+            }
+
+            .emojis {
+                gap: 0px !important;
+                display: grid;
+                grid-template-columns: repeat(4, 1fr);
+                column-gap: 20px !important;
+                row-gap: 10px !important;
+
+                i {
+                    gap: 0px !important;
+                }
+            }
+        }
     }
 }

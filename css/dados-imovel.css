@@ -1,10 +1,11 @@
 #mapa {
-    width: 90%;
+    width: 100%;
     height: 400px;
     border-radius: 8px;
     margin: 60px auto;
     z-index: 0;
     /* margin-left: 30px; */
+    grid-column: 1;
 }
 
 #categoria {
@@ -17,11 +18,24 @@
 
 
 #dados-imovel {
-    display: flex;
+    display: grid;
+    grid-column: repeat(2, 1fr);
     justify-content: center;
     justify-items: center;
     align-self: flex-start;
+    justify-self: center;
+    height: auto;
+    align-self: flex-start;
+    margin-left: 30px;
+    width: 70%;
+    margin-top: 35px;
+    column-gap: 50px;
+
+    &:nth-child(n) {
+        grid-column: 1;
+    }
 }
+
 
 body>hr {
     color: var(--cor-texto-alternativa);
@@ -93,58 +107,51 @@ body>hr {
     }
 }
 
-#div-pai {
-    display: flex;
-    flex-direction: column;
+#p-descricao {
+    width: 100%;
     height: auto;
-    align-self: flex-start;
-    margin-left: 30px;
-    width: 50vw;
-    margin-top: 35px;
-
-    #p-descricao {
-        width: 90%;
-        height: auto;
-        text-align: justify;
-        margin: 0 auto;
-    }
-
-    .div-filtros {
-        display: grid;
-        grid-template-columns: repeat(6, auto);
-        width: 90%;
-        height: auto;
-        margin: 50px auto;
-        margin-top: 12px;
-        row-gap: 20px;
-        justify-items: center;
-        justify-content: center;
-        justify-self: center;
-        align-items: center;
-        align-content: center;
-        align-self: center;
-
-        label {
-            font-size: 1rem !important;
-            font-weight: 500 !important;
-            margin-right: 100px !important;
-            width: 100% !important;
-            text-align: left !important;
-            margin-left: 110px !important;
-            color: var(--cor-texto-alternativa);
-        }
-
-        input[type="checkbox"] {
-            width: 15px;
-            height: 20px;
-
-            &:checked {
-                background-color: green !important;
-            }
-        }
-
-    }
+    text-align: justify;
+    margin: 0 auto;
+    grid-column: 1;
 }
+
+.div-filtros {
+    display: grid;
+    grid-template-columns: repeat(6, auto);
+    width: 100%;
+    height: auto;
+    margin: 50px auto;
+    margin-top: 12px;
+    row-gap: 20px;
+    justify-items: center;
+    justify-content: center;
+    justify-self: center;
+    align-items: center;
+    align-content: center;
+    align-self: center;
+    grid-column: 1;
+
+    label {
+        font-size: 1rem !important;
+        font-weight: 500 !important;
+        margin-right: 100px !important;
+        width: 100% !important;
+        text-align: left !important;
+        margin-left: 110px !important;
+        color: var(--cor-texto-alternativa);
+    }
+
+    input[type="checkbox"] {
+        width: 15px;
+        height: 20px;
+
+        &:checked {
+            background-color: green !important;
+        }
+    }
+
+}
+
 
 #entrar-contato {
     position: sticky !important;
@@ -155,7 +162,8 @@ body>hr {
     align-self: flex-start;
     flex-direction: column;
     top: 15%;
-
+    grid-column: 2;
+    grid-row: 1;
 
     p {
         font-size: 1.2rem;
@@ -184,10 +192,6 @@ body>hr {
         display: flex;
         max-width: 100%;
 
-        &:first-child {
-            margin-top: 30px;
-        }
-
         &:nth-child(n + 2) {
             justify-content: space-between;
         }
@@ -208,6 +212,7 @@ body>hr {
         min-width: 8rem;
         min-height: 3rem;
         margin: 5px;
+        margin-top: 0px;
         border-radius: 0%;
     }
 
@@ -228,8 +233,9 @@ body>hr {
 h3 {
     text-align: center;
     font-size: 150%;
-    margin: 40px auto;
+    margin: 50px auto;
     color: var(--cor-texto-alternativa) !important;
+    grid-column: 1;
 }
 
 p {
@@ -243,9 +249,9 @@ img {
 
 
 .swiper-destaque {
-    width: 90%;
+    width: 100%;
     height: 40rem;
-
+    grid-column: 1;
 
     .swiper-pagination-bullet {
         background: #000;
@@ -316,9 +322,10 @@ img {
 }
 
 .swiper-galeria {
-    width: 90%;
+    width: 100%;
     height: 10rem;
-    margin-top: 50px;
+    margin-top: 20px;
+    grid-column: 1;
 
     .swiper-pagination-bullet {
         background: #000;
@@ -444,18 +451,50 @@ img {
     #dados-imovel {
         display: flex !important;
         flex-direction: column !important;
-        width: 100% !important;
+        width: 90% !important;
+        align-self: auto;
+        justify-self: center;
+        margin: 40px auto;
 
-        #div-pai {
+        .swiper {
             width: 100% !important;
-            margin-left: 0px !important;
+        }
+
+        #mapa {
+            order: 6;
+            width: 100% !important;
+        }
+
+        h3 {
+            order: 2;
+            width: 100% !important;
+        }
+
+        #p-descricao {
+            order: 3;
+            width: 100% !important;
+        }
+
+        h3:nth-of-type(2) {
+            order: 4 !important;
+            width: 100% !important;
+        }
+
+        .div-filtros {
+            order: 4;
         }
 
         #entrar-contato {
+            order: 1 !important;
             width: auto !important;
             margin-left: 0px !important;
-            margin: 0 auto !important;
+            margin: 40px auto !important;
             margin-bottom: 40px !important;
+            position: static !important;
+            width: 100% !important;
         }
+
     }
+
+
 }

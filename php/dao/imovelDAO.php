@@ -658,7 +658,6 @@ class ImovelDAO
             $dados = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
             if (empty($dados)) {
-                error_log("Nenhum imóvel favorito encontrado para o cliente com ID: $idCliente");
                 return [];
             }
 

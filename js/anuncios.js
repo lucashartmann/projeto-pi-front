@@ -22,8 +22,10 @@ function mudarLarguraSidebar() {
     if (sidebar) {
         if (getComputedStyle(sidebar).display == "flex") {
             sidebar.style.display = "none";
+            sidebar.classList.remove("active");
         } else {
             sidebar.style.display = "flex";
+            sidebar.classList.add("active");
         }
     }
 
@@ -94,6 +96,18 @@ async function filtrar() {
                 break;
             case "status":
                 imoveisFiltrados = imoveisFiltrados.filter((imovel) => imovel.status.toLowerCase().includes(valor.toLowerCase()));
+                break;
+            case "rua":
+                imoveisFiltrados = imoveisFiltrados.filter((imovel) => imovel.endereco?.rua.toLowerCase().includes(valor.toLowerCase()));
+                break;
+            case "bairro":
+                imoveisFiltrados = imoveisFiltrados.filter((imovel) => imovel.endereco?.bairro.toLowerCase().includes(valor.toLowerCase()));
+                break;
+            case "cidade":
+                imoveisFiltrados = imoveisFiltrados.filter((imovel) => imovel.endereco?.cidade.toLowerCase().includes(valor.toLowerCase()));
+                break;
+            case "uf":
+                imoveisFiltrados = imoveisFiltrados.filter((imovel) => imovel.endereco?.uf.toLowerCase().includes(valor.toLowerCase()));
                 break;
             case "cep":
                 imoveisFiltrados = imoveisFiltrados.filter((imovel) => imovel.endereco?.cep.toString().includes(valor.replace(/-/g, '').replace(/\_/g, '').trim()));

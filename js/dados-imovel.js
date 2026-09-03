@@ -126,15 +126,15 @@ async function setupDados(imovel) {
     // let imovel = JSON.parse(dados);
     var div = document.getElementById("dados-imovel");
     let imagensHtml = "";
-    let swiperhtml = "";
+    let swiperHtml = "";
     let logoRequisicao = await buscarAnexoPorCaminho("logo.webp");
     let logo = logoRequisicao?.anexo?.caminho || null;
 
     if (imovel.anuncio.imagens && imovel.anuncio.imagens.length > 0) {
-        swiperhtml = "";
+        swiperHtml = "";
         for (let i = 0; i < imovel.anuncio.imagens.length; i++) {
             const imagem = imovel.anuncio.imagens[i];
-            swiperhtml += `<div class="swiper-slide" style="background-image: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), url(${imagem})" onclick="abrirImagem('${imagem}')"></div>`;
+            swiperHtml += `<div class="swiper-slide" style="background-image: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), url(${imagem})" onclick="abrirImagem('${imagem}')"></div>`;
             imagensHtml += `<div class="swiper-slide" style="background-image: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), url(${imagem})" onclick="ativarImagem('${i}')"></div>`;
         }
     }
@@ -148,7 +148,7 @@ async function setupDados(imovel) {
         });
     }
 
-    const divPai = document.getElementById("div-pai");
+    const divPai = document.getElementById("dados-imovel");
     const swiperWrapper = document.querySelector(".swiper-destaque .swiper-wrapper");
     const divTitulo = document.getElementById("div-titulo");
     const divGaleria = document.querySelector(".swiper-galeria .swiper-wrapper");
@@ -160,7 +160,7 @@ async function setupDados(imovel) {
 
     divGaleria.innerHTML = imagensHtml;
     pDescricao.innerText = imovel.anuncio.descricao;
-    swiperWrapper.innerHTML = swiperhtml;
+    swiperWrapper.innerHTML = swiperHtml;
 
     if (imovel.valor_aluguel && imovel.valor_venda) {
         document.querySelectorAll("#div-titulo h3")[1].innerText = formatarValor(imovel.valor_venda) + " | " + formatarValor(imovel.valor_aluguel);

@@ -961,12 +961,13 @@ window.addEventListener("DOMContentLoaded", async () => {
     }
 
     document.querySelectorAll(".sidebar-anuncios").forEach((element) => {
-        element.querySelectorAll("input").forEach((input) => {
+        element.querySelectorAll("input, textarea").forEach((input) => {
             input.addEventListener("input", filtrar);
         });
         element.querySelectorAll("select").forEach((select) => {
             select.addEventListener("change", filtrar);
         });
+        element.textarea
     });
 
     Inputmask("99999-999").mask("#input-cep");

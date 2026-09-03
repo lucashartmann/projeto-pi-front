@@ -145,7 +145,7 @@ export async function excluirImovel(imovelId) {
 
 export async function listarImoveis() {
     try {
-        let caminho = "/php/api/imoveis.php?acao=listar";
+        let caminho = getCaminhoRelativo("/php/api/imoveis.php?acao=listar");
         const resposta = await fetch(caminho)
             .then(async (res) => {
                 const contentType = res.headers.get("content-type");

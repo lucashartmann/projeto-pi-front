@@ -7,6 +7,7 @@
   <title>Cadastro de Imóvel</title>
   <link rel="stylesheet" type="text/css" href="../css/base.css" />
   <link rel="stylesheet" type="text/css" href="../css/cadastro-imovel.css" />
+   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <script src="https://cdn.jsdelivr.net/npm/inputmask/dist/inputmask.min.js"></script>
@@ -489,9 +490,11 @@
         </button>
         <button class="bt-delete" onclick="excluir()">Apagar</button>
         <button onclick="limpar()">Limpar</button>
-        <button class="bt-open" onclick="abrirAnuncio()">
-          Abrir anúncio
-        </button>
+        <a href="" id="link-anuncio">
+          <button class="bt-open" onclick="abrirAnuncio()">
+            Abrir anúncio
+          </button>
+        </a>
         <button onclick="compartilhar('anuncio')">
           <i class="fas fa-share-alt"></i> Compartilhar anúncio
         </button>
@@ -553,6 +556,7 @@
       var script = document.createElement("script");
     });
 </script>
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 <script type="module" src="../js/modules/utils.js"></script>
 <script type="module" src="../js/modules/anexos.js"></script>
 <script type="module" src="../js/modules/historico.js"></script>

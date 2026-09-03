@@ -305,7 +305,7 @@ async function atualizarEndereco() {
     const coordenadas = await buscarCoordenadas(endereco);
 
     if (coordenadas) {
-
+        c
         carregarMapa(
             coordenadas.lat,
             coordenadas.lng
@@ -711,7 +711,6 @@ async function salvar() {
                             forms.forEach(form => form.reset());
                         }
                     }
-
                 })
                 .catch(error => {
                     alert("Erro ao cadastrar imóvel:", error);
@@ -772,6 +771,7 @@ function abrirTab(posicao) {
 
 async function abrirCadastro(imovel) {
     if (imovel) {
+        document.getElementById('link-anuncio').href = `dados-imovel.html?id=${imovel.id}`;
         let containerImagens = document.getElementById("container-imagens");
         prepararContainerArrastavel(containerImagens);
         document.getElementById("ta-ref").value = imovel.id || "";
@@ -883,7 +883,28 @@ async function abrirCadastro(imovel) {
                         container = document.getElementById("container-captador");
                         break;
                 }
-                for (let pessoa of pessoas[chave]) {
+
+                if (!chave in pessoas || !pessoas[chave] || pessoas[chave].length === 0) {
+                    continue;
+                }
+
+                let lista = [];
+
+                if (typeof pessoas[chave] === "string") {
+                    lista.push(JSON.parse(pessoas[chave]));
+                } else if (typeof pessoas[chave] === "object") {
+                    if (Array.isArray(pessoas[chave])) {
+                        lista = pessoas[chave];
+                    } else {
+                        lista.push(pessoas[chave]);
+                    }
+                } else {
+                    lista = pessoas[chave];
+                }
+
+                console.log(lista);
+
+                for (let pessoa of lista) {
                     let div_resultado = document.createElement("div");
                     div_resultado.classList.add("resultado-pessoa");
                     div_resultado.classList.add("pessoa-selecionada");
@@ -991,34 +1012,67 @@ function abrirImagem(src) {
     if (event.target.tagName === "INPUT" && event.target.type === "checkbox") {
         return;
     }
-    const overlay = document.createElement("div");
-    overlay.className = "overlay";
-    overlay.style.cssText = `
-        position: fixed;
-        inset: 0;
-        background: rgba(0, 0, 0, 0.7);
-        z-index: 999;
-    `;
 
-    document.body.appendChild(overlay);
+    if (imovel.anuncio.imagens && imovel.anuncio.imagens.length > 0) {
+        const overlay = document.createElement("div");
+        overlay.className = "overlay";
+        overlay.style.cssText = `
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 999;
+        `;
 
-    var modal = document.createElement("div");
-    modal.id = "modal-imagem";
+        document.body.appendChild(overlay);
 
-    var img = document.createElement("img");
-    img.src = src;
+        var divSwiper = document.createElement("div");
+        divSwiper.classList.add("swiper");
+        console.log(imovel.anuncio.imagens);
+        divSwiper.innerHTML = `
+        <div class="swiper-wrapper">
+            ${imovel.anuncio.imagens.forEach((imagem) => {
+                // TODO: arrumar
+                if (!imagem) {
+                    return '';
+                }
+            return `<div class="swiper-slide" style="background-image: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), url(${imagem})"></div>`;
+        })}
+        </div>
+        <div class="swiper-pagination"></div>
 
-    modal.appendChild(img);
-    document.body.appendChild(modal);
-    modal.addEventListener("click", function () {
-        document.querySelector('.overlay')?.remove();
-        document.body.removeChild(modal);
-    });
-    img.addEventListener("click", function (event) {
-        event.stopPropagation();
-        document.querySelector('.overlay')?.remove();
-        document.body.removeChild(modal);
-    });
+        <div class="swiper-button-prev" onclick="prevSlide()"></div>
+        <div class="swiper-button-next" onclick="nextSlide()"></div>
+    
+        `
+
+        document.body.appendChild(divSwiper);
+
+        var swiper = new Swiper('.swiper', {
+            pagination: {
+                el: '.swiper-pagination',
+                clickable: true
+            },
+            navigation: {
+                nextEl: '.swiper-button-next',
+                prevEl: '.swiper-button-prev'
+            },
+            scrollbar: {
+                el: '.swiper-scrollbar'
+            },
+        });
+
+        divSwiper.addEventListener("click", function () {
+            document.querySelector('.overlay')?.remove();
+            document.body.removeChild(divSwiper);
+        });
+
+
+
+
+    } else {
+        console.warn("Nenhuma imagem disponível para exibir.");
+        return;
+    }
 }
 
 let imagemArrastadaAtual = null;

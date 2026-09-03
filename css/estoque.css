@@ -22,6 +22,11 @@
         width: 14rem;
         height: 3.5vh;
         border-radius: 1% / 30%;
+        padding: 6px;
+    }
+
+    input, textarea {
+        padding: 6px;
     }
 
     #input-pesquisa {
@@ -348,12 +353,22 @@ body {
         color: var(--cor-texto);
     }
 
+    input {
+        font-size: 0.9rem;
+    }
+
     input,
     select,
     textarea {
         align-self: center;
         width: 90%;
         height: 1.8rem;
+        padding: 6px;
+    }
+
+    textarea {
+        font-size: 1rem;
+        padding: 4px;
     }
 
     #container-info-imovel,

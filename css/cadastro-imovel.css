@@ -219,25 +219,26 @@ label {
     #container-info-condominio,
     #container-info-imovel {
         display: grid;
-        grid-template-columns: repeat(8, auto);
-        width: auto;
+        grid-template-columns: repeat(6, auto);
+        width: 90%;
         height: auto;
         margin: 50px auto;
         row-gap: 20px;
         justify-items: center;
-        justify-content: center;
+        /* justify-content: center; */
         justify-self: center;
         align-items: center;
         align-content: center;
         align-self: center;
+        max-width: 100%;
 
         label {
             font-size: 1rem !important;
             font-weight: 500 !important;
-            margin-right: 100px !important;
+            /* margin-right: 100px !important; */
             width: 100% !important;
             text-align: left !important;
-            margin-left: 110px !important;
+            /* margin-left: 110px !important; */
             color: var(--cor-texto);
         }
 
