@@ -1,16 +1,24 @@
 <?php
-class VendaAluguel
+
+require_once __DIR__ . '/cliente.php';
+require_once __DIR__ . '/corretor.php';
+require_once __DIR__ . '/proprietario.php';
+require_once __DIR__ . '/imovel.php';
+
+class Contrato
 {
     private int $id;
     private ?Cliente $cliente;
     private ?Corretor $captador;
     private ?Corretor $corretor;
+    private ?Proprietario $proprietario;
     private ?Imovel $imovel;
-    private ?DateTime $data;
+    private ?DateTime $dataTermino;
     private float $comissaoCaptador;
     private float $comissaoCorretor;
     private ?DateTime $dataCadastro;
     private ?DateTime $dataModificacao;
+    private int $tempo;
 
     public function __init__()
     {
@@ -19,11 +27,33 @@ class VendaAluguel
         $this->captador = NULL;
         $this->corretor = NULL;
         $this->imovel = NULL;
-        $this->data = NULL;
+        $this->dataTermino = NULL;
         $this->comissaoCaptador = 0.0;
         $this->comissaoCorretor = 0.0;
         $this->dataCadastro = NULL;
         $this->dataModificacao = NULL;
+        $this->proprietario = NULL;
+        $this->tempo = 0;
+    }
+
+    public function getTempo()
+    {
+        return $this->tempo;
+    }
+
+    public function setTempo(int $value)
+    {
+        $this->tempo = $value;
+    }
+
+    public function setProprietario(?Proprietario $value)
+    {
+        $this->proprietario = $value;
+    }
+
+    public function getProprietario()
+    {
+        return $this->proprietario;
     }
 
     public function setDataCadastro(?DateTime $data)
@@ -56,14 +86,6 @@ class VendaAluguel
         $this->id = $value;
     }
 
-    // public function get_cpf_cliente(){
-    //     return $this->$cpf_cliente;
-    // }
-
-    // public function set_cpf_cliente(string $value){
-    //     $this->cpf_cliente = $value;
-    // }
-
     public function getCliente()
     {
         return $this->cliente;
@@ -74,13 +96,6 @@ class VendaAluguel
         $this->cliente = $value;
     }
 
-    // public function get_proprietario(){
-    //     return $this->proprietario;
-    // }
-
-    // public function set_proprietario(?Proprietario $value){
-    //     $this->proprietario = $value;
-    // }   
 
     public function getCaptador()
     {
@@ -102,23 +117,25 @@ class VendaAluguel
         $this->corretor = $value;
     }
 
-    // public function get_imovel(){
-    //     return $this->$imovel;
-    // }
+    public function getImovel()
+    {
+        return $this->imovel;
+    }
+
 
     public function setImovel(?Imovel $value)
     {
         $this->imovel = $value;
     }
 
-    public function getData()
+    public function getDataTermino()
     {
-        return $this->data;
+        return $this->dataTermino;
     }
 
-    public function setData(?DateTime $value)
+    public function setDataTermino(?DateTime $value)
     {
-        $this->data = $value;
+        $this->dataTermino = $value;
     }
 
     public function getComissaoCaptador()
@@ -143,6 +160,6 @@ class VendaAluguel
 
     public function __toString()
     {
-        return "VendaAluguel: { id: " . $this->id . ", cliente: " . ($this->cliente ? $this->cliente->getId() : 'null') . ", captador: " . ($this->captador ? $this->captador->getId() : 'null') . ", corretor: " . ($this->corretor ? $this->corretor->getId() : 'null') . ", imovel: " . ($this->imovel ? $this->imovel->getId() : 'null') . ", data: " . ($this->data ? $this->data->format('Y-m-d H:i:s') : 'null') . ", comissaoCaptador: " . $this->comissaoCaptador . ", comissaoCorretor: " . $this->comissaoCorretor . ", dataCadastro: " . ($this->dataCadastro ? $this->dataCadastro->format('Y-m-d H:i:s') : 'null') . ", dataModificacao: " . ($this->dataModificacao ? $this->dataModificacao->format('Y-m-d H:i:s') : 'null') . " }";
+        return "VendaAluguel: { id: " . $this->id . ", cliente: " . ($this->cliente ? $this->cliente->getId() : 'null') . ", captador: " . ($this->captador ? $this->captador->getId() : 'null') . ", corretor: " . ($this->corretor ? $this->corretor->getId() : 'null') . ", imovel: " . ($this->imovel ? $this->imovel->getId() : 'null') . ", dataTermino: " . ($this->dataTermino ? $this->dataTermino->format('Y-m-d H:i:s') : 'null') . ", comissaoCaptador: " . $this->comissaoCaptador . ", comissaoCorretor: " . $this->comissaoCorretor . ", dataCadastro: " . ($this->dataCadastro ? $this->dataCadastro->format('Y-m-d H:i:s') : 'null') . ", dataModificacao: " . ($this->dataModificacao ? $this->dataModificacao->format('Y-m-d H:i:s') : 'null') . " }";
     }
 }

@@ -1,4 +1,4 @@
-import { listarUsuarios } from "./modules/usuarios.js";
+import { listarPessoas } from "./modules/usuarios.js";
 import { listarImoveis, destacarImovel, excluirImovel } from "./modules/imoveis.js";
 import { formatarValor } from "./modules/utils.js";
 
@@ -925,7 +925,7 @@ window.addEventListener("DOMContentLoaded", async () => {
     }
 
     let dados = [];
-    dados = await listarUsuarios();
+    dados = await listarPessoas();
     if (!dados || dados.length === 0) {
         const section = document.getElementById("container-pai");
         const divVazio = document.createElement("div");

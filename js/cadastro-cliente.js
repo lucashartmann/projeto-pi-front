@@ -135,7 +135,7 @@ async function salvar() {
 }
 
 async function apagar() {
-    confirmar = confirm("Tem certeza que deseja excluir este usuário?");
+    let confirmar = confirm("Tem certeza que deseja excluir este usuário?");
     if (usuarioID && confirmar) {
         try {
             let caminho = getCaminhoRelativo("/php/api/usuarios.php?acao=apagar&id=" + usuarioID);

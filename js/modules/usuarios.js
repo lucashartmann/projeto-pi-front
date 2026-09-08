@@ -43,7 +43,7 @@ export async function listarPessoas(tipo) {
             // .then(res => console.log(res))
             .then(async (res) => {
                 if (res.erro) {
-                    alert("Erro ao listar atendimentos: " + res.erro);
+                    alert("Erro ao listar pessoas: " + res.erro);
                     return null;
                 }
                 const contentType = res.headers.get("content-type");
@@ -58,7 +58,7 @@ export async function listarPessoas(tipo) {
             })
             .then(async (data) => {
                 if (data.status == "erro") {
-                    console.error("Erro ao listar usuários: " + data.mensagem);
+                    console.error("Erro ao listar pessoas: " + data.mensagem);
                     return null;
                 }
                 return await data;
@@ -71,43 +71,6 @@ export async function listarPessoas(tipo) {
         return resposta;
 
     } catch (error) {
-        console.error("Falha ao conectar com o backend:", erro);
-        return null;
-    }
-}
-
-
-export async function listarUsuarios() {
-    try {
-        let caminho = getCaminhoRelativo("/php/api/usuarios.php?acao=listar");
-        const resposta = await fetch(caminho)
-            .then(async (res) => {
-                if (res.erro) {
-                    console.error("Erro ao listar usuários: " + res.erro);
-                    return null;
-                }
-                const contentType = res.headers.get("content-type");
-                if (contentType && contentType.includes("application/json")) {
-                    return await res.json();
-                } else {
-                    const texto = await res.text();
-                    console.error("Resposta não é JSON:", texto);
-                    return null;
-                }
-            })
-            .then(async (data) => {
-                if (data.status == "erro") {
-                    console.error("Erro ao listar usuários: " + data.mensagem);
-                    return null;
-                }
-                return data;
-            })
-            .catch(erro => {
-                console.error("Falha ao conectar com o backend:", erro);
-                return null;
-            });
-        return resposta;
-    } catch (erro) {
         console.error("Falha ao conectar com o backend:", erro);
         return null;
     }

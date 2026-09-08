@@ -305,7 +305,7 @@ async function atualizarEndereco() {
     const coordenadas = await buscarCoordenadas(endereco);
 
     if (coordenadas) {
-        c
+        
         carregarMapa(
             coordenadas.lat,
             coordenadas.lng
@@ -315,6 +315,8 @@ async function atualizarEndereco() {
 }
 
 async function editarPessoa(tipo) {
+
+    document.querySelector('.overlay')?.remove();
 
     if (tipo !== "PROPRIETARIO" && tipo !== "CORRETOR" && tipo !== "CAPTADOR") {
         alert("Tipo de pessoa inválido!");
@@ -332,6 +334,7 @@ async function editarPessoa(tipo) {
     container.classList = "div-dados";
     const click = function (event) {
         if (document.body.contains(container) && !container.contains(event.target)) {
+            document.querySelector('.overlay')?.remove();
 
             const checkboxes = container.querySelectorAll("input[type='checkbox']");
             const selecionados = Array.from(checkboxes).filter(checkbox => checkbox.checked);
@@ -528,6 +531,17 @@ async function editarPessoa(tipo) {
     }
 
     container.classList.add('form-container');
+    const overlay = document.createElement("div");
+    overlay.className = "overlay";
+    overlay.style.cssText = `
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 999;
+        `;
+
+    document.body.appendChild(overlay);
+
     document.body.appendChild(container);
 
 }
@@ -1009,6 +1023,7 @@ async function abrirCadastro(imovel) {
 
 
 function abrirImagem(src) {
+   
     if (event.target.tagName === "INPUT" && event.target.type === "checkbox") {
         return;
     }
@@ -1031,10 +1046,10 @@ function abrirImagem(src) {
         divSwiper.innerHTML = `
         <div class="swiper-wrapper">
             ${imovel.anuncio.imagens.forEach((imagem) => {
-                // TODO: arrumar
-                if (!imagem) {
-                    return '';
-                }
+            // TODO: arrumar
+            if (!imagem) {
+                return '';
+            }
             return `<div class="swiper-slide" style="background-image: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), url(${imagem})"></div>`;
         })}
         </div>

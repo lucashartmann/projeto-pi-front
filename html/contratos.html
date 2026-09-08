@@ -24,27 +24,135 @@
 </head>
 
 <body>
+
+  <div id="h-buttons">
+    <button>Salvar</button>
+    <button>Apagar</button>
+    <button onclick="montarConsulta()">Consultar</button>
+  </div>
+
+  <div id="resultado" style="display: none;">
+    
+  </div>
+
+  <div id="pai">
+    <form id="campo-dados">
+
+      <div class="operacoes">
+        <label class="check-card">
+          <input type="checkbox" name="aluguel" id="aluguel">
+          <span>Aluguel</span>
+        </label>
+
+        <label class="check-card">
+          <input type="checkbox" name="venda" id="venda">
+          <span>Venda</span>
+        </label>
+      </div>
+
+      <div class="form-grid">
+
+        <div class="campo campo-imovel">
+          <label for="select-imovel">Imóvel</label>
+          <select name="imovel" id="select-imovel" required>
+            <option value="">Selecione uma opção...</option>
+          </select>
+        </div>
+
+        <div class="campo">
+          <label for="select-proprietario">Proprietário do Imóvel</label>
+          <select name="proprietario" id="select-proprietario" required>
+            <option value="">Selecione uma opção...</option>
+          </select>
+        </div>
+
+        <div class="campo">
+          <label for="select-locador">Locador/Comprador</label>
+          <select name="locador" id="select-locador" required>
+            <option value="">Selecione uma opção...</option>
+          </select>
+        </div>
+
+        <div class="campo tempo">
+          <label for="tempo">Tempo de Contrato</label>
+
+          <div class="input-group">
+            <input type="number" id="tempo" name="tempo" min="1" required>
+
+            <select name="tipo-tempo" aria-label="Unidade de tempo">
+              <option value="meses">Meses</option>
+              <option value="anos">Anos</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="campo">
+          <label for="termino" >Data de Término do contrato</label>
+          <input type="date" id="termino" name="termino" required>
+        </div>
+
+        <div class="campo valor">
+          <label for="valor-aluguel">Valor Aluguel</label>
+
+          <div class="valor-group">
+            <input type="text" id="valor-aluguel" name="valor-aluguel" placeholder="R$ 0,00" disabled>
+
+            <label class="check-inline">
+              <input type="checkbox" id="mesmo-aluguel" name="mesmo-aluguel" disabled>
+              <span>Mesmo do imóvel</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="campo valor">
+          <label for="valor-venda">Valor Venda</label>
+
+          <div class="valor-group">
+            <input type="text" id="valor-venda" name="valor-venda" placeholder="R$ 0,00" disabled>
+
+            <label class="check-inline">
+              <input type="checkbox" id="mesmo-venda" name="mesmo-venda" disabled>
+              <span>Mesmo do imóvel</span>
+            </label>
+          </div>
+        </div>
+
+      </div>
+
+      <textarea name="observacoes" id="observacoes" placeholder="Observações..."></textarea>
+
+    </form>
+  </div>
+
+  <div id="container-anexos" class="container">
+    <header>
+      <label for="">Anexos:</label>
+      <button class="bt-adicionar-anexos" onclick="adicionarAnexo(event)">
+        Adicionar
+      </button>
+      <button class="selecionar-todos" onclick="selecionarTodos(event)">
+        Selecionar Todos
+      </button>
+      <button class="abrir-multiplos" onclick="abrirMultiplosAnexos(event)">
+        Abrir
+      </button>
+      <button class="apagar-multiplos" onclick="apagarMultiplos(event)">
+        Apagar
+      </button>
+      <p id="contador-documentos">0 anexos</p>
+    </header>
+  </div>
+
   <div id="acessibilidade">
     <button onclick="aumentarFonte()">A+</button>
     <button onclick="diminuirFonte()">A-</button>
     <button onclick="altoContraste()"><i class="fas fa-adjust"></i></button>
     <button onclick="modoNoturno()"><i class="fas fa-moon"></i></button>
   </div>
-  <div id="botoes">
-    <button>Alterar</button>
-    <button>Extratos</button>
-    <button>Aluguéis</button>
-    <button>Desc/Acr</button>
-    <button>Reajustes</button>
-    <button>Follow-Up</button>
-    <button>Anexos</button>
-    <button>Lançamento</button>
-    <button>Controles</button>
-    <button>Ocorrências</button>
-  </div>
+  
 
-  <div id="dados">
-    <!-- <div id="header">
+  <!-- <div id="dados"> -->
+  <!-- <div id="header">
             <h3>Contrato</h3>
             <p>23</p>
 
@@ -54,7 +162,7 @@
             <p>Rua Conde de Porto Alegre, 545, 502 - Floresta, Porto Alegre/RS</p>
         </div> -->
 
-    <label for="">Empresa:</label>
+  <!-- <label for="">Empresa:</label>
     <p>Summit Imóveis LTDA</p>
 
     <label for="">Situação:</label>
@@ -110,12 +218,12 @@
 
     <label for="">Indexador Reajuste:</label>
     <p>IGPM</p>
-  </div>
+  </div> -->
 
-  <div id="proprietario">
-    <!-- <label for="" class="header">Dados da pessoa: João da Silva</label> -->
+  <!-- <div id="proprietario"> -->
+  <!-- <label for="" class="header">Dados da pessoa: João da Silva</label> -->
 
-    <label for="">CPF/CNPJ:</label>
+  <!-- <label for="">CPF/CNPJ:</label>
     <p>123.456.789-00</p>
 
     <label for="">Telefone</label>
@@ -124,23 +232,23 @@
     <label for=""><span class="obrigatorio">*</span> Nome Completo</label>
     <p>João da Silva</p>
 
-    <label for="">Telefone adicional:</label>
-    <!-- <p>(51) 98888-8888</p> -->
+    <label for="">Telefone adicional:</label> -->
+  <!-- <p>(51) 98888-8888</p> -->
 
-    <label for=""><span class="obrigatorio">*</span> E-mail:</label>
+  <!-- <label for=""><span class="obrigatorio">*</span> E-mail:</label>
     <p>joao.silva@email.com</p>
 
-    <label for="">Celular:</label>
-    <!-- <p>(51) 97777-7777</p> -->
+    <label for="">Celular:</label> -->
+  <!-- <p>(51) 97777-7777</p> -->
 
-    <div id="endereco">
+  <!-- <div id="endereco">
       <label for="">Endereço:</label>
     </div>
 
     <div id="outras-informacoes">
       <label for="">Outras Informações:</label>
     </div>
-  </div>
+  </div> -->
   <footer>
     <p>Copyright 2025 - By Lucas Hartmann</p>
     <a href="https://github.com/lucashartmann" target="_blank"><i class="fab fa-github"></i></a>
@@ -170,7 +278,10 @@
 </script>
 <script type="module" src="../js/modules/utils.js"></script>
 <script type="module" src="../js/modules/usuario.js"></script>
+<script type="module" src="../js/modules/usuarios.js"></script>
+<script type="module" src="../js/modules/imoveis.js"></script>
 <script type="module" src="js/modules/notificacoes.js"></script>
 <script type="module" src="../js/base.js"></script>
+<script type="module" src="../js/contratos.js"></script>
 
 </html>
