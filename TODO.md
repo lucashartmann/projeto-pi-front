@@ -11,7 +11,7 @@
 - [ ] `PHP` <font color=yellow>[verificar]</font> <font color=green>[BAIXO]</font> Quando eu cadastro uma imagem ao imovel, ele remove as imagens de todos os imóveis pré cadastrados pelo **init** na tabela midia_anuncio
 - [ ] `PHP` <font color=green>[BAIXO]</font>
       Tem algum problema no cadastro de filtros no **init**, ele está cadastrando varios filtos em uma só row, e filtros duplicados.
-
+ 
 ## Geral:
 
 - [ ] `CSS` <font color=red>[ALTO]</font> Mudar fonte
@@ -28,6 +28,8 @@
 
 ### Cadastro de imóvel:
 
+- [ ] `JS` <font color=red>[ALTO]</font> Melhorar o arrasto das imagens
+- [ ] `JS` <font color=red>[ALTO]</font> Melhorar visualização dos documentos (gerar imagem)
 - [ ] `JS` <font color=red>[ALTO]</font> Implementar swiper ao abrir imagem como é no dados-imovel.js
 - [ ] `JS` <font color=yellow>[MÉDIO]</font> Abrir multiplas pessoas, apagar, midias e etc
 - [ ] `JS` <font color=yellow>[MÉDIO]</font> Atualizar o mapa depois de ter cep e numero

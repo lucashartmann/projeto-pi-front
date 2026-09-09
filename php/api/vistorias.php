@@ -1,7 +1,7 @@
 <?php
 
 
-require_once __DIR__ . '/../controllers/visitaController.php';
+require_once __DIR__ . '/../controllers/vistoriaController.php';
 require_once __DIR__ . '/../model/seguranca.php';
 
 
@@ -12,7 +12,8 @@ ini_set('display_errors', $isLocal ? '1' : '0');
 ini_set('display_startup_errors', $isLocal ? '1' : '0');
 error_reporting(E_ALL);
 $acao = $_GET['acao'] ?? '';
-$controller = new VisitaController();
+$controller = new VistoriaController();
+
 
 switch ($acao) {
 
@@ -37,3 +38,5 @@ if (!headers_sent()) {
 } else {
     error_log("Erro: Cabeçalhos já enviados, não é possível enviar a resposta JSON.");
 }
+
+

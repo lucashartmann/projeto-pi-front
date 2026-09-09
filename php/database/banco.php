@@ -302,7 +302,7 @@ class Banco extends PDO
                 id_imovel INTEGER NULL,
                 id_corretor INTEGER NULL,
                 data DATETIME NULL,
-                status VARCHAR(255) NULL,
+                nome VARCHAR(255) NULL,
                 FOREIGN KEY (id_cliente) 
                     REFERENCES cliente(id_pessoa) 
                     ON DELETE CASCADE,
@@ -317,10 +317,15 @@ class Banco extends PDO
             "CREATE TABLE IF NOT EXISTS vistoria (
                 id INTEGER PRIMARY KEY AUTO_INCREMENT,
                 id_imovel INTEGER NULL,
+                id_vistoriador INTEGER NULL,
                 data DATETIME NULL,
-                status VARCHAR(255) NULL,
+                relatorio TEXT NULL,
+                nome VARCHAR(255) NULL,
                 FOREIGN KEY (id_imovel) 
                     REFERENCES imovel(id) 
+                    ON DELETE CASCADE,
+                FOREIGN KEY (id_vistoriador) 
+                    REFERENCES funcionario(id_pessoa) 
                     ON DELETE CASCADE
             )",
 

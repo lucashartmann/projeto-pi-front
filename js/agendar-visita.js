@@ -53,7 +53,8 @@ async function calendar() {
   });
 };
 
-async function salvarEvento(data) {
+async function salvarEvento(dataRecebida) {
+
   let div = document.querySelector(".mensagem");
   let mensagem = "";
 
@@ -78,14 +79,15 @@ async function salvarEvento(data) {
     return;
   }
 
-  let caminhoPhp = NULL;
+  let caminhoPhp = '';
 
-  switch (usuario) {
-    case "CORRETOR:":
-      caminhoPhp = "/php/api/visitas.php?acao=cadastrar_visita";
+  switch (usuario.tipo) {
+    case "CORRETOR":
+      console.log("Caminho PHP para corretor");
+      caminhoPhp = "/php/api/visitas.php?acao=cadastrar";
       break;
-    case "VISTORIADOR:":
-      caminhoPhp = "/php/api/visitas.php?acao=cadastrar_vistoria";
+    case "VISTORIADOR":
+      caminhoPhp = "/php/api/vistorias.php?acao=cadastrar";
       break;
     default:
       div.classList.add("erro");
@@ -106,7 +108,7 @@ async function salvarEvento(data) {
       headers: {
         "Content-Type": "application/json"
       },
-      body: JSON.stringify(data)
+      body: JSON.stringify(dataRecebida)
     })
       .then(async response => {
         const contentType = response.headers.get("content-type");
@@ -135,6 +137,7 @@ async function salvarEvento(data) {
           div.classList.add("sucesso");
           div.classList.remove("erro");
           mensagem = "Evento cadastrado com sucesso: " + data.mensagem;
+          adicionarEventoAoCalendario(dataRecebida);
         }
 
       })
@@ -166,28 +169,42 @@ function adicionarEventoAoCalendario(evento) {
   this.event.preventDefault();
 }
 
-document.addEventListener("submit", function (e) {
-  if (!e.target.matches(".form-container form")) return;
-  if (!dataSelecionada) {
-    alert("Selecione uma data no calendário antes de agendar a visita.");
-    return;
-  }
-
-  e.preventDefault();
-
-  const formData = new FormData(e.target);
-  const data = {
+document.querySelector('form')?.addEventListener('submit', function (e) {
+  event.preventDefault();
+  let formData = new FormData(e.target);
+  let data = {
     nome: formData.get("nome"),
     data: formData.get("data"),
     hora: formData.get("hora"),
-    imovel: formData.get("imovel")
+    imovel: formData.get("imovel")?.split('-')[0].trim(),
+    cliente: formData.get("cliente")?.split('-')[0].trim(),
+    enviarEmail: formData.get("confirmar") === "on" ? true : false
   };
-
-  adicionarEventoAoCalendario(data);
-  // salvarEvento(data); // quando quiser salvar no backend
-  e.target.closest(".form-container")?.remove();
-  document.querySelector('.overlay')?.remove();
+  salvarEvento(data);
 });
+
+// document.addEventListener("submit", function (e) {
+//   if (!e.target.matches(".form-container form")) return;
+//   if (!dataSelecionada) {
+//     alert("Selecione uma data no calendário antes de agendar a visita.");
+//     return;
+//   }
+
+//   e.preventDefault();
+
+//   const formData = new FormData(e.target);
+//   const data = {
+//     nome: formData.get("nome"),
+//     data: formData.get("data"),
+//     hora: formData.get("hora"),
+//     imovel: formData.get("imovel")
+//   };
+
+//   adicionarEventoAoCalendario(data);
+//   // salvarEvento(data); // quando quiser salvar no backend
+//   e.target.closest(".form-container")?.remove();
+//   document.querySelector('.overlay')?.remove();
+// });
 
 document.addEventListener('DOMContentLoaded', async function () {
   calendar();
@@ -234,4 +251,12 @@ document.addEventListener('DOMContentLoaded', async function () {
     `<option value="${imovel.id}">${imovel.id} - ${imovel.endereco?.rua}, ${imovel.endereco?.numero}/${imovel.endereco?.complemento}</option>`
   ).join('')}
   `;
+
+  let usuario = usuarioLogado || await carregarUser();
+
+  if (usuario.tipo == "VISTORIADOR") {
+    document.querySelector('.cliente-separator').style.display = "none";
+    document.querySelector('.checkbox-container label').innerHTML = "Mandar email para proprietário?";
+  }
+
 });

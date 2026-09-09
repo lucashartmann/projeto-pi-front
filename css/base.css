@@ -81,6 +81,7 @@
 .mensagem.erro {
     border-left: 5px solid red;
     background-color: rgb(151, 24, 24);
+    color: white;
 }
 
 .fa-github {

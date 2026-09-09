@@ -10,13 +10,27 @@ class Vistoria
     private ?Imovel $imovel;
     private ?DateTime $data;
     private ?string $relatorio;
+    private ?string $nome;
 
-    public function __construct()
+    public function __construct(?Funcionario $vistoriador, ?Imovel $imovel, ?DateTime $data, ?string $relatorio, ?string $nome)
     {
-        $this->vistoriador = NULL;
-        $this->imovel = NULL;
-        $this->data = NULL;
-        $this->relatorio = NULL;
+        $this->vistoriador = $vistoriador;
+        $this->imovel = $imovel;
+        $this->data = $data;
+        $this->relatorio = $relatorio;
+        $this->nome = $nome;
+    }
+    
+    public function getNome(): ?string
+    {
+        return $this->nome;
+    }
+
+    public function setNome(?string $nome): self
+    {
+        $this->nome = $nome;
+
+        return $this;
     }
 
     public function getId()

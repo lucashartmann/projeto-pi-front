@@ -6,14 +6,28 @@ class Visita
     private ?Imovel $imovel;
     private ?Corretor $corretor;
     private ?DateTime $data;
+    private ?string $nome;
 
-    public function __construct()
+    public function __construct(?CLiente $cliente, ?Imovel $imovel, ?Corretor $corretor, ?DateTime $data, ?string $nome)
     {
-        $this->cliente = NULL;
-        $this->imovel = NULL;
-        $this->corretor = NULL;
+        $this->cliente = $cliente;
+        $this->imovel = $imovel;
+        $this->corretor = $corretor;
+        $this->data = $data;
+        $this->nome = $nome;
     }
 
+    public function getNome(): ?string
+    {
+        return $this->nome;
+    }
+
+    public function setNome(?string $nome): self
+    {
+        $this->nome = $nome;
+
+        return $this;
+    }
 
     public function getData(): ?DateTime
     {
