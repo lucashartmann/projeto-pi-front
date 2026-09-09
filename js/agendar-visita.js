@@ -133,6 +133,16 @@ async function calendar() {
     handleWindowResize: true,
     width: $('#pai-calendario').width(),
 
+    eventClick: function (event, jsEvent, view) {
+      document.querySelector('#container-dados h2').textContent = "Agendar visita para" + " " + event.start.format('YYYY-MM-DD');
+      document.querySelector('form[name="agendar-visita"] input[name="nome"]').value = event.title;
+      document.querySelector('form[name="agendar-visita"] input[name="hora"]').value = event.start.format('HH:mm');
+      document.querySelector('form[name="agendar-visita"] input[name="data"]').value = event.start.format('YYYY-MM-DD');
+      document.querySelector('form[name="agendar-visita"] input[name="imovel"]').value = event.imovel || '';
+      document.querySelector('form[name="agendar-visita"] input[name="cliente"]').value = event.cliente || '';
+      // TODO: terminar
+    },
+
     events: eventosCalendario,
 
     dayClick: function (date) {
