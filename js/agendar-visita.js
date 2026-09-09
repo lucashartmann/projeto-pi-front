@@ -2,6 +2,8 @@ import { listarImoveis } from "./modules/imoveis.js";
 import { usuarioLogado, carregarUser } from "./modules/usuario.js";
 import { listarPessoas } from "./modules/usuarios.js";
 import { getCaminhoRelativo } from "./modules/utils.js";
+import { cadastrarVisita, listarVisitas } from "./modules/visitas.js";
+import { cadastrarVistoria, listarVistorias } from "./modules/vistorias.js";
 
 window.listarImoveis = listarImoveis;
 let imoveisCache = [];
@@ -10,81 +12,10 @@ let usuariosCache = [];
 let dataSelecionada = null;
 let eventosCalendario = [];
 
-
-async function listarVisitas() {
-  try {
-    let caminho = getCaminhoRelativo("/php/api/visitas.php?acao=listar_por_corretor");
-    const resposta = await fetch(caminho)
-      .then(async (res) => {
-        const contentType = res.headers.get("content-type");
-        if (res.erro) {
-          console.error("Erro ao listar visitas: " + res.erro);
-          return null;
-        }
-        if (contentType && contentType.includes("application/json")) {
-          return await res.json();
-        } else {
-          const texto = await res.text();
-          console.error("Resposta não é JSON:", texto);
-          return null;
-        }
-      })
-      .then(async (data) => {
-        if (data.status == "erro") {
-          console.error(data.mensagem);
-          return null;
-        }
-        return data;
-      })
-      .catch(erro => {
-        console.error("Falha ao conectar com o backend:", erro);
-        return null;
-      });
-
-    return resposta;
-  } catch (erro) {
-    console.error("Falha ao conectar com o backend:", erro);
-    return null;
-  }
-}
-
-async function listarVistorias() {
-  try {
-    let caminho = getCaminhoRelativo("/php/api/vistorias.php?acao=listar_por_vistoriador");
-    const resposta = await fetch(caminho)
-      .then(async (res) => {
-        const contentType = res.headers.get("content-type");
-        if (res.erro) {
-          console.error("Erro ao listar vistorias: " + res.erro);
-          return null;
-        }
-        if (contentType && contentType.includes("application/json")) {
-          return await res.json();
-        } else {
-          const texto = await res.text();
-          console.error("Resposta não é JSON:", texto);
-          return null;
-        }
-      })
-      .then(async (data) => {
-        if (data.status == "erro") {
-          console.error(data.mensagem);
-          return null;
-        }
-        return data;
-      })
-      .catch(erro => {
-        console.error("Falha ao conectar com o backend:", erro);
-        return null;
-      });
-
-    return resposta;
-  } catch (erro) {
-    console.error("Falha ao conectar com o backend:", erro);
-    return null;
-  }
-}
-
+window.listarVisitas = listarVisitas;
+window.listarVistorias = listarVistorias;
+window.cadastrarVisita = cadastrarVisita;
+window.cadastrarVistoria = cadastrarVistoria;
 
 async function calendar() {
   $('#calendar').fullCalendar({
@@ -160,11 +91,11 @@ async function salvarEvento(dataRecebida) {
   let div = document.querySelector(".mensagem");
   let mensagem = "";
 
-  if (!div) {
-    div = document.createElement("div");
-    div.classList.add("mensagem");
-    document.body.appendChild(div);
-  }
+
+  div = document.createElement("div");
+  div.classList.add("mensagem");
+  document.body.appendChild(div);
+
 
   const usuario = usuarioLogado || await carregarUser();
 
@@ -174,22 +105,16 @@ async function salvarEvento(dataRecebida) {
     mensagem = "Usuário não encontrado. Faça login novamente.";
     div.innerText = mensagem;
     div.style.display = "flex";
-
-    setTimeout(() => {
-      div.style.display = "none";
-    }, 3000);
     return;
   }
 
-  let caminhoPhp = '';
 
   switch (usuario.tipo) {
     case "CORRETOR":
-      console.log("Caminho PHP para corretor");
-      caminhoPhp = "/php/api/visitas.php?acao=cadastrar";
+      cadastrarVisita(dataRecebida);
       break;
     case "VISTORIADOR":
-      caminhoPhp = "/php/api/vistorias.php?acao=cadastrar";
+      cadastrarVistoria(dataRecebida);
       break;
     default:
       div.classList.add("erro");
@@ -197,70 +122,9 @@ async function salvarEvento(dataRecebida) {
       mensagem = "Usuário não autorizado para cadastrar eventos.";
       div.innerText = mensagem;
       div.style.display = "flex";
-      setTimeout(() => {
-        div.style.display = "none";
-      }, 3000);
       return;
   }
 
-  let caminho = getCaminhoRelativo(caminhoPhp);
-  try {
-    fetch(caminho, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(dataRecebida)
-    })
-      .then(async response => {
-        const contentType = response.headers.get("content-type");
-        if (response.erro) {
-          div.classList.add("erro");
-          div.classList.remove("sucesso");
-          mensagem = "Erro ao cadastrar evento: " + response.erro;
-        }
-        if (contentType && contentType.includes("application/json")) {
-          return await response.json();
-        } else {
-          const texto = await response.text();
-          div.classList.add("erro");
-          div.classList.remove("sucesso");
-          mensagem = "Resposta inesperada do servidor";
-          console.error("Resposta não é JSON:", texto);
-        }
-      })
-      .then(async data => {
-        if (data.status == "erro") {
-          div.classList.add("erro");
-          div.classList.remove("sucesso");
-          mensagem = "Erro ao cadastrar evento: " + data.mensagem;
-        }
-        else if (data.mensagem) {
-          div.classList.add("sucesso");
-          div.classList.remove("erro");
-          mensagem = "Evento cadastrado com sucesso: " + data.mensagem;
-          adicionarEventoAoCalendario(dataRecebida);
-        }
-
-      })
-      .catch(error => {
-        div.classList.add("erro");
-        div.classList.remove("sucesso");
-        mensagem = "Erro ao cadastrar evento:", error;
-      });
-
-  } catch (error) {
-    div.classList.add("erro");
-    div.classList.remove("sucesso");
-    mensagem = "Erro ao enviar dados do imóvel:" + error;
-  }
-
-  div.innerText = mensagem;
-  div.style.display = "flex";
-
-  setTimeout(() => {
-    div.style.display = "none";
-  }, 3000);
 }
 
 function adicionarEventoAoCalendario(evento) {
@@ -298,8 +162,8 @@ function montarEventos(tipoUsuario) {
         visitas.forEach(visita => {
           adicionarEventoAoCalendario({
             nome: visita.nome,
-            data: visita.data?.split(' ')[0], 
-            hora: visita.data?.split(' ')[1] 
+            data: visita.data?.split(' ')[0],
+            hora: visita.data?.split(' ')[1]
           });
         });
       }
@@ -319,29 +183,6 @@ function montarEventos(tipoUsuario) {
   }
 }
 
-
-// document.addEventListener("submit", function (e) {
-//   if (!e.target.matches(".form-container form")) return;
-//   if (!dataSelecionada) {
-//     alert("Selecione uma data no calendário antes de agendar a visita.");
-//     return;
-//   }
-
-//   e.preventDefault();
-
-//   const formData = new FormData(e.target);
-//   const data = {
-//     nome: formData.get("nome"),
-//     data: formData.get("data"),
-//     hora: formData.get("hora"),
-//     imovel: formData.get("imovel")
-//   };
-
-//   adicionarEventoAoCalendario(data);
-//   // salvarEvento(data); // quando quiser salvar no backend
-//   e.target.closest(".form-container")?.remove();
-//   document.querySelector('.overlay')?.remove();
-// });
 
 document.addEventListener('DOMContentLoaded', async function () {
   calendar();

@@ -51,26 +51,54 @@
     }
 }
 
-.mensagem {
-    display: none;
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+    visibility: visible;
+  }
+  to {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+
+#container-mensagens {
     position: fixed;
     top: 75px;
     right: 15px;
+
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    z-index: 9999;
+
     width: min(400px, calc(100vw - 40px));
+}
+
+.mensagem {
+    display: none;
+
+    width: 100%;
     min-height: 60px;
     max-height: 180px;
+
     box-sizing: border-box;
     padding: 16px 20px;
+
     flex-direction: column;
     justify-content: center;
-    color: black;
-    border: 1px solid var(--hover);
+
+    color: white;
+    border: 1px solid black;
     border-radius: 10px;
     box-shadow: var(--shadow);
-    z-index: 9999;
+
     overflow-y: auto;
     overflow-wrap: anywhere;
     word-break: break-word;
+
+    animation: fadeOut 15s ease forwards;
 }
 
 .mensagem.sucesso {
