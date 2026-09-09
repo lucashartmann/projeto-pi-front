@@ -27,6 +27,11 @@ switch ($acao) {
         $resultado = $controller->cadastrar($data);
         break;
 
+    case "listar_por_vistoriador":
+        Seguranca::verificarAcesso();
+        $resultado = $controller->listarPorVistoriador();
+        break;
+
     default:
         $resultado = (["status" => "erro", "mensagem" => "Ação inválida"]);
         break;

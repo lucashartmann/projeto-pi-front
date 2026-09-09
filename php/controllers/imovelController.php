@@ -27,7 +27,7 @@ error_reporting(E_ALL);
 class ImovelController
 {
 
-    function cadastrarClick()
+    public function cadastrarClick()
     {
         try {
 
@@ -48,7 +48,7 @@ class ImovelController
         }
     }
 
-    function destacar($id)
+    public function destacar($id)
     {
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
@@ -105,7 +105,7 @@ class ImovelController
         }
     }
 
-    function listarDestacados()
+    public function listarDestacados()
     {
         try {
             $imovelDAO = new ImovelDAO();
@@ -124,7 +124,7 @@ class ImovelController
         }
     }
 
-    function apagar(int $id)
+    public function apagar(int $id)
     {
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
@@ -547,7 +547,7 @@ class ImovelController
 
 
 
-    function listar()
+    public function listar()
     {
         try {
             $imovelDAO = new ImovelDAO();
@@ -567,7 +567,7 @@ class ImovelController
     }
 
 
-    function listarDisponiveis()
+    public function listarDisponiveis()
     {
         try {
             $imovelDAO = new ImovelDAO();
@@ -586,7 +586,7 @@ class ImovelController
     }
 
 
-    function buscarPorId($id)
+    public function buscarPorId($id)
     {
         try {
             $imovelDAO = new ImovelDAO();
@@ -605,7 +605,7 @@ class ImovelController
     }
 
 
-    function montarJson(array $listaImoveis)
+    public function montarJson(array $listaImoveis)
     {
         $lista = [];
         foreach ($listaImoveis as $imovel) {

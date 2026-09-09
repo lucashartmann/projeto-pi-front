@@ -11,7 +11,7 @@
 - [ ] `PHP` <font color=yellow>[verificar]</font> <font color=green>[BAIXO]</font> Quando eu cadastro uma imagem ao imovel, ele remove as imagens de todos os imóveis pré cadastrados pelo **init** na tabela midia_anuncio
 - [ ] `PHP` <font color=green>[BAIXO]</font>
       Tem algum problema no cadastro de filtros no **init**, ele está cadastrando varios filtos em uma só row, e filtros duplicados.
- 
+
 ## Geral:
 
 - [ ] `CSS` <font color=red>[ALTO]</font> Mudar fonte
@@ -51,7 +51,15 @@
 
 ### Cadastro de contrato:
 
-- [ ] `JS` `HTML` `CSS` <font color=red>[ALTO]</font> Implementar
+- [ ] `JS` `HTML` `CSS` <font color=red>[ALTO]</font> Poder cadastrar
+- [ ] `JS` `HTML` `CSS` <font color=red>[ALTO]</font> Poder editar e sempre mostrar aviso de certeza
+- [ ] `JS` `HTML` `CSS` <font color=red>[ALTO]</font> Poder remover
+- [ ] `JS` `HTML` `CSS` <font color=red>[ALTO]</font> Poder listar
+- [ ] `JS` `HTML` `CSS` <font color=red>[ALTO]</font> Ao vincular um imovel ao contrato, mostrar aviso se a pessoa for mudar o status no cadastro. Também mudar o status dele para vendido ou alugado
+- [ ] `JS` `HTML` `CSS` <font color=red>[ALTO]</font> Implementar status e mostrar aviso de mudar o status
+- [ ] `JS` `HTML` `CSS` <font color=red>[ALTO]</font> Implementar taxas do captador e do corretor
+- [ ] `JS` `HTML` `CSS` <font color=red>[ALTO]</font> Poder vincular corretor e captador ao contrato
+- [ ] `JS` `HTML` `CSS` <font color=red>[ALTO]</font> Mostrar aviso ao remover ou editar pdf
 
 ### Dados do cliente:
 
@@ -64,5 +72,9 @@
 
 ### Agendar visita:
 
+- [ ] `JS` `PHP` <font color=red>[ALTO]</font> Poder editar o evento ao clicar nele
+- [ ] `JS` `PHP` <font color=red>[ALTO]</font> Poder apagar o evento
+- [ ] `JS` <font color=yellow>[MÉDIO]</font> Remover a letra que fica ao lado da hora
 - [ ] `PHP` `JS` <font color=yellow>[MÉDIO]</font> Mandar email para cliente ou fazer alert caso ele n tenha o email cadastrado
-- [ ] `JS` `HTML` `CSS` `PHP` <font color=yellow>[MÉDIO]</font> Testar
+- [ ] `CSS` <font color=yellow>[MÉDIO]</font> Melhorar visualização do evento
+- [ ] `PHP` `JS` <font color=yellow>[MÉDIO]</font> Testar vistoria

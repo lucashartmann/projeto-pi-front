@@ -29,7 +29,7 @@ error_reporting(E_ALL);
 class loginController
 {
 
-    function marcarComoLido($dados)
+    public function marcarComoLido($dados)
     {
         try {
             if (session_status() === PHP_SESSION_NONE) {
@@ -57,7 +57,7 @@ class loginController
         }
     }
 
-    function montarJsonNotificacoes($notificacoes)
+    public function montarJsonNotificacoes($notificacoes)
     {
         $jsonNotificacoes = [];
         foreach ($notificacoes as $notificacao) {
@@ -75,7 +75,7 @@ class loginController
         ];
     }
 
-    function carregarNotificacoes()
+    public function carregarNotificacoes()
     {
         try {
             if (session_status() === PHP_SESSION_NONE) {
@@ -103,7 +103,7 @@ class loginController
         }
     }
 
-    function carregarAtendimentos()
+    public function carregarAtendimentos()
     {
 
         try {
@@ -129,7 +129,7 @@ class loginController
         }
     }
 
-    function carregarFavoritos()
+    public function carregarFavoritos()
     {
         try {
             if (session_status() === PHP_SESSION_NONE) {
@@ -154,7 +154,7 @@ class loginController
         }
     }
 
-    function favoritarImoveis($data)
+    public function favoritarImoveis($data)
     {
         try {
             $body = file_get_contents("php://input");
@@ -202,7 +202,7 @@ class loginController
         }
     }
 
-    function recuperarSenha($data)
+    public function recuperarSenha($data)
     {
         try {
             $email = $data['email'] ?? '';
@@ -249,7 +249,7 @@ class loginController
         }
     }
 
-    function deslogar()
+    public function deslogar()
     {
         try {
             if (session_status() === PHP_SESSION_NONE) {
@@ -271,7 +271,7 @@ class loginController
         }
     }
 
-    function carregarUsuario()
+    public function carregarUsuario()
     {
         try {
             if (session_status() === PHP_SESSION_NONE) {
@@ -298,7 +298,7 @@ class loginController
         }
     }
 
-    function verificarLogin($data)
+    public function verificarLogin($data)
     {
 
         try {

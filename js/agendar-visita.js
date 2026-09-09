@@ -8,50 +8,142 @@ let imoveisCache = [];
 let proprietariosCache = [];
 let usuariosCache = [];
 let dataSelecionada = null;
+let eventosCalendario = [];
+
+
+async function listarVisitas() {
+  try {
+    let caminho = getCaminhoRelativo("/php/api/visitas.php?acao=listar_por_corretor");
+    const resposta = await fetch(caminho)
+      .then(async (res) => {
+        const contentType = res.headers.get("content-type");
+        if (res.erro) {
+          console.error("Erro ao listar visitas: " + res.erro);
+          return null;
+        }
+        if (contentType && contentType.includes("application/json")) {
+          return await res.json();
+        } else {
+          const texto = await res.text();
+          console.error("Resposta não é JSON:", texto);
+          return null;
+        }
+      })
+      .then(async (data) => {
+        if (data.status == "erro") {
+          console.error(data.mensagem);
+          return null;
+        }
+        return data;
+      })
+      .catch(erro => {
+        console.error("Falha ao conectar com o backend:", erro);
+        return null;
+      });
+
+    return resposta;
+  } catch (erro) {
+    console.error("Falha ao conectar com o backend:", erro);
+    return null;
+  }
+}
+
+async function listarVistorias() {
+  try {
+    let caminho = getCaminhoRelativo("/php/api/vistorias.php?acao=listar_por_vistoriador");
+    const resposta = await fetch(caminho)
+      .then(async (res) => {
+        const contentType = res.headers.get("content-type");
+        if (res.erro) {
+          console.error("Erro ao listar vistorias: " + res.erro);
+          return null;
+        }
+        if (contentType && contentType.includes("application/json")) {
+          return await res.json();
+        } else {
+          const texto = await res.text();
+          console.error("Resposta não é JSON:", texto);
+          return null;
+        }
+      })
+      .then(async (data) => {
+        if (data.status == "erro") {
+          console.error(data.mensagem);
+          return null;
+        }
+        return data;
+      })
+      .catch(erro => {
+        console.error("Falha ao conectar com o backend:", erro);
+        return null;
+      });
+
+    return resposta;
+  } catch (erro) {
+    console.error("Falha ao conectar com o backend:", erro);
+    return null;
+  }
+}
+
 
 async function calendar() {
-  await $('#calendar').fullCalendar({
+  $('#calendar').fullCalendar({
     locale: 'pt-br',
+
     buttonText: {
       today: 'Hoje',
       month: 'Mês',
       week: 'Semana',
       day: 'Dia'
     },
+
     dayNames: [
       'Domingo', 'Segunda', 'Terça', 'Quarta',
       'Quinta', 'Sexta', 'Sábado'
     ],
+
     dayNamesShort: [
       'Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'
     ],
+
     monthNames: [
       'Janeiro', 'Fevereiro', 'Março', 'Abril',
       'Maio', 'Junho', 'Julho', 'Agosto',
       'Setembro', 'Outubro', 'Novembro', 'Dezembro'
     ],
+
     monthNamesShort: [
       'Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun',
       'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'
     ],
+
     header: {
       left: 'prev,next today',
       center: 'title',
       right: 'month,basicWeek,basicDay'
     },
+
     defaultDate: new Date().toISOString().slice(0, 10),
+
     navLinks: true,
     editable: true,
     eventLimit: true,
+
     height: $('#pai-calendario').height(),
     handleWindowResize: true,
     width: $('#pai-calendario').width(),
+
+    events: eventosCalendario,
+
     dayClick: function (date) {
       dataSelecionada = date.format('YYYY-MM-DD');
-      document.querySelector('#container-dados h2').textContent = `Agendar visita para ${dataSelecionada}`;
+
+      document.querySelector('#container-dados h2').textContent =
+        `Agendar visita para ${dataSelecionada}`;
     }
   });
-};
+}
+
 
 async function salvarEvento(dataRecebida) {
 
@@ -162,19 +254,25 @@ async function salvarEvento(dataRecebida) {
 }
 
 function adicionarEventoAoCalendario(evento) {
-  $('#calendar').fullCalendar('renderEvent', {
+  const novoEvento = {
     title: evento.nome,
-    start: evento.data + 'T' + evento.hora
-  });
-  this.event.preventDefault();
+    start: `${evento.data}T${evento.hora}`
+  };
+  eventosCalendario.push(novoEvento);
+  $('#calendar').fullCalendar('renderEvent', novoEvento, true);
 }
 
 document.querySelector('form')?.addEventListener('submit', function (e) {
   event.preventDefault();
   let formData = new FormData(e.target);
+  console.log("Data selecionada:", dataSelecionada);
+  if (!dataSelecionada) {
+    alert("Selecione uma data no calendário antes de agendar a visita.");
+    return;
+  }
   let data = {
     nome: formData.get("nome"),
-    data: formData.get("data"),
+    data: dataSelecionada,
     hora: formData.get("hora"),
     imovel: formData.get("imovel")?.split('-')[0].trim(),
     cliente: formData.get("cliente")?.split('-')[0].trim(),
@@ -182,6 +280,35 @@ document.querySelector('form')?.addEventListener('submit', function (e) {
   };
   salvarEvento(data);
 });
+
+function montarEventos(tipoUsuario) {
+  if (tipoUsuario === "CORRETOR") {
+    listarVisitas().then(visitas => {
+      if (visitas && visitas.length > 0) {
+        visitas.forEach(visita => {
+          adicionarEventoAoCalendario({
+            nome: visita.nome,
+            data: visita.data?.split(' ')[0], 
+            hora: visita.data?.split(' ')[1] 
+          });
+        });
+      }
+    });
+  } else if (tipoUsuario === "VISTORIADOR") {
+    listarVistorias().then(vistorias => {
+      if (vistorias && vistorias.length > 0) {
+        vistorias.forEach(vistoria => {
+          adicionarEventoAoCalendario({
+            nome: vistoria.nome,
+            data: vistoria.data?.split(' ')[0],
+            hora: vistoria.data?.split(' ')[1]
+          });
+        });
+      }
+    });
+  }
+}
+
 
 // document.addEventListener("submit", function (e) {
 //   if (!e.target.matches(".form-container form")) return;
@@ -258,5 +385,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     document.querySelector('.cliente-separator').style.display = "none";
     document.querySelector('.checkbox-container label').innerHTML = "Mandar email para proprietário?";
   }
+
+  montarEventos(usuario.tipo);
 
 });

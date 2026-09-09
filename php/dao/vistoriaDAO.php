@@ -240,16 +240,16 @@ class VistoriaDAO
 
             $pessoaDAO = new PessoaDAO();
             $imovelDAO = new ImovelDAO();
-            $id = $registros['id'] ?? null;
-            $idImovel = $registros['id_imovel'] ?? null;
-            $idVistoriador = $registros['id_vistoriador'] ?? null;
-            $data = $registros['data'] ? new DateTime($registros['data']) : null;
-            $relatorio = $registros['relatorio'] ?? null;
-            $nome = $registros['nome'] ?? null;
-            $imovel = null;
-            $vistoriador = null;
 
             foreach ($registros as $registro) {
+                $id = $registro['id'] ?? null;
+                $idImovel = $registro['id_imovel'] ?? null;
+                $idVistoriador = $registro['id_vistoriador'] ?? null;
+                $data = $registro['data'] ? new DateTime($registro['data']) : null;
+                $relatorio = $registro['relatorio'] ?? null;
+                $nome = $registro['nome'] ?? null;
+                $imovel = null;
+                $vistoriador = null;
                 if ($idImovel) {
                     $dadosImovel = array_filter($registro, function ($key) {
                         return strpos($key, 'imovel_') === 0;

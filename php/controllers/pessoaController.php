@@ -25,7 +25,7 @@ error_reporting(E_ALL);
 class PessoaController
 {
 
-    function montarJson(array $listaUsuarios)
+    public function montarJson(array $listaUsuarios)
     {
 
         if (!$listaUsuarios) {
@@ -80,7 +80,7 @@ class PessoaController
         return ($lista);
     }
 
-    function listar($tipo = null)
+    public function listar($tipo = null)
     {
         try {
             $pessoaDAO = new PessoaDAO();
@@ -91,7 +91,7 @@ class PessoaController
         }
     }
 
-    function atualizar($dados)
+    public function atualizar($dados)
     {
         try {
             if (session_status() === PHP_SESSION_NONE) {
@@ -233,7 +233,7 @@ class PessoaController
         }
     }
 
-    function buscarPorId(int $id)
+    public function buscarPorId(int $id)
     {
         try {
             $pessoaDAO = new PessoaDAO();
@@ -248,7 +248,7 @@ class PessoaController
         }
     }
 
-    function apagar(int $id)
+    public function apagar(int $id)
     {
         try {
             if (session_status() === PHP_SESSION_NONE) {

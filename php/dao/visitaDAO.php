@@ -247,18 +247,23 @@ class VisitaDAO
 
             LEFT JOIN endereco endereco_corretor
                 ON endereco_corretor.id = pessoa_corretor.id_endereco
+
+            LEFT JOIN endereco endereco_cliente
+                ON endereco_cliente.id = pessoa_cliente.id_endereco
             ";
 
     public function __construct()
     {
         $this->bancoDados = Banco::getInstance();
     }
+
+
     public function listarPorCorretor(Funcionario $corretor): array
     {
         try {
 
             $lista = [];
-            $sql = $this->sql . " WHERE id_corretor = :id_corretor";
+            $sql = $this->sql . " WHERE visita.id_corretor = :id_corretor";
             $stmt = $this->bancoDados->prepare($sql);
             $stmt->execute([':id_corretor' => $corretor->getId()]);
             $registros = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -269,18 +274,18 @@ class VisitaDAO
 
             $pessoaDAO = new PessoaDAO();
             $imovelDAO = new ImovelDAO();
-            $id = $registros['id'] ?? null;
-            $idImovel = $registros['id_imovel'] ?? null;
-            $idCliente = $registros['id_cliente'] ?? null;
-            $idCorretor = $registros['id_corretor'] ?? null;
-            $data = $registros['data'] ? new DateTime($registros['data']) : null;
-            $relatorio = $registros['relatorio'] ?? null;
-            $nome = $registros['nome'] ?? null;
-            $imovel = null;
-            $corretor = null;
-            $cliente = null;
 
             foreach ($registros as $registro) {
+                $id = $registro['id'] ?? null;
+                $idImovel = $registro['id_imovel'] ?? null;
+                $idCliente = $registro['id_cliente'] ?? null;
+                $idCorretor = $registro['id_corretor'] ?? null;
+                $data = array_key_exists('data', $registro) && $registro['data'] ? new DateTime($registro['data']) : null;
+                $relatorio = $registro['relatorio'] ?? null;
+                $nome = $registro['nome'] ?? null;
+                $imovel = null;
+                $corretor = null;
+                $cliente = null;
                 if ($idImovel) {
                     $dadosImovel = array_filter($registro, function ($key) {
                         return strpos($key, 'imovel_') === 0;
@@ -371,8 +376,8 @@ class VisitaDAO
 
             return $lista;
         } catch (Exception $e) {
-            error_log("ERRO! vistoriaDAO->listarPorVistoriador: " . $e->getMessage());
-            throw new Exception("Erro ao listar vistorias por vistoriador: " . $e->getMessage());
+            error_log("ERRO! visitaDAO->listarPorCorretor: " . $e->getMessage());
+            throw new Exception("Erro ao listar visitas por corrretor: " . $e->getMessage());
         }
     }
 

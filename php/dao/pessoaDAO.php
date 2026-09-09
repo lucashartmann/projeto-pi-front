@@ -206,7 +206,7 @@ class PessoaDAO
             $pessoa->setEndereco($endereco);
             $pessoa->setSenha($registro['senha']);
             $pessoa->setAtivo($registro["ativo"] !== null ? (bool)$registro["ativo"] : null);
-            $pessoa->setUltimoLogin($registro['ultimo_login']  ? new DateTime($registro['ultimo_login']) : null);
+            $pessoa->setUltimoLogin(isset($registro['ultimo_login']) ? new DateTime($registro['ultimo_login']) : null);
 
             return $pessoa;
         } catch (Exception $e) {

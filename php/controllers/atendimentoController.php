@@ -22,7 +22,7 @@ class AtendimentoController
 {
 
 
-    function atualizarStatus(int $idAtendimento, String $novoStatus)
+    public function atualizarStatus(int $idAtendimento, String $novoStatus)
     {
         try {
             $atendimentoDAO = new AtendimentoDAO();
@@ -44,7 +44,7 @@ class AtendimentoController
         }
     }
 
-    function listar()
+    public function listar()
     {
         try {
             $atendimentoDAO = new AtendimentoDAO();
@@ -59,7 +59,7 @@ class AtendimentoController
     }
 
 
-    function cadastrar(int $idImovel)
+    public function cadastrar(int $idImovel)
     {
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
@@ -109,7 +109,7 @@ class AtendimentoController
         }
     }
 
-    function montarJson(array $listaAtendimentos)
+    public function montarJson(array $listaAtendimentos)
     {
 
         $lista = [];

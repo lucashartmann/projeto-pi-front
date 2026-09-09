@@ -311,7 +311,8 @@ class Banco extends PDO
                     ON DELETE CASCADE,
                 FOREIGN KEY (id_corretor) 
                     REFERENCES corretor(id_funcionario) 
-                    ON DELETE CASCADE
+                    ON DELETE CASCADE,
+                UNIQUE(id_cliente, id_imovel, data)
             )",
 
             "CREATE TABLE IF NOT EXISTS vistoria (
@@ -326,7 +327,8 @@ class Banco extends PDO
                     ON DELETE CASCADE,
                 FOREIGN KEY (id_vistoriador) 
                     REFERENCES funcionario(id_pessoa) 
-                    ON DELETE CASCADE
+                    ON DELETE CASCADE,
+                UNIQUE(id_imovel, id_vistoriador, data)
             )",
 
             "CREATE TABLE IF NOT EXISTS relatorio_vistoria (
