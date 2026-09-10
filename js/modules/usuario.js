@@ -162,7 +162,7 @@ export async function deslogar() {
             console.error("Erro ao deslogar: " + resposta.erro);
             return null;
         }
-        if (!resposta.ok) throw new Error(`HTTP ${resposta.status}`);
+        if (!resposta.ok) console.error(`HTTP ${resposta.status}`);
         const contentType = resposta.headers.get("content-type");
         let dados = null;
         if (contentType && contentType.includes("application/json")) {
@@ -217,7 +217,7 @@ export async function carregarUser() {
             console.error("Erro ao carregar usuário: " + resposta.erro);
             return null;
         }
-        if (!resposta.ok) throw new Error(`HTTP ${resposta.status}`);
+        if (!resposta.ok) console.error(`HTTP ${resposta.status}`);
         const contentType = resposta.headers.get("content-type");
         let dados = null;
         if (contentType && contentType.includes("application/json")) {

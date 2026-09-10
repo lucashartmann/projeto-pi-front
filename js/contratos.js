@@ -16,7 +16,7 @@ async function getOutrosDados(formData) {
         for (let doc of containerDocumentos.querySelectorAll("a")) {
             try {
                 const response = await fetch(doc.href);
-                if (!response.ok) throw new Error("Falha ao buscar o documento");
+                if (!response.ok) console.error("Falha ao buscar o documento");
                 const blob = await response.blob();
                 const nomeArquivo = doc.textContent.trim().split(" ").join("_");
                 formData.append("documentos[]", blob, `${nomeArquivo}`);

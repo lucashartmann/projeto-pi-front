@@ -605,7 +605,7 @@ async function getOutrosDados(formData) {
 
             try {
                 const response = await fetch(img);
-                if (!response.ok) throw new Error("Falha ao buscar o blob");
+                if (!response.ok) console.error("Falha ao buscar o blob");
                 const blob = await response.blob();
                 const extensao = blob.type.split("/")[1] || "webp";
                 formData.append("imagens[]", blob, `imagem.${extensao}`);
@@ -629,7 +629,7 @@ async function getOutrosDados(formData) {
                     continue;
                 }
                 const response = await fetch(doc.href);
-                if (!response.ok) throw new Error("Falha ao buscar o documento");
+                if (!response.ok) console.error("Falha ao buscar o documento");
                 const blob = await response.blob();
                 const nomeArquivo = cartao.dataset.nome || doc.textContent.trim();
                 formData.append("documentos[]", blob, `${nomeArquivo}`);
