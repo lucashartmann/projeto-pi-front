@@ -9,7 +9,8 @@ async function listarAtendimentos() {
         const res = await fetch(caminho);
 
         if (!res.ok) {
-            throw new Error(`HTTP ${res.status}`);
+            console.error(`HTTP ${res.status}`);
+            return null;
         }
 
         if (res.status == "erro") {

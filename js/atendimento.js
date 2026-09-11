@@ -9,7 +9,8 @@ async function listarAtendimentos() {
         const res = await fetch(caminho);
 
         if (!res.ok) {
-            throw new Error(`HTTP ${res.status}`);
+            console.error(`HTTP ${res.status}`);
+            return [];
         }
 
         const contentType = res.headers.get("content-type");
@@ -18,7 +19,7 @@ async function listarAtendimentos() {
             const dados = await res.json();
             if (dados.status === "erro") {
                 console.warn("Erro ao listar atendimentos: " + dados.mensagem);
-                return null;
+                return [];
             }
             else {
                 return dados;
@@ -27,13 +28,13 @@ async function listarAtendimentos() {
             const texto = await res.text();
             console.warn("Resposta inesperada do servidor");
             console.error("Resposta não é JSON:", texto);
-            return null;
+            return [];
         }
 
 
     } catch (erro) {
         console.error("Falha ao conectar com o backend:", erro);
-        return null;
+        return [];
     }
 }
 

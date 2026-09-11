@@ -66,18 +66,15 @@ async function tornarDestaqueMultiplos() {
 
     if (lista_ids.length === 0) {
         let div = document.querySelector(".mensagem");
-        if (!div) {
-            div = document.createElement("div");
-            div.classList.add("mensagem");
-            document.body.appendChild(div);
-        }
+
+        div = document.createElement("div");
+        div.classList.add("mensagem");
+        document.body.appendChild(div);
+
         div.classList.add("erro");
         div.classList.remove("sucesso");
         div.innerText = "Nenhum imóvel selecionado.";
         div.style.display = "flex";
-        setTimeout(() => {
-            div.style.display = "none";
-        }, 3000);
         return;
     }
 
@@ -552,11 +549,11 @@ async function apagarPessoa(usuarioID) {
     let div = document.querySelector(".mensagem");
     let mensagem = "";
 
-    if (!div) {
-        div = document.createElement("div");
-        div.classList.add("mensagem");
-        document.body.appendChild(div);
-    }
+
+    div = document.createElement("div");
+    div.classList.add("mensagem");
+    document.body.appendChild(div);
+
 
     confirmar = confirm("Tem certeza que deseja excluir este usuário?");
     if (usuarioID && confirmar) {
@@ -617,13 +614,9 @@ async function apagarPessoa(usuarioID) {
         mensagem = "Exclusão de usuário cancelada.";
         window.location.href = "estoque.html";
     }
-    
+
     div.innerText = mensagem;
     div.style.display = "flex";
-
-    setTimeout(() => {
-        div.style.display = "none";
-    }, 3000);
 
 }
 

@@ -711,6 +711,7 @@ label {
 
 
 #container-imagens {
+    position: relative;
     margin-top: 50px;
     column-gap: 20px !important;
     row-gap: 20px;
@@ -718,12 +719,15 @@ label {
 
     .imagem-anuncio {
         display: flex;
+        position: relative;
         background-repeat: no-repeat;
         background-size: cover;
         background-position: center;
         width: 100%;
         height: 10rem;
-        display: flex;
+        min-width: 0;
+        cursor: grab;
+        transition: opacity 150ms ease, transform 150ms ease;
 
         input {
             position: absolute;
@@ -739,19 +743,23 @@ label {
         }
     }
 
-    img.imagem-arrastando {
+    .imagem-anuncio.imagem-arrastando {
         opacity: 0.35;
         transform: scale(0.97);
         cursor: grabbing;
     }
 
     .drag-placeholder {
-        width: 15rem;
+        position: absolute;
+        z-index: 2;
+        width: 100%;
         height: 10rem;
         border: 3px dashed rgb(195, 174, 14);
         border-radius: 6px;
         background: rgba(195, 174, 14, 0.08);
         box-sizing: border-box;
+        pointer-events: none;
+        transition: none;
     }
 }
 
@@ -762,6 +770,7 @@ label {
     column-gap: 0px;
 
     .anexo-documento {
+        position: relative;
         background: rgba(36, 30, 30, 0.5);
         backdrop-filter: blur(40px) !important;
         box-shadow: var(--shadow);
@@ -770,11 +779,12 @@ label {
         border: 1px solid rgba(255, 255, 255, 0.15);
         border-radius: 4px;
         min-width: 10rem;
-        min-height: 5rem;
+        min-height: 15rem;
         width: auto;
         height: auto;
         text-align: center;
         display: flex;
+        flex-direction: column;
         align-items: center;
         justify-content: center;
         gap: 10px;
@@ -783,7 +793,64 @@ label {
             background: rgba(255, 255, 255, 0.1);
         }
 
-        a {
+        > input {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            z-index: 2;
+        }
+
+        .anexo-preview {
+            width: 10rem;
+            height: 10rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 3px;
+        }
+
+        .anexo-preview canvas,
+        .anexo-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .anexo-icone {
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--cor-texto);
+        }
+
+        .anexo-detalhes {
+            width: calc(100% - 20px);
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            overflow: hidden;
+        }
+
+        .anexo-nome,
+        .anexo-formato {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .anexo-nome {
+            color: var(--cor-texto);
+            font-weight: 600;
+        }
+
+        .anexo-formato {
+            color: var(--cor-texto-secundaria, #c7c7c7);
+            font-size: 0.8rem;
+            text-transform: uppercase;
+        }
+
+        a.anexo-link {
             width: auto;
             height: auto;
             text-decoration: none;

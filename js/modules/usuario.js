@@ -11,34 +11,34 @@ export async function listarImoveisFavoritados() {
         const resposta = await fetch(caminho)
             .then(async (res) => {
                 if (!res.ok) {
-                    throw new Error(`Erro na requisição: ${res.status}`);
-                    return null;
+                    console.error(`Erro na requisição: ${res.status}`);
+                    return [];
                 }
 
                 const contentType = res.headers.get("content-type");
                 if (contentType && contentType.includes("application/json")) {
                     return await res.json();
                 } else {
-                    throw new Error("Resposta não é JSON");
-                    return null;
+                    console.error("Resposta não é JSON");
+                    return [];
                 }
 
             })
             .then(async (data) => {
                 if (data.status == "erro") {
                     console.log("Erro ao listar imóveis: " + data.mensagem);
-                    return null;
+                    return [];
                 }
                 return await data;
             })
             .catch((error) => {
                 console.log("Erro ao listar imóveis favoritados:", error);
-                return null;
+                return [];
             });
 
         if (!resposta) {
             console.log("Falha ao obter imóveis favoritados");
-            return null;
+            return [];
         }
 
         resposta?.forEach(imovel => {
@@ -58,19 +58,25 @@ export async function listarImoveisFavoritados() {
         return resposta;
     } catch (erro) {
         console.log("Falha ao conectar com o backend:", erro);
-        return null;
+        return [];
     }
 
 }
 
 export async function curtirImovel(event, imovelId) {
-    let div = document.querySelector(".mensagem");
+    let divPai = document.querySelector("#container-mensagens");
     let mensagem = "";
-    if (!div) {
-        div = document.createElement("div");
-        div.classList.add("mensagem");
-        document.body.appendChild(div);
+    let div = document.createElement("div");
+
+    if (!divPai) {
+        divPai = document.createElement("div");
+        divPai.id = "container-mensagens";
+        document.body.appendChild(divPai);
     }
+
+    div.classList.add("mensagem");
+    divPai.appendChild(div);
+    
 
     if (!logado) {
         if (!usuarioLogado) {
@@ -117,11 +123,11 @@ export async function curtirImovel(event, imovelId) {
                 .then(data => {
                     let div = document.querySelector(".mensagem");
 
-                    if (!div) {
-                        div = document.createElement("div");
-                        div.classList.add("mensagem");
-                        document.body.appendChild(div);
-                    }
+                   
+                    div = document.createElement("div");
+                    div.classList.add("mensagem");
+                    document.body.appendChild(div);
+                    
 
                     if (data.status === "sucesso") {
                         carregarUser();
@@ -144,10 +150,6 @@ export async function curtirImovel(event, imovelId) {
     }
     div.innerText = mensagem;
     div.style.display = "flex";
-
-    setTimeout(() => {
-        div.style.display = "none";
-    }, 3000);
 }
 
 export async function deslogar() {
@@ -157,10 +159,10 @@ export async function deslogar() {
             method: "POST"
         });
         if (resposta.erro) {
-            console.error("Erro ao listar atendimentos: " + resposta.erro);
+            console.error("Erro ao deslogar: " + resposta.erro);
             return null;
         }
-        if (!resposta.ok) throw new Error(`HTTP ${resposta.status}`);
+        if (!resposta.ok) console.error(`HTTP ${resposta.status}`);
         const contentType = resposta.headers.get("content-type");
         let dados = null;
         if (contentType && contentType.includes("application/json")) {
@@ -212,10 +214,10 @@ export async function carregarUser() {
             method: "GET"
         });
         if (resposta.erro) {
-            console.error("Erro ao listar atendimentos: " + resposta.erro);
+            console.error("Erro ao carregar usuário: " + resposta.erro);
             return null;
         }
-        if (!resposta.ok) throw new Error(`HTTP ${resposta.status}`);
+        if (!resposta.ok) console.error(`HTTP ${resposta.status}`);
         const contentType = resposta.headers.get("content-type");
         let dados = null;
         if (contentType && contentType.includes("application/json")) {

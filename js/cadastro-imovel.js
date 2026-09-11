@@ -1,4 +1,4 @@
-import { getDadosImovel, destacarImovel, excluirImovel, listarImoveis } from "./modules/imoveis.js";
+import { getDadosImovel, destacarImovel, excluirImovel, listarImoveis, cadastrarImovel } from "./modules/imoveis.js";
 import { listarHistoricoPorIdImovel } from "./modules/historico.js";
 import { listarPessoas } from "./modules/usuarios.js";
 import { getCaminhoRelativo } from "./modules/utils.js";
@@ -28,6 +28,7 @@ window.aumentarLogo = aumentarLogo;
 window.abrirMultiplosAnexos = abrirMultiplosAnexos;
 window.abrirMultiplosCadastros = abrirMultiplosCadastros;
 window.limpar = limpar;
+window.cadastrarImovel = cadastrarImovel;
 
 let posicoes = { posicao_x: 0, posicao_y: 0 };
 let tamanhos = { largura: 0, altura: 0 };
@@ -305,7 +306,7 @@ async function atualizarEndereco() {
     const coordenadas = await buscarCoordenadas(endereco);
 
     if (coordenadas) {
-        
+
         carregarMapa(
             coordenadas.lat,
             coordenadas.lng
@@ -315,6 +316,8 @@ async function atualizarEndereco() {
 }
 
 async function editarPessoa(tipo) {
+
+
 
     document.querySelector('.overlay')?.remove();
 
@@ -602,7 +605,7 @@ async function getOutrosDados(formData) {
 
             try {
                 const response = await fetch(img);
-                if (!response.ok) throw new Error("Falha ao buscar o blob");
+                if (!response.ok) console.error("Falha ao buscar o blob");
                 const blob = await response.blob();
                 const extensao = blob.type.split("/")[1] || "webp";
                 formData.append("imagens[]", blob, `imagem.${extensao}`);
@@ -613,13 +616,22 @@ async function getOutrosDados(formData) {
         }
     }
 
-    if (containerDocumentos && containerDocumentos.querySelectorAll("a").length > 0) {
-        for (let doc of containerDocumentos.querySelectorAll("a")) {
+    if (containerDocumentos) {
+        for (let cartao of containerDocumentos.querySelectorAll(".anexo-documento")) {
+            const arquivo = cartao._arquivo;
+            const doc = cartao.querySelector("a.anexo-link");
+            if (!doc) {
+                continue;
+            }
             try {
+                if (arquivo instanceof File) {
+                    formData.append("documentos[]", arquivo, arquivo.name);
+                    continue;
+                }
                 const response = await fetch(doc.href);
-                if (!response.ok) throw new Error("Falha ao buscar o documento");
+                if (!response.ok) console.error("Falha ao buscar o documento");
                 const blob = await response.blob();
-                const nomeArquivo = doc.textContent.trim().split(" ").join("_");
+                const nomeArquivo = cartao.dataset.nome || doc.textContent.trim();
                 formData.append("documentos[]", blob, `${nomeArquivo}`);
             } catch (error) {
                 console.error("Erro ao processar documento:", doc.href, error);
@@ -670,13 +682,101 @@ async function getOutrosDados(formData) {
     return formData;
 }
 
+function obterNomeDocumento(caminho, nomeAlternativo = "documento") {
+    const nome = caminho?.split(/[\\/]/).pop()?.split("?")[0];
+    return nome ? decodeURIComponent(nome) : nomeAlternativo;
+}
+
+function obterFormatoDocumento(nome) {
+    const partes = nome.toLowerCase().split(".");
+    return partes.length > 1 ? partes.pop() : "arquivo";
+}
+
+function renderizarMiniaturaDocumento(preview, origem, formato) {
+    if (formato === "pdf" && window.pdfjsLib) {
+        window.pdfjsLib.GlobalWorkerOptions.workerSrc =
+            "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+        window.pdfjsLib.getDocument(origem).promise
+            .then(pdf => pdf.getPage(1))
+            .then(page => {
+                const escala = 1.4;
+                const viewport = page.getViewport({ scale: escala });
+                const canvas = document.createElement("canvas");
+                canvas.width = viewport.width;
+                canvas.height = viewport.height;
+                preview.replaceChildren(canvas);
+                return page.render({ canvasContext: canvas.getContext("2d"), viewport }).promise;
+            })
+            .catch(() => {
+                preview.innerHTML = `<span class="anexo-icone">PDF</span>`;
+            });
+        return;
+    }
+
+    const icone = document.createElement("span");
+    icone.className = "anexo-icone";
+    icone.textContent = formato.toUpperCase().slice(0, 4);
+    preview.appendChild(icone);
+}
+
+function criarCartaoDocumento({ nome, url, arquivo = null }) {
+    const formato = obterFormatoDocumento(nome);
+    const fileElement = document.createElement("div");
+    fileElement.classList.add("anexo-documento");
+    fileElement.dataset.nome = nome;
+    fileElement._arquivo = arquivo;
+
+    const checkbox = document.createElement("input");
+    checkbox.type = "checkbox";
+    checkbox.classList.add("checkbox-documento");
+    checkbox.name = "documentos-selecionados";
+
+    const preview = document.createElement("div");
+    preview.className = "anexo-preview";
+
+    const detalhes = document.createElement("div");
+    detalhes.className = "anexo-detalhes";
+
+    const link = document.createElement("a");
+    link.className = "anexo-link anexo-nome";
+    link.href = url;
+    link.textContent = nome;
+    link.target = "_blank";
+
+    const formatoLabel = document.createElement("span");
+    formatoLabel.className = "anexo-formato";
+    formatoLabel.textContent = `.${formato}`;
+
+    detalhes.append(link, formatoLabel);
+    fileElement.append(checkbox, preview, detalhes);
+    renderizarMiniaturaDocumento(preview, url, formato);
+    return fileElement;
+}
+
 async function salvar() {
+    let divPai = document.querySelector("#container-mensagens");
+    let mensagem = "";
+    let div = document.createElement("div");
+
+    if (!divPai) {
+        divPai = document.createElement("div");
+        divPai.id = "container-mensagens";
+        document.body.appendChild(divPai);
+    }
+
+    div.classList.add("mensagem");
+    divPai.appendChild(div);
+
     var forms = document.querySelectorAll("form");
     await cadastrarLogo();
 
     let formData = new FormData();
 
     for (let formulario of forms) {
+        if (!formulario.checkValidity()) {
+            formulario.reportValidity();
+            return;
+        }
         let dados = new FormData(formulario);
 
         dados.forEach((value, key) => {
@@ -693,52 +793,15 @@ async function salvar() {
 
 
     if (JSON.stringify(formData).length > 0) {
-        try {
-            let caminho = getCaminhoRelativo("/php/api/imoveis.php?acao=cadastrar");
-            await fetch(caminho, {
-                method: "POST",
-                body: formData
-            })
-                .then(async (response) => {
-                    if (response.erro) {
-                        alert("Erro ao cadastrar imóvel: " + response.erro);
-                        return null;
-                    }
-                    const contentType = response.headers.get("content-type");
-                    if (contentType && contentType.includes("application/json")) {
-                        return await response.json();
-                    } else {
-                        const texto = await response.text();
-                        alert("Resposta inesperada do servidor");
-                        console.error("Resposta não é JSON:", texto);
-                        return null;
-                    }
-                })
-                .then(async (data) => {
-                    if (data.status == "erro") {
-                        alert("Erro ao cadastrar imóvel: " + data.mensagem);
-                        return;
-                    }
-                    else if (data.mensagem) {
-                        alert("Imóvel cadastrado com sucesso: " + data.mensagem);
-                        if (!imovel) {
-                            forms.forEach(form => form.reset());
-                        }
-                    }
-                })
-                .catch(error => {
-                    alert("Erro ao cadastrar imóvel:", error);
-                });
-
-        } catch (error) {
-            console.error("Erro ao enviar dados do imóvel:", error);
-        }
-
+        cadastrarImovel(formData);
     } else {
-        alert("Nenhum dado para enviar!");
+        div.classList.add("erro");
+        div.classList.remove("sucesso");
+        mensagem = "Nenhum dado para enviar!";
+        div.innerText = mensagem;
+        div.style.display = "flex";
     }
 
-    // console.log("Dados do imóvel a serem enviados:", data);
 }
 
 async function excluir() {
@@ -751,8 +814,6 @@ async function excluir() {
         alert("Nenhum imóvel selecionado para exclusão!");
         // window.location.href = "estoque.html";
     }
-
-
 }
 
 function abrirTab(posicao) {
@@ -851,20 +912,11 @@ async function abrirCadastro(imovel) {
             let contadorDocumentos = 0;
             let containerDocumentos = document.getElementById("container-anexos");
             for (let documento of imovel.anuncio.documentos) {
-                let fileElement = document.createElement("div");
-                fileElement.classList.add("anexo-documento");
-                let docElement = document.createElement("a");
-                console.log(documento);
-                docElement.href = documento;
-                docElement.textContent = documento.split("_").slice(1);
-                docElement.target = "_blank";
-                let checkbox = document.createElement("input");
-                checkbox.type = "checkbox";
-                checkbox.classList.add("checkbox-documento");
-                checkbox.value = false;
-                checkbox.name = "documentos-selecionados";
-                fileElement.appendChild(checkbox);
-                fileElement.appendChild(docElement);
+                const nomeDocumento = obterNomeDocumento(documento);
+                const fileElement = criarCartaoDocumento({
+                    nome: nomeDocumento,
+                    url: documento
+                });
                 containerDocumentos.appendChild(fileElement);
                 contadorDocumentos++;
             }
@@ -1023,7 +1075,7 @@ async function abrirCadastro(imovel) {
 
 
 function abrirImagem(src) {
-   
+
     if (event.target.tagName === "INPUT" && event.target.type === "checkbox") {
         return;
     }
@@ -1092,6 +1144,9 @@ function abrirImagem(src) {
 
 let imagemArrastadaAtual = null;
 let placeholderArrasteAtual = null;
+let containerArrasteAtual = null;
+let referenciaArrasteAtual = null;
+let inserirAntesArraste = false;
 
 function obterPlaceholderArraste() {
     if (!placeholderArrasteAtual) {
@@ -1106,39 +1161,79 @@ function limparPlaceholderArraste() {
     if (placeholderArrasteAtual && placeholderArrasteAtual.parentNode) {
         placeholderArrasteAtual.parentNode.removeChild(placeholderArrasteAtual);
     }
+    containerArrasteAtual = null;
+    referenciaArrasteAtual = null;
+    inserirAntesArraste = false;
 }
 
 function atualizarIndicadorPosicaoArraste(event) {
     const draggedId = event.dataTransfer.getData("text/plain");
-    const draggedImg = document.querySelector(`[data-drag-id="${draggedId}"]`);
+    const draggedImg = imagemArrastadaAtual ||
+        document.querySelector(`[data-drag-id="${draggedId}"]`);
     if (!draggedImg) {
         return;
     }
 
     imagemArrastadaAtual = draggedImg;
 
-    const target = event.target;
-    const container = target.closest("#container-imagens");
+    const container = event.target.closest("#container-imagens");
     if (!container) {
         return;
     }
 
     const placeholder = obterPlaceholderArraste();
+    const hoveredCard = event.target.closest(".imagem-anuncio");
 
-    if (target.tagName === "DIV" && target !== draggedImg) {
-        if (placeholder.parentNode !== container || placeholder.nextSibling !== target) {
-            container.insertBefore(placeholder, target);
-        }
-    } else {
-        const botaoAdicionar = container.querySelector("button");
-        if (botaoAdicionar) {
-            if (placeholder.parentNode !== container || placeholder.nextSibling !== botaoAdicionar) {
-                container.insertBefore(placeholder, botaoAdicionar);
-            }
-        } else {
-            container.appendChild(placeholder);
-        }
+    if (hoveredCard === draggedImg) {
+        return;
     }
+
+    const cards = Array.from(container.querySelectorAll(".imagem-anuncio"))
+        .filter(card => card !== draggedImg);
+    let targetCard = cards.includes(hoveredCard) ? hoveredCard : null;
+
+    if (!targetCard && cards.length > 0) {
+        targetCard = cards.reduce((cardMaisProximo, cardAtual) => {
+            const rectMaisProximo = cardMaisProximo.getBoundingClientRect();
+            const rectAtual = cardAtual.getBoundingClientRect();
+            const distanciaMaisProximo = Math.hypot(
+                event.clientX - (rectMaisProximo.left + rectMaisProximo.width / 2),
+                event.clientY - (rectMaisProximo.top + rectMaisProximo.height / 2)
+            );
+            const distanciaAtual = Math.hypot(
+                event.clientX - (rectAtual.left + rectAtual.width / 2),
+                event.clientY - (rectAtual.top + rectAtual.height / 2)
+            );
+            return distanciaAtual < distanciaMaisProximo ? cardAtual : cardMaisProximo;
+        });
+    }
+
+    if (!targetCard) {
+        containerArrasteAtual = container;
+        return;
+    }
+
+    const rect = targetCard.getBoundingClientRect();
+    const inserirAntes = event.clientY < rect.top + rect.height / 2 ||
+        (event.clientY <= rect.bottom && event.clientX < rect.left + rect.width / 2);
+    const proximoCartao = cards[cards.indexOf(targetCard) + 1];
+    const rectIndicador = inserirAntes || !proximoCartao
+        ? rect
+        : proximoCartao.getBoundingClientRect();
+    const rectContainer = container.getBoundingClientRect();
+
+    placeholder.style.left = `${rectIndicador.left - rectContainer.left + container.scrollLeft}px`;
+    placeholder.style.top = `${rectIndicador.top - rectContainer.top + container.scrollTop}px`;
+    placeholder.style.width = `${rectIndicador.width}px`;
+    placeholder.style.height = `${rectIndicador.height}px`;
+
+    if (placeholder.parentNode !== container) {
+        container.appendChild(placeholder);
+    }
+
+    containerArrasteAtual = container;
+    referenciaArrasteAtual = targetCard;
+    inserirAntesArraste = inserirAntes;
 }
 
 function prepararContainerArrastavel(container) {
@@ -1177,35 +1272,31 @@ function prepararImagemArrastavel(imgElement) {
         imagemArrastadaAtual = null;
         limparPlaceholderArraste();
     });
-    imgElement.addEventListener("dragover", function (event) {
-        event.preventDefault();
-        atualizarIndicadorPosicaoArraste(event);
-    });
-    imgElement.addEventListener("dragenter", function (event) {
-        event.preventDefault();
-        atualizarIndicadorPosicaoArraste(event);
-    });
-    imgElement.addEventListener("drop", mudarPosicaoNoContainer);
 }
 
 function mudarPosicaoNoContainer(event) {
     event.preventDefault();
+    event.stopPropagation();
     const draggedId = event.dataTransfer.getData("text/plain");
-    const draggedImg = document.querySelector(`[data-drag-id="${draggedId}"]`);
-    const container = event.target.closest("#container-imagens");
-    const placeholder = obterPlaceholderArraste();
+    const draggedImg = imagemArrastadaAtual ||
+        document.querySelector(`[data-drag-id="${draggedId}"]`);
+    const container = event.target.closest("#container-imagens") || containerArrasteAtual;
 
     if (!draggedImg || !container) {
         limparPlaceholderArraste();
         return;
     }
 
-    if (placeholder.parentNode === container) {
-        container.insertBefore(draggedImg, placeholder);
+    if (referenciaArrasteAtual?.parentNode === container) {
+        if (inserirAntesArraste) {
+            container.insertBefore(draggedImg, referenciaArrasteAtual);
+        } else {
+            referenciaArrasteAtual.after(draggedImg);
+        }
+    } else if (placeholderArrasteAtual?.parentNode === container) {
+        container.insertBefore(draggedImg, placeholderArrasteAtual);
     } else {
-
         container.appendChild(draggedImg);
-
     }
 
     limparPlaceholderArraste();
@@ -1263,14 +1354,14 @@ function apagarMultiplos(event) {
     // if (confirm(`Tem certeza que deseja excluir os ${checkboxes.length} itens selecionados?`)) {}
     console.log("Itens selecionados para exclusão:", checkboxes.length);
     checkboxes.forEach(checkbox => {
-        const item = checkbox.closest(".imagem-anuncio, a, .resultado-pessoa");
+        const item = checkbox.closest(".imagem-anuncio, .anexo-documento, .resultado-pessoa");
         if (item) {
             item.parentNode.removeChild(item);
         }
     });
 
     document.getElementById("contador-imagens").textContent = container.querySelectorAll(".imagem-anuncio").length + " imagem(s)";
-    document.getElementById("contador-documentos").textContent = container.querySelectorAll("a").length + " documento(s)";
+    document.getElementById("contador-documentos").textContent = container.querySelectorAll(".anexo-documento").length + " documento(s)";
 
 }
 
@@ -1404,13 +1495,25 @@ function adicionarLogo(event) {
 }
 
 function adicionarAnexo(event) {
+    const overlay = document.createElement("div");
+    overlay.className = "overlay";
+    overlay.style.cssText = ` position: fixed; inset: 0; background: rgba(0, 0, 0, 0.7); z-index: 999; `;
+    document.body.appendChild(overlay);
+
+    const removerOverlay = () => {
+        document.querySelector('.overlay')?.remove();
+    };
+
     var input = document.createElement("input");
     input.type = "file";
-    input.accept = "image/*,application/pdf";
+    input.accept = "*/*";
     input.multiple = true;
     let contadorImagens = 0;
     let contadorDocumentos = 0;
+
     input.onchange = function () {
+        removerOverlay();
+
         var files = input.files;
         var container = event.target.closest(".container");
         for (var i = 0; i < files.length; i++) {
@@ -1421,11 +1524,7 @@ function adicionarAnexo(event) {
                 fileElement = document.createElement("div");
                 fileElement.classList.add("imagem-anuncio");
                 fileElement.style.backgroundImage = `linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), url("${fileURL}")`;
-                fileElement.onclick = (function (url) {
-                    return function () {
-                        abrirImagem(url);
-                    };
-                })(fileURL);
+                fileElement.onclick = (function (url) { return function () { abrirImagem(url); }; })(fileURL);
                 const checkbox = document.createElement("input");
                 checkbox.type = "checkbox";
                 checkbox.classList.add("checkbox-imagem");
@@ -1434,21 +1533,8 @@ function adicionarAnexo(event) {
                 fileElement.appendChild(checkbox);
                 prepararImagemArrastavel(fileElement);
                 contadorImagens++;
-                // console.log(fileURL);
-            } else if (file.type === "application/pdf") {
-                fileElement = document.createElement("div");
-                fileElement.classList.add("anexo-documento");
-                let a = document.createElement("a");
-                a.href = fileURL;
-                a.textContent = file.name;
-                a.target = "_blank";
-                const checkbox = document.createElement("input");
-                checkbox.type = "checkbox";
-                checkbox.classList.add("checkbox-documento");
-                checkbox.value = fileURL;
-                checkbox.name = "documentos-selecionados";
-                fileElement.appendChild(checkbox);
-                fileElement.appendChild(a);
+            } else {
+                fileElement = criarCartaoDocumento({ nome: file.name, url: fileURL, arquivo: file });
                 contadorDocumentos++;
             }
             if (fileElement) {
@@ -1458,10 +1544,20 @@ function adicionarAnexo(event) {
             }
         }
     }
-    document.getElementById("contador-imagens").textContent = contadorImagens + " imagem(s)";
-    document.getElementById("contador-documentos").textContent = contadorDocumentos + " documento(s)";
+
+    input.addEventListener("cancel", () => {
+        removerOverlay();
+    });
+
+    input.addEventListener("change", function () {
+        const container = event.target.closest(".container");
+        document.getElementById("contador-imagens").textContent = container.querySelectorAll(".imagem-anuncio").length + " imagem(s)";
+        document.getElementById("contador-documentos").textContent = container.querySelectorAll(".anexo-documento").length + " documento(s)";
+    }, { once: true });
+
     input.click();
 }
+
 
 async function carregarHistorico(idImovel) {
     const lista = await listarHistoricoPorIdImovel(idImovel);
@@ -1573,9 +1669,6 @@ window.addEventListener("DOMContentLoaded", async function () {
     document.getElementById("destacar").addEventListener('change', function () {
         destacarImovel(imovel.id);
     });
-
-
-
 
     const sobrepor = document.getElementById("sobrepor");
     estilizarDiv(sobrepor);

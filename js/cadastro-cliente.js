@@ -1,6 +1,6 @@
 import { getCaminhoRelativo, formatarValor } from "./modules/utils.js";
 import { usuarioLogado, carregarUser } from "./modules/usuario.js";
-import { getUsuario } from "./modules/usuarios.js";
+import { cadastrarPessoa, getPessoa, removerPessoa } from "./modules/pessoas.js";
 import { listarHistoricoPorIdCliente } from "./modules/historico.js";
 
 Inputmask("(99) 99999-9999").mask("#inpt-telefone");
@@ -17,6 +17,9 @@ window.abrirImovel = abrirImovel;
 window.preencherEndereco = preencherEndereco;
 window.formatarValor = formatarValor;
 window.limpar = limpar;
+window.cadastrarPessoa = cadastrarPessoa;
+window.getPessoa = getPessoa;
+window.removerPessoa = removerPessoa;
 
 function limpar() {
     let forms = document.querySelectorAll("form");
@@ -60,11 +63,25 @@ async function preencherEndereco(event) {
 }
 
 async function salvar() {
+
     var form = document.querySelector("form");
     if (!form.checkValidity()) {
         form.reportValidity();
         return;
     }
+    let divPai = document.querySelector("#container-mensagens");
+    let mensagem = "";
+    let div = document.createElement("div");
+
+    if (!divPai) {
+        divPai = document.createElement("div");
+        divPai.id = "container-mensagens";
+        document.body.appendChild(divPai);
+    }
+
+    div.classList.add("mensagem");
+    divPai.appendChild(div);
+
     let formData = new FormData(form);
     const data = {};
 
@@ -85,103 +102,43 @@ async function salvar() {
     data['id'] = usuario2 ? usuario2.id : null;
 
     if (JSON.stringify(formData).length > 0) {
-        try {
-            let caminho = getCaminhoRelativo("/php/api/usuarios.php?acao=cadastro");
-            await fetch(caminho, {
-                method: "POST",
-                body: JSON.stringify(data)
-            })
-                .then(async response => {
-                    if (response.erro) {
-                        alert("Erro ao cadastrar usuário: " + response.erro);
-                        return null;
-                    }
-                    const contentType = response.headers.get("content-type");
-                    if (contentType && contentType.includes("application/json")) {
-                        return await response.json();
-                    } else {
-                        const texto = await response.text();
-                        alert("Resposta inesperada do servidor");
-                        console.error("Resposta não é JSON:", texto);
-                        return null;
-                    }
-                })
-                .then(async (data) => {
-                    if (data.status == "erro") {
-                        alert("Erro ao cadastrar usuário: " + data.mensagem);
-                        return;
-                    }
-                    else if (data.mensagem) {
-                        alert("Usuário cadastrado com sucesso: " + data.mensagem);
-                        if (!imovel) {
-                            forms.forEach(form => form.reset());
-                        }
-                    }
-
-                })
-                .catch(error => {
-                    alert("Erro ao cadastrar usuário:", error);
-                });
-
-        } catch (error) {
-            console.error("Erro ao enviar dados do usuário:", error);
-        }
+        cadastrarPessoa(data);
 
     } else {
-        alert("Nenhum dado para enviar!");
+        div.classList.add("erro");
+        div.classList.remove("sucesso");
+        mensagem = "Nenhum dado para enviar!";
+        div.innerText = mensagem;
+        div.style.display = "flex";
     }
 
-    // console.log("Dados do imóvel a serem enviados:", data);
 }
 
 async function apagar() {
+    let divPai = document.querySelector("#container-mensagens");
+    let mensagem = "";
+    let div = document.createElement("div");
+
+    if (!divPai) {
+        divPai = document.createElement("div");
+        divPai.id = "container-mensagens";
+        document.body.appendChild(divPai);
+    }
+
+    div.classList.add("mensagem");
+    divPai.appendChild(div);
+    if (!usuarioID) {
+        div.classList.add("erro");
+        div.classList.remove("sucesso");
+        mensagem = "Nenhum usuário selecionado para exclusão!";
+        div.innerText = mensagem;
+        div.style.display = "flex";
+        return;
+    }
     let confirmar = confirm("Tem certeza que deseja excluir este usuário?");
     if (usuarioID && confirmar) {
-        try {
-            let caminho = getCaminhoRelativo("/php/api/usuarios.php?acao=apagar&id=" + usuarioID);
-            const response = await fetch(caminho, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-
-            })
-                .then(async (response) => {
-                    if (response.erro) {
-                        alert("Erro ao remover usuário: " + response.erro);
-                        return null;
-                    }
-                    const contentType = response.headers.get("content-type");
-                    if (contentType && contentType.includes("application/json")) {
-                        return await response.json();
-                    } else {
-                        const texto = await response.text();
-                        alert("Resposta inesperada do servidor");
-                        console.error("Resposta não é JSON:", texto);
-                        return null;
-                    }
-                })
-                .then(async (data) => {
-                    if (data.status == "erro") {
-                        alert("Erro ao excluir usuário: " + data.mensagem);
-                    } else {
-                        console.log("Usuário excluído com sucesso:", data);
-                        window.location.href = "estoque.html";
-                    }
-                })
-                .catch(error => {
-                    console.error("Erro ao excluir usuário:", error);
-                });
-        } catch (error) {
-            console.error("Erro ao enviar dados para exclusão do usuário:", error);
-        }
+        removerPessoa(usuarioID);
     }
-    else {
-        // alert("Nenhum imóvel selecionado para exclusão!");
-        window.location.href = "estoque.html";
-    }
-
-
 }
 
 function formatarData(data) {
@@ -291,7 +248,7 @@ async function carregarHistorico(idCliente) {
 window.addEventListener('DOMContentLoaded', async function (event) {
     usuario = usuarioLogado || await carregarUser();
     const id = new URLSearchParams(window.location.search).get("id");
-    usuario2 = id ? await getUsuario(id) : null;
+    usuario2 = id ? await getPessoa(id) : null;
 
     const select = document.querySelector("#select-tipo");
 
