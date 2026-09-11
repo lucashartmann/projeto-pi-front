@@ -2,6 +2,8 @@ import { listarImoveis } from "./modules/imoveis.js";
 import { usuarioLogado, carregarUser } from "./modules/usuario.js";
 import { listarPessoas } from "./modules/usuarios.js";
 import { getCaminhoRelativo } from "./modules/utils.js";
+import { listarVisitas } from "./modules/visitas.js";
+import { listarVistorias } from "./modules/vistorias.js";
 
 window.listarImoveis = listarImoveis;
 let imoveisCache = [];
@@ -10,80 +12,8 @@ let usuariosCache = [];
 let dataSelecionada = null;
 let eventosCalendario = [];
 
-
-async function listarVisitas() {
-  try {
-    let caminho = getCaminhoRelativo("/php/api/visitas.php?acao=listar_por_corretor");
-    const resposta = await fetch(caminho)
-      .then(async (res) => {
-        const contentType = res.headers.get("content-type");
-        if (res.erro) {
-          console.error("Erro ao listar visitas: " + res.erro);
-          return null;
-        }
-        if (contentType && contentType.includes("application/json")) {
-          return await res.json();
-        } else {
-          const texto = await res.text();
-          console.error("Resposta não é JSON:", texto);
-          return null;
-        }
-      })
-      .then(async (data) => {
-        if (data.status == "erro") {
-          console.error(data.mensagem);
-          return null;
-        }
-        return data;
-      })
-      .catch(erro => {
-        console.error("Falha ao conectar com o backend:", erro);
-        return null;
-      });
-
-    return resposta;
-  } catch (erro) {
-    console.error("Falha ao conectar com o backend:", erro);
-    return null;
-  }
-}
-
-async function listarVistorias() {
-  try {
-    let caminho = getCaminhoRelativo("/php/api/vistorias.php?acao=listar_por_vistoriador");
-    const resposta = await fetch(caminho)
-      .then(async (res) => {
-        const contentType = res.headers.get("content-type");
-        if (res.erro) {
-          console.error("Erro ao listar vistorias: " + res.erro);
-          return null;
-        }
-        if (contentType && contentType.includes("application/json")) {
-          return await res.json();
-        } else {
-          const texto = await res.text();
-          console.error("Resposta não é JSON:", texto);
-          return null;
-        }
-      })
-      .then(async (data) => {
-        if (data.status == "erro") {
-          console.error(data.mensagem);
-          return null;
-        }
-        return data;
-      })
-      .catch(erro => {
-        console.error("Falha ao conectar com o backend:", erro);
-        return null;
-      });
-
-    return resposta;
-  } catch (erro) {
-    console.error("Falha ao conectar com o backend:", erro);
-    return null;
-  }
-}
+window.listarVisitas = listarVisitas;
+window.listarVistorias = listarVistorias;
 
 
 async function calendar() {
@@ -134,13 +64,13 @@ async function calendar() {
     width: $('#pai-calendario').width(),
 
     eventClick: function (event, jsEvent, view) {
+      console.log(event);
       document.querySelector('#container-dados h2').textContent = "Agendar visita para" + " " + event.start.format('YYYY-MM-DD');
-      document.querySelector('form[name="agendar-visita"] input[name="nome"]').value = event.title;
-      document.querySelector('form[name="agendar-visita"] input[name="hora"]').value = event.start.format('HH:mm');
-      document.querySelector('form[name="agendar-visita"] input[name="data"]').value = event.start.format('YYYY-MM-DD');
-      document.querySelector('form[name="agendar-visita"] input[name="imovel"]').value = event.imovel || '';
-      document.querySelector('form[name="agendar-visita"] input[name="cliente"]').value = event.cliente || '';
-      // TODO: terminar
+      document.querySelector('form input[name="nome"]').value = event.title || '';
+      document.querySelector('form input[name="hora"]').value = event.start.format('HH:mm');
+      document.querySelector('form input[name="data"]').value = event.start.format('YYYY-MM-DD');
+      document.querySelector('form select[name="imovel"]').value = event.imovel ? event.imovel.id : "";
+      document.querySelector('form select[name="cliente"]').value = event.cliente ? event.cliente.id : "";
     },
 
     events: eventosCalendario,
@@ -153,6 +83,8 @@ async function calendar() {
     }
   });
 }
+
+
 
 
 async function salvarEvento(dataRecebida) {
@@ -266,7 +198,9 @@ async function salvarEvento(dataRecebida) {
 function adicionarEventoAoCalendario(evento) {
   const novoEvento = {
     title: evento.nome,
-    start: `${evento.data}T${evento.hora}`
+    start: `${evento.data}T${evento.hora}`,
+    imovel: evento.imovel || '',
+    cliente: evento.cliente || ''
   };
   eventosCalendario.push(novoEvento);
   $('#calendar').fullCalendar('renderEvent', novoEvento, true);
@@ -298,8 +232,10 @@ function montarEventos(tipoUsuario) {
         visitas.forEach(visita => {
           adicionarEventoAoCalendario({
             nome: visita.nome,
-            data: visita.data?.split(' ')[0], 
-            hora: visita.data?.split(' ')[1] 
+            data: visita.data?.split(' ')[0],
+            hora: visita.data?.split(' ')[1],
+            imovel: visita.imovel,
+            cliente: visita.cliente,
           });
         });
       }
@@ -311,7 +247,9 @@ function montarEventos(tipoUsuario) {
           adicionarEventoAoCalendario({
             nome: vistoria.nome,
             data: vistoria.data?.split(' ')[0],
-            hora: vistoria.data?.split(' ')[1]
+            hora: vistoria.data?.split(' ')[1],
+            imovel: visita.imovel,
+            cliente: visita.cliente,
           });
         });
       }

@@ -51,6 +51,7 @@
 
 ### Cadastro de contrato:
 
+- [ ] `JS` <font color=red>[ALTO]</font> Poder pesquisar e filtrar contratos 
 - [ ] `JS` `HTML` `CSS` <font color=red>[ALTO]</font> Poder cadastrar
 - [ ] `JS` `HTML` `CSS` <font color=red>[ALTO]</font> Poder editar e sempre mostrar aviso de certeza
 - [ ] `JS` `HTML` `CSS` <font color=red>[ALTO]</font> Poder remover
@@ -72,6 +73,7 @@
 
 ### Agendar visita:
 
+- [ ] `JS` <font color=red>[ALTO]</font> Poder pesquisar e filtrar visitas e vistorias pelo imovel, cliente, etc 
 - [ ] `JS` `PHP` <font color=red>[ALTO]</font> Poder editar o evento ao clicar nele
 - [ ] `JS` `PHP` <font color=red>[ALTO]</font> Poder apagar o evento
 - [ ] `JS` <font color=yellow>[MÉDIO]</font> Remover a letra que fica ao lado da hora
