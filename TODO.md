@@ -13,7 +13,8 @@
       Tem algum problema no cadastro de filtros no **init**, ele está cadastrando varios filtos em uma só row, e filtros duplicados.
 
 ## Geral:
-
+Mandar notificacao se estar na hora da visita ou da vistoria, ou poder botar alarme 10 minutos antes, 30m, 1 hora etc
+Visita e vistoria poder envolver mais de um imovel no front, no back cria uma visita para cada imovel
 - [ ] `CSS` <font color=red>[ALTO]</font> Mudar fonte
 - [ ] `CSS` <font color=red>[ALTO]</font> Responsividade
 - [ ] `JS` <font color=red>[ALTO]</font> Botão para limpar os inputs, ou as imagens, documentos e etc
