@@ -346,7 +346,7 @@ class loginController
                 $consulta = $usuarioDAO->verificar($usuario, $senha);
             }
 
-            if ($consulta) {
+            if ($consulta instanceof Pessoa) {
                 $_SESSION['usuario'] = $consulta;
                 if ($consulta instanceof Cliente) {
                     $_SESSION['tipo'] = "CLIENTE";

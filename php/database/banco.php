@@ -253,7 +253,8 @@ class Banco extends PDO
                     REFERENCES corretor(id_funcionario),
                 FOREIGN KEY (id_cliente) 
                     REFERENCES cliente(id_pessoa) 
-                    ON DELETE CASCADE
+                    ON DELETE CASCADE,
+                UNIQUE (id_imovel, id_cliente)
             )",
 
             "CREATE TABLE IF NOT EXISTS filtro (

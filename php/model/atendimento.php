@@ -9,6 +9,8 @@ enum StatusAtendimento: string
 {
     case EM_ANDAMENTO = 'Em Andamento';
     case PENDENTE = 'Pendente';
+    case VISITA_AGENDADA = 'Visita Agendada';
+    case CONCLUIDO = 'Concluído';
     # RECEM_CADASTRADO = 'Recém Cadastrado';
 }
 

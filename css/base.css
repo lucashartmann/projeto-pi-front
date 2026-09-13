@@ -284,9 +284,6 @@ nav {
         }
     }
 
-
-
-
     .left,
     .right {
         align-items: center;
@@ -337,7 +334,7 @@ nav {
         }
 
         #logo {
-            width: 12rem;
+            width: 11rem;
             height: 100%;
             object-fit: contain;
             cursor: pointer;

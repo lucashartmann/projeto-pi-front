@@ -1,31 +1,139 @@
-#card-dados {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    background-color: var(--background-custom);
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    column-gap: 0px;
-    margin: auto auto;
-}
-
-.vazio {
-    width: 100%;
-    justify-self: center;
-    color: var(--cor-texto);
-    text-align: center;
-    background: rgba(36, 30, 30, 0.92);
-    height: 4rem;
-    align-items: center;
-    align-content: center;
-}
-
 body {
     min-height: 100vh;
     display: flex;
     flex-direction: column;
     overflow-y: auto;
 }
+
+#card-dados {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: min(500px, calc(100vw - 40px));
+    max-height: calc(100vh - 40px);
+    padding: 25px;
+    background: white;
+    color: black;
+    border-radius: 12px;
+    overflow-y: auto;
+    z-index: 9999;
+}
+
+#container-horizontal {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    column-gap: 0px;
+    height: auto;
+    color: white;
+
+    .vazio {
+        width: 100%;
+        justify-self: center;
+        color: var(--cor-texto);
+        text-align: center;
+        background: rgba(36, 30, 30, 0.92);
+        height: 4rem;
+        align-items: center;
+        align-content: center;
+    }
+
+    >div {
+        margin-top: 20px;
+        text-align: center;
+        margin: 40px;
+    }
+
+    .container {
+        background: var(--background-custom);
+        height: 74vh;
+        justify-items: center;
+        overflow-y: auto;
+        overflow-x: hidden;
+        margin-top: 20px;
+    }
+
+    .titulo {
+        font-weight: 600;
+        font-size: 125%;
+        color: var(--cor-texto-alternativa);
+    }
+
+    label {
+        text-align: center;
+        justify-self: center;
+    }
+
+
+}
+
+
+.card {
+    background: rgb(203, 201, 201);
+    backdrop-filter: blur(40px) !important;
+    box-shadow: var(--shadow);
+    width: 90%;
+    height: auto;
+    min-height: 17%;
+    margin: 10px 10px 20px 10px;
+    color: black;
+    font-size: 1.5rem;
+    font-weight: 500;
+    justify-content: flex-start;
+    justify-items: flex-start;
+    padding: 5px;
+
+
+    h2 {
+        font-size: 1.1rem;
+        font-weight: 600;
+        text-align: left;
+        padding: 0px 5px;
+    }
+
+    p {
+        font-size: 1rem;
+        font-weight: 400;
+        margin: 5px;
+        text-align: left;
+    }
+
+    p:last-child {
+        margin-bottom: 0px;
+    }
+
+
+    &:hover {
+        background: rgba(144, 138, 138, 0.787);
+        backdrop-filter: blur(40px) !important;
+        box-shadow: var(--shadow);
+    }
+
+    .botoes {
+        display: flex;
+        justify-content: space-around;
+        margin-top: 10px;
+        height: 2rem;
+
+        button {
+            background-color: var(--background-custom);
+            color: var(--cor-texto);
+            border: 1px solid var(--cor-texto);
+            padding: 5px 10px;
+            /* border-radius: 5px; */
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+
+            &:hover {
+                background-color: var(--cor-texto);
+                color: var(--background-custom);
+            }
+        }
+    }
+}
+
+
 
 footer {
     justify-content: center;
@@ -36,80 +144,6 @@ footer {
         width: 30px;
         height: 30px;
     }
-}
-
-#container-horizontal {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    column-gap: 0px;
-    height: auto;
-}
-
-.titulo {
-    font-weight: 600;
-    font-size: 125%;
-    color: var(--cor-texto-alternativa);
-}
-
-#container-horizontal>div {
-    margin-top: 20px;
-    text-align: center;
-    margin: 40px;
-}
-
-.container {
-    background: var(--background-custom);
-    height: 74vh;
-    justify-items: center;
-    overflow-y: auto;
-    overflow-x: hidden;
-    margin-top: 20px;
-}
-
-#container-horizontal label {
-    text-align: center;
-    justify-self: center;
-}
-
-.card {
-    background: rgba(36, 30, 30, 0.5);
-    backdrop-filter: blur(40px) !important;
-    box-shadow: var(--shadow);
-    width: 90%;
-    height: auto;
-    min-height: 17%;
-    margin: 10px 10px 10px 10px;
-    color: var(--cor-texto);
-    font-size: 1.5rem;
-    font-weight: 500;
-
-    h2 {
-        font-size: 1.5rem;
-        font-weight: 600;
-    }
-
-    p {
-        font-size: 1.2rem;
-        font-weight: 400;
-    }
-}
-
-#card-dados {
-    z-index: 1000;
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: rgba(36, 30, 30, 0.5);
-    backdrop-filter: blur(40px) !important;
-    box-shadow: var(--shadow);
-    height: auto;
-    width: 50vw;
-    color: var(--cor-texto) !important;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-
 }
 
 @media screen and (max-width: 669px) {

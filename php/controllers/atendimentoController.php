@@ -12,6 +12,8 @@ require_once __DIR__ . '/../model/cliente.php';
 require_once __DIR__ . '/../model/corretor.php';
 require_once __DIR__ . '/../model/proprietario.php';
 require_once __DIR__ . '/../model/funcionario.php';
+require_once __DIR__ . '/../model/imovel.php';
+
 
 $isLocal = $_SERVER['SERVER_NAME'] === 'localhost';
 ini_set('display_errors', $isLocal ? '1' : '0');
@@ -64,23 +66,23 @@ class AtendimentoController
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
         }
-        $usuario = $_GET['usuario'] ?? null;
+        $usuario = $_SESSION['usuario'] ?? null;
         $pessoaDAO = new PessoaDAO();
 
-        if ($usuario) {
-            $listaUsuarios = $pessoaDAO->listar();
-            $corretores = array_filter($listaUsuarios, function ($usuario) {
-                if (!($usuario instanceof Funcionario)) {
-                    return false;
-                }
-                return $usuario->getCargo() === Cargo::CORRETOR;
-            });
-            foreach ($corretores as $corretor) {
-                $notificacaoDAO = new NotificacaoDAO();
-                $notificacaoDAO->cadastrar($corretor, "Cliente " . $usuario->getNome() . " quer atendimento para o imóvel de ID $idImovel", "atendimento");
-            }
-        }
         if (isset($_SESSION['usuario'])) {
+            if ($usuario) {
+                $listaUsuarios = $pessoaDAO->listar();
+                $corretores = array_filter($listaUsuarios, function ($u) {
+                    if (!($u instanceof Funcionario)) {
+                        return false;
+                    }
+                    return $u->getCargo() === Cargo::CORRETOR;
+                });
+                foreach ($corretores as $corretor) {
+                    $notificacaoDAO = new NotificacaoDAO();
+                    $notificacaoDAO->cadastrar($corretor, "Cliente " . $usuario->getNome() . " quer atendimento para o imóvel de ID $idImovel", "atendimento");
+                }
+            }
 
             $imovelDAO = new ImovelDAO();
             $atendimento = new Atendimento();
