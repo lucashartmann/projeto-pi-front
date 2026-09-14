@@ -793,7 +793,7 @@ label {
             background: rgba(255, 255, 255, 0.1);
         }
 
-        > input {
+        >input {
             position: absolute;
             top: 10px;
             left: 10px;

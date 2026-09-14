@@ -55,7 +55,7 @@ export async function cadastrarImovel(formData) {
                 else if (data.mensagem) {
                     div.classList.add("sucesso");
                     div.classList.remove("erro");
-                    mensagem = "Imóvel cadastrado com sucesso: " + data.mensagem;
+                    mensagem = data.mensagem;
                 }
             })
             .catch(error => {

@@ -3,6 +3,8 @@
 
 require_once __DIR__ . '/../database/banco.php';
 require_once __DIR__ . '/../model/contrato.php';
+require_once __DIR__ . '/pessoaDAO.php';
+require_once __DIR__ . '/imovelDAO.php';
 
 $isLocal = $_SERVER['SERVER_NAME'] === 'localhost';
 ini_set('display_errors', $isLocal ? '1' : '0');
@@ -233,7 +235,7 @@ class ContratoDAO
                 FROM contrato 
 
                 LEFT JOIN imovel
-                ON imovel.id = atendimento.id_imovel
+                ON imovel.id = contrato.id_imovel
 
                 LEFT JOIN endereco imovel_endereco
                 ON imovel_endereco.id = imovel.id_endereco
@@ -245,16 +247,16 @@ class ContratoDAO
                 ON anuncio.id_imovel = imovel.id
 
             LEFT JOIN pessoa pessoa_corretor
-                ON pessoa_corretor.id = atendimento.id_corretor
+                ON pessoa_corretor.id = contrato.id_corretor
 
             LEFT JOIN pessoa pessoa_cliente
-                ON pessoa_cliente.id = atendimento.id_cliente
+                ON pessoa_cliente.id = contrato.id_cliente
 
             LEFT JOIN pessoa pessoa_proprietario
-                ON pessoa_proprietario.id = atendimento.id_proprietario
+                ON pessoa_proprietario.id = contrato.id_proprietario
 
             LEFT JOIN pessoa pessoa_captador
-                ON pessoa_captador.id = atendimento.id_captador
+                ON pessoa_captador.id = contrato.id_captador
     
             LEFT JOIN pessoa imovel_pessoa_corretor
                 ON imovel_pessoa_corretor.id = imovel.id_corretor
@@ -507,7 +509,7 @@ class ContratoDAO
     public function listar()
     {
         try {
-            $sql = $this->sql . " FROM contrato";
+            $sql = $this->sql;
             $stmt = $this->bancoDados->prepare($sql);
             $stmt->execute();
             $registros = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -635,7 +637,7 @@ class ContratoDAO
                 $contratoObj->setCorretor($corretor);
                 $contratoObj->setCliente($cliente);
                 $contratoObj->setImovel($imovel);
-                $contratoObj->setData($registro['data_venda'] ? new DateTime($registro['data_venda']) : null);
+                // $contratoObj->setData($registro['data_venda'] ? new DateTime($registro['data_venda']) : null);
                 $contratoObj->setComissaoCaptador($registro['comissao_captador'] ? floatval($registro['comissao_captador']) : null);
                 $contratoObj->setComissaoCorretor($registro['comissao_corretor'] ? floatval($registro['comissao_corretor']) : null);
                 $contratoObj->setProprietario($cliente);

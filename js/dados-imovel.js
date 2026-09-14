@@ -83,14 +83,18 @@ function ativarImagem(index) {
 }
 
 function aplicarLogoNoElemento(container, logo, anexo) {
+
     const antigo = container.querySelector(":scope > .sobrepor");
     if (antigo) antigo.remove();
 
     const divSobrepor = document.createElement("div");
     divSobrepor.classList.add("sobrepor");
-    divSobrepor.style.position = "absolute";
-    divSobrepor.style.right = "auto";
-    divSobrepor.style.bottom = "auto";
+
+    Object.assign(divSobrepor.style, {
+        position: "absolute",
+        right: "auto",
+        bottom: "auto"
+    });
 
     if (anexo?.largura != null) {
         divSobrepor.style.width = `${anexo.largura}%`;
@@ -102,23 +106,32 @@ function aplicarLogoNoElemento(container, logo, anexo) {
 
     const img = document.createElement("img");
     img.src = "../assets/" + logo;
-    divSobrepor.appendChild(img);
 
+    divSobrepor.appendChild(img);
     container.appendChild(divSobrepor);
 
-    const maxX = Math.max(0, container.clientWidth - divSobrepor.offsetWidth);
-    const maxY = Math.max(0, container.clientHeight - divSobrepor.offsetHeight);
+    img.onload = () => {
+        const maxX = Math.max(
+            0,
+            container.clientWidth - divSobrepor.offsetWidth
+        );
 
-    const posX = anexo?.posicao_x;
-    const posY = anexo?.posicao_y;
+        const maxY = Math.max(
+            0,
+            container.clientHeight - divSobrepor.offsetHeight
+        );
 
-    if (posX != null) {
-        divSobrepor.style.left = `${maxX * posX / 100}px`;
-    }
+        const posX = Number(anexo?.posicao_x);
+        const posY = Number(anexo?.posicao_y);
 
-    if (posY != null) {
-        divSobrepor.style.top = `${maxY * posY / 100}px`;
-    }
+        if (Number.isFinite(posX)) {
+            divSobrepor.style.left = `${maxX * posX / 100}px`;
+        }
+
+        if (Number.isFinite(posY)) {
+            divSobrepor.style.top = `${maxY * posY / 100}px`;
+        }
+    };
 }
 
 
@@ -140,6 +153,8 @@ async function setupDados(imovel) {
     }
 
     if (logo && logoRequisicao) {
+        console.log(logo);
+        console.log(logoRequisicao);
         requestAnimationFrame(() => {
             const slides = document.querySelectorAll('.swiper-destaque .swiper-slide');
             for (const slide of slides) {
@@ -293,34 +308,6 @@ async function adicionarClick() {
 }
 
 
-window.addEventListener("DOMContentLoaded", async () => {
-    const id = new URLSearchParams(window.location.search).get("id");
-    if (!id) {
-        alert("ID do imóvel não fornecido!");
-        window.location.href = getCaminhoRelativo
-            ("index.html");
-        return;
-    }
-    imovel = await getDadosImovel(id);
-    usuario = usuarioLogado ?? await carregarUser();
-
-    if (!imovel) {
-        alert("Imóvel não encontrado!");
-        window.location.href = getCaminhoRelativo("index.html");
-        return;
-    }
-
-    if (usuario && usuario.tipo == 'CLIENTE') {
-        adicionarClick();
-    }
-
-    sessionStorage.removeItem("dados_imovel");
-
-    await setupDados(imovel);
-    await inicializarSwiper();
-
-});
-
 function abrirImagem(src) {
     // document.querySelector(".swiper-destaque").swiper.slideTo(imovel.anuncio.imagens.indexOf(src));
     const overlay = document.createElement("div");
@@ -409,3 +396,31 @@ function prevSlide() {
         window.swiperInstance.slidePrev();
     }
 }
+
+window.addEventListener("DOMContentLoaded", async () => {
+    const id = new URLSearchParams(window.location.search).get("id");
+    if (!id) {
+        alert("ID do imóvel não fornecido!");
+        window.location.href = getCaminhoRelativo
+            ("index.html");
+        return;
+    }
+    imovel = await getDadosImovel(id);
+    usuario = usuarioLogado ?? await carregarUser();
+
+    if (!imovel) {
+        alert("Imóvel não encontrado!");
+        window.location.href = getCaminhoRelativo("index.html");
+        return;
+    }
+
+    if (usuario && usuario.tipo == 'CLIENTE') {
+        adicionarClick();
+    }
+
+    sessionStorage.removeItem("dados_imovel");
+
+    await setupDados(imovel);
+    await inicializarSwiper();
+
+});

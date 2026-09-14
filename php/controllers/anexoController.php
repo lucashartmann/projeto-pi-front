@@ -19,7 +19,6 @@ class AnexoController
             $imagem = $_FILES['imagem'] ?? null;
             $dimensoes = isset($dados['posicoes']) ? json_decode($dados['posicoes'], true) : null;
             $tamanhos = isset($dados['tamanhos']) ? json_decode($dados['tamanhos'], true) : null;
-            error_log("AnexoController::cadastrar - Dados recebidos: " . json_encode($dados));
 
             if (!$imagem) {
                 return [

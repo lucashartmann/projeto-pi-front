@@ -1,11 +1,13 @@
 import { listarImoveisDisponiveis } from "./modules/imoveis.js";
 import { usuarioLogado, carregarUser } from "./modules/usuario.js";
-import { listarPessoas } from "./modules/usuarios.js";
+import { listarPessoas } from "./modules/pessoas.js";
 import { getCaminhoRelativo } from "./modules/utils.js";
 
 window.adicionarAnexo = adicionarAnexo;
 window.cadastrar = cadastrar;
 window.remover = remover;
+window.apagarMultiplos = apagarMultiplos;
+
 
 async function getOutrosDados(formData) {
     const containerDocumentos = document.getElementById("container-anexos");
@@ -29,46 +31,183 @@ async function getOutrosDados(formData) {
     return formData;
 }
 
+function apagarMultiplos(event) {
+    const container = event.target.closest(".container");
+    const checkboxes = container.querySelectorAll("input[type='checkbox']:checked");
+    if (checkboxes.length === 0) {
+        alert("Nenhum item selecionado para exclusão!");
+        return;
+    }
+    // if (confirm(`Tem certeza que deseja excluir os ${checkboxes.length} itens selecionados?`)) {}
+    console.log("Itens selecionados para exclusão:", checkboxes.length);
+    checkboxes.forEach(checkbox => {
+        const item = checkbox.closest(".imagem-anuncio, .anexo-documento, .resultado-pessoa");
+        if (item) {
+            item.parentNode.removeChild(item);
+        }
+    });
+
+    if (document.getElementById("contador-imagens")) {
+        document.getElementById("contador-imagens").textContent = container.querySelectorAll(".imagem-anuncio").length + " imagem(s)";
+    }
+    if (document.getElementById("contador-documentos")) {
+        document.getElementById("contador-documentos").textContent = container.querySelectorAll(".anexo-documento").length + " documento(s)";
+    }
+
+}
+
 function adicionarAnexo(event) {
+    const overlay = document.createElement("div");
+    overlay.className = "overlay";
+    overlay.style.cssText = ` position: fixed; inset: 0; background: rgba(0, 0, 0, 0.7); z-index: 999; `;
+    document.body.appendChild(overlay);
+
+    const removerOverlay = () => {
+        document.querySelector('.overlay')?.remove();
+    };
+
     var input = document.createElement("input");
     input.type = "file";
-    input.accept = "application/pdf";
+    var container = event.target.closest(".container");
+    if (container.parentNode.id == "container-documentos") {
+        input.accept = "application/pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.csv";
+    } else {
+        input.accept = "image/*,application/pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.csv";
+    }
+
     input.multiple = true;
     let contadorImagens = 0;
     let contadorDocumentos = 0;
+
     input.onchange = function () {
+        removerOverlay();
+
         var files = input.files;
         var container = event.target.closest(".container");
+        console.log(container.parentNode.id);
+        if (container.parentNode.id == "container-documentos") {
+            if (container.querySelector(".item")) {
+                container.querySelector(".item").remove();
+            }
+        }
         for (var i = 0; i < files.length; i++) {
             var file = files[i];
             var fileURL = URL.createObjectURL(file);
             var fileElement;
-            if (file.type === "application/pdf") {
+            if (file.type.startsWith("image/")) {
                 fileElement = document.createElement("div");
-                fileElement.classList.add("anexo-documento");
-                let a = document.createElement("a");
-                a.href = fileURL;
-                a.textContent = file.name;
-                a.target = "_blank";
+                fileElement.classList.add("imagem-anuncio");
+                fileElement.style.backgroundImage = `linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), url("${fileURL}")`;
+                fileElement.onclick = (function (url) { return function () { abrirImagem(url); }; })(fileURL);
                 const checkbox = document.createElement("input");
                 checkbox.type = "checkbox";
-                checkbox.classList.add("checkbox-documento");
+                checkbox.classList.add("checkbox-imagem");
                 checkbox.value = fileURL;
-                checkbox.name = "documentos-selecionados";
+                checkbox.name = "imagens-selecionadas";
                 fileElement.appendChild(checkbox);
-                fileElement.appendChild(a);
+                contadorImagens++;
+            } else {
+                fileElement = criarCartaoDocumento({ nome: file.name, url: fileURL, arquivo: file });
                 contadorDocumentos++;
             }
             if (fileElement) {
+                fileElement.classList.add("item");
                 container.appendChild(fileElement);
                 container.querySelector(".abrir-multiplos").style.display = "inline-block";
                 container.querySelector(".apagar-multiplos").style.display = "inline-block";
             }
         }
     }
-    document.getElementById("contador-documentos").textContent = contadorDocumentos + " documento(s)";
+
+    input.addEventListener("cancel", () => {
+        removerOverlay();
+    });
+
+    input.addEventListener("change", function () {
+        const container = event.target.closest(".container");
+        if (document.getElementById("contador-imagens")) {
+            document.getElementById("contador-imagens").textContent = container.querySelectorAll(".imagem-anuncio").length + " imagem(s)";
+        }
+        if (document.getElementById("contador-documentos")) {
+            document.getElementById("contador-documentos").textContent = container.querySelectorAll(".anexo-documento").length + " documento(s)";
+        }
+    }, { once: true });
+
     input.click();
 }
+
+
+function obterNomeDocumento(caminho, nomeAlternativo = "documento") {
+    const nome = caminho?.split(/[\\/]/).pop()?.split("?")[0];
+    return nome ? decodeURIComponent(nome) : nomeAlternativo;
+}
+
+function obterFormatoDocumento(nome) {
+    const partes = nome.toLowerCase().split(".");
+    return partes.length > 1 ? partes.pop() : "arquivo";
+}
+
+function renderizarMiniaturaDocumento(preview, origem, formato) {
+    if (formato === "pdf" && window.pdfjsLib) {
+        window.pdfjsLib.GlobalWorkerOptions.workerSrc =
+            "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+        window.pdfjsLib.getDocument(origem).promise
+            .then(pdf => pdf.getPage(1))
+            .then(page => {
+                const escala = 1.4;
+                const viewport = page.getViewport({ scale: escala });
+                const canvas = document.createElement("canvas");
+                canvas.width = viewport.width;
+                canvas.height = viewport.height;
+                preview.replaceChildren(canvas);
+                return page.render({ canvasContext: canvas.getContext("2d"), viewport }).promise;
+            })
+            .catch(() => {
+                preview.innerHTML = `<span class="anexo-icone">PDF</span>`;
+            });
+        return;
+    }
+
+    const icone = document.createElement("span");
+    icone.className = "anexo-icone";
+    icone.textContent = formato.toUpperCase().slice(0, 4);
+    preview.appendChild(icone);
+}
+
+function criarCartaoDocumento({ nome, url, arquivo = null }) {
+    const formato = obterFormatoDocumento(nome);
+    const fileElement = document.createElement("div");
+    fileElement.classList.add("anexo-documento");
+    fileElement.dataset.nome = nome;
+    fileElement._arquivo = arquivo;
+
+    const checkbox = document.createElement("input");
+    checkbox.type = "checkbox";
+    checkbox.classList.add("checkbox-documento");
+    checkbox.name = "documentos-selecionados";
+
+    const preview = document.createElement("div");
+    preview.className = "anexo-preview";
+
+    const detalhes = document.createElement("div");
+    detalhes.className = "anexo-detalhes";
+
+    const link = document.createElement("a");
+    link.className = "anexo-link anexo-nome";
+    link.href = url;
+    link.textContent = nome;
+    link.target = "_blank";
+
+    const formatoLabel = document.createElement("span");
+    formatoLabel.className = "anexo-formato";
+    formatoLabel.textContent = `.${formato}`;
+
+    detalhes.append(link, formatoLabel);
+    fileElement.append(checkbox, preview, detalhes);
+    renderizarMiniaturaDocumento(preview, url, formato);
+    return fileElement;
+}
+
 
 async function cadastrar() {
     var form = document.querySelector("form");

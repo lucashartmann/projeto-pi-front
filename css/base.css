@@ -52,20 +52,25 @@
 }
 
 @keyframes fadeOut {
-  from {
-    opacity: 1;
-    visibility: visible;
-  }
-  to {
-    opacity: 0;
-    visibility: hidden;
-  }
+
+    0%,
+    50% {
+        opacity: 1;
+        visibility: visible;
+    }
+
+    100% {
+        opacity: 0;
+        visibility: hidden;
+        display: none;
+    }
 }
 
 #container-mensagens {
     position: fixed;
-    top: 75px;
-    right: 15px;
+    top: 105px;
+    /* right: 15px; */
+    left: 15px;
 
     display: flex;
     flex-direction: column;
@@ -98,7 +103,7 @@
     overflow-wrap: anywhere;
     word-break: break-word;
 
-    animation: fadeOut 15s ease forwards;
+    animation: fadeOut 5s ease forwards;
 }
 
 .mensagem.sucesso {

@@ -1,6 +1,6 @@
 import { getDadosImovel, destacarImovel, excluirImovel, listarImoveis, cadastrarImovel } from "./modules/imoveis.js";
 import { listarHistoricoPorIdImovel } from "./modules/historico.js";
-import { listarPessoas } from "./modules/usuarios.js";
+import { listarPessoas } from "./modules/pessoas.js";
 import { getCaminhoRelativo } from "./modules/utils.js";
 import { buscarCoordenadas, carregarMapa } from "./modules/mapa.js";
 import { usuarioLogado, carregarUser } from "./modules/usuario.js";
@@ -1494,6 +1494,8 @@ function adicionarLogo(event) {
     input.click();
 }
 
+
+
 function adicionarAnexo(event) {
     const overlay = document.createElement("div");
     overlay.className = "overlay";
@@ -1506,7 +1508,7 @@ function adicionarAnexo(event) {
 
     var input = document.createElement("input");
     input.type = "file";
-    input.accept = "*/*";
+    input.accept = "image/*,application/pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.csv";
     input.multiple = true;
     let contadorImagens = 0;
     let contadorDocumentos = 0;
@@ -1516,6 +1518,7 @@ function adicionarAnexo(event) {
 
         var files = input.files;
         var container = event.target.closest(".container");
+
         for (var i = 0; i < files.length; i++) {
             var file = files[i];
             var fileURL = URL.createObjectURL(file);
@@ -1602,10 +1605,11 @@ window.addEventListener("DOMContentLoaded", async function () {
         if (logo) {
             const imagem = document.getElementById("logo-editada").querySelector(".imagem");
             imagem.innerHTML = "";
-
             const img = document.createElement("img");
             img.src = "../assets/" + logo;
             imagem.appendChild(img);
+
+            console.log("logoRequisicao.anexo:", logoRequisicao.anexo);
 
             const divSobrepor = document
                 .getElementById("preview-logo")
@@ -1625,6 +1629,10 @@ window.addEventListener("DOMContentLoaded", async function () {
                 divSobrepor.style.height = `${logoRequisicao.anexo.altura}%`;
             }
 
+            console.log("divSobrepor.style.width:", divSobrepor.style.width, "divSobrepor.style.height:", divSobrepor.style.height);
+
+
+
             const segundaImagem = img.cloneNode(true);
             divSobrepor.appendChild(segundaImagem);
 
@@ -1635,6 +1643,9 @@ window.addEventListener("DOMContentLoaded", async function () {
             const posX = logoRequisicao.anexo?.posicao_x;
             const posY = logoRequisicao.anexo?.posicao_y;
 
+            console.log("maxX:", maxX, "maxY:", maxY, "posX:", posX, "posY:", posY);
+
+
             if (posX != null) {
                 divSobrepor.style.left = `${maxX * posX / 100}px`;
             }
@@ -1642,6 +1653,8 @@ window.addEventListener("DOMContentLoaded", async function () {
             if (posY != null) {
                 divSobrepor.style.top = `${maxY * posY / 100}px`;
             }
+
+            console.log("divSobrepor.style.left:", divSobrepor.style.left, "divSobrepor.style.top:", divSobrepor.style.top);
 
             estilizarDiv(divSobrepor);
         }

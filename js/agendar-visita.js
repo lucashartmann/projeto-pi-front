@@ -1,6 +1,6 @@
 import { listarImoveis } from "./modules/imoveis.js";
 import { usuarioLogado, carregarUser } from "./modules/usuario.js";
-import { listarPessoas } from "./modules/usuarios.js";
+import { listarPessoas } from "./modules/pessoas.js";
 import { getCaminhoRelativo } from "./modules/utils.js";
 import { cadastrarVisita, listarVisitas } from "./modules/visitas.js";
 import { cadastrarVistoria, listarVistorias } from "./modules/vistorias.js";

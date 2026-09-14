@@ -32,7 +32,7 @@
   </div>
 
   <div id="resultado" style="display: none;">
-    
+
   </div>
 
   <div id="pai">
@@ -87,7 +87,7 @@
         </div>
 
         <div class="campo">
-          <label for="termino" >Data de Término do contrato</label>
+          <label for="termino">Data de Término do contrato</label>
           <input type="date" id="termino" name="termino" required>
         </div>
 
@@ -124,6 +124,55 @@
     </form>
   </div>
 
+  <div id="container-documentos">
+    <div class="container">
+      <header>
+        <label for="">Contrato de Locação/Venda:</label>
+        <div class="buttons">
+        <button class="bt-adicionar-anexos" onclick="adicionarAnexo(event)">
+          Adicionar
+        </button>
+        <button class="abrir-multiplos" onclick="abrirMultiplosAnexos(event)">
+          Abrir
+        </button>
+        <button class="apagar-multiplos" onclick="apagarMultiplos(event)">
+          Apagar
+        </button></div>
+      </header>
+    </div>
+    <div class="container">
+      <header>
+        <label for="">Contrato de Administração:</label>
+        <div class="buttons">
+        <button class="bt-adicionar-anexos" onclick="adicionarAnexo(event)">
+          Adicionar
+        </button>
+        <button class="abrir-multiplos" onclick="abrirMultiplosAnexos(event)">
+          Abrir
+        </button>
+        <button class="apagar-multiplos" onclick="apagarMultiplos(event)">
+          Apagar
+        </button></div>
+      </header>
+    </div>
+
+    <div class="container">
+      <header>
+        <label for="">Relação de Chaves:</label>
+        <div class="buttons">
+        <button class="bt-adicionar-anexos" onclick="adicionarAnexo(event)">
+          Adicionar
+        </button>
+        <button class="abrir-multiplos" onclick="abrirMultiplosAnexos(event)">
+          Abrir
+        </button>
+        <button class="apagar-multiplos" onclick="apagarMultiplos(event)">
+          Apagar
+        </button></div>
+      </header>
+    </div>
+  </div>
+
   <div id="container-anexos" class="container">
     <header>
       <label for="">Anexos:</label>
@@ -139,7 +188,6 @@
       <button class="apagar-multiplos" onclick="apagarMultiplos(event)">
         Apagar
       </button>
-      <p id="contador-documentos">0 anexos</p>
     </header>
   </div>
 
@@ -149,7 +197,7 @@
     <button onclick="altoContraste()"><i class="fas fa-adjust"></i></button>
     <button onclick="modoNoturno()"><i class="fas fa-moon"></i></button>
   </div>
-  
+
 
   <!-- <div id="dados"> -->
   <!-- <div id="header">
@@ -276,9 +324,11 @@
       document.body.insertAdjacentHTML("afterbegin", data);
     });
 </script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script type="module" src="../js/modules/utils.js"></script>
 <script type="module" src="../js/modules/usuario.js"></script>
-<script type="module" src="../js/modules/usuarios.js"></script>
+<script type="module" src="../js/modules/pessoas.js"></script>
 <script type="module" src="../js/modules/imoveis.js"></script>
 <script type="module" src="js/modules/notificacoes.js"></script>
 <script type="module" src="../js/base.js"></script>

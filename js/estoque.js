@@ -1,4 +1,4 @@
-import { listarPessoas } from "./modules/usuarios.js";
+import { listarPessoas } from "./modules/pessoas.js";
 import { listarImoveis, destacarImovel, excluirImovel } from "./modules/imoveis.js";
 import { formatarValor } from "./modules/utils.js";
 

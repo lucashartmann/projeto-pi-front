@@ -16,10 +16,10 @@ class Anexo
     private ?Anuncio $anuncio;
     private string $caminho;
     private TipoAnexo $tipoAnexo;
-    private ?int $largura;
-    private ?int $altura;
-    private ?int $posicaoX;
-    private ?int $posicaoY;
+    private ?float $largura;
+    private ?float $altura;
+    private ?float $posicaoX;
+    private ?float $posicaoY;
 
 
     public function __construct(?int $idAnuncio, string $caminho, TipoAnexo $tipoAnexo)
@@ -33,42 +33,42 @@ class Anexo
         $this->posicaoY = null;
     }
 
-    public function setPosicaoX(?int $posicaoX): void
+    public function setPosicaoX(?float $posicaoX): void
     {
         $this->posicaoX = $posicaoX;
     }
 
-    public function getPosicaoX(): ?int
+    public function getPosicaoX(): ?float
     {
         return $this->posicaoX;
     }
 
-    public function setPosicaoY(?int $posicaoY): void
+    public function setPosicaoY(?float $posicaoY): void
     {
         $this->posicaoY = $posicaoY;
     }
 
-    public function getPosicaoY(): ?int
+    public function getPosicaoY(): ?float
     {
         return $this->posicaoY;
     }
 
-    public function setLargura(?int $largura): void
+    public function setLargura(?float $largura): void
     {
         $this->largura = $largura;
     }
 
-    public function getLargura(): ?int
+    public function getLargura(): ?float
     {
         return $this->largura;
     }
 
-    public function setAltura(?int $altura): void
+    public function setAltura(?float $altura): void
     {
         $this->altura = $altura;
     }
 
-    public function getAltura(): ?int
+    public function getAltura(): ?float
     {
         return $this->altura;
     }

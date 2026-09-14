@@ -182,7 +182,18 @@ class AnexoDAO
     public function cadastrarOuAtualizar(Anexo $anexo)
     {
         try {
-            $sqlQuery = " 
+
+            if ("logo.webp" === $anexo->getCaminho()) {
+                $stmt = $this->bancoDados->prepare("SELECT * FROM midia_anuncio WHERE nome_arquivo = :nome_arquivo");
+                $stmt->execute([':nome_arquivo' => $anexo->getCaminho()]);
+                $registro = $stmt->fetch(PDO::FETCH_ASSOC);
+                if ($registro) {
+                    return $this->atualizar($anexo);
+                } else {
+                    return $this->cadastrar($anexo);
+                }
+            } else {
+                $sqlQuery = " 
                     INSERT INTO midia_anuncio (
                         id_anuncio,
                         nome_arquivo,
@@ -208,17 +219,18 @@ class AnexoDAO
                         largura = VALUES(largura),
                         altura = VALUES(altura);
                     ";
-            $stmt = $this->bancoDados->prepare($sqlQuery);
+                $stmt = $this->bancoDados->prepare($sqlQuery);
 
-            return $stmt->execute([
-                ':id_anuncio' => $anexo->getIdAnuncio(),
-                ':nome_arquivo' => $anexo->getCaminho(),
-                ':tipo' => $anexo->getTipo() ? $anexo->getTipo()->value : null,
-                ':posicao_x' => $anexo->getPosicaoX(),
-                ':posicao_y' => $anexo->getPosicaoY(),
-                ':largura' => $anexo->getLargura(),
-                ':altura' => $anexo->getAltura()
-            ]);
+                return $stmt->execute([
+                    ':id_anuncio' => $anexo->getIdAnuncio(),
+                    ':nome_arquivo' => $anexo->getCaminho(),
+                    ':tipo' => $anexo->getTipo() ? $anexo->getTipo()->value : null,
+                    ':posicao_x' => $anexo->getPosicaoX(),
+                    ':posicao_y' => $anexo->getPosicaoY(),
+                    ':largura' => $anexo->getLargura(),
+                    ':altura' => $anexo->getAltura()
+                ]);
+            }
         } catch (Exception $e) {
             error_log("anexoDAO::cadastrarOuAtualizar - Error: " . $e->getMessage());
             throw $e;
