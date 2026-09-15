@@ -1,5 +1,7 @@
 import { usuarioLogado, carregarUser } from "./modules/usuario.js";
 import { getCaminhoRelativo } from "./modules/utils.js";
+import { listarImoveis } from "./modules/imoveis.js";
+import { listarHistoricoPorFuncionario } from "./modules/historico.js";
 
 var montou = false;
 let usuario = null;
@@ -356,11 +358,217 @@ async function apagar() {
 
 }
 
+function carregarGraficoImoveisCadastrados(imoveis) {
+    
+    let canvas = document.createElement("canvas");
+    let div = document.createElement("div");
+    div.id = "grafico-imoveis-cadastrados";
+    div.classList.add("container-grafico");
+    document.querySelector("#pai-graficos").appendChild(div);
+    div.appendChild(canvas);
+
+    new Chart(canvas.getContext('2d'), {
+        type: 'bar',
+        data: {
+            labels: ['Imóveis Cadastrados'],
+            datasets: [{
+                label: 'Quantidade',
+                data: [imoveis.length],
+                backgroundColor: 'white',
+                borderColor: 'white',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+
+            plugins: {
+                legend: {
+                    position: 'top',
+                    labels: {
+                        color: 'white',
+                        font: {
+                            size: 16
+                        }
+                    }
+                },
+
+                title: {
+                    display: true,
+                    text: 'Quantidade de Imóveis cadastrados',
+                    color: 'white',
+                    font: {
+                        size: 16
+                    }
+                }
+            },
+
+            scales: {
+                x: {
+                    ticks: {
+                        color: 'white',
+                        font: {
+                            size: 16
+                        }
+                    },
+                    grid: {
+                        color: 'rgba(255, 255, 255, 0.2)'
+                    },
+                    border: {
+                        color: 'white'
+                    }
+                },
+
+                y: {
+                    ticks: {
+                        color: 'white',
+                        font: {
+                            size: 16
+                        }
+                    },
+                    grid: {
+                        color: 'rgba(255, 255, 255, 0.2)'
+                    },
+                    border: {
+                        color: 'white'
+                    }
+                }
+            }
+        }
+    });
+
+}
+
+function carregarGraficoPessoasCadastradas(pessoas) {
+    
+    let canvas = document.createElement("canvas");
+    let div = document.createElement("div");
+    div.id = "grafico-pessoas-cadastradas";
+    div.classList.add("container-grafico");
+    document.querySelector("#pai-graficos").appendChild(div);
+    div.appendChild(canvas);
+    let labels = [];
+
+    switch (usuario?.usuario?.tipo) {
+        case "CAPTADOR":
+        case "CORRETOR":
+            labels = ["Total", "Clientes", "Proprietários"];
+        case "ADMIN":
+            labels = ["Total", "Clientes", "Proprietários", "Corretores", "Captadores", "Administradores", "Gerentes"];
+        case "GERENTE":
+            labels = ["Total", "Clientes", "Proprietários", "Corretores", "Captadores"];
+    }
+
+    new Chart(canvas.getContext('2d'), {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Quantidade',
+                data: [pessoas.length,
+                pessoas.filter(pessoa => pessoa.tipo === "CLIENTE").length,
+                pessoas.filter(pessoa => pessoa.tipo === "PROPRIETARIO").length,
+                pessoas.filter(pessoa => pessoa.tipo === "CORRETOR").length,
+                pessoas.filter(pessoa => pessoa.tipo === "CAPTADOR").length,
+                pessoas.filter(pessoa => pessoa.tipo === "ADMIN").length,
+                pessoas.filter(pessoa => pessoa.tipo === "GERENTE").length],
+                backgroundColor: 'white',
+                borderColor: 'white',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+
+            plugins: {
+                legend: {
+                    position: 'top',
+                    labels: {
+                        color: 'white',
+                        font: {
+                            size: 16
+                        }
+                    }
+                },
+
+                title: {
+                    display: true,
+                    text: 'Quantidade de Pessoas Cadastradas por Tipo',
+                    color: 'white',
+                    font: {
+                        size: 16
+                    }
+                }
+            },
+
+            scales: {
+                x: {
+                    ticks: {
+                        color: 'white',
+                        font: {
+                            size: 16
+                        }
+                    },
+                    grid: {
+                        color: 'rgba(255, 255, 255, 0.2)'
+                    },
+                    border: {
+                        color: 'white'
+                    }
+                },
+
+                y: {
+                    ticks: {
+                        color: 'white',
+                        font: {
+                            size: 16
+                        }
+                    },
+                    grid: {
+                        color: 'rgba(255, 255, 255, 0.2)'
+                    },
+                    border: {
+                        color: 'white'
+                    }
+                }
+            }
+        }
+    });
+
+}
+
 
 document.addEventListener("DOMContentLoaded", async function () {
+ console.log(document.querySelector("#pai-graficos"));
+    console.log(window.location.pathname);
 
     usuario = usuarioLogado || await carregarUser();
     await carregarDados();
+    console.log(usuario?.usuario);
+    if (usuario?.usuario?.tipo == "CORRETOR" || usuario?.usuario?.tipo == "ADMIN" || usuario?.usuario?.tipo == "CAPTADOR") {
+        const imoveis = await listarImoveis();
+        if (usuario?.usuario?.tipo == "CORRETOR") {
+            const imoveisCorretor = imoveis.filter(imovel => imovel.corretor_id == usuario?.usuario?.id);
+            carregarGraficoImoveisCadastrados(imoveisCorretor);
+        } else if (usuario?.usuario?.tipo == "CAPTADOR") {
+            const imoveisCaptador = imoveis.filter(imovel => imovel.captador_id == usuario?.usuario?.id);
+            carregarGraficoImoveisCadastrados(imoveisCaptador);
+        } else {
+            carregarGraficoImoveisCadastrados([]);
+        }
+
+        const historicos = await listarHistoricoPorFuncionario(usuario?.usuario?.id);
+        const lista = [];
+        if (historicos && historicos.length > 0) {
+            lista = historicos.map(historico => {
+                return {
+                    cliente: historico.cliente,
+                    funcionario: historico.funcionario
+                };
+            });
+        }
+        await carregarGraficoPessoasCadastradas(lista);
+    }
     Inputmask("999.999.999-99").mask("#inpt-cpf-cnpj");
     Inputmask("99999-999").mask("#inpt-cep");
     const containers = document.getElementsByClassName("telefone");

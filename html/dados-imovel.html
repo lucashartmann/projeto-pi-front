@@ -53,6 +53,18 @@
     </div>
   </div>
   <hr />
+  <div id="pintura">
+    <i class="fa fa-palette"></i>
+    <input type="color" id="foreground" name="foreground" />
+    <div id="botoesPintura">
+      <button onclick="resetarPintura()">Resetar</button>
+      <button onclick="colorir()">Aplicar</button>
+    </div>
+    <label for="">Aviso: As cores aplicadas às paredes são geradas por inteligência artificial e servem apenas como uma
+      simulação visual. O resultado pode apresentar diferenças de tonalidade, iluminação, textura e acabamento em
+      relação ao imóvel real. Recomenda-se verificar as condições e cores reais do ambiente antes de tomar qualquer
+      decisão de compra, locação ou reforma.</label>
+  </div>
   <div id="dados-imovel">
 
     <div class="swiper swiper-destaque">
@@ -158,6 +170,8 @@
     </div>
   </div>
 
+
+
   <footer>
     <p>Copyright 2025 - By Lucas Hartmann</p>
     <a href="https://github.com/lucashartmann" target="_blank"><i class="fab fa-github"></i></a>
@@ -189,6 +203,7 @@
 <script type="module" src="../js/modules/usuario.js"></script>
 <script type="module" src="../js/modules/imoveis.js"></script>
 <script type="module" src="../js/modules/mapa.js"></script>
+<script type="module" src="../js/modules/pintura.js"></script>
 <script type="module" src="../js/modules/notificacoes.js"></script>
 <script type="module" src="../js/base.js"></script>
 <script type="module" src="../js/dados-imovel.js"></script>

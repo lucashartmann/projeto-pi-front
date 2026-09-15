@@ -81,6 +81,20 @@
     width: min(400px, calc(100vw - 40px));
 }
 
+@keyframes fadeInOut {
+    0% {
+        opacity: 0;
+    }
+
+    50% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
+    }
+}
+
 .mensagem {
     display: none;
 
@@ -94,7 +108,7 @@
     flex-direction: column;
     justify-content: center;
 
-    color: white;
+    color: var(--cor-texto-alternativa);
     border: 1px solid black;
     border-radius: 10px;
     box-shadow: var(--shadow);
@@ -109,6 +123,7 @@
 .mensagem.sucesso {
     border-left: 5px solid green;
     background-color: rgb(32, 151, 24);
+    color:white;
 }
 
 .mensagem.erro {
@@ -555,7 +570,8 @@ button {
     border-radius: 2% / 30%;
 
     &:hover {
-        background-color: color-mix(in srgb, var(--background-custom) 70%, rgb(211, 172, 30));
+        background-color: color-mix(in srgb, var(--background-custom) 40%, rgb(211, 172, 30));
+        color: white;
     }
 }
 

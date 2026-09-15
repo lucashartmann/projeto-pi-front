@@ -3,6 +3,7 @@ import { usuarioLogado, curtirImovel, imoveisCurtidos, carregarUser } from "./mo
 import { getDadosImovel } from "./modules/imoveis.js";
 import { buscarCoordenadas, carregarMapa } from "./modules/mapa.js";
 import { buscarAnexoPorCaminho } from "./modules/anexos.js";
+import { pintar } from "./modules/pintura.js";
 
 window.abrirImagem = abrirImagem;
 window.curtirImovel = curtirImovel;
@@ -11,9 +12,96 @@ window.compartilharImovel = compartilharImovel;
 window.ativarImagem = ativarImagem;
 window.nextSlide = nextSlide;
 window.prevSlide = prevSlide;
+window.pintar = pintar;
+window.colorir = colorir;
+window.resetarPintura = resetarPintura;
 
 let imovel = null;
 let usuario = null;
+
+async function colorir() {
+    let divPai = document.querySelector("#container-mensagens");
+    let mensagem = "";
+    let div = document.createElement("div");
+
+    if (!divPai) {
+        divPai = document.createElement("div");
+        divPai.id = "container-mensagens";
+        document.body.appendChild(divPai);
+    }
+
+    div.classList.add("mensagem");
+    divPai.appendChild(div);
+
+    mensagem = "Carregando, aguarde...";
+    div.innerText = mensagem;
+    div.style.display = "flex";
+    div.id = "mensagem-pintura";
+    div.style.animation = "fadeInOut 2.5s infinite";
+
+    const cor = document.getElementById("foreground").value;
+    const imagemAtiva = document.querySelector('.swiper-destaque .swiper-slide-active');
+    const background = imagemAtiva.style.backgroundImage;
+    const match = background.match(/url\(["']?(.*?)["']?\)/);
+    const caminhoImagem = match ? match[1] : null;
+
+    const resposta = await pintar(caminhoImagem, cor);
+
+
+    if (resposta == null || resposta.status == "erro") {
+        document.getElementById("mensagem-pintura").remove();
+        let div = document.createElement("div");
+        div.classList.add("mensagem");
+        divPai.appendChild(div);
+        div.classList.add("erro");
+        div.classList.remove("sucesso");
+        mensagem = "Erro ao pintar imagem";
+        div.innerText = mensagem;
+        div.style.display = "flex";
+    } else {
+        document.getElementById("mensagem-pintura").remove();
+        const imagemPintada = resposta.caminho_resultado;
+        const imagemAtiva = document.querySelector('.swiper-destaque .swiper-slide-active');
+        imagemAtiva.style.backgroundImage = `linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), url(${imagemPintada})`;
+    }
+}
+
+async function resetarPintura() {
+    let imagensHtml = "";
+    let swiperHtml = "";
+    let logoRequisicao = await buscarAnexoPorCaminho("logo.webp");
+    let logo = logoRequisicao?.anexo?.caminho || null;
+
+    if (imovel.anuncio.imagens && imovel.anuncio.imagens.length > 0) {
+        swiperHtml = "";
+        for (let i = 0; i < imovel.anuncio.imagens.length; i++) {
+            const imagem = imovel.anuncio.imagens[i];
+            swiperHtml += `<div class="swiper-slide" style="background-image: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), url(${imagem})" onclick="abrirImagem('${imagem}')"></div>`;
+            imagensHtml += `<div class="swiper-slide" style="background-image: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), url(${imagem})" onclick="ativarImagem('${i}')"></div>`;
+        }
+    }
+
+    if (logo && logoRequisicao) {
+        console.log(logo);
+        console.log(logoRequisicao);
+        requestAnimationFrame(() => {
+            const slides = document.querySelectorAll('.swiper-destaque .swiper-slide');
+            for (const slide of slides) {
+                aplicarLogoNoElemento(slide, logo, logoRequisicao.anexo);
+            }
+        });
+    }
+
+    const swiperWrapper = document.querySelector(".swiper-destaque .swiper-wrapper");
+    const divGaleria = document.querySelector(".swiper-galeria .swiper-wrapper");
+
+    divGaleria.innerHTML = imagensHtml;
+    swiperWrapper.innerHTML = swiperHtml;
+
+    await inicializarSwiper();
+}
+
+
 
 async function compartilharImovel() {
     if (!navigator.share) {
@@ -342,41 +430,73 @@ function inicializarSwiper() {
         return;
     }
 
-    var swiper = new Swiper('.swiper-destaque', {
-        loop: imovel.anuncio.imagens.length > 1 ? true : false,
+    const swiperDestaque = new Swiper('.swiper-destaque', {
+        loop: imovel.anuncio.imagens.length > 1,
+
         pagination: {
             el: '.swiper-destaque .swiper-pagination',
             clickable: true
         },
+
         navigation: {
             nextEl: '.swiper-destaque .swiper-button-next',
             prevEl: '.swiper-destaque .swiper-button-prev'
         },
+
         scrollbar: {
             el: '.swiper-destaque .swiper-scrollbar'
-        },
+        }
     });
 
-    var swiper = new Swiper('.swiper-galeria', {
-        loop: imovel.anuncio.imagens.length > 1 ? true : false,
+    const swiperGaleria = new Swiper('.swiper-galeria', {
+        loop: imovel.anuncio.imagens.length > 1,
+
         pagination: {
             el: '.swiper-galeria .swiper-pagination',
             clickable: true
         },
+
         navigation: {
             nextEl: '.swiper-galeria .swiper-button-next',
             prevEl: '.swiper-galeria .swiper-button-prev'
         },
+
         spaceBetween: 30,
         centeredSlides: false,
+
         breakpoints: {
-            0: { slidesPerView: imovel.anuncio.imagens.length > 1 ? 1 : imovel.anuncio.imagens.length },
-            640: { slidesPerView: imovel.anuncio.imagens.length > 2 ? 2 : imovel.anuncio.imagens.length },
-            768: { slidesPerView: imovel.anuncio.imagens.length > 3 ? 3 : imovel.anuncio.imagens.length },
-            1024: { slidesPerView: imovel.anuncio.imagens.length > 4 ? 4 : imovel.anuncio.imagens.length },
-        },
+            0: {
+                slidesPerView: imovel.anuncio.imagens.length > 1
+                    ? 1
+                    : imovel.anuncio.imagens.length
+            },
+
+            640: {
+                slidesPerView: imovel.anuncio.imagens.length > 2
+                    ? 2
+                    : imovel.anuncio.imagens.length
+            },
+
+            768: {
+                slidesPerView: imovel.anuncio.imagens.length > 3
+                    ? 3
+                    : imovel.anuncio.imagens.length
+            },
+
+            1024: {
+                slidesPerView: imovel.anuncio.imagens.length > 4
+                    ? 4
+                    : imovel.anuncio.imagens.length
+            }
+        }
     });
 
+    requestAnimationFrame(() => {
+        console.log("Atualizando Swiper...");
+        console.log("Swiper Destaque:", swiperDestaque);
+        swiperDestaque.update();
+        swiperGaleria.update();
+    });
 }
 
 function nextSlide() {
@@ -421,6 +541,18 @@ window.addEventListener("DOMContentLoaded", async () => {
     sessionStorage.removeItem("dados_imovel");
 
     await setupDados(imovel);
-    await inicializarSwiper();
+    inicializarSwiper();
+
+    const cor = document.getElementById("foreground");
+    const divCor = document.getElementById("pintura");
+
+    divCor.addEventListener("mouseenter", () => {
+        divCor.classList.add("aberto");
+        cor.click();
+    });
+
+    divCor.addEventListener("mouseleave", () => {
+        divCor.classList.remove("aberto");
+    });
 
 });

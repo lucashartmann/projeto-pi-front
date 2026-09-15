@@ -38,6 +38,20 @@ class HistoricoController
         return $json;
     }
 
+    public function listarPorIdFuncionario(int $id)
+    {
+        try {
+            $historicoDAO = new HistoricoDAO();
+            $historicos = $historicoDAO->listarPorIdFuncionario($id);
+            if (!$historicos) {
+                return (["status" => "erro", "mensagem" => "Nenhum histórico encontrado para o funcionário com ID: $id"]);
+            }
+            return self::montarJson($historicos);
+        } catch (Exception $e) {
+            return (["status" => "erro", "mensagem" => "Erro ao listar históricos do funcionário: " . $e->getMessage()]);
+        }
+    }
+
     public function listarPorIdImovel(int $id)
     {
         try {

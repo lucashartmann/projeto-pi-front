@@ -1,18 +1,23 @@
-from flask import Flask, render_template, request, jsonify
-from PIL import Image
+from flask import Flask, jsonify, request
+from PIL import Image, UnidentifiedImageError
 from transformers import AutoImageProcessor, SegformerForSemanticSegmentation
 import torch
 import torch.nn.functional as F
 import numpy as np
 import os
-import uuid
 import cv2
+from io import BytesIO
 
 app = Flask(__name__)
 
 PASTA_RESULTADOS = os.path.join("static", "resultados")
 os.makedirs(PASTA_RESULTADOS, exist_ok=True)
 
+# MODELO = "nvidia/segformer-b0-finetuned-ade-512-512"
+# MODELO = "nvidia/segformer-b1-finetuned-ade-512-512"
+# MODELO = "nvidia/segformer-b2-finetuned-ade-512-512"
+# MODELO = "nvidia/segformer-b3-finetuned-ade-512-512"
+# MODELO = "nvidia/segformer-b4-finetuned-ade-512-512"
 MODELO = "nvidia/segformer-b5-finetuned-ade-640-640"
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -28,16 +33,20 @@ model.eval()
 
 print("Modelo carregado.")
 
-
-@app.route("/")
-def index():
-    return render_template("index.html")
-
-
 def hex_para_rgb(hex_cor):
-    hex_cor = hex_cor.lstrip("#")
+    if not isinstance(hex_cor, str):
+        raise ValueError("A cor deve ser um texto hexadecimal.")
 
-    return tuple(int(hex_cor[i : i + 2], 16) for i in (0, 2, 4))
+    hex_cor = hex_cor.strip().lstrip("#")
+    if len(hex_cor) != 6:
+        raise ValueError("A cor deve estar no formato #RRGGBB.")
+
+    try:
+        componentes = tuple(int(hex_cor[i : i + 2], 16) for i in (0, 2, 4))
+    except ValueError as erro:
+        raise ValueError("A cor deve estar no formato #RRGGBB.") from erro
+
+    return componentes
 
 
 def rgb_para_hsl_pixel(r, g, b):
@@ -131,7 +140,13 @@ def refinar_mascara_parede(imagem_pil, wall_prob):
     gc_mask[gray < 20] = cv2.GC_BGD
     bgdModel = np.zeros((1, 65), np.float64)
     fgdModel = np.zeros((1, 65), np.float64)
-    cv2.grabCut(img, gc_mask, None, bgdModel, fgdModel, 5, cv2.GC_INIT_WITH_MASK)
+    try:
+        cv2.grabCut(
+            img, gc_mask, None, bgdModel, fgdModel, 5, cv2.GC_INIT_WITH_MASK
+        )
+    except cv2.error:
+        pass
+
     mascara = np.where(
         (gc_mask == cv2.GC_FGD) | (gc_mask == cv2.GC_PR_FGD), 1, 0
     ).astype(np.uint8)
@@ -143,7 +158,7 @@ def refinar_mascara_parede(imagem_pil, wall_prob):
     area_total = h * w
 
     for i in range(1, num_labels):
-        x, y, largura, altura, area = stats[i]
+        _, y, _, _, area = stats[i]
         toca_borda_superior = y <= int(h * 0.05)
         grande_o_bastante = area > area_total * 0.01
         if toca_borda_superior or grande_o_bastante:
@@ -154,18 +169,32 @@ def refinar_mascara_parede(imagem_pil, wall_prob):
 
 @app.route("/processar", methods=["POST"])
 def processar():
-
     if "imagem" not in request.files:
         return jsonify({"erro": "Nenhuma imagem enviada."}), 400
 
     arquivo = request.files["imagem"]
+    if not arquivo.filename:
+        return jsonify({"erro": "Selecione uma imagem para enviar."}), 400
+
     cor_hex = request.form.get("cor", "#d4c7b5")
-    imagem = Image.open(arquivo.stream).convert("RGB")
+    try:
+        cor_rgb = hex_para_rgb(cor_hex)
+    except ValueError as erro:
+        return jsonify({"erro": str(erro)}), 400
+
+    try:
+        imagem = Image.open(arquivo.stream)
+        imagem.verify()
+        arquivo.stream.seek(0)
+        imagem = Image.open(arquivo.stream).convert("RGB")
+    except (UnidentifiedImageError, OSError):
+        return jsonify({"erro": "O arquivo enviado não é uma imagem válida."}), 400
+
     largura_original, altura_original = imagem.size
     inputs = processor(images=imagem, return_tensors="pt")
     inputs = {chave: valor.to(device) for chave, valor in inputs.items()}
 
-    with torch.no_grad():
+    with torch.inference_mode():
         outputs = model(**inputs)
 
     logits = outputs.logits
@@ -178,37 +207,24 @@ def processar():
     )
 
     probs = torch.softmax(logits, dim=1)[0]
-    wall_prob = probs[0].cpu().numpy()  
+    wall_prob = probs[0].cpu().numpy()
     mascara_parede = refinar_mascara_parede(imagem, wall_prob)
     quantidade = int(mascara_parede.sum())
 
     if quantidade == 0:
         return jsonify({"erro": "Nenhuma parede foi detectada."}), 400
 
-    cor_rgb = hex_para_rgb(cor_hex)
     resultado = recolorir_parede(imagem, mascara_parede, cor_rgb)
-    id_imagem = str(uuid.uuid4())
-    nome_resultado = f"{id_imagem}.jpg"
-    caminho_resultado = os.path.join(PASTA_RESULTADOS, nome_resultado)
-    resultado.save(caminho_resultado, quality=95)
-    preview = np.array(imagem).copy()
-    overlay = preview.copy()
-    overlay[mascara_parede] = [255, 0, 0]
-    preview = preview.astype(np.float32) * 0.55 + overlay.astype(np.float32) * 0.45
-    preview = np.clip(preview, 0, 255).astype(np.uint8)
-    nome_mascara = f"{id_imagem}_mascara.jpg"
-
-    Image.fromarray(preview).save(
-        os.path.join(PASTA_RESULTADOS, nome_mascara), quality=95
-    )
-
     porcentagem = (quantidade / (largura_original * altura_original)) * 100
+    buffer = BytesIO()
+    resultado.save(buffer, format="WEBP", quality=95)
+    blob = buffer.getvalue()
 
     return jsonify(
         {
-            "resultado": f"/static/resultados/{nome_resultado}",
-            "mascara": f"/static/resultados/{nome_mascara}",
-            "parede_percentual": round(porcentagem, 2),
+            "quantidade_pixels": quantidade,
+            "porcentagem_parede": porcentagem,
+            "blob": blob.hex(),
         }
     )
 

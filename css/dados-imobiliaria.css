@@ -21,6 +21,7 @@ body {
     padding: 20px;
     margin-top: auto;
     height: 750px;
+    justify-self: center;
 
     #div-grafico-pessoas,
     #div-grafico-imoveis {

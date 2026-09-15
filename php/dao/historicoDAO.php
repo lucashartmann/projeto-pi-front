@@ -387,6 +387,30 @@ class HistoricoDAO
         }
     }
 
+    public function listarPorIdFuncionario(int $id): array
+    {
+        try {
+            $sql = $this->sql . " WHERE historico.id_funcionario = :id";
+            $stmt = $this->bancoDados->prepare($sql);
+            $stmt->execute([':id' => $id]);
+            $registros = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $lista = [];
+
+            foreach ($registros as $registro) {
+                if ($registro && $registro['id'] !== null) {
+                    $historicoObj = $this->montar($registro);
+                    if ($historicoObj) {
+                        $lista[] = $historicoObj;
+                    }
+                }
+            }
+            return $lista;
+        } catch (Exception $e) {
+            error_log("historicoDAO::listarPorIdFuncionario - Error: " . $e->getMessage());
+            throw $e;
+        }
+    }
+
     public function listarPorIdCliente(int $id): array
     {
         try {

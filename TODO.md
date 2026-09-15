@@ -13,8 +13,8 @@
       Tem algum problema no cadastro de filtros no **init**, ele está cadastrando varios filtos em uma só row, e filtros duplicados.
 
 ## Geral:
-Mandar notificacao se estar na hora da visita ou da vistoria, ou poder botar alarme 10 minutos antes, 30m, 1 hora etc
-Visita e vistoria poder envolver mais de um imovel no front, no back cria uma visita para cada imovel
+- [ ] `PHP` `JS` <font color=green>[BAIXO]</font> Mandar notificacao se estar na hora da visita ou da vistoria, ou poder botar alarme 10 minutos antes, 30m, 1 hora etc
+- [ ] `HTML` `CSS` `JS` <font color=green>[BAIXO]</font> Visita e vistoria poder envolver mais de um imovel no front, no back cria uma visita para cada imovel
 - [ ] `CSS` <font color=red>[ALTO]</font> Mudar fonte
 - [ ] `CSS` <font color=red>[ALTO]</font> Responsividade
 - [ ] `JS` <font color=red>[ALTO]</font> Botão para limpar os inputs, ou as imagens, documentos e etc
@@ -28,7 +28,6 @@ Visita e vistoria poder envolver mais de um imovel no front, no back cria uma vi
 - [ ] `JS` `PHP` <font color=red>[ALTO]</font> Esqueceu senha: mandar o email
 
 ### Cadastro de imóvel:
-
 - [ ] `JS` <font color=red>[ALTO]</font> Melhorar o arrasto das imagens
 - [ ] `JS` <font color=red>[ALTO]</font> Melhorar visualização dos documentos (gerar imagem)
 - [ ] `JS` <font color=red>[ALTO]</font> Implementar swiper ao abrir imagem como é no dados-imovel.js
@@ -65,6 +64,10 @@ Visita e vistoria poder envolver mais de um imovel no front, no back cria uma vi
 ### Dados do cliente:
 
 - [ ] `JS` <font color=yellow>[MÉDIO]</font> Na tela de dados do cliente, se for outro tipo q n seja cliente e admin, n mostrar o botão de ver favoritos e ver atendimentos
+- [ ] `PHP` `JS` <font color=green>[BAIXO]</font> Ver quantos imoveis a pessoa cadastradou
+- [ ] `PHP` `JS` <font color=green>[BAIXO]</font> Ver quantos anexos a pessoa cadastrou
+- [ ] `PHP` `JS` <font color=green>[BAIXO]</font> Ver quantas pessoas a pessoa cadastrou
+- [ ] `PHP` `JS` <font color=green>[BAIXO]</font> Ver quantos atendimentos a pessoa atendeu
 
 ### Atendimentos e Agendar visitas:
 
@@ -79,3 +82,7 @@ Visita e vistoria poder envolver mais de um imovel no front, no back cria uma vi
 - [ ] `PHP` `JS` <font color=yellow>[MÉDIO]</font> Mandar email para cliente ou fazer alert caso ele n tenha o email cadastrado
 - [ ] `CSS` <font color=yellow>[MÉDIO]</font> Melhorar visualização do evento
 - [ ] `PHP` `JS` <font color=yellow>[MÉDIO]</font> Testar vistoria
+
+### Index e Anuncios:
+
+- [ ] `JS` <font color=yellow>[MÉDIO]</font> Poder clicar na imagem para abrir o anúncio

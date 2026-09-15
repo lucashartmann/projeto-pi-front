@@ -20,7 +20,7 @@ class Vistoria
         $this->relatorio = $relatorio;
         $this->nome = $nome;
     }
-    
+
     public function getNome(): ?string
     {
         return $this->nome;
