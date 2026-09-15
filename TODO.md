@@ -8,11 +8,14 @@
 
 ## Bugs:
 
+- [ ] `JS` <font color=red>[ALTO]</font> bug critico no arrastar imagens. Testar com mais de uma aba.
+- [ ] `PHP` <font color=red>[ALTO]</font> Erro ao salvar varias vezes sem dar f5. As imagens dao problema
 - [ ] `PHP` <font color=yellow>[verificar]</font> <font color=green>[BAIXO]</font> Quando eu cadastro uma imagem ao imovel, ele remove as imagens de todos os imóveis pré cadastrados pelo **init** na tabela midia_anuncio
 - [ ] `PHP` <font color=green>[BAIXO]</font>
       Tem algum problema no cadastro de filtros no **init**, ele está cadastrando varios filtos em uma só row, e filtros duplicados.
 
 ## Geral:
+
 - [ ] `PHP` `JS` <font color=green>[BAIXO]</font> Mandar notificacao se estar na hora da visita ou da vistoria, ou poder botar alarme 10 minutos antes, 30m, 1 hora etc
 - [ ] `HTML` `CSS` `JS` <font color=green>[BAIXO]</font> Visita e vistoria poder envolver mais de um imovel no front, no back cria uma visita para cada imovel
 - [ ] `CSS` <font color=red>[ALTO]</font> Mudar fonte
@@ -28,6 +31,7 @@
 - [ ] `JS` `PHP` <font color=red>[ALTO]</font> Esqueceu senha: mandar o email
 
 ### Cadastro de imóvel:
+
 - [ ] `JS` <font color=red>[ALTO]</font> Melhorar o arrasto das imagens
 - [ ] `JS` <font color=red>[ALTO]</font> Melhorar visualização dos documentos (gerar imagem)
 - [ ] `JS` <font color=red>[ALTO]</font> Implementar swiper ao abrir imagem como é no dados-imovel.js

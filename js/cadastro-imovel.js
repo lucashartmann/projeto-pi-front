@@ -42,29 +42,92 @@ function limpar() {
 }
 
 function ajustarTamanhoLogo(delta) {
-    const container = document.getElementById("preview-logo").querySelector(".imagem");
-    const logo = container.querySelector("img");
+    const container = document
+        .getElementById("preview-logo")
+        .querySelector(".imagem");
+
+    const logo = container?.querySelector("img");
+    const sobrepor = document.getElementById("sobrepor");
+
     if (!logo || !container) return;
 
     const larguraAtual = logo.offsetWidth;
     const alturaAtual = logo.offsetHeight;
 
+    // Mantém a proporção original
+    const proporcao = alturaAtual / larguraAtual;
+
     let novaLargura = larguraAtual + delta;
-    let novaAltura = alturaAtual + delta;
 
-    if (novaLargura < LARGURA_MIN || novaAltura < LARGURA_MIN) return;
+    // Limite mínimo
+    if (novaLargura < LARGURA_MIN) {
+        novaLargura = LARGURA_MIN;
+    }
 
-    const maxLargura = container.clientWidth;
-    const maxAltura = container.clientHeight;
+    // Limites do container
+    novaLargura = Math.min(novaLargura, container.clientWidth);
 
-    novaLargura = Math.min(novaLargura, maxLargura);
-    novaAltura = Math.min(novaAltura, maxAltura);
+    const novaAltura = novaLargura * proporcao;
 
+    // Aplica o tamanho
     logo.style.width = `${novaLargura}px`;
     logo.style.height = `${novaAltura}px`;
 
+    // IMPORTANTE:
+    // atualiza o sobrepor depois que a imagem mudou
     atualizarTamanhosEPosicoes();
 }
+
+
+function atualizarTamanhosEPosicoes() {
+    const logo = document.querySelector("#preview-logo .imagem img");
+    const sobrepor = document.getElementById("sobrepor");
+
+    if (!logo || !sobrepor) return;
+
+    const rect = logo.getBoundingClientRect();
+    const containerRect = logo.parentElement.getBoundingClientRect();
+
+    const left = rect.left - containerRect.left;
+    const top = rect.top - containerRect.top;
+
+    sobrepor.style.width = `${rect.width}px`;
+    sobrepor.style.height = `${rect.height}px`;
+    sobrepor.style.left = `${left}px`;
+    sobrepor.style.top = `${top}px`;
+}
+
+
+// function ajustarTamanhoLogo(delta) {
+//     const container = document.getElementById("preview-logo").querySelector(".imagem");
+//     const logo = container.querySelector("img");
+//     if (!logo || !container) return;
+
+//     const larguraAtual = logo.offsetWidth;
+//     const alturaAtual = logo.offsetHeight;
+
+//     let novaLargura = larguraAtual + delta;
+//     let novaAltura = alturaAtual + delta;
+
+//     if (novaLargura < LARGURA_MIN || novaAltura < LARGURA_MIN) return;
+
+//     const maxLargura = container.clientWidth;
+//     const maxAltura = container.clientHeight;
+
+//     novaLargura = Math.min(novaLargura, maxLargura);
+//     novaAltura = Math.min(novaAltura, maxAltura);
+
+//     logo.style.width = `${novaLargura}px`;
+//     logo.style.height = `${novaAltura}px`;
+
+//     // faz update do estilo #sobrebor
+//     // document.getElementById("sobrepor").style.width = `auto`;
+//     // document.getElementById("sobrepor").style.height = `auto`;
+    
+//     // TODO: quando muda a altra o soprebor fica zoado
+
+//     atualizarTamanhosEPosicoes();
+// }
 
 function aumentarLogo() {
     ajustarTamanhoLogo(10);
@@ -74,29 +137,29 @@ function diminuirLogo() {
     ajustarTamanhoLogo(-10);
 }
 
-function atualizarTamanhosEPosicoes() {
-    const sobrepor = document.getElementById("sobrepor");
-    const pai = sobrepor.closest(".imagem");
-    if (!sobrepor || !pai) return;
+// function atualizarTamanhosEPosicoes() {
+//     const sobrepor = document.getElementById("sobrepor");
+//     const pai = sobrepor.closest(".imagem");
+//     if (!sobrepor || !pai) return;
 
-    tamanhos = {
-        largura: (sobrepor.offsetWidth / pai.clientWidth) * 100,
-        altura: (sobrepor.offsetHeight / pai.clientHeight) * 100
-    };
+//     tamanhos = {
+//         largura: (sobrepor.offsetWidth / pai.clientWidth) * 100,
+//         altura: (sobrepor.offsetHeight / pai.clientHeight) * 100
+//     };
 
-    const maxX = pai.clientWidth - sobrepor.offsetWidth;
-    const maxY = pai.clientHeight - sobrepor.offsetHeight;
+//     const maxX = pai.clientWidth - sobrepor.offsetWidth;
+//     const maxY = pai.clientHeight - sobrepor.offsetHeight;
 
-    const rectSobrepor = sobrepor.getBoundingClientRect();
-    const rectPai = pai.getBoundingClientRect();
-    const x = rectSobrepor.left - rectPai.left;
-    const y = rectSobrepor.top - rectPai.top;
+//     const rectSobrepor = sobrepor.getBoundingClientRect();
+//     const rectPai = pai.getBoundingClientRect();
+//     const x = rectSobrepor.left - rectPai.left;
+//     const y = rectSobrepor.top - rectPai.top;
 
-    posicoes = {
-        posicao_x: maxX > 0 ? (x / maxX) * 100 : 0,
-        posicao_y: maxY > 0 ? (y / maxY) * 100 : 0
-    };
-}
+//     posicoes = {
+//         posicao_x: maxX > 0 ? (x / maxX) * 100 : 0,
+//         posicao_y: maxY > 0 ? (y / maxY) * 100 : 0
+//     };
+// }
 
 function calcularMediaAluguel(imovelAlvo) {
     const listaImoveis = listarImoveis() || [];
@@ -315,6 +378,8 @@ async function atualizarEndereco() {
     }
 }
 
+
+
 async function editarPessoa(tipo) {
 
 
@@ -332,6 +397,8 @@ async function editarPessoa(tipo) {
         alert("Nenhuma pessoa encontrada para editar!");
         return;
     }
+
+
 
     const container = document.createElement("div");
     container.classList = "div-dados";
@@ -497,6 +564,61 @@ async function editarPessoa(tipo) {
         checkbox.type = "checkbox";
         checkbox.checked = (idsExistentes?.includes(pessoa.id?.toString())) ? true : false;
         checkbox.name = "pessoa-selecionada";
+        if (tipo === "CORRETOR" || tipo === "CAPTADOR") {
+            checkbox.addEventListener("change", function () {
+                if (this.checked) {
+                    let containerPessoa = checkbox.closest(".resultado-pessoa");
+                    const id = containerPessoa.querySelector(".div-right .id-pessoa").value;
+                    let pessoasExistentes = null;
+                    let encontrou = false;
+                    if (tipo === "CORRETOR") {
+                        pessoasExistentes = document
+                            .getElementById("container-corretor")
+                            .querySelectorAll(".id-pessoa");
+                        encontrou = false;
+                        pessoasExistentes.forEach(input => {
+                            if (input.value == id) {
+                                encontrou = true;
+                            }
+                        });
+                        if (!encontrou) {
+                            document
+                            .getElementById("container-corretor")
+                            .querySelectorAll(".pessoa-selecionada").forEach(div => div.remove());
+                            containerPessoa.classList.add("pessoa-selecionada");
+                            containerPessoa.querySelector("input[type='checkbox']").checked = false;
+                            document
+                                .getElementById("container-corretor")
+                                .appendChild(containerPessoa.cloneNode(true));
+                        } 
+                    }
+
+                    if (tipo === "CAPTADOR") {
+                        pessoasExistentes = document
+                            .getElementById("container-captador")
+                            .querySelectorAll(".id-pessoa");
+                        encontrou = false;
+                        pessoasExistentes.forEach(input => {
+                            if (input.value == id) {
+                                encontrou = true;
+                            }
+                        });
+                        if (!encontrou) {
+                            document
+                            .getElementById("container-captador")
+                            .querySelectorAll(".pessoa-selecionada").forEach(div => div.remove());
+                            containerPessoa.classList.add("pessoa-selecionada");
+                            containerPessoa.querySelector("input[type='checkbox']").checked = false;
+                            document
+                                .getElementById("container-captador")
+                                .appendChild(containerPessoa.cloneNode(true));
+                        }
+                    }
+                    document.querySelector('.overlay')?.remove();
+                     document.body.removeChild(container);
+                }
+            });
+        }
 
         let div_left = document.createElement("div");
         div_left.classList.add("div-left");
@@ -639,11 +761,15 @@ async function getOutrosDados(formData) {
         }
     }
 
+
     if (containerProprietario && containerProprietario.querySelectorAll(".resultado-pessoa").length > 0) {
-        const idProprietario = containerProprietario.querySelector(".resultado-pessoa .id-pessoa")?.value;
-        if (idProprietario) {
-            formData.append("proprietarios[]", idProprietario);
-        }
+        containerProprietario.querySelectorAll(".resultado-pessoa .id-pessoa").forEach(input => {
+            const idProprietario = input.value;
+            if (idProprietario) {
+                console.log("Adicionando proprietário com ID:", idProprietario);
+                formData.append("proprietarios[]", idProprietario);
+            }
+        });
     }
 
     if (containerCorretor && containerCorretor.querySelectorAll(".resultado-pessoa").length > 0) {
@@ -968,7 +1094,6 @@ async function abrirCadastro(imovel) {
                     lista = pessoas[chave];
                 }
 
-                console.log(lista);
 
                 for (let pessoa of lista) {
                     let div_resultado = document.createElement("div");
@@ -1080,7 +1205,9 @@ function abrirImagem(src) {
         return;
     }
 
-    if (imovel.anuncio.imagens && imovel.anuncio.imagens.length > 0) {
+    let containerImagens = document.getElementById("container-imagens");
+
+    if (containerImagens.querySelectorAll(".imagem-anuncio").length > 0) {
         const overlay = document.createElement("div");
         overlay.className = "overlay";
         overlay.style.cssText = `
@@ -1092,47 +1219,73 @@ function abrirImagem(src) {
 
         document.body.appendChild(overlay);
 
-        var divSwiper = document.createElement("div");
+        const divSwiper = document.createElement("div");
         divSwiper.classList.add("swiper");
-        console.log(imovel.anuncio.imagens);
+        console.log(src);
         divSwiper.innerHTML = `
-        <div class="swiper-wrapper">
-            ${imovel.anuncio.imagens.forEach((imagem) => {
-            // TODO: arrumar
-            if (!imagem) {
-                return '';
-            }
-            return `<div class="swiper-slide" style="background-image: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), url(${imagem})"></div>`;
-        })}
-        </div>
-        <div class="swiper-pagination"></div>
+            <div class="swiper-wrapper">
+                ${Array.from(containerImagens.querySelectorAll(".imagem-anuncio"))
+                .filter(Boolean)
+                .map((imagem) =>
 
-        <div class="swiper-button-prev" onclick="prevSlide()"></div>
-        <div class="swiper-button-next" onclick="nextSlide()"></div>
-    
-        `
+                    `
+                        <div 
+                            class="swiper-slide"
+                            style="
+                                background-image:
+                                    linear-gradient(
+                                        rgba(0, 0, 0, 0.2),
+                                        rgba(0, 0, 0, 0.2)
+                                    ),
+                                    url('${imagem.style.backgroundImage.match(/url\(["']?(.*?)["']?\)/)[1]}');
+                            "
+                        ></div>
+                    `)
+                .join("")}
+            </div>
+
+            <div class="swiper-pagination"></div>
+
+            <div class="swiper-button-prev"></div>
+            <div class="swiper-button-next"></div>
+        `;
 
         document.body.appendChild(divSwiper);
 
-        var swiper = new Swiper('.swiper', {
+        const swiper = new Swiper(divSwiper, {
             pagination: {
-                el: '.swiper-pagination',
+                el: divSwiper.querySelector(".swiper-pagination"),
                 clickable: true
             },
+
             navigation: {
-                nextEl: '.swiper-button-next',
-                prevEl: '.swiper-button-prev'
-            },
-            scrollbar: {
-                el: '.swiper-scrollbar'
-            },
+                nextEl: divSwiper.querySelector(".swiper-button-next"),
+                prevEl: divSwiper.querySelector(".swiper-button-prev")
+            }
         });
 
-        divSwiper.addEventListener("click", function () {
-            document.querySelector('.overlay')?.remove();
-            document.body.removeChild(divSwiper);
+        document.querySelectorAll(".swiper-slide").forEach((slide, index) => {
+            const match = slide.style.backgroundImage.match(/url\(["']?(.*?)["']?\)/);
+
+            if (match) {
+                const url = match[1];
+
+                if (url === src) {
+                    swiper.slideTo(index);
+                }
+            }
         });
 
+
+        overlay.addEventListener("click", () => {
+            swiper.destroy(true, true);
+            divSwiper.remove();
+            overlay.remove();
+        });
+
+        divSwiper.addEventListener("click", (event) => {
+            event.stopPropagation();
+        });
 
 
 
@@ -1305,18 +1458,69 @@ function mudarPosicaoNoContainer(event) {
 
 function abrirMultiplosAnexos(event) {
     const container = event.target.closest(".container");
-    const checkboxes = container.querySelectorAll("input[type='checkbox']:checked");
+
+    const checkboxes = container.querySelectorAll(
+        "input[type='checkbox']:checked"
+    );
+
     if (checkboxes.length === 0) {
         alert("Nenhum item selecionado para abertura!");
         return;
     }
-    checkboxes.forEach(checkbox => {
-        const item = checkbox.closest("img");
+
+    const documentos = [];
+
+    checkboxes.forEach((checkbox) => {
+        const item = checkbox.parentNode.querySelector(".anexo-link");
+
         if (item) {
-            item.click();
+            documentos.push({
+                nome: item.textContent.trim(),
+                url: item.href
+            });
         }
     });
 
+    const janela = window.open("", "_blank");
+
+    if (!janela) {
+        alert("O navegador bloqueou a abertura da janela.");
+        return;
+    }
+
+    const conteudo = documentos.map((doc) => `
+        <div style="
+            width: 100%;
+            height: 100vh;
+            margin-bottom: 30px;
+        ">
+            <h3>${doc.nome}</h3>
+
+            <iframe
+                src="${doc.url}"
+                style="
+                    width: 100%;
+                    height: calc(100vh - 60px);
+                    border: 1px solid #ccc;
+                "
+            ></iframe>
+        </div>
+    `).join("");
+
+    janela.document.write(`
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <title>Documentos</title>
+        </head>
+
+        <body style="margin: 0; padding: 20px;">
+            ${conteudo}
+        </body>
+        </html>
+    `);
+
+    janela.document.close();
 }
 
 function abrirCadastroPessoa(id) {

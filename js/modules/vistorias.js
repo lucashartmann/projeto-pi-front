@@ -95,6 +95,8 @@ export function cadastrarVistoria(formData) {
     div.classList.remove("sucesso");
     mensagem = "Erro ao enviar dados do imóvel:" + error;
   }
-  div.innerText = mensagem;
-  div.style.display = "flex";
+  if (mensagem) {
+    div.innerText = mensagem;
+    div.style.display = "flex";
+  }
 }

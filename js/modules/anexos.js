@@ -132,6 +132,8 @@ export async function cadastrarAnexo(formData) {
         div.innerText = mensagem;
         div.style.display = "flex";
     }
-    div.innerText = mensagem;
-    div.style.display = "flex";
+    if (mensagem) {
+        div.innerText = mensagem;
+        div.style.display = "flex";
+    }
 }

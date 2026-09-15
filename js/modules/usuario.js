@@ -148,8 +148,10 @@ export async function curtirImovel(event, imovelId) {
             mensagem = "Erro ao salvar imóveis curtidos: " + err;
         }
     }
-    div.innerText = mensagem;
-    div.style.display = "flex";
+    if (mensagem) {
+        div.innerText = mensagem;
+        div.style.display = "flex";
+    }
 }
 
 export async function deslogar() {
