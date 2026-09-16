@@ -64,6 +64,35 @@ class FiltroDAO
         }
     }
 
+    public function listarPorIdCondominio(int $idCondominio): array
+    {
+        try {
+            $stmt = $this->bancoDados->prepare("
+                SELECT f.*
+                FROM filtro f
+                INNER JOIN condominio_filtros cf
+                    ON cf.id_filtro = f.id
+                WHERE cf.id_condominio = :id_condominio;
+            ");
+
+            $stmt->execute([':id_condominio' => (int) $idCondominio]);
+            $dados = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            $filtros = [];
+            foreach ($dados as $registro) {
+                $filtro = $registro["nome"];
+                if ($filtro !== null) {
+                    $filtros[] = $filtro;
+                }
+            }
+
+            return $filtros;
+        } catch (Exception $e) {
+            error_log('ERRO! FiltroDAO->listarPorIdCondominio: ' . $e->getMessage());
+            throw new Exception('Erro ao listar filtros do condomínio: ' . $e->getMessage());
+        }
+    }
+
 
     public function listarPorIdImovel(int $idImovel): array
     {
@@ -111,6 +140,25 @@ class FiltroDAO
         } catch (Exception $e) {
             error_log("ERRO! FiltroDAO->removerDoImovel: " . $e->getMessage());
             throw new Exception("Erro ao remover filtro do imóvel: " . $e->getMessage());
+        }
+    }
+
+    public function removerDoCondominio($filtroExistente, $idCondominio)
+    {
+        try {
+            $stmt = $this->bancoDados->prepare("
+                DELETE FROM condominio_filtros
+                WHERE id_filtro = :id_filtro AND id_condominio = :id_condominio
+            ");
+            $stmt->execute([
+                ':id_filtro' => $filtroExistente,
+                ':id_condominio' => $idCondominio
+            ]);
+
+            return true;
+        } catch (Exception $e) {
+            error_log("ERRO! FiltroDAO->removerDoCondominio: " . $e->getMessage());
+            throw new Exception("Erro ao remover filtro do condomínio: " . $e->getMessage());
         }
     }
 

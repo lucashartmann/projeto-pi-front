@@ -90,7 +90,7 @@ class AnexoDAO
                     $anexo->setAltura($altura);
                     $anexo->setLargura($largura);
                     $imagens[] = $anexo;
-                } else if ($tipo == "anexo") {
+                } else if ($tipo == "documento") {
                     $anexo = new Anexo($idAnuncio, $caminho, TipoAnexo::DOCUMENTO);
                     $anexo->setPosicaoX($posicao_x);
                     $anexo->setPosicaoY($posicao_y);

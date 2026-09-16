@@ -70,8 +70,10 @@ export async function cadastrarImovel(formData) {
         mensagem = "Erro ao enviar dados do imóvel: " + error;
     }
 
-    div.innerText = mensagem;
-    div.style.display = "flex";
+    if (mensagem) {
+        div.innerText = mensagem;
+        div.style.display = "flex";
+    }
 
 }
 
@@ -139,8 +141,10 @@ export async function destacarImovel(imovelId) {
         mensagem = "Falha ao conectar com o backend: " + erro;
     }
 
-    div.innerText = mensagem;
-    div.style.display = "flex";
+    if (mensagem) {
+        div.innerText = mensagem;
+        div.style.display = "flex";
+    }
 
 }
 
@@ -216,8 +220,10 @@ export async function excluirImovel(imovelId) {
         }
     }
 
-    div.innerText = mensagem;
-    div.style.display = "flex";
+    if (mensagem) {
+        div.innerText = mensagem;
+        div.style.display = "flex";
+    }
 
 }
 

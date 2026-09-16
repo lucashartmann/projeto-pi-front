@@ -292,7 +292,6 @@ class ImovelController
             $filtrosApartamento = array_key_exists("filtros_apartamento", $data) ? (array)
             str_replace(['[', ']', '"'], '', $data["filtros_apartamento"]) : [];
             $filtrosCondominio = array_key_exists("filtros_condominio", $data) ?  (array) str_replace(['[', ']', '"'], '', $data["filtros_condominio"]) : [];
-
             $complemento .= $bloco;
 
             $corretor = null;
@@ -310,9 +309,6 @@ class ImovelController
             if ($proprietarios != null && count($proprietarios) > 0) {
                 $proprietariosObjs = [];
                 foreach ($proprietarios as $idProprietario) {
-                    if (!is_numeric($idProprietario)) {
-                        continue;
-                    }
                     $proprietarioObj = $pessoaDAO->buscarPorId($idProprietario);
                     if ($proprietarioObj) {
                         $proprietariosObjs[] = $proprietarioObj;
@@ -636,6 +632,7 @@ class ImovelController
                         }
                     }
                 }
+
                 $documentos = [];
                 if ($anuncioObj->getAnexos()) {
                     foreach ($anuncioObj->getAnexos() as $documento) {

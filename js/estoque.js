@@ -615,8 +615,10 @@ async function apagarPessoa(usuarioID) {
         window.location.href = "estoque.html";
     }
 
-    div.innerText = mensagem;
-    div.style.display = "flex";
+    if (mensagem) {
+        div.innerText = mensagem;
+        div.style.display = "flex";
+    }
 
 }
 
