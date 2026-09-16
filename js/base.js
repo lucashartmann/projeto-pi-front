@@ -13,6 +13,7 @@ window.deslogar = deslogar;
 let notificacoes = [];
 
 
+
 function aumentarFonte() {
     const root = document.documentElement;
     const style = getComputedStyle(root);

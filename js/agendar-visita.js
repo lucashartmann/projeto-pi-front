@@ -184,6 +184,7 @@ function montarEventos(tipoUsuario) {
 }
 
 
+
 document.addEventListener('DOMContentLoaded', async function () {
   calendar();
   let dados = [];
@@ -216,6 +217,7 @@ document.addEventListener('DOMContentLoaded', async function () {
   dados.sort((a, b) => new Date(b.data_cadastro?.date) - new Date(a.data_cadastro?.date));
   imoveisCache.push(...dados);
 
+
   document.querySelector('select[name="cliente"]').innerHTML = `
    <option value="">Selecione uma opção...</option>
             ${usuariosCache.map(usuario =>
@@ -238,5 +240,16 @@ document.addEventListener('DOMContentLoaded', async function () {
   }
 
   montarEventos(usuario.tipo);
+
+  const idCliente = new URLSearchParams(window.location.search).get('idCliente');
+  const idImovel = new URLSearchParams(window.location.search).get('idImovel');
+
+  if (idCliente) {
+    document.querySelector('form[name="agendar-visita"] input[name="cliente"]').value = idCliente || '';
+  }
+  if (idImovel) {
+    document.querySelector('form[name="agendar-visita"] input[name="imovel"]').value = idImovel || '';
+  }
+
 
 });

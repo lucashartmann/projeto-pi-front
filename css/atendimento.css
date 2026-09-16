@@ -10,14 +10,65 @@ body {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: min(500px, calc(100vw - 40px));
-    max-height: calc(100vh - 40px);
+    width: min(900px, calc(100vw - 40px));
+    max-height: calc(70vh - 40px);
     padding: 25px;
-    background: white;
+    background: #f8f8f8;
     color: black;
     border-radius: 12px;
     overflow-y: auto;
     z-index: 9999;
+    gap: 20px;
+    display: flex;
+    flex-direction: column;
+
+    #imovel,
+    #cliente,
+    #atendimento {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+    }
+}
+
+#atendimento {
+
+    select,
+    button {
+        font-weight: 600;
+        font-size: 100%;
+        width: auto;
+        height: 30px;
+        max-width: 150px;
+    }
+
+}
+
+.modo-noturno #card-dados {
+    background: rgba(65, 65, 65, 1);
+    color: var(--cor-texto);
+}
+
+.modo-noturno .vertical-separator> :nth-child(1) {
+    font-size: .85rem;
+    color: color-mix(in srgb,
+            var(--cor-texto) 75%,
+            #000000) !important;
+}
+
+.vertical-separator> :nth-child(1) {
+    font-size: .85rem;
+    color: color-mix(in srgb,
+            var(--cor-texto) 40%,
+            #000000) !important;
+}
+
+.vertical-separator {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    flex: 1 1 180px;
+    min-width: 80px;
 }
 
 #container-horizontal {
@@ -25,7 +76,7 @@ body {
     grid-template-columns: repeat(5, 1fr);
     column-gap: 0px;
     height: auto;
-    color: white;
+    color: var(--cor-texto);
 
     .vazio {
         width: 100%;
@@ -45,7 +96,7 @@ body {
     }
 
     .container {
-        background: var(--background-custom);
+        background: rgba(65, 65, 65, 0.7);
         height: 74vh;
         justify-items: center;
         overflow-y: auto;
@@ -69,20 +120,20 @@ body {
 
 
 .card {
-    background: rgb(203, 201, 201);
+    background: var(--background-custom);
     backdrop-filter: blur(40px) !important;
     box-shadow: var(--shadow);
-    width: 90%;
+    min-width: 90%;
     height: auto;
     min-height: 17%;
     margin: 10px 10px 20px 10px;
-    color: black;
+    color: var(--cor-texto);
     font-size: 1.5rem;
     font-weight: 500;
     justify-content: flex-start;
     justify-items: flex-start;
     padding: 5px;
-
+    width: auto;
 
     h2 {
         font-size: 1.1rem;
@@ -112,22 +163,39 @@ body {
     .botoes {
         display: flex;
         justify-content: space-around;
-        margin-top: 10px;
+        margin-top:15px;
         height: 2rem;
+        width: 20rem;
 
         button {
             background-color: var(--background-custom);
             color: var(--cor-texto);
-            border: 1px solid var(--cor-texto);
+            /* border: 1px solid var(--cor-texto); */
             padding: 5px 10px;
             /* border-radius: 5px; */
             cursor: pointer;
             transition: all 0.3s ease;
             font-size: 0.9rem;
+            font-weight: 600;
+            width: auto;
+            height: 30px;
+            max-width: 150px;
 
             &:hover {
                 background-color: var(--cor-texto);
                 color: var(--background-custom);
+            }
+        }
+
+        .bt-delete {
+            background-color: rgb(151, 24, 24, 0.8);
+            border: solid 2px rgba(94, 14, 14, 0.9);
+            font-weight: 600;
+            width: 90px;
+            height: 30px;
+
+            &:hover {
+                background-color: rgb(151, 24, 24, 1);
             }
         }
     }
