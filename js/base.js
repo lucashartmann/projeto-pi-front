@@ -140,7 +140,7 @@ function carregarTabs(usuario) {
 
             cadastros = [
                 { text: "Imóveis", href: "html/cadastro-imovel.html" },
-                { text: "Venda/Aluguel", href: "html/cadastro-venda-aluguel.html" },
+                { text: "Contratos", href: "html/contratos.html" },
                 { text: "Cliente", href: "html/cadastro-cliente.html" }
             ];
             break;

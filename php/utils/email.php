@@ -42,3 +42,46 @@ a:hover {
 </html>
 HTML;
 }
+
+
+function getArquivoVisita($data, $endereco, $hora, $nomeCorretor, $nomeCliente)
+{
+    return <<<HTML
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<style>
+body {
+    margin: 0;
+    font-family: Verdana, Arial, sans-serif;
+    font-size: 12px;
+    color: #666666;
+}
+a {
+    color: #666666;
+    text-decoration: none;
+} 
+a:hover {
+    color: #FF0000;
+}
+</style>
+</head>
+<body>
+    <h1>Visita Agendada</h1>
+
+    <p>Olá {$nomeCliente},</p>
+
+    <p>Foi agendada uma visita para o imóvel localizado em: {$endereco}.</p>
+
+    <p>Data da visita: {$data}</p>
+    <p>Hora da visita: {$hora}</p>
+    <p>Corretor responsável: {$nomeCorretor}</p>
+
+    <p>Por favor, esteja presente no horário agendado.</p>
+
+    <p>Atenciosamente,<br>Equipe Summit</p>
+</body>
+</html>
+HTML;
+}

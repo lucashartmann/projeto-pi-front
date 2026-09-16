@@ -1,9 +1,8 @@
 import { listarImoveis } from "./modules/imoveis.js";
 import { usuarioLogado, carregarUser } from "./modules/usuario.js";
 import { listarPessoas } from "./modules/pessoas.js";
-import { getCaminhoRelativo } from "./modules/utils.js";
-import { listarVisitas } from "./modules/visitas.js";
-import { listarVistorias } from "./modules/vistorias.js";
+import { listarVisitas, cadastrarVisita, excluirVisita } from "./modules/visitas.js";
+import { listarVistorias, cadastrarVistoria, excluirVistoria } from "./modules/vistorias.js";
 
 window.listarImoveis = listarImoveis;
 let imoveisCache = [];
@@ -15,9 +14,55 @@ let eventosCalendario = [];
 window.listarVisitas = listarVisitas;
 window.listarVistorias = listarVistorias;
 
+function formatarTelefone(numero) {
+  if (!numero) return '';
+
+  let telefone = String(numero).replace(/\D/g, '');
+
+  if (telefone.startsWith('55')) {
+    const nacional = telefone.slice(2);
+
+    if (nacional.length === 11) {
+      return nacional.replace(
+        /(\d{2})(\d{5})(\d{4})/,
+        '+55 ($1) $2-$3'
+      );
+    }
+
+    if (nacional.length === 10) {
+      return nacional.replace(
+        /(\d{2})(\d{4})(\d{4})/,
+        '+55 ($1) $2-$3'
+      );
+    }
+  }
+
+  if (telefone.length === 11) {
+    return telefone.replace(
+      /(\d{2})(\d{5})(\d{4})/,
+      '($1) $2-$3'
+    );
+  }
+
+  if (telefone.length === 10) {
+    return telefone.replace(
+      /(\d{2})(\d{4})(\d{4})/,
+      '($1) $2-$3'
+    );
+  }
+
+  if (telefone.length > 11) {
+    return '+' + telefone;
+  }
+
+  return telefone;
+}
+
 async function calendar() {
   $('#calendar').fullCalendar({
     locale: 'pt-br',
+
+    timeFormat: 'HH:mm',
 
     buttonText: {
       today: 'Hoje',
@@ -63,7 +108,11 @@ async function calendar() {
     width: $('#pai-calendario').width(),
 
     eventClick: function (event, jsEvent, view) {
-      console.log(event);
+      jsEvent.preventDefault();
+
+      const elementoEvento = $(jsEvent.currentTarget);
+
+      abrirDetalhesEvento(event, elementoEvento);
       document.querySelector('#container-dados h2').textContent = "Agendar visita para" + " " + event.start.format('YYYY-MM-DD');
       document.querySelector('form input[name="nome"]').value = event.title || '';
       document.querySelector('form input[name="hora"]').value = event.start.format('HH:mm');
@@ -83,9 +132,211 @@ async function calendar() {
   });
 }
 
+window.excluir = excluir;
+
+function abrirDetalhesEvento(evento, elementoEvento) {
 
 
 
+  const detalhesExistente = elementoEvento.next('.detalhes-evento');
+
+  if (detalhesExistente.length) {
+    detalhesExistente.slideUp(200, function () {
+      $(this).remove();
+    });
+
+    return;
+  }
+
+  $('.detalhes-evento').slideUp(200, function () {
+    $(this).remove();
+  });
+
+  const cliente = evento.cliente || {};
+  const imovel = evento.imovel || {};
+
+  const proprietarios = evento.imovel.proprietarios || [];
+
+  const telefonesCliente = cliente.telefones
+    ?.flat()
+    .map(formatarTelefone)
+    .join(', ') || 'Não informado';
+
+  const proprietariosHTML = proprietarios.length
+    ? proprietarios.map(proprietario => {
+
+      const telefones = proprietario.telefones
+        ?.flat()
+        .map(formatarTelefone)
+        .join(', ') || 'Não informado';
+
+      return `
+                <div class="proprietario-evento">
+                    <strong>${proprietario.nome ?? 'Proprietário'}</strong>
+
+                    <span>
+                        <i class="fa-solid fa-phone"></i>
+                        ${telefones}
+                    </span>
+
+                    <span>
+                        <i class="fa-solid fa-envelope"></i>
+                        ${proprietario.email ?? 'Não informado'}
+                    </span>
+                </div>
+            `;
+    }).join('')
+    : '<span>Não informado</span>';
+
+  const endereco = [
+    imovel.endereco?.logradouro,
+    imovel.endereco?.numero,
+    imovel.endereco?.complemento,
+    imovel.endereco?.bairro
+  ]
+    .filter(Boolean)
+    .join(', ');
+
+  const detalhes = $(`
+        <div class="detalhes-evento">
+
+            <div class="detalhes-evento-coluna">
+
+                <h4>
+                    <i class="fa-solid fa-house"></i>
+                    Imóvel
+                </h4>
+
+                <p>Rua: ${imovel.endereco?.rua || 'Não informado'}</p>
+                <p>Número: ${imovel.endereco?.numero || 'Não informado'}</p>
+                <p>Complemento: ${imovel.endereco?.complemento || 'Não informado'}</p>
+                <p>Bairro: ${imovel.endereco?.bairro || 'Não informado'}</p> 
+                <p>CEP: ${imovel.endereco?.cep || 'Não informado'}</p>
+
+            </div>
+
+            <div class="detalhes-evento-coluna">
+
+                <h4>
+                    <i class="fa-solid fa-user"></i>
+                    Cliente
+                </h4>
+
+                <p>
+                    <strong>Nome:</strong>
+                    ${cliente.nome ?? 'Não informado'}
+                </p>
+
+                <p>
+                    <strong>Telefone:</strong>
+                    ${telefonesCliente}
+                </p>
+
+                <p>
+                    <strong>E-mail:</strong>
+                    ${cliente.email ?? 'Não informado'}
+                </p>
+
+            </div>
+
+            <div class="detalhes-evento-coluna">
+
+                <h4>
+                    <i class="fa-solid fa-key"></i>
+                    Proprietário(s)
+                </h4>
+
+                ${proprietariosHTML}
+
+            </div>
+
+        </div>
+    `);
+
+
+
+  const view = $('#calendar').fullCalendar('getView');
+
+  const detalhesAberto = $('.detalhes-evento-mes');
+  const eventoAbertoId = detalhesAberto.attr('data-evento-id');
+
+  if (
+    view.name === 'month' &&
+    detalhesAberto.length &&
+    String(eventoAbertoId) === String(evento.id)
+  ) {
+    detalhesAberto.slideUp(200, function () {
+      $(this).remove();
+    });
+
+    return;
+  }
+
+  if (detalhesAberto.length) {
+    detalhesAberto.remove();
+  }
+
+  if (view.name === 'month') {
+
+    const rect = elementoEvento[0].getBoundingClientRect();
+
+    const calendarRect = document
+      .querySelector('#calendar')
+      .getBoundingClientRect();
+
+    detalhes
+      .addClass('detalhes-evento-mes')
+      .attr('data-evento-id', evento.id);
+
+    $('#calendar').append(detalhes);
+
+    detalhes.css({
+      top: rect.bottom - calendarRect.top + 5,
+      left: rect.left - calendarRect.left
+    });
+
+    detalhes.hide().slideDown(200);
+
+  } else {
+
+    elementoEvento.after(detalhes);
+
+    detalhes.hide().slideDown(200);
+  }
+}
+
+async function excluir() {
+
+  const usuario = usuarioLogado || await carregarUser();
+
+  if (!usuario) {
+    div.classList.add("erro");
+    div.classList.remove("sucesso");
+    mensagem = "Usuário não encontrado. Faça login novamente.";
+    div.innerText = mensagem;
+    div.style.display = "flex";
+    return;
+  }
+
+
+  switch (usuario.tipo) {
+    case "CORRETOR":
+      excluirVisita();
+      break;
+    case "VISTORIADOR":
+      excluirVistoria();
+      break;
+    default:
+      div.classList.add("erro");
+      div.classList.remove("sucesso");
+      mensagem = "Usuário não autorizado para cadastrar eventos.";
+      div.innerText = mensagem;
+      div.style.display = "flex";
+      return;
+  }
+
+
+}
 async function salvarEvento(dataRecebida) {
 
   let div = document.querySelector(".mensagem");
@@ -135,6 +386,7 @@ function adicionarEventoAoCalendario(evento) {
     cliente: evento.cliente || ''
   };
   eventosCalendario.push(novoEvento);
+  console.log("Evento adicionado ao calendário:", novoEvento);
   $('#calendar').fullCalendar('renderEvent', novoEvento, true);
 }
 
@@ -168,6 +420,7 @@ function montarEventos(tipoUsuario) {
             hora: visita.data?.split(' ')[1],
             imovel: visita.imovel,
             cliente: visita.cliente,
+            id: visita.id
           });
         });
       }
@@ -182,6 +435,7 @@ function montarEventos(tipoUsuario) {
             hora: vistoria.data?.split(' ')[1],
             imovel: visita.imovel,
             cliente: visita.cliente,
+            id: visita.id
           });
         });
       }
@@ -251,10 +505,10 @@ document.addEventListener('DOMContentLoaded', async function () {
   const idImovel = new URLSearchParams(window.location.search).get('idImovel');
 
   if (idCliente) {
-    document.querySelector('form[name="agendar-visita"] input[name="cliente"]').value = idCliente || '';
+    document.querySelector('form select[name="cliente"]').value = idCliente || '';
   }
   if (idImovel) {
-    document.querySelector('form[name="agendar-visita"] input[name="imovel"]').value = idImovel || '';
+    document.querySelector('form select[name="imovel"]').value = idImovel || '';
   }
 
 

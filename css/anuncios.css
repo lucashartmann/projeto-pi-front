@@ -249,6 +249,7 @@ section {
         .swiper-button-prev::after,
         .swiper-button-next::after {
             font-size: 1rem;
+            align-content: center !important;
         }
     }
 
