@@ -2,8 +2,8 @@ import { listarImoveis } from "./modules/imoveis.js";
 import { usuarioLogado, carregarUser } from "./modules/usuario.js";
 import { listarPessoas } from "./modules/pessoas.js";
 import { getCaminhoRelativo } from "./modules/utils.js";
-import { cadastrarVisita, listarVisitas } from "./modules/visitas.js";
-import { cadastrarVistoria, listarVistorias } from "./modules/vistorias.js";
+import { listarVisitas } from "./modules/visitas.js";
+import { listarVistorias } from "./modules/vistorias.js";
 
 window.listarImoveis = listarImoveis;
 let imoveisCache = [];
@@ -14,8 +14,6 @@ let eventosCalendario = [];
 
 window.listarVisitas = listarVisitas;
 window.listarVistorias = listarVistorias;
-window.cadastrarVisita = cadastrarVisita;
-window.cadastrarVistoria = cadastrarVistoria;
 
 async function calendar() {
   $('#calendar').fullCalendar({
@@ -65,13 +63,13 @@ async function calendar() {
     width: $('#pai-calendario').width(),
 
     eventClick: function (event, jsEvent, view) {
+      console.log(event);
       document.querySelector('#container-dados h2').textContent = "Agendar visita para" + " " + event.start.format('YYYY-MM-DD');
-      document.querySelector('form[name="agendar-visita"] input[name="nome"]').value = event.title;
-      document.querySelector('form[name="agendar-visita"] input[name="hora"]').value = event.start.format('HH:mm');
-      document.querySelector('form[name="agendar-visita"] input[name="data"]').value = event.start.format('YYYY-MM-DD');
-      document.querySelector('form[name="agendar-visita"] input[name="imovel"]').value = event.imovel || '';
-      document.querySelector('form[name="agendar-visita"] input[name="cliente"]').value = event.cliente || '';
-      // TODO: terminar
+      document.querySelector('form input[name="nome"]').value = event.title || '';
+      document.querySelector('form input[name="hora"]').value = event.start.format('HH:mm');
+      document.querySelector('form input[name="data"]').value = event.start.format('YYYY-MM-DD');
+      document.querySelector('form select[name="imovel"]').value = event.imovel ? event.imovel.id : "";
+      document.querySelector('form select[name="cliente"]').value = event.cliente ? event.cliente.id : "";
     },
 
     events: eventosCalendario,
@@ -84,6 +82,8 @@ async function calendar() {
     }
   });
 }
+
+
 
 
 async function salvarEvento(dataRecebida) {
@@ -130,7 +130,9 @@ async function salvarEvento(dataRecebida) {
 function adicionarEventoAoCalendario(evento) {
   const novoEvento = {
     title: evento.nome,
-    start: `${evento.data}T${evento.hora}`
+    start: `${evento.data}T${evento.hora}`,
+    imovel: evento.imovel || '',
+    cliente: evento.cliente || ''
   };
   eventosCalendario.push(novoEvento);
   $('#calendar').fullCalendar('renderEvent', novoEvento, true);
@@ -163,7 +165,9 @@ function montarEventos(tipoUsuario) {
           adicionarEventoAoCalendario({
             nome: visita.nome,
             data: visita.data?.split(' ')[0],
-            hora: visita.data?.split(' ')[1]
+            hora: visita.data?.split(' ')[1],
+            imovel: visita.imovel,
+            cliente: visita.cliente,
           });
         });
       }
@@ -175,7 +179,9 @@ function montarEventos(tipoUsuario) {
           adicionarEventoAoCalendario({
             nome: vistoria.nome,
             data: vistoria.data?.split(' ')[0],
-            hora: vistoria.data?.split(' ')[1]
+            hora: vistoria.data?.split(' ')[1],
+            imovel: visita.imovel,
+            cliente: visita.cliente,
           });
         });
       }

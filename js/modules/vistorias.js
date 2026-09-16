@@ -1,3 +1,6 @@
+import { getCaminhoRelativo } from "./utils.js";
+
+
 export async function listarVistorias() {
   try {
     let caminho = getCaminhoRelativo("/php/api/vistorias.php?acao=listar_por_vistoriador");
@@ -6,32 +9,32 @@ export async function listarVistorias() {
         const contentType = res.headers.get("content-type");
         if (res.erro) {
           console.error("Erro ao listar vistorias: " + res.erro);
-          return [];
+          return null;
         }
         if (contentType && contentType.includes("application/json")) {
           return await res.json();
         } else {
           const texto = await res.text();
           console.error("Resposta não é JSON:", texto);
-          return [];
+          return null;
         }
       })
       .then(async (data) => {
         if (data.status == "erro") {
           console.error(data.mensagem);
-          return [];
+          return null;
         }
         return data;
       })
       .catch(erro => {
         console.error("Falha ao conectar com o backend:", erro);
-        return [];
+        return null;
       });
 
     return resposta;
   } catch (erro) {
     console.error("Falha ao conectar com o backend:", erro);
-    return [];
+    return null;
   }
 }
 
