@@ -1,4 +1,4 @@
-import { listarPessoas } from "./modules/usuarios.js";
+import { listarPessoas } from "./modules/pessoas.js";
 import { listarImoveis } from "./modules/imoveis.js";
 
 let quantImoveis = 0;

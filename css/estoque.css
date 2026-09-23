@@ -403,6 +403,10 @@ body {
             height: 1.8rem;
         }
     }
+
+    select {
+        height: auto;
+    }
 }
 
 

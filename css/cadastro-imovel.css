@@ -11,13 +11,27 @@
 #tataravo {
     display: flex;
     margin-top: 40px;
+    /* width: 90%; */
 }
 
 #avo {
     display: flex;
     flex-direction: column;
     gap: 10px;
+    width: 80%;
+}
 
+#cadastro-pai {
+    display: flex;
+    flex-direction: column;
+
+    width: 90%;
+
+    margin: 0 auto;
+
+    border: 1px groove color-mix(in srgb, var(--background-claro) 60%, black);
+    border-radius: 0 12px 12px 12px;
+    background: var(--background-claro);
 }
 
 #h-buttons {
@@ -324,15 +338,7 @@ label {
     border-bottom: none;
 }
 
-#cadastro-pai {
-    display: flex;
-    flex-direction: column;
-    width: 90%;
-    margin: 0 auto;
-    border: 1px groove color-mix(in srgb, var(--background-claro) 60%, black);
-    border-radius: 0px 12px 12px 12px;
-    background: var(--background-claro);
-}
+
 
 #container-cadastro {
     display: flex;
@@ -563,8 +569,6 @@ label {
         position: relative;
         padding: 5px;
 
-
-
         #inline {
             display: flex;
             gap: 10px;
@@ -793,7 +797,7 @@ label {
             background: rgba(255, 255, 255, 0.1);
         }
 
-        > input {
+        >input {
             position: absolute;
             top: 10px;
             left: 10px;

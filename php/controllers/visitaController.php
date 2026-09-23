@@ -8,6 +8,12 @@ require_once __DIR__ . '/../dao/imovelDAO.php';
 require_once __DIR__ . '/../dao/pessoaDAO.php';
 require_once __DIR__ . '/pessoaController.php';
 require_once __DIR__ . '/imovelController.php';
+require_once __DIR__ . '/../utils/env.php';
+require_once __DIR__ . '/../utils/email.php';
+
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+use PHPMailer\PHPMailer\SMTP;
 
 $isLocal = $_SERVER['SERVER_NAME'] === 'localhost';
 ini_set('display_errors', $isLocal ? '1' : '0');
@@ -84,6 +90,8 @@ class VisitaController
         if ($usuario === null) {
             return ["status" => "erro", "mensagem" => "Usuário não autenticado"];
         }
+
+
         error_log("ID do imóvel: " . $idImovel);
         $imovelDAO = new ImovelDAO();
         $imovel = $imovelDAO->buscarPorId($idImovel);
@@ -97,21 +105,90 @@ class VisitaController
         }
         $dataFormatada = DateTime::createFromFormat('Y-m-d H:i', $dataRecebida . ' ' . $hora);
         $visita = new Visita($cliente, $imovel, $usuario, $dataFormatada, $nome);
+        $mensagemEmail = '';
         try {
             $visitaDAO = new VisitaDAO();
             $visitaDAO->cadastrar($visita);
-            return ["status" => "sucesso", "mensagem" => "Visita cadastrada com sucesso"];
+
+            if ($enviarEmail && $cliente->getEmail()) {
+                $mail = new PHPMailer(true);
+                try {
+                    loadEnv(__DIR__ . '/../../.env');
+                    $mail->isSMTP();
+                    $mail->Host = $_ENV['SMTP_HOST'];
+                    $mail->SMTPAuth = true;
+                    $mail->Username = $_ENV['SMTP_USERNAME'];
+                    $mail->Password = $_ENV['SMTP_PASSWORD'];
+                    $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+                    $mail->Port = $_ENV['PORT'];
+                    $mail->setFrom($_ENV['SMTP_USERNAME'], 'Summit');
+                    $mail->addAddress($cliente->getEmail());
+                    $mail->isHTML(true);
+                    $mail->CharSet = 'UTF-8';
+                    $mail->Encoding = 'base64';
+                    $mail->Subject = 'Visita Agendada - Summit!';
+                    $mail->Body = getArquivoVisita($dataFormatada, $imovel->getEndereco(), $hora, $usuario->getNome(), $cliente->getNome());
+                    $mail->send();
+                    $mensagemEmail = "Instruções enviadas para o email";
+                } catch (Exception $e) {
+                    $mensagemEmail = "Erro ao enviar email: {$mail->ErrorInfo}";
+                }
+            } else if ($enviarEmail) {
+                $mensagemEmail = "Cliente não possui email cadastrado.";
+            }
+            return ["status" => "sucesso", "mensagem" => "Visita cadastrada com sucesso", "mensagemEmail" => $mensagemEmail];
         } catch (Exception $e) {
             return ["status" => "erro", "mensagem" => "Erro ao cadastrar visita: " . $e->getMessage()];
         }
     }
 
-    public function remover($id)
+    public function remover($data, $id)
     {
         $visitaDAO = new VisitaDAO();
         try {
+            $enviarEmail = array_key_exists("enviarEmail", $data) ? (bool) ($data['enviarEmail'])   : false;
+            $mensagemEmail = '';
+            $visita = $visitaDAO->buscarPorId($id);
+            $cliente = null;
+            $imovel = null;
+            $usuario = null;
+            $dataFormatada = null;
+            $hora = null;
+            if ($visita) {
+                $cliente = $visita->getCliente();
+                $imovel = $visita->getImovel();
+                $usuario = $visita->getCorretor();
+                $dataFormatada = $visita->getData()->format('Y-m-d H:i');
+                $hora = $visita->getData()->format('H:i');
+            }
             $visitaDAO->remover($id);
-            return ["status" => "sucesso", "mensagem" => "Visita removida com sucesso"];
+            if ($enviarEmail && $cliente->getEmail()) {
+                $mail = new PHPMailer(true);
+                try {
+                    loadEnv(__DIR__ . '/../../.env');
+                    $mail->isSMTP();
+                    $mail->Host = $_ENV['SMTP_HOST'];
+                    $mail->SMTPAuth = true;
+                    $mail->Username = $_ENV['SMTP_USERNAME'];
+                    $mail->Password = $_ENV['SMTP_PASSWORD'];
+                    $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+                    $mail->Port = $_ENV['PORT'];
+                    $mail->setFrom($_ENV['SMTP_USERNAME'], 'Summit');
+                    $mail->addAddress($cliente->getEmail());
+                    $mail->isHTML(true);
+                    $mail->CharSet = 'UTF-8';
+                    $mail->Encoding = 'base64';
+                    $mail->Subject = 'Visita Agendada - Summit!';
+                    $mail->Body = getArquivoVisita($dataFormatada, $imovel->getEndereco(), $hora, $usuario->getNome(), $cliente->getNome());
+                    $mail->send();
+                    $mensagemEmail = "Instruções enviadas para o email";
+                } catch (Exception $e) {
+                    $mensagemEmail = "Erro ao enviar email: {$mail->ErrorInfo}";
+                }
+            } else if ($enviarEmail) {
+                $mensagemEmail = "Cliente não possui email cadastrado.";
+            }
+            return ["status" => "sucesso", "mensagem" => "Visita removida com sucesso", "mensagemEmail" => $mensagemEmail];
         } catch (Exception $e) {
             return ["status" => "erro", "mensagem" => "Erro ao remover visita: " . $e->getMessage()];
         }

@@ -134,11 +134,8 @@ class ImovelService
                 }
             }
 
-            error_log("Endereço: " . $imovel->getEndereco()->getRua() . ", " . $imovel->getEndereco()->getNumero() . ", " . $imovel->getEndereco()->getBairro() . ", " . $imovel->getEndereco()->getCep() . ", " . $imovel->getEndereco()->getComplemento() . ", " . $imovel->getEndereco()->getCidade() . ", " . $imovel->getEndereco()->getUf() . ", " . $imovel->getEndereco()->getComplemento());
-
             $anuncioDAO = new AnuncioDAO();
             $anuncioDAO->atualizar($imovel->getAnuncio());
-
 
             $anexoDAO = new AnexoDAO();
             $anexos = array_merge(
@@ -215,6 +212,7 @@ class ImovelService
             $proprietariosExistentes = $proprietarioImovelDAO->listarPorIdImovel($imovel->getId());
             $proprietariosNovos = $imovel->getProprietarios();
 
+
             $idsExistentes = array_map(
                 fn($p) => $p->getId(),
                 $proprietariosExistentes
@@ -256,6 +254,24 @@ class ImovelService
             foreach ($filtrosExistentes as $filtroExistente) {
                 if (!in_array($filtroExistente, $filtrosNovos)) {
                     $filtroDAO->removerDoImovel($filtroExistente, $imovel->getId());
+                }
+            }
+
+            if ($imovel->getCondominio() !== null) {
+                $filtrosExistentes = $filtroDAO->listarPorIdCondominio($imovel->getCondominio()->getId());
+                $filtrosNovos = $imovel->getCondominio()->getFiltros();
+                $filtrosExistentes = $filtroDAO->listarPorIdCondominio($imovel->getCondominio()->getId());
+                $filtrosNovos = $imovel->getCondominio()->getFiltros();
+                foreach ($filtrosNovos as $filtro) {
+                    if (!in_array($filtro, $filtrosExistentes)) {
+                        $filtroDAO->cadastrarAosFiltros($imovel->getCondominio());
+                    }
+                }
+
+                foreach ($filtrosExistentes as $filtroExistente) {
+                    if (!in_array($filtroExistente, $filtrosNovos)) {
+                        $filtroDAO->removerDoCondominio($filtroExistente, $imovel->getId());
+                    }
                 }
             }
 

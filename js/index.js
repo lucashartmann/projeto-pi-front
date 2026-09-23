@@ -219,11 +219,11 @@ async function carregarAnuncios(dados) {
                 ${precoAluguel}
                 <p class="descricao">${imovel.anuncio?.descricao}</p>
                 <div class="emojis">
-                    <i class="fas fa-ruler-combined"><p>${imovel.area_total != null ? imovel.area_total : 'N/A'} m²</p></i> 
-                    <i class="fas fa-bath"><p>${imovel.quantidade_banheiros != null ? imovel.quantidade_banheiros : 'N/A'}</p></i> 
-                    <i class="fas fa-couch"><p>${imovel.quantidade_salas != null ? imovel.quantidade_salas : 'N/A'}</p></i> 
-                    <i class="fas fa-bed"><p>${imovel.quantidade_quartos != null ? imovel.quantidade_quartos : 'N/A'}</p></i>
-                    <i class="fas fa-car"><p>${imovel.quantidade_vagas != null ? imovel.quantidade_vagas : 'N/A'}</p></i>
+                    <i class="fas fa-ruler-combined"></i><p>${imovel.area_total != null ? imovel.area_total : 'N/A'} m²</p> 
+                    <i class="fas fa-bath"></i><p>${imovel.quantidade_banheiros != null ? imovel.quantidade_banheiros : 'N/A'}</p> 
+                    <i class="fas fa-couch"></i><p>${imovel.quantidade_salas != null ? imovel.quantidade_salas : 'N/A'}</p> 
+                    <i class="fas fa-bed"></i><p>${imovel.quantidade_quartos != null ? imovel.quantidade_quartos : 'N/A'}</p>
+                    <i class="fas fa-car"></i><p>${imovel.quantidade_vagas != null ? imovel.quantidade_vagas : 'N/A'}</p>
                 </div>
             </a>
         `;
@@ -445,11 +445,11 @@ function maisVistos(dados) {
                 ${precoAluguel}
                 <p class="descricao">${imovel.anuncio?.descricao}</p>
                 <div class="emojis">
-                    <i class="fas fa-ruler-combined"><p>${imovel.area_total != null ? imovel.area_total : 'N/A'} m²</p></i> 
-                    <i class="fas fa-bath"><p>${imovel.quantidade_banheiros != null ? imovel.quantidade_banheiros : 'N/A'}</p></i> 
-                    <i class="fas fa-couch"><p>${imovel.quantidade_salas != null ? imovel.quantidade_salas : 'N/A'}</p></i> 
-                    <i class="fas fa-bed"><p>${imovel.quantidade_quartos != null ? imovel.quantidade_quartos : 'N/A'}</p></i>
-                    <i class="fas fa-car"><p>${imovel.quantidade_vagas != null ? imovel.quantidade_vagas : 'N/A'}</p></i>
+                    <i class="fas fa-ruler-combined"></i><p>${imovel.area_total != null ? imovel.area_total : 'N/A'} m²</p> 
+                    <i class="fas fa-bath"></i><p>${imovel.quantidade_banheiros != null ? imovel.quantidade_banheiros : 'N/A'}</p> 
+                    <i class="fas fa-couch"></i><p>${imovel.quantidade_salas != null ? imovel.quantidade_salas : 'N/A'}</p> 
+                    <i class="fas fa-bed"></i><p>${imovel.quantidade_quartos != null ? imovel.quantidade_quartos : 'N/A'}</p>
+                    <i class="fas fa-car"></i><p>${imovel.quantidade_vagas != null ? imovel.quantidade_vagas : 'N/A'}</p>
                 </div>
             </a>
         `;

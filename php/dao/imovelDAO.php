@@ -317,6 +317,7 @@ class ImovelDAO
             $imovelObj = new Imovel($endereco, Status::tryFrom($dados['status']), Categoria::tryFrom($dados['categoria']));
 
             $condominio = null;
+            $filtroDAO = new FiltroDAO();
             if ($dados['condominio_id']) {
                 $copiaEndereco = $endereco ? clone $endereco : null;
                 $copiaEndereco ? $copiaEndereco->setComplemento('') : null;
@@ -325,6 +326,7 @@ class ImovelDAO
                     $copiaEndereco
                 );
                 $condominio->setId((int) $dados['condominio_id']);
+                $condominio->setFiltros($filtroDAO->listarPorIdCondominio($dados['condominio_id']) ?? []);
             }
 
             $imovelObj->setId((int) $dados['id']);
@@ -358,7 +360,7 @@ class ImovelDAO
             $imovelObj->setQuantClicks($dados['quant_clicks'] !== null ? (int) $dados['quant_clicks'] : 0);
             $proprietarioImovelDAO = new ProprietarioImovelDAO();
             $imovelObj->setProprietarios($proprietarioImovelDAO->listarPorIdImovel($dados['id']) ?? []);
-            $filtroDAO = new FiltroDAO();
+
             $imovelObj->setFiltros($filtroDAO->listarPorIdImovel($dados['id']) ?? []);
             return $imovelObj;
         } catch (Exception $e) {

@@ -8,12 +8,16 @@
 
 ## Bugs:
 
+- [ ] `JS` <font color=red>[ALTO]</font> bug critico no arrastar imagens. Testar com mais de uma aba.
+- [ ] `PHP` <font color=red>[ALTO]</font> Erro ao salvar varias vezes sem dar f5. As imagens dao problema
 - [ ] `PHP` <font color=yellow>[verificar]</font> <font color=green>[BAIXO]</font> Quando eu cadastro uma imagem ao imovel, ele remove as imagens de todos os imóveis pré cadastrados pelo **init** na tabela midia_anuncio
 - [ ] `PHP` <font color=green>[BAIXO]</font>
       Tem algum problema no cadastro de filtros no **init**, ele está cadastrando varios filtos em uma só row, e filtros duplicados.
 
 ## Geral:
 
+- [ ] `PHP` `JS` <font color=green>[BAIXO]</font> Mandar notificacao se estar na hora da visita ou da vistoria, ou poder botar alarme 10 minutos antes, 30m, 1 hora etc
+- [ ] `HTML` `CSS` `JS` <font color=green>[BAIXO]</font> Visita e vistoria poder envolver mais de um imovel no front, no back cria uma visita para cada imovel
 - [ ] `CSS` <font color=red>[ALTO]</font> Mudar fonte
 - [ ] `CSS` <font color=red>[ALTO]</font> Responsividade
 - [ ] `JS` <font color=red>[ALTO]</font> Botão para limpar os inputs, ou as imagens, documentos e etc
@@ -65,6 +69,10 @@
 ### Dados do cliente:
 
 - [ ] `JS` <font color=yellow>[MÉDIO]</font> Na tela de dados do cliente, se for outro tipo q n seja cliente e admin, n mostrar o botão de ver favoritos e ver atendimentos
+- [ ] `PHP` `JS` <font color=green>[BAIXO]</font> Ver quantos imoveis a pessoa cadastradou
+- [ ] `PHP` `JS` <font color=green>[BAIXO]</font> Ver quantos anexos a pessoa cadastrou
+- [ ] `PHP` `JS` <font color=green>[BAIXO]</font> Ver quantas pessoas a pessoa cadastrou
+- [ ] `PHP` `JS` <font color=green>[BAIXO]</font> Ver quantos atendimentos a pessoa atendeu
 
 ### Atendimentos e Agendar visitas:
 
@@ -80,3 +88,7 @@
 - [ ] `PHP` `JS` <font color=yellow>[MÉDIO]</font> Mandar email para cliente ou fazer alert caso ele n tenha o email cadastrado
 - [ ] `CSS` <font color=yellow>[MÉDIO]</font> Melhorar visualização do evento
 - [ ] `PHP` `JS` <font color=yellow>[MÉDIO]</font> Testar vistoria
+
+### Index e Anuncios:
+
+- [ ] `JS` <font color=yellow>[MÉDIO]</font> Poder clicar na imagem para abrir o anúncio

@@ -10,3 +10,6 @@ erro.md
 assets/imoveis/
 .venv
 js/config.js
+static/
+assets/resultados/
+__pycache__/

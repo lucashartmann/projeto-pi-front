@@ -257,6 +257,129 @@ class VisitaDAO
         $this->bancoDados = Banco::getInstance();
     }
 
+    public function buscarPorId(int $id): ?Visita
+    {
+        try {
+
+            $lista = [];
+            $sql = $this->sql . " WHERE visita.id = :id";
+            $stmt = $this->bancoDados->prepare($sql);
+            $stmt->execute([':id' => $id]);
+            $registro = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            if (!$registro) {
+                return null;
+            }
+
+            $pessoaDAO = new PessoaDAO();
+            $imovelDAO = new ImovelDAO();
+
+
+            $id = $registro['id'] ?? null;
+            $idImovel = $registro['id_imovel'] ?? null;
+            $idCliente = $registro['id_cliente'] ?? null;
+            $idCorretor = $registro['id_corretor'] ?? null;
+            $data = array_key_exists('data', $registro) && $registro['data'] ? new DateTime($registro['data']) : null;
+            $relatorio = $registro['relatorio'] ?? null;
+            $nome = $registro['nome'] ?? null;
+            $imovel = null;
+            $corretor = null;
+            $cliente = null;
+            if ($idImovel) {
+                $dadosImovel = array_filter($registro, function ($key) {
+                    return strpos($key, 'imovel_') === 0;
+                }, ARRAY_FILTER_USE_KEY);
+                $dadosImovel = array_combine(
+                    array_map(function ($key) {
+                        return preg_replace('/imovel_/', '', $key, 1);
+                    }, array_keys($dadosImovel)),
+                    $dadosImovel
+                );
+                $imovel = $imovelDAO->montar($dadosImovel);
+                if ($imovel) {
+                    $dadosCorretor = array_filter($registro, function ($key) {
+                        return strpos($key, 'imovel_corretor_') === 0;
+                    }, ARRAY_FILTER_USE_KEY);
+                    $dadosCorretor = array_combine(
+                        array_map(function ($key) {
+                            return preg_replace('/imovel_corretor_/', '', $key, 1);
+                        }, array_keys($dadosCorretor)),
+                        $dadosCorretor
+                    );
+                    $dadosCaptador = array_filter($registro, function ($key) {
+                        return strpos($key, 'imovel_captador_') === 0;
+                    }, ARRAY_FILTER_USE_KEY);
+                    $dadosCaptador = array_combine(
+                        array_map(function ($key) {
+                            return str_replace('imovel_captador_', '', $key);
+                        }, array_keys($dadosCaptador)),
+                        $dadosCaptador
+                    );
+                    $corretor = null;
+                    $captador = null;
+                    try {
+                        if ($dadosCorretor['id'] !== null) {
+                            $corretor = $pessoaDAO->montar($dadosCorretor);
+                        }
+                    } catch (Exception $e) {
+                        error_log("ERRO! imovelDAO->listarDisponiveis: " . $e->getMessage());
+                    }
+                    try {
+                        if ($dadosCaptador['id'] !== null) {
+                            $captador = $pessoaDAO->montar($dadosCaptador);
+                        }
+                    } catch (Exception $e) {
+                        error_log("ERRO! imovelDAO->listarDisponiveis: " . $e->getMessage());
+                    }
+
+                    if ($corretor) {
+                        $imovel->setCorretor($corretor);
+                    }
+                    if ($captador) {
+                        $imovel->setCaptador($captador);
+                    }
+                }
+            }
+            $corretor = null;
+            $cliente = null;
+
+            if ($idCorretor) {
+                $dadosCorretor = array_filter($registro, function ($key) {
+                    return strpos($key, 'corretor_') === 0;
+                }, ARRAY_FILTER_USE_KEY);
+                $dadosCorretor = array_combine(
+                    array_map(function ($key) {
+                        return preg_replace('/corretor_/', '', $key, 1);
+                    }, array_keys($dadosCorretor)),
+                    $dadosCorretor
+                );
+                $corretor = $pessoaDAO->montar($dadosCorretor);
+            }
+            if ($idCliente) {
+                $dadosCliente = array_filter($registro, function ($key) {
+                    return strpos($key, 'cliente_') === 0;
+                }, ARRAY_FILTER_USE_KEY);
+                $dadosCliente = array_combine(
+                    array_map(function ($key) {
+                        return preg_replace('/cliente_/', '', $key, 1);
+                    }, array_keys($dadosCliente)),
+                    $dadosCliente
+                );
+                $cliente = $pessoaDAO->montar($dadosCliente);
+            }
+            $visita = new Visita($cliente, $imovel, $corretor, $data, $nome);
+            $visita->setId($id);
+
+
+
+
+            return $visita;
+        } catch (Exception $e) {
+            error_log("ERRO! visitaDAO->listarPorCorretor: " . $e->getMessage());
+            throw new Exception("Erro ao listar visitas por corrretor: " . $e->getMessage());
+        }
+    }
+
 
     public function listarPorCorretor(Funcionario $corretor): array
     {

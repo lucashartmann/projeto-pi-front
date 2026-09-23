@@ -8,6 +8,131 @@
     grid-column: 1;
 }
 
+#grafico-imoveis-cadastrados {
+    display: none;
+}
+
+#pintura {
+    position: absolute;
+    z-index: 10;
+    transform: translate(860%, 90%);
+
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    width: 40px;
+    padding: 12px;
+
+    background-color: var(--background-custom);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 10px;
+
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
+
+    input[type="color"] {
+        width: 100%;
+        height: 42px;
+
+        padding: 3px;
+        border: 1px solid #777;
+        border-radius: 6px;
+
+        background: transparent;
+        cursor: pointer;
+    }
+
+    #botoesPintura {
+        display: flex;
+        gap: 8px;
+
+        button {
+            flex: 1;
+
+            padding: 7px 10px;
+
+            border: none;
+            border-radius: 5px;
+
+            font-size: 0.85rem;
+            cursor: pointer;
+
+            transition:
+                background-color 0.2s,
+                transform 0.1s;
+
+            &:hover {
+                filter: brightness(1.1);
+            }
+
+            &:active {
+                transform: scale(0.97);
+            }
+        }
+    }
+
+    i {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        width: 10%;
+        height: 10px;
+
+        margin: auto;
+
+        /* border: 2px solid rgba(255, 255, 255, 0.4); */
+        border-radius: 8px;
+
+        background-color: var(--background-custom);
+        color: white;
+
+        font-size: 1.5rem;
+
+        cursor: pointer;
+
+        &:hover {
+            color: var(--hover);
+        }
+    }
+
+    label {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+
+        padding: 3px;
+        border: 1px solid #777;
+        border-radius: 6px;
+
+        color: white;
+
+        font-size: 0.85rem;
+    }
+
+    #foreground,
+    #botoesPintura,
+    label {
+        display: none;
+    }
+}
+
+#pintura.aberto {
+    transform: translate(100%, 10%);
+    width: 180px;
+
+    i {
+        display: none;
+    }
+
+    #foreground,
+    #botoesPintura,
+    label {
+        display: flex;
+    }
+}
+
 #categoria {
     border: 1px dashed rgba(212, 175, 55, 0.4);
     box-shadow: 0 0 5px rgba(212, 175, 55, 0.2);
@@ -19,7 +144,7 @@
 
 #dados-imovel {
     display: grid;
-    grid-column: repeat(2, 1fr);
+    grid-template-columns: minmax(0, 1fr);
     justify-content: center;
     justify-items: center;
     align-self: flex-start;
@@ -27,12 +152,19 @@
     height: auto;
     align-self: flex-start;
     margin-left: 30px;
-    width: 70%;
+    min-width: 0;
+    width: 60%;
     margin-top: 35px;
     column-gap: 50px;
+    width: 60%;
+    min-width: 0;
 
     &:nth-child(n) {
         grid-column: 1;
+    }
+
+    #entrar-contato {
+        grid-column: 2;
     }
 }
 
@@ -82,6 +214,10 @@ body>hr {
         align-self: flex-start;
         gap: 10px;
 
+        button {
+            padding: 3px 10px;
+        }
+
         >button:hover {
             .fa-heart {
                 color: red;
@@ -124,11 +260,12 @@ body>hr {
     margin-top: 12px;
     row-gap: 20px;
     justify-items: center;
-    justify-content: center;
+    /* justify-content: center; */
     justify-self: center;
     align-items: center;
     align-content: center;
     align-self: center;
+    max-width: 100%;
     grid-column: 1;
 
     label {
@@ -180,10 +317,19 @@ body>hr {
     #whatsapp {
         color: var(--cor-texto) !important;
         margin-left: 0 !important;
-        font-size: 0.8rem !important;
+        font-size: 1rem !important;
 
         i {
             color: var(--cor-texto) !important;
+        }
+
+        &:hover {
+            color: var(--cor-texto-alternativa) !important;
+            cursor: pointer;
+
+            i {
+                color: var(--cor-texto-alternativa) !important;
+            }
         }
     }
 
@@ -249,9 +395,15 @@ img {
 
 
 .swiper-destaque {
-    width: 100%;
     height: 40rem;
     grid-column: 1;
+    width: 100%;
+    min-width: 0;
+    margin-bottom: 0px;
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+    overflow: hidden;
 
     .swiper-pagination-bullet {
         background: #000;
@@ -268,7 +420,8 @@ img {
     .swiper-slide {
         cursor: pointer;
         background: rgb(135, 126, 126, 0.2);
-        width: 90%;
+        width: 100%;
+        max-width: 100%;
         border-radius: 2px;
         box-shadow: 0.1px 0.1px 3px black;
         display: flex;
@@ -293,6 +446,7 @@ img {
             justify-content: center;
             justify-items: center;
             opacity: 0.9;
+            max-width: 100%;
 
             img {
                 width: auto;
@@ -323,9 +477,11 @@ img {
 
 .swiper-galeria {
     width: 100%;
+    max-width: 100%;
     height: 10rem;
-    margin-top: 20px;
+    margin-top: 0px;
     grid-column: 1;
+
 
     .swiper-pagination-bullet {
         background: #000;

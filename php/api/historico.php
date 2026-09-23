@@ -34,6 +34,16 @@ switch ($acao) {
         }
         break;
 
+    case "listarPorIdFuncionario":
+        Seguranca::verificarAcesso();
+        $id = $_GET['id'] ?? null;
+        if ($id === null) {
+            $resultado = (["status" => "erro", "mensagem" => "ID do funcionário não fornecido"]);
+        } else {
+            $resultado = $controller->listarPorIdFuncionario((int)$id);
+        }
+        break;
+
     default:
         $resultado = (["status" => "erro", "mensagem" => "Ação inválida"]);
         break;
